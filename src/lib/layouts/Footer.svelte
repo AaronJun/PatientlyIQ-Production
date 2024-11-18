@@ -1,5 +1,5 @@
 <script>
-	import PIQLogo from '$lib/assets/imgs/PIQLogo_orange.svg';
+	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 
 	const footerNavs = [
 		{
