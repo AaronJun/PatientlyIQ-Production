@@ -1,230 +1,196 @@
-<script>
-  import GithubSvg from "$lib/svg/web/github.svg";
-  import TwitterSvg from "$lib/svg/web/x.svg";
-  import { page } from "$app/stores";
-  import SearchComp from "../searchComp/SearchComp.svelte";
-  import { fade } from "svelte/transition";
+<script lang="ts">
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { AlignJustify, XIcon, Sun, Moon } from 'lucide-svelte';
+	import { fly } from 'svelte/transition';
+	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
+	import { onMount } from 'svelte';
+	
+	const sections = [
+		{
+			id: 'hero',
+			number: '01',
+			label: 'PatientlyIQ'
+		},
+		{
+			id: 'data-sources',
+			number: '02',
+			label: 'Comprehesive Data'
+		},
+		{
+			id: 'use-cases',
+			number: '03',
+			label: 'Use Cases'
+		},
+		{
+			id: 'analysis',
+			number: '04',
+			label: 'Capabilities'
+		}
+	];
 
-  export let mainNavs = [
-    { link: "/", name: "Home" },
-    { link: "/", name: "Components" },
-    { link: "/changelog", name: "Changelog" },
-    { link: "/templates/developer-portfolio", name: "Templates" },
-  ];
-  let miniNav = [
-    { link: "/magic", name: "Magic UI" },
-    { link: "/in", name: "Indie UI" },
-    { link: "/examples", name: "Examples" },
-    { link: "/luxe", name: "Luxe Components" },
-  ];
-  import * as HoverCard from "$lib/components/ui/hover-card";
-  import { cn } from "$lib/utils";
-  import { navs } from "$lib";
-  import { slide } from "svelte/transition";
-  import Button from "$lib/components/ui/button/button.svelte";
-  let ismobileMenuOpen = false;
-  let openComponents = false;
-  $: routeId = $page.url.pathname;
+	let activeSection = 'hero';
+	let hamburgerMenuIsOpen = false;
+	let isDarkMode = false;
+
+	function toggleOverflowHidden(node: HTMLElement) {
+		node.addEventListener('click', () => {
+			hamburgerMenuIsOpen = !hamburgerMenuIsOpen;
+			const html = document.querySelector('html');
+			if (html) {
+				if (hamburgerMenuIsOpen) {
+					html.classList.add('overflow-hidden');
+				} else {
+					html.classList.remove('overflow-hidden');
+				}
+			}
+		});
+	}
+
+	function toggleDarkMode() {
+		isDarkMode = !isDarkMode;
+		const html = document.querySelector('html');
+		if (html) {
+			if (isDarkMode) {
+				html.classList.add('dark');
+			} else {
+				html.classList.remove('dark');
+			}
+		}
+	}
+
+	onMount(() => {
+		const options = {
+			root: null,
+			rootMargin: '-50% 0px',
+			threshold: 0
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					activeSection = entry.target.id;
+				}
+			});
+		}, options);
+
+		sections.forEach((section) => {
+			const element = document.getElementById(section.id);
+			if (element) observer.observe(element);
+		});
+
+		return () => observer.disconnect();
+	});
+
+	function scrollToSection(sectionId: string) {
+		const element = document.getElementById(sectionId);
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	$: if (typeof window !== 'undefined') {
+		isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
+
+	let innerWidth = 0;
 </script>
 
-<nav class="bg-background/50 border-b sticky top-0 z-50 backdrop-blur-md">
-  <div class="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
-    <div class="relative flex h-14 items-center justify-between">
-      <div class="flex items-center px-2 lg:px-0">
-        <a href="/" class="flex-shrink-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-tab-slash"
-            ><path d="m14.5 9.5-5 5" /><path
-              d="M4 20V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14"
-            /><path d="M22 20H2" /></svg
-          >
-        </a>
-        <div class="hidden lg:ml-6 lg:block">
-          <div class="flex space-x-3">
-            {#each mainNavs as { link, name }}
-              {#if name === "Components"}
-                <HoverCard.Root
-                  open={openComponents}
-                  openDelay={150}
-                  closeDelay={200}
-                  onOpenChange={(isOpen) => (openComponents = isOpen)}
-                >
-                  <HoverCard.Trigger
-                    class="flex gap-0.5 items-center rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700/20 transition-all duration-200 hover:text-white"
-                    >Components
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide transition-all duration-200 lucide-chevron-right mt-0.5 {openComponents
-                        ? 'rotate-90 '
-                        : ''}"><path d="m9 18 6-6-6-6" /></svg
-                    >
-                  </HoverCard.Trigger>
-                  <HoverCard.Content class="z-50 w-fit">
-                    <div class="w-fit">
-                      <div class="grid md:grid-cols-6 gap-2.5">
-                        {#each miniNav as item, i}
-                          <div
-                            class={cn(
-                              "rounded-lg h-20 ",
-                              i == 0 && "md:col-span-4 md:row-span-4 md:h-full",
-                              i == 1 && "md:col-span-2",
-                              i == 2 && "md:col-span-2 md:row-span-3",
-                              i == 3 && "md:col-span-6"
-                            )}
-                          >
-                            <a
-                              on:click={() => (openComponents = false)}
-                              href={item.link}
-                              class="relative size-full rounded-lg flex justify-center items-center bg-zinc-200 dark:bg-zinc-950 border text-md px-6 dark:hover:bg-zinc-900/70 transition-all duration-200 {i ==
-                              3
-                                ? 'shadow-[0_1000px_0_0_hsl(0_0%_20%)_inset]'
-                                : ''}  "
-                            >
-                              {#if i === 3}
-                                <span>
-                                  <span
-                                    class="spark mask-gradient animate-flip before:animate-kitrotate absolute inset-0 h-[100%] w-[100%] overflow-hidden rounded-xl [mask:linear-gradient(white,_transparent_50%)] before:absolute before:aspect-square before:w-[200%] before:rotate-[-90deg] before:bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] before:content-[''] before:[inset:0_auto_auto_50%] before:[translate:-50%_-15%]"
-                                  />
-                                </span>
-                                <span
-                                  class="backdrop absolute inset-px rounded-[11px] bg-zinc-950 transition-colors duration-200"
-                                />
-                              {/if}
-                              <span class="z-50">
-                                {item.name}
-                              </span>
-                            </a>
-                          </div>
-                        {/each}
-                      </div>
-                    </div>
-                  </HoverCard.Content>
-                </HoverCard.Root>
-              {:else}
-                <a
-                  href={link}
-                  class="rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700/20 transition-all duration-200 hover:text-white"
-                  >{name}</a
-                >
-              {/if}
-            {/each}
-          </div>
-        </div>
-      </div>
-      <div
-        transition:fade
-        class="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end items-center"
-      >
-        <div
-          class="w-full max-w-lg lg:max-w-80 flex justify-center items-center gap-1 md:gap-3"
-        >
-          <SearchComp />
-          <Button
-            variant="link"
-            href="https://github.com/SikandarJODD/svelte-animations?tab=readme-ov-file#simple-components"
-            target="_blank"
-            size="icon"
-            class='hidden sm:flex'
-          >
-            <img src={GithubSvg} alt="twitter_logo" class="size-6" />
-          </Button>
-          <Button
-            variant="link"
-            href="https://twitter.com/Sikandar_Bhide"
-            target="_blank"
-            size="icon"
-          >
-            <img src={TwitterSvg} alt="twitter_logo" class="size-5" />
-          </Button>
-        </div>
-      </div>
-      <div class="flex lg:hidden">
-        <!-- Mobile menu button -->
-        <button
-          type="button"
-          class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 outline-none"
-          aria-controls="mobile-menu"
-          aria-expanded="false"
-          on:click={() => (ismobileMenuOpen = !ismobileMenuOpen)}
-        >
-          <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Open main menu</span>
-          <!--
-              Icon when menu is closed.
-  
-              Menu open: "hidden", Menu closed: "block"
-            -->
-          <svg
-            class="{ismobileMenuOpen ? 'hidden' : 'block'} h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-          <!--
-              Icon when menu is open.
-  
-              Menu open: "block", Menu closed: "hidden"
-            -->
-          <svg
-            class="{ismobileMenuOpen ? 'block' : 'hidden'}  h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
+<svelte:window bind:innerWidth />
+<header
+	class="fixed left-0 top-0 z-40 w-full -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl"
+>
+	<!-- Top Row -->
+	<div class="container flex h-14 items-center justify-between border-b border-gray-200 dark:border-gray-800">
+		<a class="text-xs flex items-center" href="/">
+			<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-2" />
+			<span class="hidden sm:inline">Patiently IQ</span>
+		</a>
+	
+		<div class="ml-auto flex h-full items-center">
+			<button
+				on:click={toggleDarkMode}
+				class="mr-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				aria-label="Toggle dark mode"
+			>
+				{#if isDarkMode}
+					<Sun strokeWidth={1.2} class="w-5 h-5 text-gray-400" />
+				{:else}
+					<Moon strokeWidth={1.2} class="w-5 h-5 text-gray-800" />
+				{/if}
+			</button>
+			<a class="mr-6 text-xs hidden sm:inline" href="/"> Log in </a>
+			<Button class="text-xs animate-fade-in gap-1 rounded-lg bg-[#ff5151] text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-white">Contact</Button>
+		</div>
+		<button class="ml-6 md:hidden" use:toggleOverflowHidden>
+			<span class="sr-only">Toggle menu</span>
+			{#if hamburgerMenuIsOpen}
+				<XIcon strokeWidth={1.4} class='text-gray-300'/>
+			{:else}
+				<AlignJustify strokeWidth={1.4} class='text-gray-300' />
+			{/if}
+		</button>
+	</div>
 
-  <!-- Mobile menu, show/hide based on menu state. -->
-  {#key ismobileMenuOpen}
-    <div
-      class="lg:hidden {ismobileMenuOpen ? 'flex' : 'hidden'}"
-      id="mobile-menu"
-    >
-      <div class="space-y-1 px-2 pb-3 pt-2" transition:slide>
-        {#each navs as { link, name }}
-          <a
-            on:click={() => (ismobileMenuOpen = false)}
-            href={link}
-            class="block rounded-md px-3 py-1.5 text-base text-gray-300 transition-all duration-200"
-            >{name}</a
-          >
-        {/each}
-      </div>
-    </div>
-  {/key}
-</nav>
+	<!-- Bottom Row - Navigation -->
+	<div class="hidden md:block container h-12">
+		<nav class="h-full">
+			<ul class="flex items-center space-x-8 h-full">
+				{#each sections as section}
+					<li>
+						<button
+							on:click={() => scrollToSection(section.id)}
+							class="group flex items-center space-x-2 text-xs transition-colors duration-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 px-2 py-1 rounded-md"
+						>
+							<span class="font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 group-hover:text-[#ff5151]'}">
+								{section.number}
+							</span>
+							<span class="font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 group-hover:text-[#ff5151]'}">
+								{section.label}
+							</span>
+						</button>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+	</div>
+
+	<!-- Mobile Menu -->
+	{#if hamburgerMenuIsOpen}
+		<div
+			class="absolute top-full left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 md:hidden"
+			transition:fly={{ y: -20, duration: 200 }}
+		>
+			<nav class="container py-4">
+				{#each sections as section}
+					<button
+						on:click={() => {
+							scrollToSection(section.id);
+							hamburgerMenuIsOpen = false;
+						}}
+						class="w-full text-left py-2 px-4 text-sm font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 hover:text-[#ff5151]'}"
+					>
+						<span class="mr-2">{section.number}</span>
+						{section.label}
+					</button>
+				{/each}
+			</nav>
+		</div>
+	{/if}
+</header>
+
+<style>
+	/* Smooth transitions for color changes */
+	.text-gray-500 {
+		transition: color 0.3s ease-in-out;
+	}
+
+	/* Add smooth transition for mobile menu */
+	nav button {
+		transition: all 0.3s ease-in-out;
+	}
+
+	/* Subtle hover effect for navigation items */
+	nav button:hover {
+		background-color: rgba(0, 0, 0, 0.02);
+	}
+</style>
