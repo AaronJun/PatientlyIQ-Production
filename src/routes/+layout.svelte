@@ -6,8 +6,9 @@
   $: routeID = $page.url.pathname.split("/");
 
   import { resetMode, setMode } from "mode-watcher";
-    import NewNavbar from "$lib/components/dev/Navbar/NewNavbar.svelte";
-  setMode("dark");
+    import Header from '$lib/layouts/Header.svelte';
+  
+    setMode("dark");
   let pageWidth = 0;
 </script>
 
@@ -18,7 +19,7 @@
 {:else if routeID[1] === ""}
   <Navbar />
 {/if} -->
-<NewNavbar />
+<Header />
 <div>
   <slot />
 </div>

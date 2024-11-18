@@ -7,7 +7,7 @@
 
 	// Video
 	import HeroVideo from '$lib/assets/imgs/PIQDemoHero1080p.mp4';
-	let inView = true;
+	let inView = false;
 	const handleChange = ({ detail }: CustomEvent<ObserverEventDetails>) => {
 		inView = detail.inView;
 	};
