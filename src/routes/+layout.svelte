@@ -8,7 +8,7 @@
   import { resetMode, setMode } from "mode-watcher";
     import Header from '$lib/layouts/Header.svelte';
   import Navbar from '$lib/components/dev/Navbar/NewNavbar.svelte';
-  
+  import Footer from "$lib/layouts/Footer.svelte";
     setMode("dark");
   let pageWidth = 0;
 </script>
@@ -24,3 +24,4 @@
 <div>
   <slot />
 </div>
+<Footer />
