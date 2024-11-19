@@ -87,7 +87,7 @@
                 "Mixed-method approaches",
                 "Rapid insight generation",
                 "Expert panel integration",
-                "Custom analytics dashboards"
+            "Custom analytics dashboards"
             ],
             stats: "92% client satisfaction",
             impact: "4.1x faster delivery",

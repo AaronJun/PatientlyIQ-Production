@@ -3,7 +3,7 @@ import {
   Grid,
   Button
 } from 'carbon-components-svelte';
-import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
 
 </script>

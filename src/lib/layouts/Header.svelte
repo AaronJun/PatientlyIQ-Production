@@ -1,36 +1,17 @@
 <script lang="ts">
-	import Button from '$lib/ui/button/button.svelte';
-	import { AlignJustify, XIcon, Sun, Moon } from 'lucide-svelte';
+	import Button from '$lib/ui/button/button.svelte'
+	import { AlignJustify, XIcon, Sun, Moon, ChevronDown } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
-	import { onMount } from 'svelte';
 	
-	const sections = [
-		{
-			id: 'hero',
-			number: '01',
-			label: 'PatientlyIQ'
-		},
-		{
-			id: 'data-sources',
-			number: '02',
-			label: 'Comprehesive Data'
-		},
-		{
-			id: 'use-cases',
-			number: '03',
-			label: 'Use Cases'
-		},
-		{
-			id: 'analysis',
-			number: '04',
-			label: 'Capabilities'
-		}
-	];
-
-	let activeSection = 'hero';
 	let hamburgerMenuIsOpen = false;
 	let isDarkMode = false;
+
+	const toolsLinks = [
+		{ label: 'Patient Sentiment', href: '/sentiment' },
+		{ label: 'Patient Cards', href: '/cards' },
+		{ label: 'Rare Atlas', href: '/atlas' }
+	];
 
 	function toggleOverflowHidden(node: HTMLElement) {
 		node.addEventListener('click', () => {
@@ -58,53 +39,43 @@
 		}
 	}
 
-	onMount(() => {
-		const options = {
-			root: null,
-			rootMargin: '-50% 0px',
-			threshold: 0
-		};
-
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					activeSection = entry.target.id;
-				}
-			});
-		}, options);
-
-		sections.forEach((section) => {
-			const element = document.getElementById(section.id);
-			if (element) observer.observe(element);
-		});
-
-		return () => observer.disconnect();
-	});
-
-	function scrollToSection(sectionId: string) {
-		const element = document.getElementById(sectionId);
-		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
-		}
-	}
-
 	$: if (typeof window !== 'undefined') {
 		isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 	}
-
-	let innerWidth = 0;
 </script>
 
-<svelte:window bind:innerWidth />
 <header
 	class="fixed left-0 top-0 z-40 w-full -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl"
 >
-	<!-- Top Row -->
 	<div class="container flex h-14 w-full items-center justify-between border-b border-gray-200 dark:border-gray-800">
-		<a class="text-xs flex items-center" href="/">
-			<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
-			<span class="hidden sm:inline">Patiently IQ</span>
-		</a>
+		<div class="flex items-center space-x-8">
+			<a class="text-xs flex items-center" href="/">
+				<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
+				<span class="hidden sm:inline">Patiently IQ</span>
+			</a>
+			
+			<!-- Tools Dropdown - Desktop -->
+			<div class="hidden md:block relative group">
+				<button class="flex items-center space-x-1 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+					<span>Tools</span>
+					<ChevronDown class="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
+				</button>
+				
+				<!-- Dropdown Menu -->
+				<div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+					<div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 min-w-[160px] overflow-hidden">
+						{#each toolsLinks as link}
+							<a 
+								href={link.href}
+								class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors duration-150"
+							>
+								{link.label}
+							</a>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</div>
 	
 		<div class="ml-auto flex h-full items-center">
 			<button
@@ -121,6 +92,8 @@
 			<a class="mr-6 text-xs hidden sm:inline" href="/"> Log in </a>
 			<Button class="text-xs ante-fade-in gap-1 rounded-lg bg-[#ff5151] text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-white">Contact</Button>
 		</div>
+
+		<!-- Mobile Menu Button -->
 		<button class="ml-6 md:hidden" use:toggleOverflowHidden>
 			<span class="sr-only">Toggle menu</span>
 			{#if hamburgerMenuIsOpen}
@@ -129,68 +102,32 @@
 				<AlignJustify strokeWidth={1.4} class='text-gray-300' />
 			{/if}
 		</button>
-	</div>
 
-	<!-- Bottom Row - Navigation -->
-	<div class="hidden md:block container h-12">
-		<nav class="h-full">
-			<ul class="flex items-center space-x-8 h-full">
-				{#each sections as section}
-					<li>
-						<button
-							on:click={() => scrollToSection(section.id)}
-							class="group flex items-center space-x-2 text-xs transition-colors duration-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 px-2 py-1 rounded-md"
+		<!-- Mobile Tools Menu -->
+		{#if hamburgerMenuIsOpen}
+			<div
+				class="absolute left-0 top-full w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 md:hidden"
+				transition:fly={{ y: -20, duration: 200 }}
+			>
+				<nav class="container py-4">
+					<div class="px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400">Tools</div>
+					{#each toolsLinks as link}
+						<a 
+							href={link.href}
+							class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors duration-150"
 						>
-							<span class="font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 group-hover:text-[#ff5151]'}">
-								{section.number}
-							</span>
-							<span class="font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 group-hover:text-[#ff5151]'}">
-								{section.label}
-							</span>
-						</button>
-					</li>
-				{/each}
-			</ul>
-		</nav>
+							{link.label}
+						</a>
+					{/each}
+				</nav>
+			</div>
+		{/if}
 	</div>
-
-	<!-- Mobile Menu -->
-	{#if hamburgerMenuIsOpen}
-		<div
-			class="absolute top-full left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 md:hidden"
-			transition:fly={{ y: -20, duration: 200 }}
-		>
-			<nav class="container py-4">
-				{#each sections as section}
-					<button
-						on:click={() => {
-							scrollToSection(section.id);
-							hamburgerMenuIsOpen = false;
-						}}
-						class="w-full text-left py-2 px-4 text-sm font-mono transition-colors duration-300 {activeSection === section.id ? 'text-[#ff5151]' : 'text-gray-500 hover:text-[#ff5151]'}"
-					>
-						<span class="mr-2">{section.number}</span>
-						{section.label}
-					</button>
-				{/each}
-			</nav>
-		</div>
-	{/if}
 </header>
 
 <style>
-	/* Smooth transitions for color changes */
-	.text-gray-500 {
-		transition: color 0.3s ease-in-out;
-	}
-
-	/* Add smooth transition for mobile menu */
-	nav button {
-		transition: all 0.3s ease-in-out;
-	}
-
-	/* Subtle hover effect for navigation items */
-	nav button:hover {
-		background-color: rgba(0, 0, 0, 0.02);
+	/* Optional: Add a subtle scale effect on dropdown items hover */
+	.group:hover .group-hover\:scale-100 {
+		transform: scale(1);
 	}
 </style>
