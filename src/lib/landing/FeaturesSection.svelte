@@ -310,9 +310,9 @@
            
 <!-- Updated Audience Selection Buttons -->
 <div class="mb-12 grid">
-    <div class="grid grid-cols-2 justify-left sm:grid-cols-4 gap-4">
+    <div class="grid grid-cols-4">
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-40 flex-grow items-center justify-left aspect-square transition-all duration-200 {activeAudience === 'clinical-operations' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'clinical-operations' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('clinical-operations')}
         >
             <ClinicalTrial 
@@ -323,7 +323,7 @@
         </button>
         
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-40 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'medical-affairs' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'medical-affairs' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('medical-affairs')}
         >
             <Research 
@@ -334,7 +334,7 @@
         </button>
         
         <button
-            class="p-2 rounded-lg text-sm font-medium flex flex-col max-h-40 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'patient-advocacy' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'patient-advocacy' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('patient-advocacy')}
         >
             <CoexistenceSociety 
@@ -345,7 +345,7 @@
         </button>
         
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-40 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'commercial-marketing' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'commercial-marketing' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('commercial-marketing')}
         >
             <MarketAnalysis 

@@ -14,11 +14,20 @@ type FlyAndScaleParams = {
 	duration?: number;
 };
 
+
+export function getSentimentColor(sentiment: string): string {
+    switch (sentiment.toLowerCase()) {
+      case 'positive': return '#B0F0B9';
+      case 'negative': return '#C34244';
+      default: return '#F5BE6B';
+    }
+  };
+
 export const flyAndScale = (
 	node: Element,
 	params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }
 ): TransitionConfig => {
-	const style = getComputedStyle(node);
+const style = getComputedStyle(node);
 	const transform = style.transform === "none" ? "" : style.transform;
 
 	const scaleConversion = (
