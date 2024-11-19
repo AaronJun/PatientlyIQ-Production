@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/button/Button.svelte';
+	import Button from '$lib/ui/button/button.svelte';
 	import { AlignJustify, XIcon, Sun, Moon } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
