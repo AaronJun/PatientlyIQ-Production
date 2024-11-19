@@ -102,7 +102,7 @@
 	<!-- Top Row -->
 	<div class="container flex h-14 items-center justify-between border-b border-gray-200 dark:border-gray-800">
 		<a class="text-xs flex items-center" href="/">
-			<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-2" />
+			<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
 			<span class="hidden sm:inline">Patiently IQ</span>
 		</a>
 	
@@ -119,7 +119,7 @@
 				{/if}
 			</button>
 			<a class="mr-6 text-xs hidden sm:inline" href="/"> Log in </a>
-			<Button class="text-xs animate-fade-in gap-1 rounded-lg bg-[#ff5151] text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-white">Contact</Button>
+			<Button class="text-xs ante-fade-in gap-1 rounded-lg bg-[#ff5151] text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-white">Contact</Button>
 		</div>
 		<button class="ml-6 md:hidden" use:toggleOverflowHidden>
 			<span class="sr-only">Toggle menu</span>

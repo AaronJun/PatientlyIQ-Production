@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
@@ -10,14 +9,14 @@
     const dispatch = createEventDispatcher();
     let svg: SVGElement;
     
-    const margin = { top: 50, right: 20, bottom: 100, left: 60 };
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+    const width = 1200 - margin.left - margin.right;
+    const height = 1000 - margin.top - margin.bottom;
     const colors = {
         positive: '#4CAF50',
+        mixed: '#FFC107',
         neutral: '#9E9E9E',
-        negative: '#ff5151',
-        mixed: '#FFC107'
+        negative: '#ff5151'
     };
 
     onMount(() => {
@@ -46,9 +45,9 @@
             .domain([0, 100])
             .range([height, 0]);
 
-        // Stack the data
+        // Stack the data with fixed order
         const stack = d3.stack()
-            .keys(["positive", "neutral", "negative", "mixed"])
+            .keys(["positive", "mixed", "neutral", "negative"]) // Fixed order
             .order(d3.stackOrderNone)
             .offset(d3.stackOffsetNone);
 
@@ -76,7 +75,7 @@
                 d3.select(this)
                     .transition()
                     .duration(200)
-                    .style("opacity", 0.8);
+                    .style("opacity", 0.4);
             })
             .on("mouseout", function() {
                 d3.select(this)
@@ -98,13 +97,14 @@
         g.append("g")
             .call(d3.axisLeft(y).ticks(5).tickFormat(d => d + "%"));
 
-        // Add legend
+        // Add legend in the same fixed order
+        const legendData = ["negative", "neutral", "mixed", "positive"];
         const legend = svgEl.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
             .attr("text-anchor", "start")
             .selectAll("g")
-            .data(Object.entries(colors))
+            .data(legendData.map(key => [key, colors[key]]))
             .enter()
             .append("g")
             .attr("transform", (d, i) => `translate(${margin.left + i * 100},${height + margin.top + 30})`);
