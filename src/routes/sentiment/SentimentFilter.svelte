@@ -1,127 +1,68 @@
-<script lang="ts">
-  import { ComboBox, Button } from "carbon-components-svelte";
-  import { createEventDispatcher } from 'svelte';
+<script lang="ts">  
+    import { createEventDispatcher } from 'svelte';
+    import { diseases } from '$lib/data/diseases';
+    
+    const dispatch = createEventDispatcher<{
+        filter: { disease: string; compareWithCategory: boolean }
+    }>();
+    
+    let selectedDisease = "pompe";
+    let selectedCategory = diseases[0].category;
+    let compareWithCategory = false;
 
-  const dispatch = createEventDispatcher();
+    $: filteredDiseases = diseases.find(cat => cat.category === selectedCategory)?.items || [];
+    
+    function handleCategoryChange(event: Event) {
+        const target = event.target as HTMLSelectElement;
+        selectedCategory = target.value;
+        selectedDisease = diseases.find(cat => cat.category === selectedCategory)?.items[0].id || '';
+        dispatch('filter', { disease: selectedDisease, compareWithCategory });
+    }
 
-  let selectedDisease = "all";
-  let selectedAspect = "all";
-  let selectedTimeframe = "all";
-  let diseaseRef;
-  let aspectRef;
-  let timeframeRef;
+    function handleDiseaseChange(event: Event) {
+        const target = event.target as HTMLSelectElement;
+        selectedDisease = target.value;
+        dispatch('filter', { disease: selectedDisease, compareWithCategory });
+    }
 
-  const diseaseItems = [
-      { id: "all", text: "All Conditions" },
-      { id: "diabetes", text: "Diabetes" },
-      { id: "cancer", text: "Cancer" },
-      { id: "heartDisease", text: "Heart Disease" },
-      { id: "alzheimers", text: "Alzheimer's" },
-      { id: "arthritis", text: "Arthritis" }
-  ];
-
-  const aspectItems = [
-      { id: "all", text: "All Aspects" },
-      { id: "safety", text: "Safety" },
-      { id: "efficacy", text: "Efficacy" },
-      { id: "sideEffects", text: "Side Effects" },
-      { id: "cost", text: "Cost" },
-      { id: "access", text: "Access" },
-      { id: "support", text: "Support" }
-  ];
-
-  const timeframeItems = [
-      { id: "all", text: "All Time" },
-      { id: "lastQuarter", text: "Last Quarter" },
-      { id: "lastSixMonths", text: "Last 6 Months" },
-    { id: "lastYear", text: "Last Year" },
-      { id: "ytd", text: "Year to Date" }
-  ];
-
-  function handleDiseaseSelect(event) {
-      selectedDisease = event.detail.selectedId;
-      dispatchFilters();
-  }
-
-  function handleAspectSelect(event) {
-      selectedAspect = event.detail.selectedId;
-      dispatchFilters();
-  }
-
-  function handleTimeframeSelect(event) {
-      selectedTimeframe = event.detail.selectedId;
-      dispatchFilters();
-  }
-
-  function dispatchFilters() {
-      dispatch('filter', {
-          disease: selectedDisease,
-          aspect: selectedAspect,
-          timeframe: selectedTimeframe
-      });
-  }
-
-  function clearFilters() {
-      selectedDisease = "all";
-      selectedAspect = "all";
-      selectedTimeframe = "all";
-      diseaseRef?.clear();
-      aspectRef?.clear();
-      timeframeRef?.clear();
-      dispatchFilters();
-  }
+    function toggleComparison() {
+        compareWithCategory = !compareWithCategory;
+        dispatch('filter', { disease: selectedDisease, compareWithCategory });
+    }
 </script>
 
-<div class="filter-container">
-  <div class="filters">
-      <ComboBox
-          light
-          placeholder="Choose a condition"
-          bind:this={diseaseRef}
-          items={diseaseItems}
-          on:select={handleDiseaseSelect}
-          selectedId={selectedDisease}
-      />
-      <ComboBox
-          light
-          placeholder="Choose an aspect"
-          bind:this={aspectRef}
-          items={aspectItems}
-          on:select={handleAspectSelect}
-          selectedId={selectedAspect}
-      />
-      <ComboBox
-          light
-          placeholder="Choose a timeframe"
-          bind:this={timeframeRef}
-          items={timeframeItems}
-          on:select={handleTimeframeSelect}
-          selectedId={selectedTimeframe}
-      />
-  </div>
-  <Button kind="primary" on:click={clearFilters}>Clear filters</Button>
+<div class="filter-container flex items-center gap-4">
+    <select 
+        class="p-2 border border-orange-600 rounded-md bg-white dark:bg-gray-900"
+        bind:value={selectedCategory}
+        on:change={handleCategoryChange}
+    >
+        {#each diseases as category}
+            <option value={category.category}>{category.category}</option>
+        {/each}
+    </select>
+
+    <select 
+        class="p-2 border border-orange-600 rounded-md bg-white dark:bg-gray-900"
+        bind:value={selectedDisease}
+        on:change={handleDiseaseChange}
+    >
+        {#each filteredDiseases as disease}
+            <option value={disease.id}>{disease.name}</option>
+        {/each}
+    </select>
+
+    <button 
+        class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors {compareWithCategory ? 'bg-orange-700' : ''}"
+        on:click={toggleComparison}
+    >
+        {compareWithCategory ? 'Hide' : 'Show'} Category Comparison
+    </button>
 </div>
 
 <style>
-  .filters {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: baseline;
-      gap: 1rem;
-  }
-
-  .filter-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: left;
-      width: 100%;
-      gap: 1rem;
-      margin-bottom: 2rem;
-  }
-
-  :global(.bx--combo-box) {
-      width: 300px;
-  }
+    select {
+        width: 250px;
+        height: 40px;
+    }
 </style>

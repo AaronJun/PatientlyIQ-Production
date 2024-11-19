@@ -53,13 +53,16 @@
 
 <svelte:window on:keydown={event => event.key === 'Escape' && onClose()}/>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+ 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="drawer-backdrop"
      on:click={onClose} 
      transition:fly={{duration: ANIMATION_DURATION}}>
-
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="drawer" 
          on:click|stopPropagation
-         transition:fly={{x: 100, duration: ANIMATION_DURATION, easing: circInOut}}>
+         transition:fly={{x: 200, duration: ANIMATION_DURATION, easing: circInOut}}>
         
         <button class="close-button" on:click={onClose}>&times;</button>
 
@@ -88,7 +91,7 @@
             </div>
 
             <div class="section border-t border-dotted border-[#ff5151] pt-6">
-                <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">Sentiment Factors</h3>
+                <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">Sentiment Factors</h3>
                 {#each expandedData.sentimentFactors as factor}
                     <div class="mb-6">
                         <div class="flex justify-between mb-2">
@@ -104,14 +107,14 @@
             </div>
 
             <div class="section border-t border-dotted border-[#ff5151] pt-6">
-                <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">Temporal Trends</h3>
+                <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">Temporal Trends</h3>
                 <div class="h-64 mb-6">
                     <TimeSeriesChart data={data.details.trends} />
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     {#each data.details.trends.slice(-3) as trend}
                         <div class="stat-card">
-                            <span class="text-sm text-orange-8000 dark:text-[#ff1515]">{trend.date}</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">{trend.date}</span>
                             <span class="text-lg font-bold text-[#ff5151]">{trend.value}%</span>
                         </div>
                     {/each}
@@ -119,7 +122,7 @@
             </div>
 
             <div class="section border-t border-dotted border-[#ff5151] pt-6">
-                <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">Regional Variations</h3>
+                <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">Regional Variations</h3>
                 <p class="text-gray-800 dark:text-gray-200 mb-4">{expandedData.regionalVariation.factors}</p>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="region-card">
@@ -140,7 +143,7 @@
                     </div>
 
 <div class="section border-t border-dotted border-[#ff5151] pt-6">
-    <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">
+    <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
         Comparison to {exampleDiseaseData.categoryBaseline}
     </h3>
     <DiseaseComparison data={exampleDiseaseData} />

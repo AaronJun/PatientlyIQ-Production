@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
+	import Button from '$lib/ui/button/Button.svelte';
 	import { AlignJustify, XIcon, Sun, Moon } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
@@ -100,7 +100,7 @@
 	class="fixed left-0 top-0 z-40 w-full -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl"
 >
 	<!-- Top Row -->
-	<div class="container flex h-14 items-center justify-between border-b border-gray-200 dark:border-gray-800">
+	<div class="container flex h-14 w-full items-center justify-between border-b border-gray-200 dark:border-gray-800">
 		<a class="text-xs flex items-center" href="/">
 			<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
 			<span class="hidden sm:inline">Patiently IQ</span>

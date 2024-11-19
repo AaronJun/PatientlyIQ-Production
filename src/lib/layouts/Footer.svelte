@@ -65,9 +65,9 @@
 <footer>
 	
 		<div
-			class="flex flex-col gap-2 rounded-md border-neutral-700/20 px-8 py-4 sm:flex sm:flex-row sm:items-center sm:justify-between"
+			class="flex flex-col gap-2 border-neutral-700/20 px-8 pt-12 sm:flex sm:flex-row sm:items-center sm:justify-between flex-grow"
 		>
-			<div class="grid ml-10">
+			<div class="grid ml-24">
 				{#each footerSocials as social}
 					<a
 						href={social.href}
@@ -95,7 +95,7 @@
 <style>
 	.flex {
 		display: flex;
-		min-height: 45vh;
+		min-height: 65vh;
 		background-color: #13131b;
 		border-top: .25px dotted #ff1a1a;
 	}

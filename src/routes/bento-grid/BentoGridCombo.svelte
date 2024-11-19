@@ -1,6 +1,6 @@
 <script>
     import Button from "$lib/components/ui/button/button.svelte";
-    import { Calendar, TextSearch, ReceiptText, CodeXml } from "lucide-svelte";
+    import { Calendar, TextSearch, ReceiptText, CodeXml, LineChart } from "lucide-svelte";
   
     // Minor Components Code
     import BentoExampleCode from "$lib/magicui/components/BentoGrid/example/BentoExample.svelte?raw";
@@ -13,6 +13,7 @@
     import BentoCalendar from "./BentoCalendar.svelte";
     import BentoComposable from "./BentoResizable.svelte";
     import BentoMarquee from "./BentoMarquee.svelte";
+    import BentoLineChart from "./BentoLineChart.svelte";
     import BentoCommand from "./BentoCommand.svelte";
   
     // Main Components
@@ -49,15 +50,6 @@
         class: "col-span-3 lg:col-span-2",
       },
       {
-        Icon: CodeXml,
-        name: "Code Editor",
-        description: "Coding is fun with Editors",
-        href: "/",
-        cta: "Edit More",
-        background: BentoComposable,
-        class: "col-span-3 lg:col-span-2",
-      },
-      {
         Icon: Calendar,
         name: "Calendar",
         description: "Use the calendar to filter your files by date.",
@@ -66,6 +58,15 @@
         background: BentoCalendar,
         class: "col-span-3 lg:col-span-1",
       },
+      {
+  Icon: LineChart,
+  name: "Frontend Observability",
+  description: "Privacy-friendly, lightweight Analytics. Track your post-launch metrics in real-time.",
+  href: "/",
+  cta: "View Analytics",
+  background: BentoLineChart,
+  class: "col-span-2",
+}
     ];
   
     let allCodes = [
