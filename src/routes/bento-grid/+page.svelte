@@ -32,8 +32,8 @@
   const features = [
     {
       Icon: TextSearch,
-      name: "Save your files",
-      description: "We automatically save your files as you type.",
+      name: "Patient Cards tell a story",
+      description: "Patient Cards provide an intimate view of specific journeys.",
       href: "/",
       cta: "Learn more",
       background: BentoMarquee,
@@ -41,8 +41,8 @@
     },
     {
       Icon: ReceiptText,
-      name: "Full text search",
-      description: "Search through all your files in one place.",
+      name: "Search by indication",
+      description: "Search for specific patient groups, by therapeutic area, indication, treatment type, and more.",
       href: "/",
       cta: "Learn more",
       background: BentoCommand,

@@ -4,6 +4,6 @@
   export { className as class };
 </script>
 
-<div class={cn("grid w-full auto-rows-[20rem] grid-cols-3 gap-4", className)}>
+<div class={cn("grid w-full auto-rows-[25rem] grid-cols-3 gap-4", className)}>
   <slot></slot>
 </div>

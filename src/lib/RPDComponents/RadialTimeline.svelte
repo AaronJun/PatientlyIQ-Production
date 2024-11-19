@@ -3,20 +3,20 @@
     import * as d3 from 'd3';
     import type { Selection } from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import OnePetal from '@assets/1Petal.svg?raw';
-    import TwoPetal from '@assets/2Petal.svg?raw';
-    import ThreePetal from '@assets/3Petal.svg?raw';
-    import FourPetal from '@assets/4Petal.svg?raw';
-    import FivePetal from '@assets/5Petal.svg?raw';
-    import SixPetal from '@assets/6Petal.svg?raw';
-    import SevenPetal from '@assets/7Petal.svg?raw';
-    import EightPetal from '@assets/8Petal.svg?raw';
-    import NinePetal from '@assets/9Petal.svg?raw';
-    import TenPetal from '@assets/10Petal.svg?raw';
-    import ElevenPetal from '@assets/11Petal.svg?raw';
-    import TwelvePetal from '@assets/12Petal.svg?raw';
-    import {YearlySummary} from '../../lib/componentStores';
-    import Tooltip from './RPDTooltip.svelte';
+    import OnePetal from '../../assets/1Petal.svg?raw';
+    import TwoPetal from '../../assets//2Petal.svg?raw';
+    import ThreePetal from '../../assets//3Petal.svg?raw';
+    import FourPetal from '../../assets//4Petal.svg?raw';
+    import FivePetal from '../../assets//5Petal.svg?raw';
+    import SixPetal from '../../assets//6Petal.svg?raw';
+    import SevenPetal from '../../assets//7Petal.svg?raw';
+    import EightPetal from '../../assets//8Petal.svg?raw';
+    import NinePetal from '../../assets//9Petal.svg?raw';
+    import TenPetal from '../../assets//10Petal.svg?raw';
+    import ElevenPetal from '../../assets//11Petal.svg?raw';
+    import TwelvePetal from '../../assets//12Petal.svg?raw';
+    import {YearlySummary} from '$lib/componentStores.ts';
+    import Tooltip from '../RPDComponents/RPDTooltip.svelte';
   
     interface RPDData {
       Year: string;

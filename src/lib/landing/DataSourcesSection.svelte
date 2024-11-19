@@ -191,7 +191,7 @@
     <div class="flex flex-col justify-center">
         <Tooltip>
             <TooltipTrigger>
-                <Circle>
+                <Circle >
                     <div bind:this={centralDataBaseRef} class="flex items-center justify-center">
                         <DataBase stroke-width="1.2" class="w-8 h-8  text-orange-800 dark:text-orange-600/70" />
                     </div>

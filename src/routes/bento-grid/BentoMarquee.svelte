@@ -3,24 +3,20 @@
   import { cn } from "$lib/utils";
   const files = [
     {
-      name: "bitcoin.pdf",
-      body: "Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.",
+      name: "Audree",
+      body: "When I was diagnosed, it felt like a weight lifted from my shoulders.",
     },
     {
-      name: "finances.xlsx",
-      body: "A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.",
+      name: "Nick",
+      body: "It never even occured to me to look for a clinicla trial.",
     },
     {
-      name: "logo.svg",
-      body: "Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.",
+      name: "Sara",
+      body: "I was so relieved to find a trial that was right for me.",
     },
     {
-      name: "keys.gpg",
-      body: "GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.",
-    },
-    {
-      name: "seed.txt",
-      body: "A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.",
+      name: "Jeffery",
+      body: "Even though I found multiple trials that I could join, the distance was never close enough to travel.",
     },
   ];
 </script>
