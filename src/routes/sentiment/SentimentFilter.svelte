@@ -33,7 +33,7 @@
 
 <div class="filter-container flex items-center gap-4">
     <select 
-        class="p-2 border border-orange-600 rounded-md bg-white dark:bg-gray-900"
+        class="p-2 border border-[#ff1515] text-sm rounded-full bg-white dark:bg-gray-900"
         bind:value={selectedCategory}
         on:change={handleCategoryChange}
     >
@@ -43,7 +43,7 @@
     </select>
 
     <select 
-        class="p-2 border border-orange-600 rounded-md bg-white dark:bg-gray-900"
+        class="p-2 border border-[#ff1515] text-sm rounded-full bg-white dark:bg-gray-900"
         bind:value={selectedDisease}
         on:change={handleDiseaseChange}
     >
@@ -53,7 +53,7 @@
     </select>
 
     <button 
-        class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors {compareWithCategory ? 'bg-orange-700' : ''}"
+        class="px-4 py-2 bg-[#ff1515] text-white text-sm rounded-full hover:bg-orange-700 transition-colors {compareWithCategory ? 'bg-orange-700' : ''}"
         on:click={toggleComparison}
     >
         {compareWithCategory ? 'Hide' : 'Show'} Category Comparison

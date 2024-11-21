@@ -38,14 +38,11 @@
 <div class="mx-auto mt-24 px-2 md:px-8">
     <div class="text-left mb-16">
         <div class="mb-4 mt-12 flex items-left gap-5">
-            <span class="font-mono text-xs font-bold text-gray-500">05</span>
             <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
-                Patient insights analysis
+                Sentiment IQ
             </span>
         </div>
     </div>
-
-    <h1 class="text-3xl mt-12 mb-8">Sentiment IQ</h1>
 
     <!-- Filter moved above tabs -->
     <div class="mb-12">
@@ -53,42 +50,42 @@
     </div>
 
     <!-- Tab Buttons -->
-    <div class="grid grid-cols-3 gap-4 mb-8 max-w-md">
+    <div class="grid grid-cols-3 gap-2 mb-8 max-w-sm">
         <button
-            class="p-4 rounded-lg text-sm font-medium transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'sentiment' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'sentiment' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('sentiment')}
         >
             <SentimentPictogram 
-                class="w-12 h-12 mb-2"
+                class="w-8 h-8 mb-2"
                 fill={activeTab === 'sentiment' ? 'white' : 'currentColor'}
             />
-            <span class="text-center font-medium">Sentiment</span>
+            <span class="text-center font-extrabold">Sentiment</span>
         </button>
         <button
-            class="p-4 rounded-lg text-sm font-medium transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'awareness' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'awareness' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('awareness')}
         >
             <AwarenessPictogram 
-                class="w-12 h-12 mb-2"
+                class="w-8 h-8 mb-2"
                 fill={activeTab === 'awareness' ? 'white' : 'currentColor'}
             />
-            <span class="text-center font-medium">Trial Awareness</span>
+            <span class="text-center font-extrabold">Trial Awareness</span>
         </button>
         <button
-            class="p-4 rounded-lg text-sm font-medium transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'journeys' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'journeys' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('journeys')}
         >
             <JourneysPictogram 
-                class="w-12 h-12 mb-2"
+                class="w-8 h-8 mb-2"
                 fill={activeTab === 'journeys' ? 'white' : 'currentColor'}
             />
-            <span class="text-center font-medium">Journeys</span>
+            <span class="text-center font-extrabold">Journeys</span>
         </button>
     </div>
 
-    <div class="relative mt-12">
+    <div class="relative">
         {#if activeTab === 'sentiment'}
-            <div class="sentiment mt-8 mb-28">
+            <div>
                 <SentimentChart 
                     {selectedDisease} 
                     {compareWithCategory}
@@ -103,7 +100,7 @@
             <div class="p-8 text-center text-gray-600 dark:text-gray-400">
                 Patient journey data for {selectedDisease}
             </div>
-        {/if}
+    {/if}
     </div>
 </div>
 

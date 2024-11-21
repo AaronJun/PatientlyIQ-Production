@@ -1,0 +1,650 @@
+{
+    "diseases": {
+      "pompe": {
+        "info": {
+          "name": "Pompe Disease",
+          "category": "Rare Diseases",
+          "description": "A rare genetic condition affecting muscle and nerve cells"
+        },
+        "sentiments": [
+          {
+            "category": "Safety",
+            "positive": 48.5,
+            "neutral": 32.7,
+            "negative": 12.8,
+            "mixed": 6.0,
+            "details": {
+              "totalMentions": 2847,
+              "topTerms": ["well-tolerated", "risks", "safe", "complications", "minimal side effects"],
+              "trends": [
+                { "date": "2024-01", "value": 72.5 },
+                { "date": "2024-02", "value": 68.3 },
+                { "date": "2024-03", "value": 75.1 },
+                { "date": "2024-04", "value": 70.8 },
+                { "date": "2024-05", "value": 73.2 },
+                { "date": "2024-06", "value": 71.9 }
+              ]
+            }
+          },
+          {
+            "category": "Treatment Experience",
+            "positive": 52.3,
+            "neutral": 25.8,
+            "negative": 16.4,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3245,
+              "topTerms": ["convenient", "challenging", "flexible", "difficult", "easy to manage"],
+              "trends": [
+                { "date": "2024-01", "value": 77.2 },
+                { "date": "2024-02", "value": 75.8 },
+                { "date": "2024-03", "value": 79.4 },
+                { "date": "2024-04", "value": 76.1 },
+                { "date": "2024-05", "value": 78.5 },
+                { "date": "2024-06", "value": 77.3 }
+              ]
+            }
+          }
+        ]
+      },
+      "gaucher": {
+        "info": {
+          "name": "Gaucher Disease",
+          "category": "Rare Diseases",
+          "description": "An inherited metabolic disorder"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 55.6,
+            "neutral": 24.8,
+            "negative": 14.2,
+            "mixed": 5.4,
+            "details": {
+              "totalMentions": 2156,
+              "topTerms": ["effective", "improvement", "success", "resistance", "breakthrough"],
+              "trends": [
+                { "date": "2024-01", "value": 78.4 },
+                { "date": "2024-02", "value": 76.2 },
+                { "date": "2024-03", "value": 79.8 },
+                { "date": "2024-04", "value": 77.5 },
+                { "date": "2024-05", "value": 80.1 },
+                { "date": "2024-06", "value": 78.9 }
+              ]
+            }
+          },
+          {
+            "category": "Quality of Life",
+            "positive": 51.2,
+            "neutral": 28.4,
+            "negative": 15.6,
+            "mixed": 4.8,
+            "details": {
+              "totalMentions": 1897,
+              "topTerms": ["improvement", "daily activities", "independence", "lifestyle changes", "well-being"],
+              "trends": [
+                { "date": "2024-01", "value": 74.8 },
+                { "date": "2024-02", "value": 72.5 },
+                { "date": "2024-03", "value": 76.2 },
+                { "date": "2024-04", "value": 73.9 },
+                { "date": "2024-05", "value": 77.4 },
+                { "date": "2024-06", "value": 75.6 }
+              ]
+            }
+          }
+        ]
+      },
+      "fabry": {
+        "info": {
+          "name": "Fabry Disease",
+          "category": "Rare Diseases",
+          "description": "A rare genetic disease affecting multiple organs"
+        },
+        "sentiments": [
+          {
+            "category": "Healthcare Support",
+            "positive": 47.8,
+            "neutral": 29.5,
+            "negative": 17.2,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 1654,
+              "topTerms": ["supportive", "responsive", "lacking", "insufficient", "helpful"],
+              "trends": [
+                { "date": "2024-01", "value": 71.2 },
+                { "date": "2024-02", "value": 69.8 },
+                { "date": "2024-03", "value": 73.5 },
+                { "date": "2024-04", "value": 70.6 },
+                { "date": "2024-05", "value": 74.2 },
+                { "date": "2024-06", "value": 72.4 }
+              ]
+            }
+          },
+          {
+            "category": "Access & Availability",
+            "positive": 42.4,
+            "neutral": 31.2,
+            "negative": 20.8,
+            "mixed": 5.6,
+            "details": {
+              "totalMentions": 2034,
+              "topTerms": ["availability", "insurance coverage", "cost", "accessibility", "supply"],
+              "trends": [
+                { "date": "2024-01", "value": 65.8 },
+                { "date": "2024-02", "value": 63.5 },
+                { "date": "2024-03", "value": 67.2 },
+                { "date": "2024-04", "value": 64.9 },
+                { "date": "2024-05", "value": 68.4 },
+                { "date": "2024-06", "value": 66.7 }
+              ]
+            }
+          }
+        ]
+      },
+      "mps1": {
+        "info": {
+          "name": "MPS I",
+          "category": "Rare Diseases",
+          "description": "Mucopolysaccharidosis type I, a genetic lysosomal storage disease"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 49.2,
+            "neutral": 27.8,
+            "negative": 17.5,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 1876,
+              "topTerms": ["manageable", "challenging", "flexible", "complex", "straightforward"],
+              "trends": [
+                { "date": "2024-01", "value": 72.4 },
+                { "date": "2024-02", "value": 70.8 },
+                { "date": "2024-03", "value": 74.5 },
+                { "date": "2024-04", "value": 71.6 },
+                { "date": "2024-05", "value": 75.2 },
+                { "date": "2024-06", "value": 73.4 }
+              ]
+            }
+          }
+        ]
+      },
+      "niemann-pick": {
+        "info": {
+          "name": "Niemann-Pick Disease",
+          "category": "Rare Diseases",
+          "description": "A group of inherited metabolic disorders"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 45.6,
+            "neutral": 30.2,
+            "negative": 18.7,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 1543,
+              "topTerms": ["progress", "variable results", "improvement", "limitations", "breakthrough"],
+              "trends": [
+                { "date": "2024-01", "value": 68.9 },
+                { "date": "2024-02", "value": 66.5 },
+                { "date": "2024-03", "value": 70.2 },
+                { "date": "2024-04", "value": 67.8 },
+                { "date": "2024-05", "value": 71.4 },
+                { "date": "2024-06", "value": 69.6 }
+              ]
+            }
+          }
+        ]
+      },
+      "als": {
+        "info": {
+          "name": "ALS",
+          "category": "Neurological",
+          "description": "Amyotrophic lateral sclerosis, affecting nerve cells"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 45.2,
+            "neutral": 22.8,
+            "negative": 24.5,
+            "mixed": 7.5,
+            "details": {
+              "totalMentions": 3856,
+              "topTerms": ["effective", "limited results", "progress", "resistance", "breakthrough"],
+              "trends": [
+                { "date": "2024-01", "value": 68.7 },
+                { "date": "2024-02", "value": 65.4 },
+                { "date": "2024-03", "value": 70.2 },
+                { "date": "2024-04", "value": 67.8 },
+                { "date": "2024-05", "value": 71.5 },
+                { "date": "2024-06", "value": 69.3 }
+              ]
+            }
+          },
+          {
+            "category": "Quality of Life",
+            "positive": 42.8,
+            "neutral": 28.4,
+            "negative": 22.3,
+            "mixed": 6.5,
+            "details": {
+              "totalMentions": 3245,
+              "topTerms": ["improvement", "daily activities", "independence", "lifestyle changes", "well-being"],
+              "trends": [
+                { "date": "2024-01", "value": 65.8 },
+                { "date": "2024-02", "value": 63.2 },
+                { "date": "2024-03", "value": 67.4 },
+                { "date": "2024-04", "value": 64.9 },
+                { "date": "2024-05", "value": 68.1 },
+                { "date": "2024-06", "value": 66.5 }
+              ]
+            }
+          }
+        ]
+      },
+      "ms": {
+        "info": {
+          "name": "Multiple Sclerosis",
+          "category": "Neurological",
+          "description": "An autoimmune disease affecting the central nervous system"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 51.4,
+            "neutral": 26.8,
+            "negative": 16.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 4234,
+              "topTerms": ["manageable", "challenging", "consistent", "complex", "flexible"],
+              "trends": [
+                { "date": "2024-01", "value": 74.6 },
+                { "date": "2024-02", "value": 72.3 },
+                { "date": "2024-03", "value": 76.8 },
+                { "date": "2024-04", "value": 73.5 },
+                { "date": "2024-05", "value": 77.2 },
+                { "date": "2024-06", "value": 75.4 }
+              ]
+            }
+          }
+        ]
+      },
+      "parkinsons": {
+        "info": {
+          "name": "Parkinson's Disease",
+          "category": "Neurological",
+          "description": "A progressive nervous system disorder affecting movement"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 53.6,
+            "neutral": 25.4,
+            "negative": 15.5,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3987,
+              "topTerms": ["effective", "improvement", "progress", "variable results", "success"],
+              "trends": [
+                { "date": "2024-01", "value": 76.8 },
+                { "date": "2024-02", "value": 74.5 },
+                { "date": "2024-03", "value": 78.2 },
+                { "date": "2024-04", "value": 75.9 },
+                { "date": "2024-05", "value": 79.4 },
+                { "date": "2024-06", "value": 77.6 }
+              ]
+            }
+          }
+        ]
+      },
+      "alzheimers": {
+        "info": {
+          "name": "Alzheimer's Disease",
+          "category": "Neurological",
+          "description": "A progressive brain disorder affecting memory and thinking"
+        },
+        "sentiments": [
+          {
+            "category": "Healthcare Support",
+            "positive": 48.7,
+            "neutral": 28.5,
+            "negative": 17.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 4567,
+              "topTerms": ["supportive", "understanding", "available", "lacking", "responsive"],
+              "trends": [
+                { "date": "2024-01", "value": 71.9 },
+                { "date": "2024-02", "value": 69.6 },
+                { "date": "2024-03", "value": 73.5 },
+                { "date": "2024-04", "value": 70.8 },
+                { "date": "2024-05", "value": 74.2 },
+                { "date": "2024-06", "value": 72.4 }
+              ]
+            }
+          }
+        ]
+      },
+      "epilepsy": {
+        "info": {
+          "name": "Epilepsy",
+          "category": "Neurological",
+          "description": "A neurological disorder characterized by recurring seizures"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 50.8,
+            "neutral": 27.4,
+            "negative": 16.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3876,
+              "topTerms": ["manageable", "consistent", "challenging", "routine", "flexible"],
+              "trends": [
+                { "date": "2024-01", "value": 73.9 },
+                { "date": "2024-02", "value": 71.6 },
+                { "date": "2024-03", "value": 75.3 },
+                { "date": "2024-04", "value": 72.8 },
+                { "date": "2024-05", "value": 76.1 },
+                { "date": "2024-06", "value": 74.2 }
+              ]
+            }
+          }
+        ],
+        "lungcancer": {
+        "info": {
+          "name": "Lung Cancer",
+          "category": "Oncology",
+          "description": "Cancer that begins in the lungs"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 58.4,
+            "neutral": 21.5,
+            "negative": 15.6,
+            "mixed": 4.5,
+            "details": {
+              "totalMentions": 5234,
+              "topTerms": ["effective", "breakthrough", "progress", "success", "improvement"],
+              "trends": [
+                { "date": "2024-01", "value": 81.2 },
+                { "date": "2024-02", "value": 79.5 },
+                { "date": "2024-03", "value": 82.8 },
+                { "date": "2024-04", "value": 80.4 },
+                { "date": "2024-05", "value": 83.6 },
+                { "date": "2024-06", "value": 81.9 }
+              ]
+            }
+          },
+          {
+            "category": "Access & Availability",
+            "positive": 43.2,
+            "neutral": 29.8,
+            "negative": 21.5,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 4123,
+              "topTerms": ["availability", "insurance coverage", "cost", "accessibility", "supply"],
+              "trends": [
+                { "date": "2024-01", "value": 66.5 },
+                { "date": "2024-02", "value": 64.2 },
+                { "date": "2024-03", "value": 68.9 },
+                { "date": "2024-04", "value": 65.7 },
+                { "date": "2024-05", "value": 69.8 },
+                { "date": "2024-06", "value": 67.4 }
+              ]
+            }
+          }
+        ]
+      },
+      "breastcancer": {
+        "info": {
+          "name": "Breast Cancer",
+          "category": "Oncology",
+          "description": "Cancer originating in breast tissue"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 62.4,
+            "neutral": 18.5,
+            "negative": 14.2,
+            "mixed": 4.9,
+            "details": {
+              "totalMentions": 6234,
+              "topTerms": ["effective", "success", "breakthrough", "progress", "improvement"],
+              "trends": [
+                { "date": "2024-01", "value": 85.2 },
+                { "date": "2024-02", "value": 83.7 },
+                { "date": "2024-03", "value": 86.4 },
+                { "date": "2024-04", "value": 84.5 },
+                { "date": "2024-05", "value": 87.1 },
+                { "date": "2024-06", "value": 85.8 }
+              ]
+            }
+          },
+          {
+            "category": "Healthcare Support",
+            "positive": 56.8,
+            "neutral": 24.5,
+            "negative": 13.2,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 5432,
+              "topTerms": ["supportive", "helpful", "understanding", "responsive", "available"],
+              "trends": [
+                { "date": "2024-01", "value": 79.8 },
+                { "date": "2024-02", "value": 77.5 },
+                { "date": "2024-03", "value": 81.2 },
+                { "date": "2024-04", "value": 78.9 },
+                { "date": "2024-05", "value": 82.4 },
+                { "date": "2024-06", "value": 80.6 }
+              ]
+            }
+          }
+        ]
+      },
+      "melanoma": {
+        "info": {
+          "name": "Melanoma",
+          "category": "Oncology",
+          "description": "A serious type of skin cancer"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 54.6,
+            "neutral": 25.8,
+            "negative": 14.1,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3876,
+              "topTerms": ["manageable", "convenient", "flexible", "challenging", "straightforward"],
+              "trends": [
+                { "date": "2024-01", "value": 77.8 },
+                { "date": "2024-02", "value": 75.5 },
+                { "date": "2024-03", "value": 79.2 },
+                { "date": "2024-04", "value": 76.9 },
+                { "date": "2024-05", "value": 80.4 },
+                { "date": "2024-06", "value": 78.6 }
+              ]
+            }
+          }
+        ]
+      },
+      "lymphoma": {
+        "info": {
+          "name": "Lymphoma",
+          "category": "Oncology",
+          "description": "Cancer of the lymphatic system"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 57.8,
+            "neutral": 22.4,
+            "negative": 14.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 4234,
+              "topTerms": ["effective", "progress", "success", "improvement", "breakthrough"],
+              "trends": [
+                { "date": "2024-01", "value": 80.9 },
+                { "date": "2024-02", "value": 78.6 },
+                { "date": "2024-03", "value": 82.3 },
+                { "date": "2024-04", "value": 79.8 },
+                { "date": "2024-05", "value": 83.5 },
+                { "date": "2024-06", "value": 81.7 }
+              ]
+            }
+          }
+        ]
+      },
+      "leukemia": {
+        "info": {
+          "name": "Leukemia",
+          "category": "Oncology",
+          "description": "Cancer of blood-forming tissues"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 53.2,
+            "neutral": 25.6,
+            "negative": 15.7,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 4567,
+              "topTerms": ["manageable", "challenging", "consistent", "complex", "flexible"],
+              "trends": [
+                { "date": "2024-01", "value": 76.4 },
+                { "date": "2024-02", "value": 74.1 },
+                { "date": "2024-03", "value": 77.8 },
+                { "date": "2024-04", "value": 75.5 },
+                { "date": "2024-05", "value": 78.9 },
+                { "date": "2024-06", "value": 77.2 }
+              ]
+            }
+          }
+        ]
+      },
+      "rheumatoid": {
+        "info": {
+          "name": "Rheumatoid Arthritis",
+          "category": "Immunological",
+          "description": "An autoimmune disorder affecting joints"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Efficacy",
+            "positive": 56.4,
+            "neutral": 23.8,
+            "negative": 14.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3987,
+              "topTerms": ["effective", "improvement", "progress", "success", "breakthrough"],
+              "trends": [
+                { "date": "2024-01", "value": 79.5 },
+                { "date": "2024-02", "value": 77.2 },
+                { "date": "2024-03", "value": 80.9 },
+                { "date": "2024-04", "value": 78.6 },
+                { "date": "2024-05", "value": 81.8 },
+                { "date": "2024-06", "value": 80.1 }
+              ]
+            }
+          }
+        ]
+      },
+      "lupus": {
+        "info": {
+          "name": "Lupus",
+          "category": "Immunological",
+          "description": "A systemic autoimmune disease"
+        },
+        "sentiments": [
+          {
+            "category": "Healthcare Support",
+            "positive": 49.8,
+            "neutral": 27.5,
+            "negative": 17.2,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3234,
+              "topTerms": ["supportive", "understanding", "helpful", "responsive", "available"],
+              "trends": [
+                { "date": "2024-01", "value": 72.9 },
+                { "date": "2024-02", "value": 70.6 },
+                { "date": "2024-03", "value": 74.3 },
+                { "date": "2024-04", "value": 71.8 },
+                { "date": "2024-05", "value": 75.5 },
+                { "date": "2024-06", "value": 73.7 }
+              ]
+            }
+          }
+        ]
+      },
+      "psoriasis": {
+        "info": {
+          "name": "Psoriasis",
+          "category": "Immunological",
+          "description": "An immune-mediated skin condition"
+        },
+        "sentiments": [
+          {
+            "category": "Treatment Experience",
+            "positive": 52.4,
+            "neutral": 26.8,
+            "negative": 15.3,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3654,
+              "topTerms": ["manageable", "consistent", "flexible", "challenging", "convenient"],
+              "trends": [
+                { "date": "2024-01", "value": 75.5 },
+                { "date": "2024-02", "value": 73.2 },
+                { "date": "2024-03", "value": 76.9 },
+                { "date": "2024-04", "value": 74.6 },
+                { "date": "2024-05", "value": 77.8 },
+                { "date": "2024-06", "value": 76.1 }
+              ]
+            }
+          }
+        ]
+      },
+      "crohns": {
+        "info": {
+          "name": "Crohn's Disease",
+          "category": "Immunological",
+          "description": "An inflammatory bowel disease"
+        },
+        "sentiments": [
+          {
+            "category": "Quality of Life",
+            "positive": 47.6,
+            "neutral": 28.7,
+            "negative": 18.2,
+            "mixed": 5.5,
+            "details": {
+              "totalMentions": 3876,
+              "topTerms": ["improvement", "daily activities", "independence", "lifestyle changes", "well-being"],
+              "trends": [
+                { "date": "2024-01", "value": 70.7 },
+                { "date": "2024-02", "value": 68.4 },
+                { "date": "2024-03", "value": 72.1 },
+                { "date": "2024-04", "value": 69.8 },
+                { "date": "2024-05", "value": 73.5 },
+                { "date": "2024-06", "value": 71.7 }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
