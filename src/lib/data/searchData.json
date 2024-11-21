@@ -1,0 +1,422 @@
+{
+    "searchTerms": {
+      "pompe": {
+        "totalSearches": 15000,
+        "terms": [
+          { "term": "enzyme replacement therapy", "percentage": 12.5 },
+          { "term": "pompe disease symptoms", "percentage": 11.8 },
+          { "term": "genetic testing", "percentage": 9.4 },
+          { "term": "muscle weakness treatment", "percentage": 8.7 },
+          { "term": "respiratory support", "percentage": 8.2 },
+          { "term": "specialist doctors", "percentage": 7.5 },
+          { "term": "diet recommendations", "percentage": 6.8 },
+          { "term": "exercise guidelines", "percentage": 6.3 },
+          { "term": "physical therapy", "percentage": 5.9 },
+          { "term": "support groups", "percentage": 5.4 },
+          { "term": "disease progression", "percentage": 4.8 },
+          { "term": "new treatments", "percentage": 4.2 },
+          { "term": "clinical trials", "percentage": 2.1 },
+          { "term": "medication side effects", "percentage": 1.8 },
+          { "term": "insurance coverage", "percentage": 1.5 },
+          { "term": "pregnancy risks", "percentage": 1.2 },
+          { "term": "life expectancy", "percentage": 0.8 },
+          { "term": "genetic counseling", "percentage": 0.5 },
+          { "term": "natural remedies", "percentage": 0.4 },
+          { "term": "travel restrictions", "percentage": 0.2 }
+        ]
+      },
+      "gaucher": {
+        "totalSearches": 12000,
+        "terms": [
+          { "term": "bone pain treatment", "percentage": 13.5 },
+          { "term": "enzyme therapy", "percentage": 12.8 },
+          { "term": "spleen enlargement", "percentage": 10.4 },
+          { "term": "type 1 vs type 2", "percentage": 9.2 },
+          { "term": "medication options", "percentage": 8.5 },
+          { "term": "genetic testing", "percentage": 7.8 },
+          { "term": "blood disorders", "percentage": 6.9 },
+          { "term": "liver problems", "percentage": 6.2 },
+          { "term": "specialist physicians", "percentage": 5.8 },
+          { "term": "disease management", "percentage": 5.1 },
+          { "term": "new treatments", "percentage": 4.2 },
+          { "term": "support groups", "percentage": 2.8 },
+          { "term": "clinical trials", "percentage": 2.2 },
+          { "term": "pregnancy risks", "percentage": 1.4 },
+          { "term": "diet recommendations", "percentage": 0.9 },
+          { "term": "alternative medicine", "percentage": 0.7 },
+          { "term": "exercise guidelines", "percentage": 0.5 },
+          { "term": "travel insurance", "percentage": 0.4 },
+          { "term": "work accommodations", "percentage": 0.4 },
+          { "term": "genetic counseling", "percentage": 0.3 }
+        ]
+      },
+      "als": {
+        "totalSearches": 45000,
+        "terms": [
+          { "term": "early symptoms", "percentage": 14.5 },
+          { "term": "breathing assistance", "percentage": 12.8 },
+          { "term": "speech therapy", "percentage": 10.4 },
+          { "term": "mobility aids", "percentage": 9.7 },
+          { "term": "medication options", "percentage": 8.9 },
+          { "term": "specialist care", "percentage": 7.8 },
+          { "term": "nutrition support", "percentage": 7.2 },
+          { "term": "life expectancy", "percentage": 6.5 },
+          { "term": "home modifications", "percentage": 5.8 },
+          { "term": "caregiver resources", "percentage": 4.9 },
+          { "term": "new treatments", "percentage": 3.2 },
+          { "term": "clinical trials", "percentage": 2.1 },
+          { "term": "support groups", "percentage": 1.8 },
+          { "term": "alternative therapies", "percentage": 1.2 },
+          { "term": "genetic testing", "percentage": 0.8 },
+          { "term": "insurance coverage", "percentage": 0.6 },
+          { "term": "stem cell treatment", "percentage": 0.5 },
+          { "term": "exercise guidelines", "percentage": 0.4 },
+          { "term": "pain management", "percentage": 0.3 },
+          { "term": "mental health support", "percentage": 0.2 }
+        ]
+      },
+      "ms": {
+        "totalSearches": 180000,
+        "terms": [
+          { "term": "ms symptoms", "percentage": 15.2 },
+          { "term": "multiple sclerosis treatment", "percentage": 12.8 },
+          { "term": "fatigue management", "percentage": 10.4 },
+          { "term": "new medications", "percentage": 9.5 },
+          { "term": "diet for ms", "percentage": 8.7 },
+          { "term": "vitamin d supplements", "percentage": 7.6 },
+          { "term": "exercise recommendations", "percentage": 6.8 },
+          { "term": "heat sensitivity", "percentage": 5.9 },
+          { "term": "mobility aids", "percentage": 5.2 },
+          { "term": "neurologist near me", "percentage": 4.8 },
+          { "term": "ms relapse signs", "percentage": 3.9 },
+          { "term": "support groups", "percentage": 2.8 },
+          { "term": "clinical trials", "percentage": 1.9 },
+          { "term": "alternative therapies", "percentage": 1.4 },
+          { "term": "cannabis for ms", "percentage": 1.1 },
+          { "term": "stress management", "percentage": 0.8 },
+          { "term": "pregnancy with ms", "percentage": 0.5 },
+          { "term": "work accommodations", "percentage": 0.3 },
+          { "term": "travel insurance", "percentage": 0.2 },
+          { "term": "disability benefits", "percentage": 0.2 }
+        ]
+      },
+      "parkinsons": {
+        "totalSearches": 150000,
+        "terms": [
+          { "term": "early symptoms", "percentage": 14.8 },
+          { "term": "medication options", "percentage": 12.5 },
+          { "term": "tremor management", "percentage": 11.2 },
+          { "term": "exercise therapy", "percentage": 9.8 },
+          { "term": "diet recommendations", "percentage": 8.6 },
+          { "term": "sleep problems", "percentage": 7.9 },
+          { "term": "balance exercises", "percentage": 6.8 },
+          { "term": "speech therapy", "percentage": 5.9 },
+          { "term": "movement specialists", "percentage": 5.2 },
+          { "term": "depression treatment", "percentage": 4.8 },
+          { "term": "new treatments", "percentage": 3.5 },
+          { "term": "deep brain stimulation", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.8 },
+          { "term": "alternative medicine", "percentage": 1.4 },
+          { "term": "support groups", "percentage": 0.9 },
+          { "term": "driving safety", "percentage": 0.7 },
+          { "term": "fall prevention", "percentage": 0.5 },
+          { "term": "caregiver resources", "percentage": 0.4 },
+          { "term": "cognitive exercises", "percentage": 0.2 },
+          { "term": "genetic testing", "percentage": 0.2 }
+        ]
+      },
+      "breastcancer": {
+        "totalSearches": 280000,
+        "terms": [
+          { "term": "early detection", "percentage": 15.4 },
+          { "term": "treatment options", "percentage": 13.8 },
+          { "term": "mammogram screening", "percentage": 11.2 },
+          { "term": "chemotherapy side effects", "percentage": 9.8 },
+          { "term": "breast reconstruction", "percentage": 8.5 },
+          { "term": "genetic testing", "percentage": 7.2 },
+          { "term": "hormone therapy", "percentage": 6.4 },
+          { "term": "survival rates", "percentage": 5.8 },
+          { "term": "nutrition advice", "percentage": 4.9 },
+          { "term": "support groups", "percentage": 4.2 },
+          { "term": "alternative medicine", "percentage": 3.5 },
+          { "term": "radiation therapy", "percentage": 2.8 },
+          { "term": "clinical trials", "percentage": 1.9 },
+          { "term": "exercise during treatment", "percentage": 1.4 },
+          { "term": "lymphedema management", "percentage": 1.1 },
+          { "term": "fertility preservation", "percentage": 0.8 },
+          { "term": "complementary therapy", "percentage": 0.5 },
+          { "term": "insurance coverage", "percentage": 0.4 },
+          { "term": "wig services", "percentage": 0.2 },
+          { "term": "mental health support", "percentage": 0.2 }
+        ]
+      },
+      "melanoma": {
+        "totalSearches": 120000,
+        "terms": [
+          { "term": "skin changes", "percentage": 16.2 },
+          { "term": "prevention methods", "percentage": 13.8 },
+          { "term": "treatment options", "percentage": 11.5 },
+          { "term": "sun protection", "percentage": 10.2 },
+          { "term": "risk factors", "percentage": 8.8 },
+          { "term": "immunotherapy", "percentage": 7.4 },
+          { "term": "skin screening", "percentage": 6.8 },
+          { "term": "mole mapping", "percentage": 5.9 },
+          { "term": "staging information", "percentage": 4.8 },
+          { "term": "targeted therapy", "percentage": 4.2 },
+          { "term": "surgical options", "percentage": 3.5 },
+          { "term": "recovery time", "percentage": 2.4 },
+          { "term": "clinical trials", "percentage": 1.6 },
+          { "term": "alternative treatments", "percentage": 0.8 },
+          { "term": "genetic testing", "percentage": 0.6 },
+          { "term": "support groups", "percentage": 0.5 },
+          { "term": "scar treatment", "percentage": 0.4 },
+          { "term": "follow-up care", "percentage": 0.3 },
+          { "term": "lifestyle changes", "percentage": 0.2 },
+          { "term": "mental health support", "percentage": 0.1 }
+        ]
+      },
+      "rheumatoid": {
+        "totalSearches": 200000,
+        "terms": [
+          { "term": "pain management", "percentage": 14.8 },
+          { "term": "medication options", "percentage": 12.5 },
+          { "term": "joint protection", "percentage": 10.8 },
+          { "term": "diet recommendations", "percentage": 9.6 },
+          { "term": "exercise guidelines", "percentage": 8.4 },
+          { "term": "flare-up triggers", "percentage": 7.8 },
+          { "term": "natural remedies", "percentage": 6.9 },
+          { "term": "biologic drugs", "percentage": 5.8 },
+          { "term": "physical therapy", "percentage": 5.2 },
+          { "term": "morning stiffness", "percentage": 4.6 },
+          { "term": "alternative treatments", "percentage": 3.8 },
+          { "term": "support groups", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.8 },
+          { "term": "occupational therapy", "percentage": 1.4 },
+          { "term": "assistive devices", "percentage": 1.2 },
+          { "term": "weather effects", "percentage": 0.8 },
+          { "term": "pregnancy planning", "percentage": 0.6 },
+          { "term": "work modifications", "percentage": 0.5 },
+          { "term": "stress management", "percentage": 0.4 },
+          { "term": "surgery options", "percentage": 0.2 }
+        ]
+      },
+      "lupus": {
+        "totalSearches": 160000,
+        "terms": [
+          { "term": "lupus symptoms", "percentage": 14.8 },
+          { "term": "sun sensitivity", "percentage": 12.5 },
+          { "term": "medication options", "percentage": 11.2 },
+          { "term": "flare triggers", "percentage": 9.8 },
+          { "term": "joint pain", "percentage": 8.6 },
+          { "term": "diet recommendations", "percentage": 7.4 },
+          { "term": "fatigue management", "percentage": 6.8 },
+          { "term": "skin rashes", "percentage": 5.9 },
+          { "term": "kidney problems", "percentage": 5.2 },
+          { "term": "natural remedies", "percentage": 4.8 },
+          { "term": "pregnancy risks", "percentage": 3.5 },
+          { "term": "support groups", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.8 },
+          { "term": "alternative medicine", "percentage": 1.4 },
+          { "term": "exercise guidelines", "percentage": 0.9 },
+          { "term": "stress management", "percentage": 0.7 },
+          { "term": "work accommodations", "percentage": 0.5 },
+          { "term": "hair loss solutions", "percentage": 0.4 },
+          { "term": "mental health support", "percentage": 0.3 },
+          { "term": "disability benefits", "percentage": 0.2 }
+        ]
+      },
+      "crohns": {
+        "totalSearches": 140000,
+        "terms": [
+          { "term": "diet restrictions", "percentage": 15.4 },
+          { "term": "treatment options", "percentage": 12.8 },
+          { "term": "flare management", "percentage": 11.2 },
+          { "term": "symptoms checklist", "percentage": 9.6 },
+          { "term": "medication side effects", "percentage": 8.4 },
+          { "term": "food triggers", "percentage": 7.8 },
+          { "term": "pain relief", "percentage": 6.5 },
+          { "term": "biologics therapy", "percentage": 5.8 },
+          { "term": "probiotics benefits", "percentage": 5.2 },
+          { "term": "surgery options", "percentage": 4.6 },
+          { "term": "natural remedies", "percentage": 3.8 },
+          { "term": "stress management", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.7 },
+          { "term": "vitamin deficiency", "percentage": 1.4 },
+          { "term": "travel tips", "percentage": 0.8 },
+          { "term": "support groups", "percentage": 0.6 },
+          { "term": "pregnancy concerns", "percentage": 0.5 },
+          { "term": "work accommodations", "percentage": 0.4 },
+          { "term": "exercise guidelines", "percentage": 0.3 },
+          { "term": "insurance coverage", "percentage": 0.3 }
+        ]
+      },
+      "psoriasis": {
+        "totalSearches": 220000,
+        "terms": [
+          { "term": "skin treatment", "percentage": 15.8 },
+          { "term": "natural remedies", "percentage": 12.5 },
+          { "term": "trigger factors", "percentage": 11.2 },
+          { "term": "scalp psoriasis", "percentage": 9.8 },
+          { "term": "biologics therapy", "percentage": 8.4 },
+          { "term": "diet changes", "percentage": 7.6 },
+          { "term": "topical medications", "percentage": 6.8 },
+          { "term": "light therapy", "percentage": 5.9 },
+          { "term": "stress management", "percentage": 5.2 },
+          { "term": "joint symptoms", "percentage": 4.6 },
+          { "term": "alternative treatments", "percentage": 3.8 },
+          { "term": "lifestyle changes", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.6 },
+          { "term": "moisturizer recommendations", "percentage": 1.4 },
+          { "term": "vitamin d therapy", "percentage": 0.8 },
+          { "term": "support groups", "percentage": 0.5 },
+          { "term": "makeup coverage", "percentage": 0.4 },
+          { "term": "swimming tips", "percentage": 0.3 },
+          { "term": "clothing advice", "percentage": 0.3 },
+          { "term": "mental health support", "percentage": 0.2 }
+        ]
+      },
+      "alzheimers": {
+        "totalSearches": 250000,
+        "terms": [
+          { "term": "early signs", "percentage": 16.2 },
+          { "term": "memory exercises", "percentage": 12.8 },
+          { "term": "treatment options", "percentage": 11.4 },
+          { "term": "caregiver support", "percentage": 9.8 },
+          { "term": "prevention strategies", "percentage": 8.6 },
+          { "term": "medication options", "percentage": 7.4 },
+          { "term": "diet recommendations", "percentage": 6.5 },
+          { "term": "sleep problems", "percentage": 5.8 },
+          { "term": "safety measures", "percentage": 5.2 },
+          { "term": "brain health", "percentage": 4.6 },
+          { "term": "new treatments", "percentage": 3.5 },
+          { "term": "support services", "percentage": 2.8 },
+          { "term": "clinical trials", "percentage": 1.9 },
+          { "term": "home care", "percentage": 1.4 },
+          { "term": "legal planning", "percentage": 0.8 },
+          { "term": "genetic testing", "percentage": 0.5 },
+          { "term": "alternative therapies", "percentage": 0.3 },
+          { "term": "nursing homes", "percentage": 0.2 },
+          { "term": "behavior management", "percentage": 0.2 },
+          { "term": "financial planning", "percentage": 0.1 }
+        ]
+      },
+      "leukemia": {
+        "totalSearches": 180000,
+        "terms": [
+          { "term": "treatment options", "percentage": 15.4 },
+          { "term": "early symptoms", "percentage": 12.8 },
+          { "term": "chemotherapy effects", "percentage": 11.2 },
+          { "term": "bone marrow transplant", "percentage": 9.6 },
+          { "term": "survival rates", "percentage": 8.4 },
+          { "term": "blood counts", "percentage": 7.2 },
+          { "term": "infection prevention", "percentage": 6.5 },
+          { "term": "nutrition advice", "percentage": 5.8 },
+          { "term": "side effect management", "percentage": 5.2 },
+          { "term": "immune support", "percentage": 4.6 },
+          { "term": "new treatments", "percentage": 3.8 },
+          { "term": "support groups", "percentage": 2.9 },
+          { "term": "clinical trials", "percentage": 1.8 },
+          { "term": "alternative therapy", "percentage": 1.4 },
+          { "term": "exercise guidelines", "percentage": 0.9 },
+          { "term": "mental health", "percentage": 0.8 },
+          { "term": "fertility preservation", "percentage": 0.6 },
+          { "term": "financial assistance", "percentage": 0.5 },
+          { "term": "home care", "percentage": 0.4 },
+          { "term": "long-term effects", "percentage": 0.2 }
+        ]
+      }
+    },
+        "searchTrends": {
+            "pompe": {
+                "yearOverYear": 15,
+                "mostCommonDevice": "desktop",
+                "peakSearchMonth": "March",
+                "topGeographies": ["US", "UK", "Germany", "Japan", "Australia"],
+                "relatedConditions": ["Muscular Dystrophy", "Glycogen Storage Disease", "Myopathy"]
+              },
+              "gaucher": {
+                "yearOverYear": 12,
+                "mostCommonDevice": "mobile",
+                "peakSearchMonth": "May",
+                "topGeographies": ["US", "Israel", "UK", "Canada", "Brazil"],
+                "relatedConditions": ["Fabry Disease", "Tay-Sachs", "Niemann-Pick Disease"]
+              },
+              "als": {
+                "yearOverYear": 25,
+                "mostCommonDevice": "mobile",
+                "peakSearchMonth": "June",
+                "topGeographies": ["US", "Canada", "UK", "Australia", "Germany"],
+                "relatedConditions": ["Multiple Sclerosis", "Parkinson's Disease", "Muscular Dystrophy"]
+              },
+          "ms": {
+            "yearOverYear": 18,
+            "mostCommonDevice": "mobile",
+            "peakSearchMonth": "March",
+            "topGeographies": ["US", "UK", "Canada", "Australia", "Germany"],
+            "relatedConditions": ["Neuromyelitis Optica", "Transverse Myelitis", "Lupus"]
+          },
+          "parkinsons": {
+            "yearOverYear": 15,
+            "mostCommonDevice": "desktop",
+            "peakSearchMonth": "April",
+            "topGeographies": ["US", "UK", "Canada", "Australia", "Netherlands"],
+            "relatedConditions": ["Essential Tremor", "Multiple System Atrophy", "Lewy Body Dementia"]
+          },
+          "breastcancer": {
+            "yearOverYear": 22,
+            "mostCommonDevice": "mobile",
+            "peakSearchMonth": "October",
+            "topGeographies": ["US", "UK", "Canada", "Australia", "India"],
+            "relatedConditions": ["Ovarian Cancer", "DCIS", "Lymphedema"]
+          },
+          "melanoma": {
+            "yearOverYear": 20,
+            "mostCommonDevice": "mobile",
+            "peakSearchMonth": "July",
+            "topGeographies": ["Australia", "US", "UK", "New Zealand", "Canada"],
+            "relatedConditions": ["Basal Cell Carcinoma", "Squamous Cell Carcinoma", "Skin Cancer"]
+          },
+          "rheumatoid": {
+            "yearOverYear": 16,
+            "mostCommonDevice": "mobile",
+            "peakSearchMonth": "January",
+            "topGeographies": ["US", "UK", "Canada", "Australia", "India"],
+            "relatedConditions": ["Psoriatic Arthritis", "Lupus", "Fibromyalgia"]
+          },
+      "lupus": {
+        "yearOverYear": 14,
+        "mostCommonDevice": "mobile",
+        "peakSearchMonth": "May",
+        "topGeographies": ["US", "Philippines", "UK", "Canada", "Australia"],
+        "relatedConditions": ["Rheumatoid Arthritis", "Fibromyalgia", "Sjögren's Syndrome"]
+      },
+      "crohns": {
+        "yearOverYear": 16,
+        "mostCommonDevice": "mobile",
+        "peakSearchMonth": "March",
+        "topGeographies": ["US", "Canada", "UK", "Australia", "Ireland"],
+        "relatedConditions": ["Ulcerative Colitis", "IBS", "Celiac Disease"]
+      },
+      "psoriasis": {
+        "yearOverYear": 19,
+        "mostCommonDevice": "mobile",
+        "peakSearchMonth": "January",
+        "topGeographies": ["US", "UK", "India", "Canada", "Australia"],
+        "relatedConditions": ["Eczema", "Psoriatic Arthritis", "Dermatitis"]
+      },
+      "alzheimers": {
+        "yearOverYear": 22,
+        "mostCommonDevice": "desktop",
+        "peakSearchMonth": "September",
+        "topGeographies": ["US", "UK", "Canada", "Australia", "Germany"],
+        "relatedConditions": ["Dementia", "Parkinson's Disease", "Mild Cognitive Impairment"]
+      },
+      "leukemia": {
+        "yearOverYear": 17,
+        "mostCommonDevice": "mobile",
+        "peakSearchMonth": "September",
+        "topGeographies": ["US", "India", "UK", "Canada", "Australia"],
+        "relatedConditions": ["Lymphoma", "Multiple Myeloma", "Anemia"]
+      }
+    }
+}

@@ -1,0 +1,118 @@
+{
+  "diseaseInsights": {
+      "pompe": {
+          "keyInsights": {
+              "patientConcerns": "Patients frequently report challenges with treatment access and the physical toll of enzyme replacement therapy. Key negative drivers include treatment costs and transportation to infusion centers.",
+              "caregiverImpact": "Caregivers face significant challenges managing medical equipment and coordinating multiple specialist appointments, particularly for patients with severe mobility limitations."
+          }
+      },
+      "gaucher": {
+          "keyInsights": {
+              "patientConcerns": "Patients report concerns about long-term treatment effectiveness and bone complications. Primary negative sentiment stems from delayed diagnosis and treatment initiation.",
+              "caregiverImpact": "Caregivers struggle with managing regular infusion schedules and monitoring complex symptoms across multiple organ systems."
+          }
+      },
+      "fabry": {
+          "keyInsights": {
+              "patientConcerns": "Pain management and cardiovascular complications are major concerns. Treatment adherence difficulties and medication side effects drive negative sentiment.",
+              "caregiverImpact": "Caregivers report challenges with pain crisis management and coordinating care across multiple specialists."
+          }
+      },
+      "mps1": {
+          "keyInsights": {
+              "patientConcerns": "Treatment frequency and physical limitations are primary concerns. Insurance coverage for specialized treatments drives negative sentiment.",
+              "caregiverImpact": "Caregivers face significant stress managing multiple therapies and medical procedures, particularly for young patients."
+          }
+      },
+      "niemann-pick": {
+          "keyInsights": {
+              "patientConcerns": "Disease progression and limited treatment options are major concerns. Access to clinical trials and specialized care centers drive negative sentiment.",
+              "caregiverImpact": "Caregivers struggle with the emotional burden of rapid disease progression and limited therapeutic options."
+          }
+      },
+      "als": {
+          "keyInsights": {
+              "patientConcerns": "Rapid physical decline and respiratory complications are primary concerns. Limited treatment options and high costs drive negative sentiment.",
+              "caregiverImpact": "Caregivers report high stress from increasing care demands and adapting to rapidly changing physical needs."
+          }
+      },
+      "ms": {
+          "keyInsights": {
+              "patientConcerns": "Disease unpredictability and treatment effectiveness are major concerns. Medication side effects and cost drive negative sentiment.",
+              "caregiverImpact": "Caregivers face challenges adapting to fluctuating symptoms and managing complex medication regimens."
+          }
+      },
+      "parkinsons": {
+          "keyInsights": {
+              "patientConcerns": "Motor symptom management and medication timing are key concerns. Treatment side effects and disease progression drive negative sentiment.",
+              "caregiverImpact": "Caregivers report difficulties managing medication schedules and supporting patients with declining mobility."
+          }
+      },
+      "alzheimers": {
+          "keyInsights": {
+              "patientConcerns": "Memory loss progression and maintaining independence are primary concerns. Limited treatment effectiveness drives negative sentiment.",
+              "caregiverImpact": "Caregivers experience severe emotional strain and exhaustion from providing constant supervision and support."
+          }
+      },
+      "epilepsy": {
+          "keyInsights": {
+              "patientConcerns": "Seizure unpredictability and medication effectiveness are major concerns. Driving restrictions and employment limitations drive negative sentiment.",
+              "caregiverImpact": "Caregivers report anxiety about seizure management and coordinating emergency response plans."
+          }
+      },
+      "lungcancer": {
+          "keyInsights": {
+              "patientConcerns": "Treatment side effects and breathing difficulties are primary concerns. Treatment costs and prognosis uncertainty drive negative sentiment.",
+              "caregiverImpact": "Caregivers struggle with managing respiratory care and coordinating complex treatment schedules."
+          }
+      },
+      "breastcancer": {
+          "keyInsights": {
+              "patientConcerns": "Treatment decisions and body image issues are major concerns. Side effects and long-term survival anxiety drive negative sentiment.",
+              "caregiverImpact": "Caregivers face challenges supporting emotional needs and managing post-surgery care requirements."
+          }
+      },
+      "melanoma": {
+          "keyInsights": {
+              "patientConcerns": "Regular monitoring and treatment effectiveness are key concerns. Sun protection requirements and recurrence anxiety drive negative sentiment.",
+              "caregiverImpact": "Caregivers report stress from monitoring skin changes and coordinating frequent dermatology appointments."
+          }
+      },
+      "lymphoma": {
+          "keyInsights": {
+              "patientConcerns": "Treatment intensity and immune system vulnerability are primary concerns. Side effects and infection risks drive negative sentiment.",
+              "caregiverImpact": "Caregivers struggle with infection prevention protocols and managing treatment-related complications."
+          }
+      },
+      "leukemia": {
+          "keyInsights": {
+              "patientConcerns": "Treatment duration and infection risks are major concerns. Hospital stays and isolation requirements drive negative sentiment.",
+              "caregiverImpact": "Caregivers face challenges with prolonged hospital stays and maintaining sterile environments."
+          }
+      },
+      "rheumatoid": {
+          "keyInsights": {
+              "patientConcerns": "Joint pain management and medication effectiveness are primary concerns. Treatment costs and side effects drive negative sentiment.",
+              "caregiverImpact": "Caregivers report difficulties assisting with daily activities and managing medication schedules."
+          }
+      },
+      "lupus": {
+          "keyInsights": {
+              "patientConcerns": "Symptom unpredictability and flare management are major concerns. Sun sensitivity and treatment side effects drive negative sentiment.",
+              "caregiverImpact": "Caregivers struggle with adapting to unpredictable symptoms and coordinating multiple specialist visits."
+          }
+      },
+      "psoriasis": {
+          "keyInsights": {
+              "patientConcerns": "Skin appearance and treatment consistency are key concerns. Social stigma and treatment costs drive negative sentiment.",
+              "caregiverImpact": "Caregivers face challenges supporting emotional well-being and maintaining treatment routines."
+          }
+      },
+      "crohns": {
+          "keyInsights": {
+              "patientConcerns": "Symptom unpredictability and dietary restrictions are primary concerns. Treatment effectiveness and surgery risks drive negative sentiment.",
+              "caregiverImpact": "Caregivers report stress from managing dietary needs and supporting during disease flares."
+          }
+      }
+  }
+}

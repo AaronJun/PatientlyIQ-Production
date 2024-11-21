@@ -11,7 +11,7 @@
     let svg: SVGElement;
     let container: HTMLDivElement;
     let width: number;
-    let height = 700;
+    let height = 300;
     let isDarkMode = false;
     let activeSegment: any = null;
     let mediaQuery: MediaQueryList;
@@ -30,7 +30,7 @@
         negative: '#C62828'
     };
 
-    const margin = { top: 60, right: 200, bottom: 40, left: 40 };
+    const margin = { top: 60, right: 100, bottom: 40, left: 40 };
     const keys = ["positive", "mixed", "neutral", "negative"] as const;
     
     // Initialize mediaQuery only on the client side

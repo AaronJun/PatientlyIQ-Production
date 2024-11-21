@@ -33,6 +33,7 @@
     const toggleView = () => {
         isGridView = !isGridView;
     };
+    
 
     const handleTouchStart = (e: TouchEvent) => {
         if (isGridView) return;
@@ -109,7 +110,7 @@ function handlePrevPatient() {
 <div
     use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
     on:inview_change={handleChange}
-    class="max-w-6xl mx-auto px-4 py-20"
+    class="max-w-6xl mx-auto px-4 py-10"
 >
     <div class="flex justify-end mb-4">
         <button
@@ -318,6 +319,8 @@ function handlePrevPatient() {
     {/if}
 </div>
 
+
+
 <svelte:window 
     on:keydown={e => {
         if (!isGridView) {
@@ -326,3 +329,10 @@ function handlePrevPatient() {
         }
     }}
 />
+
+<style>
+  :global(body) {
+        overflow-x: hidden; /* Prevent horizontal scrollbar during animation */
+    }
+
+</style>

@@ -53,12 +53,7 @@
         {/each}
     </select>
 
-    <button 
-        class="px-4 py-2 bg-[#ff1515] text-white text-sm rounded-full hover:bg-orange-700 transition-colors {compareWithCategory ? 'bg-orange-700' : ''}"
-        on:click={toggleComparison}
-    >
-        {compareWithCategory ? 'Hide' : 'Show'} Category Comparison
-    </button>
+
 </div>
 
 <style>

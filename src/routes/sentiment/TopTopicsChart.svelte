@@ -35,7 +35,7 @@
         const y = d3.scaleBand()
             .domain(data.map(d => d.topic))
             .range([0, chartHeight])
-            .padding(0.2);
+            .padding(0.4);
 
         const svgEl = d3.select(svg)
             .attr("width", width)
@@ -50,7 +50,7 @@
             .join("rect")
             .attr("x", 0)
             .attr("y", d => y(d.topic) || 0)
-            .attr("width", d => x(d.score))
+            .attr("width", d => x(d.score)-50)
             .attr("height", y.bandwidth())
             .attr("fill", "#4CAF50");
 
@@ -64,7 +64,7 @@
             .attr("dy", "0.35em")
             .text(d => `${d.score}%`)
             .attr("fill", "#666")
-            .style("font-size", "12px");
+            .style("font-size", "10px");
 
         // Add y axis
         g.append("g")

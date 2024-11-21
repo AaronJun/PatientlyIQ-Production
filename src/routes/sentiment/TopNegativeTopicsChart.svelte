@@ -35,7 +35,7 @@
         const y = d3.scaleBand()
             .domain(data.map(d => d.topic))
             .range([0, chartHeight])
-            .padding(0.2);
+            .padding(0.4);
 
         const svgEl = d3.select(svg)
             .attr("width", width)
@@ -44,15 +44,16 @@
         const g = svgEl.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
+       
         // Add bars
         g.selectAll("rect")
             .data(data)
             .join("rect")
             .attr("x", 0)
             .attr("y", d => y(d.topic) || 0)
-            .attr("width", d => x(d.score))
+            .attr("width", d => x(d.score)-50)
             .attr("height", y.bandwidth())
-            .attr("fill", "#FF5151");
+            .attr("fill", "red");
 
         // Add score labels
         g.selectAll(".score")
@@ -64,7 +65,7 @@
             .attr("dy", "0.35em")
             .text(d => `${d.score}%`)
             .attr("fill", "#666")
-            .style("font-size", "12px");
+            .style("font-size", "10px");
 
         // Add y axis
         g.append("g")
