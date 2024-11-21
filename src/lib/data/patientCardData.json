@@ -1,34 +1,50 @@
 [
-    {
+  {
       "id": "001-001",
-        "name": "Anthony",
-        "disease": "Guillain-Barré Syndrome",
+      "name": "Anthony",
+      "disease": "Guillain-Barré Syndrome",
       "persona": "Patient",
       "age": "mid-40s",
       "summary": "Anthony was diagnosed when he began to feel fatigue every day, even after taking a sabbatical from work. she put half of the money into her savings account. ",
-      "quote": "I’m a father of three. I'm feeling guilty about what this is doing to our family. The cancer is the problem, but knowing that doesn't make my heart any lighter. I feel good, but I can't think very well, and my eyesight gets worse every day.",
+      "quote": "I'm a father of three. I'm feeling guilty about what this is doing to our family. The cancer is the problem, but knowing that doesn't make my heart any lighter. I feel good, but I can't think very well, and my eyesight gets worse every day.",
       "trial-sentiment": "2",
       "treatment-sentiment": "4",
       "medical-literacy": "5",
-"financial-stability": "2",
-      "photoUrl": "/anthony.jpg"
-    },
-    {
-        "id": "001-002",
+      "financial-stability": "2",
+      "photoUrl": "/anthony.jpg",
+      "sentiments": {
+          "treatment_options": 6,
+          "care_team": 8,
+          "clinical_trials": 3,
+          "financial_concerns": 2,
+          "professional_life": 4,
+          "social_life": 5
+      }
+  },
+  {
+      "id": "001-002",
       "name": "Belle",
       "disease": "Guillain-Barré Syndrome",
       "persona": "Patient",
       "age": "early-50s",
       "summary": "When Belle first learned she would be needing more significant medical attention as the grandparents of her two oldest children. 'I knew my ultimate goal was seeing graduation day.' She took the unconditional cash and opened a security credit card to start building her credit. Every month, she put half of the money into her savings account.",
-      "quote": "When I was diagnosed 2 years ago, it felt like nothing was going to work. I’m glad I didn’t give up! Finding the right combo of healthy diet, exercise, and the right medications and I finally feel good again.",
-          "trial-sentiment": "1",
+      "quote": "When I was diagnosed 2 years ago, it felt like nothing was going to work. I'm glad I didn't give up! Finding the right combo of healthy diet, exercise, and the right medications and I finally feel good again.",
+      "trial-sentiment": "1",
       "treatment-sentiment": "5",
       "medical-literacy": "2",
       "financial-stability": "2",
-        "photoUrl": "/belle.jpg"      
-    },
-    {
-        "id": "001-003",
+      "photoUrl": "/belle.jpg",
+      "sentiments": {
+          "treatment_options": 8,
+          "care_team": 7,
+          "clinical_trials": 2,
+          "financial_concerns": 3,
+          "professional_life": 5,
+          "social_life": 6
+      }
+  },
+  {
+      "id": "001-003",
       "name": "Chelsea",
       "disease": "Guillain-Barré Syndrome",
       "persona": "Caregiver",
@@ -36,52 +52,83 @@
       "summary": "Chelsea works full-time and is the point person in managing her mother's care. While she is able to work from home, her role as primary caregiver for her mother, prevents her from achieving financial stability.",
       "quote": "The medication is making my mom miserable. She has every side effect, even when she cuts the lowest dose in half. The nurse said this drug supposedly does wonders, but she has no quality of life on it.",
       "trial-sentiment": "3",
-  "treatment-sentiment": "1",
-  "medical-literacy": "3",
-  "financial-stability": "4",
-  "photoUrl": "/chelsea.jpg"
-
-    },
-    {
-        "id": "001-004",
-    "name": "Diana",
-    "disease": "Guillain-Barré Syndrome",
-    "persona": "Caregiver",
-    "age": "late-30s",
-    "summary": "Diana is a single mother who provides full-time care for her husband, a recently-diagnosed patient. Their relative wealth has allowed her to take significant time off of work. However, they face challenges with the cost of care.",
-    "quote": "My diagnosis was probably 10 years too late. I’ve done everything to treat this, but I am not 'normal' yet. Iron IVs to supplements and an IUD--my levels remain unchanged. Is adding iron meant to be temporary? Honestly, I’m just a little confused.",
-    "trial-sentiment": "4",
-"treatment-sentiment": "2",
-"medical-literacy": "5",
-"financial-stability": "4",
-  "photoUrl": "/diana.jpg"
-    },
-    {
-        "id": "001-005",
-    "name": "Ella",
-    "disease": "Guillain-Barré Syndrome",
-    "persona": "Patient",
-    "age": "mid-50s",
-    "summary": "Ella is a 25-year-old patient who was diagnosed with a rare form of cancer  much on just senior pictures, or hey mom, I wanna go so-and-so with my friends.",
-    "quote": "Basically, I need to get my treatment back together, as fast as possible. My family needs my income. I can’t be this sick. I’m not sure how much longer I can do this trial and error thing again. I really can’t wait weeks and weeks for the signs to get a little bit better.",
-    "trial-sentiment": "1",
-"treatment-sentiment": "2",
-"medical-literacy": "2",
-"financial-stability": "3",
-  "photoUrl": "/ella.jpg"
-    },
-    {
-    "id": "001-006",
-    "name": "Paul",
-    "disease": "Guillain-Barré Syndrome",
-    "persona": "Patient",
-    "age": "mid-40s",
-    "summary": "Paul is in his 40s, and was diagnosed five years ago. Since then, he's been in and out of the hospital, and has been focused on end of life planning.",
-    "quote": "I hope no one says I 'lost my battle with cancer' when I die. I wasn’t weak. There's no 'winning' against glioblastoma. Today my dad called me a cancer survivor, which confused me, as I am not and will never be.",
-    "trial-sentiment": "1",
-"treatment-sentiment": "3",
-"medical-literacy": "2",
-"financial-stability": "4",
-  "photoUrl": "/paul.jpg"
-    }
-  ]
+      "treatment-sentiment": "1",
+      "medical-literacy": "3",
+      "financial-stability": "4",
+      "photoUrl": "/chelsea.jpg",
+      "sentiments": {
+          "treatment_options": 2,
+          "care_team": 5,
+          "clinical_trials": 4,
+          "financial_concerns": 3,
+          "professional_life": 2,
+          "social_life": 1
+      }
+  },
+  {
+      "id": "001-004",
+      "name": "Diana",
+      "disease": "Guillain-Barré Syndrome",
+      "persona": "Caregiver",
+      "age": "late-30s",
+      "summary": "Diana is a single mother who provides full-time care for her husband, a recently-diagnosed patient. Their relative wealth has allowed her to take significant time off of work. However, they face challenges with the cost of care.",
+      "quote": "My diagnosis was probably 10 years too late. I've done everything to treat this, but I am not 'normal' yet. Iron IVs to supplements and an IUD--my levels remain unchanged. Is adding iron meant to be temporary? Honestly, I'm just a little confused.",
+      "trial-sentiment": "4",
+      "treatment-sentiment": "2",
+      "medical-literacy": "5",
+      "financial-stability": "4",
+      "photoUrl": "/diana.jpg",
+      "sentiments": {
+          "treatment_options": 4,
+          "care_team": 6,
+          "clinical_trials": 7,
+          "financial_concerns": 5,
+          "professional_life": 3,
+          "social_life": 4
+      }
+  },
+  {
+      "id": "001-005",
+      "name": "Ella",
+      "disease": "Guillain-Barré Syndrome",
+      "persona": "Patient",
+      "age": "mid-50s",
+      "summary": "Ella is a 25-year-old patient who was diagnosed with a rare form of cancer  much on just senior pictures, or hey mom, I wanna go so-and-so with my friends.",
+      "quote": "Basically, I need to get my treatment back together, as fast as possible. My family needs my income. I can't be this sick. I'm not sure how much longer I can do this trial and error thing again. I really can't wait weeks and weeks for the signs to get a little bit better.",
+      "trial-sentiment": "1",
+      "treatment-sentiment": "2",
+      "medical-literacy": "2",
+      "financial-stability": "3",
+      "photoUrl": "/ella.jpg",
+      "sentiments": {
+          "treatment_options": 3,
+          "care_team": 4,
+          "clinical_trials": 2,
+          "financial_concerns": 1,
+          "professional_life": 2,
+          "social_life": 3
+      }
+  },
+  {
+      "id": "001-006",
+      "name": "Paul",
+      "disease": "Guillain-Barré Syndrome",
+      "persona": "Patient",
+      "age": "mid-40s",
+      "summary": "Paul is in his 40s, and was diagnosed five years ago. Since then, he's been in and out of the hospital, and has been focused on end of life planning.",
+      "quote": "I hope no one says I 'lost my battle with cancer' when I die. I wasn't weak. There's no 'winning' against glioblastoma. Today my dad called me a cancer survivor, which confused me, as I am not and will never be.",
+      "trial-sentiment": "1",
+      "treatment-sentiment": "3",
+      "medical-literacy": "2",
+      "financial-stability": "4",
+      "photoUrl": "/paul.jpg",
+      "sentiments": {
+          "treatment_options": 5,
+          "care_team": 7,
+          "clinical_trials": 2,
+          "financial_concerns": 6,
+          "professional_life": 1,
+          "social_life": 3
+      }
+  }
+]

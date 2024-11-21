@@ -1,16 +1,20 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { Motion, AnimatePresence } from "svelte-motion";
+    import { fade } from 'svelte/transition';
     import { inview } from 'svelte-inview';
     import type { ObserverEventDetails } from 'svelte-inview';
     import patientData from '$lib/data/patientCardData.json';
-
+    import PatientDrawer from './PatientJourneyDrawer.svelte';
+    
     let inView = false;
     let active = 0;
     let startX: number;
     let cardElement: HTMLElement;
     let isGridView = false;
-    
+    let isDrawerOpen = false;
+    let selectedPatient: any = null;
+
     const handleChange = ({ detail }: CustomEvent<ObserverEventDetails>) => {
         inView = detail.inView;
     };
@@ -67,7 +71,40 @@
             cardElement.removeEventListener('touchend', handleTouchEnd);
         }
     });
+
+function openDrawer(patient: any) {
+    selectedPatient = patient;
+    isDrawerOpen = true;
+}
+
+    function closeDrawer() {
+        isDrawerOpen = false;
+        selectedPatient = null;
+    }
+
+    function handleNextPatient() {
+    const currentIndex = patientData.findIndex(p => p.id === selectedPatient.id);
+    selectedPatient = patientData[(currentIndex + 1) % patientData.length];
+}
+
+function handlePrevPatient() {
+    const currentIndex = patientData.findIndex(p => p.id === selectedPatient.id);
+    selectedPatient = patientData[(currentIndex - 1 + patientData.length) % patientData.length];
+}
 </script>
+
+{#if isDrawerOpen && selectedPatient}
+    <PatientDrawer 
+        isOpen={isDrawerOpen}
+        patient={selectedPatient}
+        onClose={() => {
+            isDrawerOpen = false;
+            selectedPatient = null;
+        }}
+        onNext={handleNextPatient}
+        onPrev={handlePrevPatient}
+    />
+{/if}
 
 <div
     use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
@@ -217,10 +254,18 @@
                                                     <span class="text-gray-500 dark:text-gray-400">Medical Literacy</span>
                                                     <span class="text-[#ff5151]">{patient["medical-literacy"]}/5</span>
                                                 </div>
+                                            
                                             </div>
                                         </div>
+                                        <button 
+                                        on:click={() => openDrawer(patient)}
+                                        class="w-full px-4 py-2 text-sm bg-orange-700  dark:bg-orange-700 hover:bg-[#ff5151] hover:text-white transition-all duration-300 rounded-full"
+                                    >
+                                        View Journey Map
+                                    </button>
                                     </div>
                                 </div>
+                                
                             </div>
                         </Motion>
                     {/each}
