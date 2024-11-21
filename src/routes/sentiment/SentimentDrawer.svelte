@@ -1,4 +1,3 @@
-// src/routes/sentiment/SentimentDrawer.svelte
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
     import { circInOut } from 'svelte/easing';
@@ -68,15 +67,23 @@
 
         <div class="drawer-content">
             <div class="view-header">
-                <h2 class="text-2xl font-base mb-12">Why the <span class="serif-italic text-3xl"> {data.category} </span>sentiment is consequential</h2>
+                <h2 class="text-2xl font-light capitalize mb-4">Why the <span class="text-2xl text-[#ff1515] font-normal"> {data.category} </span>sentiment is consequential</h2>
                 <div class="divide-x-0"></div>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                <p class="text-gray-600 text-sm dark:text-gray-400 mb-10">
                     Analysis of {formatNumber(data.details.totalMentions)} patient and caregiver experiences reveals distinctive patterns in how this condition impacts daily life and treatment outcomes.
                 </p>
             </div>
+            <div class="section border-t border-dotted border-[#ff5151] pt-6">
+                <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
+                    Comparison to {exampleDiseaseData.categoryBaseline}
+                </h3>
+            
+                <DiseaseComparison data={exampleDiseaseData} />
+            </div>
 
             <div class="section">
-                <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">Key Sentiment Patterns</h3>
+                <div class="border-t pt-4 border-dotted border-[#ff5151]" />
+                <h3 class="font-mono text-xs  font-bold text-orange-600 dark:text-[#ff1515] mb-4">Key Sentiment Patterns</h3>
                 <p class="text-gray-800 dark:text-gray-200 mb-6">
                     {expandedData.keyInsights.patientConcerns}
                 </p>
@@ -90,7 +97,7 @@
                 </div>
             </div>
 
-            <div class="section border-t border-dotted border-[#ff5151] pt-6">
+            <div class="border-t pt-4 border-dotted border-[#ff5151]">
                 <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">Sentiment Factors</h3>
                 {#each expandedData.sentimentFactors as factor}
                     <div class="mb-6">
@@ -142,12 +149,7 @@
                         </div>
                     </div>
 
-<div class="section border-t border-dotted border-[#ff5151] pt-6">
-    <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
-        Comparison to {exampleDiseaseData.categoryBaseline}
-    </h3>
-    <DiseaseComparison data={exampleDiseaseData} />
-</div>
+
                 </div>
             </div>
         </div>
@@ -169,7 +171,7 @@
 
     .drawer {
         position: relative;
-        width: 50vw;
+        width: 55vw;
         height: 100%;
         background-color: hsl(var(--background));
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -180,7 +182,7 @@
     }
 
     .drawer-content {
-        padding: 2rem 1rem;
+        padding: 1rem 0 0 0;
     }
 
     .section {

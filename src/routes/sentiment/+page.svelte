@@ -52,31 +52,31 @@
     <!-- Tab Buttons -->
     <div class="grid grid-cols-3 gap-2 mb-8 max-w-sm">
         <button
-            class="p-2 rounded-lg text-xs transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'sentiment' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'sentiment' ? 'bg-[#ff5151] text-white scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('sentiment')}
         >
             <SentimentPictogram 
-                class="w-8 h-8 mb-2"
+                class="w-6 h-6 mb-2"
                 fill={activeTab === 'sentiment' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-extrabold">Sentiment</span>
         </button>
         <button
-            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'awareness' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'awareness' ? 'bg-[#ff5151] text-white  scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('awareness')}
         >
             <AwarenessPictogram 
-                class="w-8 h-8 mb-2"
+                class="w-6 h-6 mb-2"
                 fill={activeTab === 'awareness' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-extrabold">Trial Awareness</span>
         </button>
         <button
-            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'journeys' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-lg text-xs font-extrabold transition-all duration-200 aspect-square flex flex-col items-center justify-center {activeTab === 'journeys' ? 'bg-[#ff5151] text-white  scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => setActiveTab('journeys')}
         >
             <JourneysPictogram 
-                class="w-8 h-8 mb-2"
+                class="w-6 h-6 mb-2"
                 fill={activeTab === 'journeys' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-extrabold">Journeys</span>
