@@ -1,3 +1,4 @@
+// src/routes/sentiment/SentimentDrawer.svelte
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
     import { circInOut } from 'svelte/easing';
@@ -73,17 +74,10 @@
                     Analysis of {formatNumber(data.details.totalMentions)} patient and caregiver experiences reveals distinctive patterns in how this condition impacts daily life and treatment outcomes.
                 </p>
             </div>
-            <div class="section border-t border-dotted border-[#ff5151] pt-6">
-                <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
-                    Comparison to {exampleDiseaseData.categoryBaseline}
-                </h3>
-            
-                <DiseaseComparison data={exampleDiseaseData} />
-            </div>
 
             <div class="section">
                 <div class="border-t pt-4 border-dotted border-[#ff5151]" />
-                <h3 class="font-mono text-xs  font-bold text-orange-600 dark:text-[#ff1515] mb-4">Key Sentiment Patterns</h3>
+                <h3 class="font-mono text-xs font-bold text-orange-8000 dark:text-[#ff1515] mb-4">Key Sentiment Patterns</h3>
                 <p class="text-gray-800 dark:text-gray-200 mb-6">
                     {expandedData.keyInsights.patientConcerns}
                 </p>
@@ -149,7 +143,13 @@
                         </div>
                     </div>
 
+<div class="section border-t border-dotted border-[#ff5151] pt-6">
+    <h3 class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
+        Comparison to {exampleDiseaseData.categoryBaseline}
+    </h3>
 
+    <DiseaseComparison data={exampleDiseaseData} />
+</div>
                 </div>
             </div>
         </div>

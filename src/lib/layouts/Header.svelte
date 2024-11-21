@@ -47,7 +47,7 @@
 <header
 	class="fixed left-0 top-0 z-40 w-full -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl"
 >
-	<div class="container flex h-14 w-full items-center justify-between border-b border-gray-200 dark:border-gray-800">
+	<div class="container flex-grow w-full flex h-14 w-full items-baseline justify-around">
 		<div class="flex items-center space-x-8">
 			<a class="text-xs flex items-center" href="/">
 				<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
@@ -99,7 +99,7 @@
 			{#if hamburgerMenuIsOpen}
 				<XIcon strokeWidth={1.4} class='text-gray-300'/>
 			{:else}
-				<AlignJustify strokeWidth={1.4} class='text-gray-300' />
+			<AlignJustify strokeWidth={1.4} class='text-gray-300' />
 			{/if}
 		</button>
 

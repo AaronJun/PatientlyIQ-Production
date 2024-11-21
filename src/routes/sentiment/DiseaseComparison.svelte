@@ -5,6 +5,7 @@
 
     export let data: DiseaseSentimentStats;
     
+    
     let timeSeriesContainer: HTMLDivElement;
     let distributionContainer: HTMLDivElement;
 

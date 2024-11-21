@@ -13,7 +13,7 @@
     
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
     const height = 220;
-    let width = 1000;
+    let width = 1500;
 
     // Transform the data into a format suitable for the beeswarm
     $: points = [
