@@ -1,21 +1,22 @@
 <script lang="ts">  
     import { createEventDispatcher } from 'svelte';
-    import { diseases } from '$lib/data/diseases';
+    import sentimentData from '$lib/data/sentimentData.json';
     
     const dispatch = createEventDispatcher<{
         filter: { disease: string; compareWithCategory: boolean }
     }>();
     
     let selectedDisease = "pompe";
-    let selectedCategory = diseases[0].category;
+    let selectedCategory = sentimentData.diseases[0].category;
     let compareWithCategory = false;
 
-    $: filteredDiseases = diseases.find(cat => cat.category === selectedCategory)?.items || [];
+    $: categories = [...new Set(sentimentData.diseases.map(d => d.category))];
+    $: filteredDiseases = sentimentData.diseases.filter(d => d.category === selectedCategory);
     
     function handleCategoryChange(event: Event) {
         const target = event.target as HTMLSelectElement;
         selectedCategory = target.value;
-        selectedDisease = diseases.find(cat => cat.category === selectedCategory)?.items[0].id || '';
+        selectedDisease = filteredDiseases[0]?.id || '';
         dispatch('filter', { disease: selectedDisease, compareWithCategory });
     }
 
@@ -37,8 +38,8 @@
         bind:value={selectedCategory}
         on:change={handleCategoryChange}
     >
-        {#each diseases as category}
-            <option value={category.category}>{category.category}</option>
+        {#each categories as category}
+            <option value={category}>{category}</option>
         {/each}
     </select>
 

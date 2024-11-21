@@ -1,0 +1,276 @@
+{
+  "topics": [
+    "Clinical Trials",
+    "Treatment Options",
+    "Current Treatment",
+    "Care Team",
+    "Social Life Impact",
+    "Self Image",
+    "Disease Management",
+    "Support Groups",
+    "Financial Impact",
+    "Family Support",
+    "Work Life Impact",
+    "Physical Activity",
+    "Mental Health",
+    "Diet & Nutrition",
+    "Symptom Management",
+    "Healthcare Access",
+    "Insurance Coverage",
+    "Research Updates",
+    "Education Resources",
+    "Future Outlook"
+  ],
+  "negativeTopics": [
+    "Treatment Side Effects",
+    "Disease Progression",
+    "Treatment Costs",
+    "Medication Accessibility",
+    "Insurance Denials",
+    "Daily Life Limitations",
+    "Pain Management",
+    "Treatment Uncertainty",
+    "Emotional Burden",
+    "Caregiver Burnout",
+    "Medical Complications",
+    "Care Coordination Issues",
+    "Hospital Visits",
+    "Sleep Disruption",
+    "Professional Impact",
+    "Treatment Scheduling",
+    "Social Isolation",
+    "Transportation Issues",
+    "Diagnostic Delays",
+    "Emergency Care"
+  ],
+  "topicsByDisease": {
+    "pompe": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 78 },
+        { "topic": "Support Groups", "score": 85 },
+        { "topic": "Treatment Options", "score": 72 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Costs", "score": 82 },
+        { "topic": "Disease Progression", "score": 79 },
+        { "topic": "Daily Life Limitations", "score": 75 }
+      ]
+    },
+    "gaucher": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 82 },
+        { "topic": "Care Team", "score": 76 },
+        { "topic": "Disease Management", "score": 71 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Side Effects", "score": 77 },
+        { "topic": "Insurance Denials", "score": 74 },
+        { "topic": "Treatment Costs", "score": 71 }
+      ]
+    },
+    "fabry": {
+      "topPositiveTopics": [
+        { "topic": "Research Updates", "score": 81 },
+        { "topic": "Treatment Options", "score": 75 },
+        { "topic": "Support Groups", "score": 73 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Pain Management", "score": 83 },
+        { "topic": "Disease Progression", "score": 78 },
+        { "topic": "Emotional Burden", "score": 75 }
+      ]
+    },
+    "mps1": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 79 },
+        { "topic": "Family Support", "score": 77 },
+        { "topic": "Care Team", "score": 74 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Medical Complications", "score": 81 },
+        { "topic": "Daily Life Limitations", "score": 77 },
+        { "topic": "Treatment Costs", "score": 74 }
+      ]
+    },
+    "niemann-pick": {
+      "topPositiveTopics": [
+        { "topic": "Research Updates", "score": 80 },
+        { "topic": "Support Groups", "score": 76 },
+        { "topic": "Treatment Options", "score": 73 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Disease Progression", "score": 84 },
+        { "topic": "Emotional Burden", "score": 79 },
+        { "topic": "Care Coordination Issues", "score": 75 }
+      ]
+    },
+    "als": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 85 },
+        { "topic": "Research Updates", "score": 82 },
+        { "topic": "Support Groups", "score": 78 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Disease Progression", "score": 89 },
+        { "topic": "Daily Life Limitations", "score": 86 },
+        { "topic": "Emotional Burden", "score": 82 }
+      ]
+    },
+    "ms": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 86 },
+        { "topic": "Disease Management", "score": 83 },
+        { "topic": "Support Groups", "score": 79 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Uncertainty", "score": 80 },
+        { "topic": "Professional Impact", "score": 77 },
+        { "topic": "Daily Life Limitations", "score": 75 }
+      ]
+    },
+    "parkinsons": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 84 },
+        { "topic": "Research Updates", "score": 81 },
+        { "topic": "Treatment Options", "score": 77 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Disease Progression", "score": 82 },
+        { "topic": "Daily Life Limitations", "score": 79 },
+        { "topic": "Sleep Disruption", "score": 76 }
+      ]
+    },
+    "alzheimers": {
+      "topPositiveTopics": [
+        { "topic": "Research Updates", "score": 83 },
+        { "topic": "Care Team", "score": 79 },
+        { "topic": "Family Support", "score": 76 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Caregiver Burnout", "score": 88 },
+        { "topic": "Disease Progression", "score": 85 },
+        { "topic": "Emotional Burden", "score": 82 }
+      ]
+    },
+    "epilepsy": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 82 },
+        { "topic": "Disease Management", "score": 78 },
+        { "topic": "Healthcare Access", "score": 75 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Professional Impact", "score": 79 },
+        { "topic": "Social Isolation", "score": 76 },
+        { "topic": "Emergency Care", "score": 73 }
+      ]
+    },
+    "lungcancer": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 86 },
+        { "topic": "Treatment Options", "score": 83 },
+        { "topic": "Research Updates", "score": 79 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Side Effects", "score": 85 },
+        { "topic": "Disease Progression", "score": 82 },
+        { "topic": "Treatment Costs", "score": 79 }
+      ]
+    },
+    "breastcancer": {
+      "topPositiveTopics": [
+        { "topic": "Support Groups", "score": 88 },
+        { "topic": "Treatment Options", "score": 85 },
+        { "topic": "Research Updates", "score": 82 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Side Effects", "score": 81 },
+        { "topic": "Self Image", "score": 78 },
+        { "topic": "Emotional Burden", "score": 75 }
+      ]
+    },
+    "melanoma": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 84 },
+        { "topic": "Clinical Trials", "score": 81 },
+        { "topic": "Research Updates", "score": 78 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Uncertainty", "score": 77 },
+        { "topic": "Disease Progression", "score": 74 },
+        { "topic": "Treatment Costs", "score": 71 }
+      ]
+    },
+    "lymphoma": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 83 },
+        { "topic": "Treatment Options", "score": 80 },
+        { "topic": "Care Team", "score": 76 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Side Effects", "score": 79 },
+        { "topic": "Treatment Costs", "score": 76 },
+        { "topic": "Medical Complications", "score": 73 }
+      ]
+    },
+    "leukemia": {
+      "topPositiveTopics": [
+        { "topic": "Clinical Trials", "score": 85 },
+        { "topic": "Research Updates", "score": 82 },
+        { "topic": "Treatment Options", "score": 79 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Side Effects", "score": 83 },
+        { "topic": "Hospital Visits", "score": 80 },
+        { "topic": "Treatment Costs", "score": 77 }
+      ]
+    },
+    "rheumatoid": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 81 },
+        { "topic": "Disease Management", "score": 78 },
+        { "topic": "Physical Activity", "score": 75 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Pain Management", "score": 82 },
+        { "topic": "Daily Life Limitations", "score": 79 },
+        { "topic": "Treatment Costs", "score": 76 }
+      ]
+    },
+    "lupus": {
+      "topPositiveTopics": [
+        { "topic": "Support Groups", "score": 82 },
+        { "topic": "Treatment Options", "score": 79 },
+        { "topic": "Research Updates", "score": 76 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Treatment Uncertainty", "score": 80 },
+        { "topic": "Pain Management", "score": 77 },
+        { "topic": "Daily Life Limitations", "score": 74 }
+      ]
+    },
+    "psoriasis": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 83 },
+        { "topic": "Disease Management", "score": 80 },
+        { "topic": "Mental Health", "score": 77 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Self Image", "score": 81 },
+        { "topic": "Treatment Costs", "score": 78 },
+        { "topic": "Social Isolation", "score": 75 }
+      ]
+    },
+    "crohns": {
+      "topPositiveTopics": [
+        { "topic": "Treatment Options", "score": 82 },
+        { "topic": "Diet & Nutrition", "score": 79 },
+        { "topic": "Support Groups", "score": 76 }
+      ],
+      "topNegativeTopics": [
+        { "topic": "Daily Life Limitations", "score": 83 },
+        { "topic": "Treatment Uncertainty", "score": 80 },
+        { "topic": "Social Isolation", "score": 77 }
+      ]
+    }
+  }
+}

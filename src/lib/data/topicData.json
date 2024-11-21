@@ -1,0 +1,175 @@
+{
+    "diseaseTopics": {
+      "pompe": {
+        "topics": {
+          "treatment_access": {"name": "Treatment Access", "positive": 678, "negative": 1456},
+          "healthcare_team": {"name": "Healthcare Team", "positive": 1345, "negative": 445},
+          "disease_progression": {"name": "Disease Progression", "positive": 567, "negative": 1567},
+          "clinical_trials": {"name": "Clinical Trials", "positive": 987, "negative": 654},
+          "family_impact": {"name": "Family Impact", "positive": 876, "negative": 1098}
+        }
+      },
+      "gaucher": {
+        "topics": {
+          "treatment_costs": {"name": "Treatment Costs", "positive": 567, "negative": 1678},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1234, "negative": 765},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1123, "negative": 876},
+          "support_network": {"name": "Support Network", "positive": 1567, "negative": 432},
+          "daily_activities": {"name": "Daily Activities", "positive": 890, "negative": 987}
+        }
+      },
+      "fabry": {
+        "topics": {
+          "symptoms": {"name": "Symptom Management", "positive": 956, "negative": 1234},
+          "medication_effects": {"name": "Medication Effects", "positive": 789, "negative": 1432},
+          "insurance_coverage": {"name": "Insurance Coverage", "positive": 543, "negative": 1567},
+          "work_career": {"name": "Work/Career Impact", "positive": 876, "negative": 1098},
+          "social_relationships": {"name": "Social Relationships", "positive": 1234, "negative": 654}
+        }
+      },
+      "mps1": {
+        "topics": {
+          "treatment_access": {"name": "Treatment Access", "positive": 567, "negative": 1789},
+          "education_awareness": {"name": "Disease Education", "positive": 1432, "negative": 543},
+          "support_network": {"name": "Support Network", "positive": 1345, "negative": 567},
+          "future_outlook": {"name": "Future Outlook", "positive": 789, "negative": 1234},
+          "family_impact": {"name": "Family Impact", "positive": 987, "negative": 1098}
+        }
+      },
+      "niemann-pick": {
+        "topics": {
+          "clinical_trials": {"name": "Clinical Trials", "positive": 1234, "negative": 876},
+          "healthcare_team": {"name": "Healthcare Team", "positive": 1456, "negative": 432},
+          "financial": {"name": "Financial Situation", "positive": 567, "negative": 1567},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 987, "negative": 1098},
+          "daily_activities": {"name": "Daily Activities", "positive": 876, "negative": 1234}
+        }
+      },
+      "als": {
+        "topics": {
+          "disease_progression": {"name": "Disease Progression", "positive": 456, "negative": 1789},
+          "treatment_access": {"name": "Treatment Access", "positive": 789, "negative": 1567},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 987, "negative": 1234},
+          "support_network": {"name": "Support Network", "positive": 1567, "negative": 654},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 876, "negative": 1432}
+        }
+      },
+      "ms": {
+        "topics": {
+          "medication_effects": {"name": "Medication Effects", "positive": 987, "negative": 1234},
+          "work_career": {"name": "Work/Career Impact", "positive": 765, "negative": 1456},
+          "daily_activities": {"name": "Daily Activities", "positive": 1234, "negative": 987},
+          "healthcare_team": {"name": "Healthcare Team", "positive": 1567, "negative": 543},
+          "treatment_costs": {"name": "Treatment Costs", "positive": 654, "negative": 1678}
+        }
+      },
+      "parkinsons": {
+        "topics": {
+          "symptoms": {"name": "Symptom Management", "positive": 876, "negative": 1432},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1234, "negative": 987},
+          "support_network": {"name": "Support Network", "positive": 1456, "negative": 654},
+          "daily_activities": {"name": "Daily Activities", "positive": 987, "negative": 1234},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 876, "negative": 1345}
+        }
+      },
+      "alzheimers": {
+        "topics": {
+          "care_options": {"name": "Care Options", "positive": 987, "negative": 1567},
+          "family_impact": {"name": "Family Impact", "positive": 765, "negative": 1678},
+          "daily_activities": {"name": "Daily Activities", "positive": 876, "negative": 1432},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1234, "negative": 987},
+          "healthcare_team": {"name": "Healthcare Team", "positive": 1456, "negative": 654}
+        }
+      },
+      "epilepsy": {
+        "topics": {
+          "medication_effects": {"name": "Medication Effects", "positive": 876, "negative": 1234},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1345, "negative": 876},
+          "work_career": {"name": "Work/Career Impact", "positive": 765, "negative": 1432},
+          "social_relationships": {"name": "Social Relationships", "positive": 1234, "negative": 876},
+          "daily_activities": {"name": "Daily Activities", "positive": 987, "negative": 1098}
+        }
+      },
+      "lungcancer": {
+        "topics": {
+          "treatment_access": {"name": "Treatment Access", "positive": 765, "negative": 1567},
+          "clinical_trials": {"name": "Clinical Trials", "positive": 1234, "negative": 876},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 987, "negative": 1234},
+          "family_impact": {"name": "Family Impact", "positive": 876, "negative": 1432},
+          "future_outlook": {"name": "Future Outlook", "positive": 654, "negative": 1678}
+        }
+      },
+      "breastcancer": {
+        "topics": {
+          "support_network": {"name": "Support Network", "positive": 1567, "negative": 654},
+          "treatment_options": {"name": "Treatment Options", "positive": 1345, "negative": 876},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1234, "negative": 987},
+          "body_image": {"name": "Body Image", "positive": 876, "negative": 1432},
+          "future_outlook": {"name": "Future Outlook", "positive": 987, "negative": 1234}
+        }
+      },
+      "melanoma": {
+        "topics": {
+          "treatment_access": {"name": "Treatment Access", "positive": 987, "negative": 1234},
+          "clinical_trials": {"name": "Clinical Trials", "positive": 1345, "negative": 876},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1234, "negative": 987},
+          "prevention": {"name": "Prevention", "positive": 1567, "negative": 654},
+          "future_outlook": {"name": "Future Outlook", "positive": 876, "negative": 1432}
+        }
+      },
+      "lymphoma": {
+        "topics": {
+          "treatment_options": {"name": "Treatment Options", "positive": 1234, "negative": 987},
+          "financial": {"name": "Financial Situation", "positive": 765, "negative": 1567},
+          "support_network": {"name": "Support Network", "positive": 1456, "negative": 654},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 987, "negative": 1234},
+          "healthcare_team": {"name": "Healthcare Team", "positive": 1345, "negative": 876}
+        }
+      },
+      "leukemia": {
+        "topics": {
+          "treatment_access": {"name": "Treatment Access", "positive": 876, "negative": 1432},
+          "clinical_trials": {"name": "Clinical Trials", "positive": 1234, "negative": 987},
+          "family_impact": {"name": "Family Impact", "positive": 987, "negative": 1345},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1456, "negative": 765},
+          "future_outlook": {"name": "Future Outlook", "positive": 876, "negative": 1567}
+        }
+      },
+      "rheumatoid": {
+        "topics": {
+          "symptoms": {"name": "Symptom Management", "positive": 1234, "negative": 987},
+          "medication_effects": {"name": "Medication Effects", "positive": 876, "negative": 1432},
+          "daily_activities": {"name": "Daily Activities", "positive": 987, "negative": 1234},
+          "work_career": {"name": "Work/Career Impact", "positive": 765, "negative": 1567},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1345, "negative": 876}
+        }
+      },
+      "lupus": {
+        "topics": {
+          "symptoms": {"name": "Symptom Management", "positive": 987, "negative": 1432},
+          "treatment_access": {"name": "Treatment Access", "positive": 876, "negative": 1567},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1234, "negative": 987},
+          "work_career": {"name": "Work/Career Impact", "positive": 765, "negative": 1456},
+          "social_relationships": {"name": "Social Relationships", "positive": 1345, "negative": 876}
+        }
+      },
+      "psoriasis": {
+        "topics": {
+          "treatment_options": {"name": "Treatment Options", "positive": 1234, "negative": 987},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1456, "negative": 765},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 987, "negative": 1234},
+          "body_image": {"name": "Body Image", "positive": 876, "negative": 1432},
+          "social_relationships": {"name": "Social Relationships", "positive": 1345, "negative": 876}
+        }
+      },
+      "crohns": {
+        "topics": {
+          "symptoms": {"name": "Symptom Management", "positive": 987, "negative": 1432},
+          "treatment_options": {"name": "Treatment Options", "positive": 1234, "negative": 987},
+          "lifestyle_changes": {"name": "Lifestyle Changes", "positive": 1456, "negative": 765},
+          "daily_activities": {"name": "Daily Activities", "positive": 876, "negative": 1567},
+          "emotional_wellbeing": {"name": "Emotional Wellbeing", "positive": 1345, "negative": 876}
+        }
+      }
+    }
+  }

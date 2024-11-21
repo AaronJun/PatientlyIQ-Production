@@ -1,0 +1,232 @@
+{
+    "diseases": [
+      {
+        "id": "pompe",
+        "name": "Pompe Disease",
+        "category": "Rare Diseases",
+        "sentiments": {
+          "entirelyPositive": 250,
+          "somewhatPositive": 420,
+          "neutral": 180,
+          "somewhatNegative": 150,
+          "entirelyNegative": 80
+        }
+      },
+      {
+        "id": "gaucher",
+        "name": "Gaucher Disease", 
+        "category": "Rare Diseases",
+        "sentiments": {
+          "entirelyPositive": 180,
+          "somewhatPositive": 350,
+          "neutral": 200,
+          "somewhatNegative": 120,
+          "entirelyNegative": 60
+        }
+      },
+      {
+        "id": "fabry",
+        "name": "Fabry Disease",
+        "category": "Rare Diseases", 
+        "sentiments": {
+          "entirelyPositive": 220,
+          "somewhatPositive": 380,
+          "neutral": 190,
+          "somewhatNegative": 140,
+          "entirelyNegative": 70
+        }
+      },
+      {
+        "id": "mps1",
+        "name": "MPS I",
+        "category": "Rare Diseases",
+        "sentiments": {
+          "entirelyPositive": 160,
+          "somewhatPositive": 300,
+          "neutral": 170,
+          "somewhatNegative": 130,
+          "entirelyNegative": 90
+        }
+      },
+      {
+        "id": "niemann-pick",
+        "name": "Niemann-Pick Disease",
+        "category": "Rare Diseases",
+        "sentiments": {
+          "entirelyPositive": 190,
+          "somewhatPositive": 340,
+          "neutral": 210,
+          "somewhatNegative": 160,
+          "entirelyNegative": 100
+        }
+      },
+      {
+        "id": "als",
+        "name": "ALS",
+        "category": "Neurological",
+        "sentiments": {
+          "entirelyPositive": 320,
+          "somewhatPositive": 480,
+          "neutral": 220,
+          "somewhatNegative": 190,
+          "entirelyNegative": 120
+        }
+      },
+      {
+        "id": "ms",
+        "name": "Multiple Sclerosis",
+        "category": "Neurological",
+        "sentiments": {
+          "entirelyPositive": 400,
+          "somewhatPositive": 550,
+          "neutral": 250,
+          "somewhatNegative": 200,
+          "entirelyNegative": 100
+        }
+      },
+      {
+        "id": "parkinsons",
+        "name": "Parkinson's Disease",
+        "category": "Neurological",
+        "sentiments": {
+          "entirelyPositive": 380,
+          "somewhatPositive": 520,
+          "neutral": 240,
+          "somewhatNegative": 180,
+          "entirelyNegative": 110
+        }
+      },
+      {
+        "id": "alzheimers", 
+        "name": "Alzheimer's Disease",
+        "category": "Neurological",
+        "sentiments": {
+          "entirelyPositive": 350,
+          "somewhatPositive": 490,
+          "neutral": 230,
+          "somewhatNegative": 200,
+          "entirelyNegative": 130
+        }
+      },
+      {
+        "id": "epilepsy",
+        "name": "Epilepsy",
+        "category": "Neurological", 
+        "sentiments": {
+          "entirelyPositive": 290,
+          "somewhatPositive": 460,
+          "neutral": 210,
+          "somewhatNegative": 170,
+          "entirelyNegative": 90
+        }
+      },
+      {
+        "id": "lungcancer",
+        "name": "Lung Cancer",
+        "category": "Oncology",
+        "sentiments": {
+          "entirelyPositive": 280,
+          "somewhatPositive": 420,
+          "neutral": 200,
+          "somewhatNegative": 240,
+          "entirelyNegative": 160
+        }
+      },
+      {
+        "id": "breastcancer",
+        "name": "Breast Cancer", 
+        "category": "Oncology",
+        "sentiments": {
+          "entirelyPositive": 450,
+          "somewhatPositive": 580,
+          "neutral": 220,
+          "somewhatNegative": 180,
+          "entirelyNegative": 90
+        }
+      },
+      {
+        "id": "melanoma",
+        "name": "Melanoma",
+        "category": "Oncology",
+        "sentiments": {
+          "entirelyPositive": 320,
+          "somewhatPositive": 460,
+          "neutral": 190,
+          "somewhatNegative": 160,
+          "entirelyNegative": 80
+        }
+      },
+      {
+        "id": "lymphoma",
+        "name": "Lymphoma",
+        "category": "Oncology",
+        "sentiments": {
+          "entirelyPositive": 300,
+          "somewhatPositive": 440,
+          "neutral": 210,
+          "somewhatNegative": 170,
+          "entirelyNegative": 100
+        }
+      },
+      {
+        "id": "leukemia",
+        "name": "Leukemia",
+        "category": "Oncology",
+        "sentiments": {
+          "entirelyPositive": 340,
+          "somewhatPositive": 480,
+          "neutral": 200,
+          "somewhatNegative": 190,
+          "entirelyNegative": 110
+        }
+      },
+      {
+        "id": "rheumatoid",
+        "name": "Rheumatoid Arthritis",
+        "category": "Immunological",
+        "sentiments": {
+          "entirelyPositive": 280,
+          "somewhatPositive": 420,
+          "neutral": 230,
+          "somewhatNegative": 160,
+          "entirelyNegative": 90
+        }
+      },
+      {
+        "id": "lupus",
+        "name": "Lupus",
+        "category": "Immunological",
+        "sentiments": {
+          "entirelyPositive": 260,
+          "somewhatPositive": 400,
+          "neutral": 220,
+          "somewhatNegative": 180,
+          "entirelyNegative": 120
+        }
+      },
+      {
+        "id": "psoriasis",
+        "name": "Psoriasis",
+        "category": "Immunological",
+        "sentiments": {
+          "entirelyPositive": 300,
+          "somewhatPositive": 440,
+          "neutral": 200,
+          "somewhatNegative": 150,
+          "entirelyNegative": 80
+        }
+      },
+      {
+        "id": "crohns",
+        "name": "Crohn's Disease",
+        "category": "Immunological",
+        "sentiments": {
+          "entirelyPositive": 270,
+          "somewhatPositive": 410,
+          "neutral": 210,
+          "somewhatNegative": 170,
+          "entirelyNegative": 100
+        }
+      }
+    ]
+  }
