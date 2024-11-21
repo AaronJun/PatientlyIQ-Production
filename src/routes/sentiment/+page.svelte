@@ -10,11 +10,11 @@
     import WordNetwork from './WordNetwork.svelte';
     import wordCloudData from '$lib/data/wordCloudData.json';
     import SentimentDistribution from './CategoryComp.svelte';
-
     import SearchVolumeChart from '$lib/search/SearchVolumeChart.svelte';
-    import SearchTrends from '$lib/search/SearchTrends.svelte';
     import searchData from '$lib/data/searchData.json';
+    import SearchTrends from '$lib/search/SearchTrends.svelte';
 
+    
     import TopNegativeTopicsChart from './TopNegativeTopicsChart.svelte';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
 
@@ -145,7 +145,7 @@
                             on:barClick={handleBarClick} 
                         />
                     </div>
-                    <div class="col-start-7 col-span-3 pt-16">
+                    <div class="col-start-52 col-span-2">
                         <SentimentDistribution 
                             selectedDisease={selectedDisease}
                             data={sentimentData}
@@ -166,7 +166,7 @@
                 </div>
                 {/if}
             </div>
-            {:else if activeTab === 'awareness'}
+          {:else if activeTab === 'awareness'}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {#key selectedDisease}
                     <SearchVolumeChart 
@@ -179,6 +179,13 @@
                     />
                 {/key}
             </div>
+            {:else if activeTab === 'journeys'}
+                <div class="mb-4 mt-12 flex items-left gap-5">
+                    <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                        Patient Journeys
+                    </span>
+                </div>
+                <PatientJourneyCards {selectedDisease} />
             {:else if activeTab === 'network'}
                 <div class="mb-4 mt-12 flex min-h-52 items-left gap-5">
                     <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
