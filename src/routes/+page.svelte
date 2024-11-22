@@ -73,5 +73,4 @@
 		<AnalysisCapabilities />
 	</section>
 
-	<Testimonials />
 </div>

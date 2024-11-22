@@ -148,7 +148,7 @@
                     <div class="col-start-52 col-span-2">
                         <SentimentDistribution 
                             selectedDisease={selectedDisease}
-                            data={sentimentData}
+                        0    data={sentimentData}
                         />
                     </div>
                 </div>
