@@ -52,7 +52,6 @@
     function generateComparisonText(diseaseDistribution: number[], categoryDistribution: number[]) {
         if (!disease) return '';
 
-        // Calculate weighted average for comparison (more weight to extreme sentiments)
         const weights = [-2, -1, 0, 1, 2];
         const diseaseScore = diseaseDistribution.reduce((acc, val, idx) => acc + val * weights[idx], 0);
         const categoryScore = categoryDistribution.reduce((acc, val, idx) => acc + val * weights[idx], 0);
@@ -64,73 +63,81 @@
     }
 
     onMount(() => {
-        const margin = { top: 20, right: 20, bottom: 30, left: 20 };
-        const width = distributionContainer.clientWidth - margin.left - margin.right;
-        const height = 100 - margin.top - margin.bottom;
+        const colors = ['#ff5151', '#ff7171', '#9E9E9E', '#4CAF50', '#2E7D33'];
+        
+        const updateDimensions = () => {
+            const containerWidth = distributionContainer.clientWidth;
+            let margin = { top: 20, right: 20, bottom: 30, left: 20 };
+            let height = 100;
+            
+            if (containerWidth < 400) {
+                height = 80;
+                margin = { top: 15, right: 15, bottom: 25, left: 15 };
+            } else if (containerWidth < 600) {
+                height = 90;
+                margin = { top: 18, right: 18, bottom: 28, left: 18 };
+            }
 
-        const svg = d3.select(distributionContainer)
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
+            const width = containerWidth - margin.left - margin.right;
+            height = height - margin.top - margin.bottom;
 
-        function updateChart() {
-            svg.selectAll('*').remove();
+            return { width, height, margin };
+        };
+
+        const createChart = () => {
+            const { width, height, margin } = updateDimensions();
+            
+            d3.select(distributionContainer)
+                .selectAll('svg')
+                .remove();
+
+            const svg = d3.select(distributionContainer)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
 
             const x = d3.scaleLinear()
-                .domain([0, diseaseDistribution.length - 1])
+                .domain([0, 1])
                 .range([0, width]);
 
-            const y = d3.scaleLinear()
-                .domain([0, Math.max(
-                    ...diseaseDistribution,
-                    ...categoryDistribution
-                )])
-                .range([height, 0]);
+            // Draw disease distribution (filled)
+            let xPos = 0;
+            diseaseDistribution.forEach((value, i) => {
+                svg.append('rect')
+                    .attr('x', x(xPos))
+                    .attr('y', 0)
+                    .attr('width', x(value))
+                    .attr('height', height * 0.3)
+                    .attr('fill', colors[i]);
+                xPos += value;
+            });
 
-            // Create area generators
-            const area = d3.area()
-                .x((d, i) => x(i))
-                .y0(height)
-                .y1(d => y(d))
-                .curve(d3.curveBasis);
+            // Draw category distribution (outlined)
+            xPos = 0;
+            categoryDistribution.forEach((value, i) => {
+                svg.append('rect')
+                    .attr('x', x(xPos))
+                    .attr('y', height * 0.5)
+                    .attr('width', x(value))
+                    .attr('height', height * 0.3)
+                    .attr('fill', 'none')
+                    .attr('stroke', colors[i])
+                    .attr('stroke-width', 1);
+                xPos += value;
+            });
+        };
 
-            // Add category distribution area
-            svg.append('path')
-                .datum(categoryDistribution)
-                .attr('fill', 'rgba(102, 100, 187, 0.3)')
-                .attr('stroke', 'rgba(100, 100, 100, 0.9)')
-                .attr('stroke-width', 1)
-                .attr('d', area);
-
-            // Add disease distribution area
-            svg.append('path')
-                .datum(diseaseDistribution)
-                .attr('fill', 'rgba(255, 81, 81, 0.2)')
-                .attr('stroke', '#ff5151')
-                .attr('stroke-width', 1)
-                .attr('d', area);
-
-            // Add labels
-            const labels = ['Very Negative', '', 'Neutral', '', 'Very Positive'];
-            svg.selectAll('.label')
-                .data(labels.filter(l => l !== ''))
-                .enter()
-                .append('text')
-                .attr('class', 'label')
-                .attr('x', (d, i) => x(i * 2))
-                .attr('y', height + 20)
-                .attr('text-anchor', (d, i) => i === 0 ? 'start' : i === 2 ? 'end' : 'middle')
-                .style('font-size', '10px')
-                .style('fill', '#666')
-                .text(d => d);
-        }
-
-        updateChart();
-
-        // Update when selectedDisease changes
+        const observer = new ResizeObserver(() => {
+            createChart();
+        });
+        
+        observer.observe(distributionContainer);
+        createChart();
+        
         return () => {
+            observer.disconnect();
             if (distributionContainer) {
                 distributionContainer.innerHTML = '';
             }
@@ -138,7 +145,7 @@
     });
 </script>
 
-<div class="w-full space-y-4 p-4 pb-8 rounded-sm bg-gray-50 dark:bg-neutral-800">
+<div class="w-full space-y-2 sm:space-y-4 p-2 sm:p-4 pb-4 sm:pb-8 rounded-sm bg-gray-50 dark:bg-neutral-800">
     <div class="flex items-center justify-between">
         <div class="space-y-1">
             {#if disease}
@@ -155,20 +162,13 @@
     {/if}
 
     <div class="flex items-center gap-4 text-xs">
-        <div class="flex items-center gap-2 mt-6">
-            
-            <div class="w-2 h-2 rounded-sm bg-[#ff5151]/20 border border-[#ff5151]"></div>
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-sm bg-[#ff5151]"></div>
             <span class="text-[.625rem] text-gray-600 dark:text-gray-300">Disease Distribution</span>
         </div>
-        <div class="flex items-center gap-2 mt-6">
-            <div class="w-2 h-2 rounded-sm bg-gray-400/10 border border-blue-400/50"></div>
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-sm bg-transparent border border-[#ff5151]"></div>
             <span class="text-[.625rem] text-gray-600 dark:text-gray-300">Category Average</span>
         </div>
     </div>
 </div>
-
-<style>
-    .mt-6 {
-        margin-top: 1.5rem;
-    }
-</style>
