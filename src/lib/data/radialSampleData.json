@@ -1,0 +1,777 @@
+[
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Side Effects",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Cost",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+        "Persona": "Patient",
+        "Cohort": "Considering clinical trials",
+        "Topic": "Treatment Options",
+        "Subtopic": "Access",
+        "SEN": "Entirely Negative",
+        "Quote": "This is a sample patient quote."
+      },
+      {
+        "Persona": "Patient",
+        "Cohort": "Recently diagnosed",
+        "Topic": "Treatment Options",
+        "Subtopic": "Lack of Choice",
+        "SEN": "Entirely Negative",
+        "Quote": "This is a sample patient quote."
+      },  {
+        "Persona": "Patient",
+        "Cohort": "Considering clinical trials",
+        "Topic": "Treatment Options",
+        "Subtopic": "Access",
+        "SEN": "Entirely Negative",
+        "Quote": "This is a sample patient quote."
+      },
+      {
+        "Persona": "Patient",
+        "Cohort": "Recently diagnosed",
+        "Topic": "Treatment Options",
+        "Subtopic": "Lack of Choice",
+        "SEN": "Entirely Negative",
+        "Quote": "This is a sample patient quote."
+      },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Doubt",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Other",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Side Effects",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Cost",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Access",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Lack of Choice",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Doubt",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Side Effects",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Cost",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Access",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Lack of Choice",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Doubt",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Other",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Side Effects",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Cost",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Access",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Lack of Choice",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Doubt",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Side Effects",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Cost",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Access",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Treatment Options",
+      "Subtopic": "Lack of Choice",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Treatment Options",
+      "Subtopic": "Doubt",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Treatment Options",
+      "Subtopic": "Other",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Emotional",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Physical",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Emotional",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Physical",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Emotional",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Physical",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Emotional",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Physical",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Emotional",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Side Effects/Symptoms",
+      "Subtopic": "Physical",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Work",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Finance",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Logistics",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Other",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Work",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Finance",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Logistics",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Work",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Finance",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Logistics",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Other",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Work",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Finance",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Logistics",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Work",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Finance",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Logistics",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Day-to-Day Challenges",
+      "Subtopic": "Other",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Criteria",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Logistics",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Other",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "QoL Concern",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Criteria",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Logistics",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "QoL Concern",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Criteria",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Logistics",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Other",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "QoL Concern",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Criteria",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Logistics",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Other",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "QoL Concern",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Criteria",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Logistics",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Clinical Trials",
+      "Subtopic": "Other",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Clinical Trials",
+      "Subtopic": "QoL Concern",
+      "SEN": "Entirely Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Work",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Finance",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Logistics",
+      "SEN": "Entirely Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Work",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Finance",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Logistics",
+      "SEN": "Somewhat Negative",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Work",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Finance",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Looking for new treatment",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Logistics",
+      "SEN": "Neutral",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Considering clinical trials",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Work",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+      "Persona": "Patient",
+      "Cohort": "Recently diagnosed",
+      "Topic": "Care Team/Second Opinions",
+      "Subtopic": "Finance",
+      "SEN": "Somewhat Positive",
+      "Quote": "This is a sample patient quote."
+    },
+    {
+        "Persona": "Patient",
+        "Cohort": "Looking for new treatment",
+        "Topic": "Care Team/Second Opinions",
+        "Subtopic": "Logistics",
+        "SEN": "Somewhat Positive",
+        "Quote": "This is a sample patient quote."
+      },
+      {
+        "Persona": "Patient",
+        "Cohort": "Considering clinical trials",
+        "Topic": "Care Team/Second Opinions",
+        "Subtopic": "Work",
+        "SEN": "Entirely Positive",
+        "Quote": "This is a sample patient quote."
+      },
+      {
+        "Persona": "Patient",
+        "Cohort": "Recently diagnosed",
+        "Topic": "Care Team/Second Opinions",
+        "Subtopic": "Finance",
+        "SEN": "Entirely Positive",
+        "Quote": "This is a sample patient quote."
+      },
+      {
+        "Persona": "Patient",
+        "Cohort": "Looking for new treatment",
+        "Topic": "Care Team/Second Opinions",
+        "Subtopic": "Logistics",
+        "SEN": "Entirely Positive",
+        "Quote": "This is a sample patient quote."
+      }
+  ]

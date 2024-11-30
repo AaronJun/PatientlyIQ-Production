@@ -12,6 +12,8 @@
     import SentimentDistribution from './CategoryComp.svelte';
     import SearchVolumeChart from '$lib/search/SearchVolumeChart.svelte';
     import searchData from '$lib/data/searchData.json';
+    import SentimentBars from './SentimentBars.svelte';
+    import radialSampleData from '$lib/data/radialSampleData.json';
     import SearchTrends from '$lib/search/SearchTrends.svelte';
 
     
@@ -145,7 +147,7 @@
                             on:barClick={handleBarClick} 
                         />
                     </div>
-                    <div class="col-start-52 col-span-2">
+                    <div class="col-start-7 col-span-2">
                         <SentimentDistribution 
                             selectedDisease={selectedDisease}
                             data={sentimentData}
@@ -153,6 +155,8 @@
                     </div>
                 </div>
                 
+                <SentimentBars data={radialSampleData} />
+
                 {#if currentTopicData.topPositiveTopics?.length > 0}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 mr-2 pl-8">
                     <div>

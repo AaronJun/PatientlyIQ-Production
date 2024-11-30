@@ -67,14 +67,14 @@
         
         const updateDimensions = () => {
             const containerWidth = distributionContainer.clientWidth;
-            let margin = { top: 20, right: 20, bottom: 30, left: 20 };
-            let height = 100;
+            let margin = { top: 20, right: 20, bottom: 30, left: 0 };
+            let height = 150;
             
             if (containerWidth < 400) {
-                height = 80;
-                margin = { top: 15, right: 15, bottom: 25, left: 15 };
+                height = 100;
+                margin = { top: 15, right: 15, bottom: 25, left: 0 };
             } else if (containerWidth < 600) {
-                height = 90;
+                height = 100;
                 margin = { top: 18, right: 18, bottom: 28, left: 18 };
             }
 
@@ -124,7 +124,7 @@
                     .attr('height', height * 0.3)
                     .attr('fill', 'none')
                     .attr('stroke', colors[i])
-                    .attr('stroke-width', 1);
+                    .attr('stroke-width', .625);
                 xPos += value;
             });
         };
@@ -149,8 +149,8 @@
     <div class="flex items-center justify-between">
         <div class="space-y-1">
             {#if disease}
-                <div class="text-sm font-base">{disease.name} Sentiment Distribution</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">Compared to {disease.category}</div>
+                <div class="text-base font-base">{disease.name} Sentiment Distribution</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">Compared to {disease.category}</div>
             {/if}
         </div>
     </div>
@@ -164,11 +164,11 @@
     <div class="flex items-center gap-4 text-xs">
         <div class="flex items-center gap-2">
             <div class="w-2 h-2 rounded-sm bg-[#ff5151]"></div>
-            <span class="text-[.625rem] text-gray-600 dark:text-gray-300">Disease Distribution</span>
+            <span class="text-[.825rem] text-gray-600 dark:text-gray-300">Disease Distribution</span>
         </div>
         <div class="flex items-center gap-2">
             <div class="w-2 h-2 rounded-sm bg-transparent border border-[#ff5151]"></div>
-            <span class="text-[.625rem] text-gray-600 dark:text-gray-300">Category Average</span>
+            <span class="text-[.825rem] text-gray-600 dark:text-gray-300">Category Average</span>
         </div>
     </div>
 </div>

@@ -9,12 +9,12 @@
     let container: HTMLDivElement;
     let width: number;
     const height = 500;
-    const margin = { top: 40, right: 120, bottom: 40, left: 120 };
+    const margin = { top: 40, right: 40, bottom: 40, left: 0 };
     
     const colors = {
         entirelyPositive: '#2E7D33',
         somewhatPositive: '#4CAF50',
-        neutral: '#9E9E9E',
+        neutral: '#C1A46E',
         somewhatNegative: '#ff7171',
         entirelyNegative: '#ff5151'
     };
@@ -110,7 +110,7 @@
                 return `translate(${pos})`;
             })
             .attr("text-anchor", d => {
-                const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+                const midangle = d.startAngle / 1.2 + (d.endAngle - d.startAngle) / 2;
                 return midangle < Math.PI ? "start" : "end";
             })
             .attr("fill", "#666")
@@ -128,8 +128,9 @@
                 text.append("tspan")
                     .attr("x", "0")
                     .attr("fill", "#ff1515")
+                    .attr("font-weight","800")
                     .attr("class", "dark:fill-red-400")
-                    .attr("dy", "2.725em")
+                    .attr("dy", "1.725em")
                     .text(`${d.data[1]} (${percentage}%)`);
             });
             
