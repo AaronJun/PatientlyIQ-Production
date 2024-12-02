@@ -522,19 +522,19 @@ $: {
 
   .drawer {
     position: relative;
-    width: 50vw;
+    width: 55vw;
     height: 100%;
     background-color: white;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
+    z-index: 1000;
     overflow-y: auto;
     border-left: 5px solid;
-    padding: 2rem 2rem 2rem 2rem;
+    padding: 0rem 1.5rem 1rem 1rem;
     box-sizing: border-box;
   }
 
   h2 {
-      font-size: 1.825rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: #292F58;
       margin-left: -0.125rem;
@@ -545,27 +545,26 @@ $: {
   h4.detail {
       font-weight: 800;
       font-family: "IBM Plex Mono", 1rem;
-      font-size: .725rem;
+      font-size: .625rem;
       color: #7c7c7c;
       text-transform: uppercase;
   }
 
   .drawer-content {
-      padding: 3rem 2rem 5rem 1rem;
+      padding: 1rem 1rem 2rem 1rem;
   }
 
   .close-button {
       position: absolute;
       right: 1rem;
-      top: 3.5rem;
       background: none;
       border: none;
       cursor: pointer;
-      color: #878787;
-      font-size: 1.35rem;
+      color: #424242;
+      font-size: 1.125rem;
       font-weight: 400;
       font-family: "IBM Plex Mono", monospace;
-      margin-top: 1rem;
+      margin-top: 1.25rem;
       z-index: 1002;
   }
 
@@ -599,7 +598,7 @@ $: {
   h3 {
       font-weight: 800;
       cursor: pointer;
-      font-size: .75rem;
+      font-size: .725rem;
       text-transform: uppercase;
       color: #292F58;
       margin-bottom: 12px;

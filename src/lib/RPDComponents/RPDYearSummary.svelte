@@ -130,7 +130,7 @@
 {/if}
 
 <style>
-  .horizontal-panel {
+.horizontal-panel {
     max-width: 425px;
     height: 100%;
     padding-top: 5rem;
@@ -138,7 +138,7 @@
     border-right: 1px dotted #e0e0e0;
   }
 
-  .area-tabs {
+.area-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.325rem;
@@ -181,9 +181,9 @@
   }
 
   .entry-card {
-    min-width: 320px;
-    max-width: 410px;
-    height: 100px;
+    min-width: 95%;
+    max-width: 325px;
+    height: 100%;
     margin-bottom: .525rem;
     flex-shrink: 0;
     background: #f8f8f8;
@@ -192,7 +192,7 @@
   }
 
   .card-content {
-    padding: 1rem 1rem 0rem 1rem;
+    padding: .5725rem .725rem 1rem .5725rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

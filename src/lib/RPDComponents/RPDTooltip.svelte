@@ -55,15 +55,13 @@
     position: fixed;
     margin: 2rem 0 0 2rem;
     background-color: rgba(255, 255, 255, 0.962);    
-    border: .5px solid #ccc;
-    border-radius: 4px;
+    border: .5px solid #373737;
     padding: 1rem .5rem .5rem .5rem;
-    font-size: 14px;
+    font-size: 12px;
     pointer-events: none;
     z-index: 1000;
     min-width: 300px;
     max-width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .tooltip::before {
@@ -74,8 +72,6 @@
     right: 0;
     height: .625rem;
     background-color: var(--border-color);
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
   }
 
   .tooltip-content {
@@ -88,20 +84,18 @@
   }
 
   p {
-    margin: 4px 0;
+    margin: 1px 0;
   }
 
 
 .sponsor, .sponsor-count {
   font-weight: 800;
-  font-size: .8725rem;
-  line-height: 1.15rem;;
-  color: #161616;
+  font-size: .725rem;
+  color: #6f6f6f;
 }
 
 .therapeutic-area {
-  font-size: 0.6725rem;
-  line-height: 1rem;;
+  font-size: .725rem;
   max-width: 100%;
   text-transform: capitalize;
   font-weight: 800;
@@ -109,14 +103,13 @@
 }
 
 .drug-name {
-  font-size: 1rem;
-  font-weight: 00;
-  color: #555;
+  font-size: .725rem;
+  font-weight: 800;
+  color: #6f6f6f;
 }
 
 .therapeutic-area {
-  font-size: 0.8725rem;
-  line-height: 1rem;;
+  font-size: .725rem;
   max-width: 100%;
   text-transform: capitalize;
   font-weight: 800;
@@ -124,12 +117,11 @@
 }
 
 .indication {
-  font-size: 0.825rem;
-  line-height: 1rem;
-  font-weight: 400;
-  color: #2e2e2e;
+  font-size: .725rem;
+  font-weight: 800;
+  color: #6f6f6f;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: show;
   text-overflow: ellipsis;
   text-transform: capitalize;
   max-width: 250px;
@@ -138,23 +130,23 @@
 .entry-title {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
   justify-content: left;
   align-items: center;
+  gap: 0.725rem;
   margin-bottom: 1.15rem;
 }
 
 .entry-bottom {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 0.725rem;
   justify-content: left;
   align-items: center;
   margin-bottom: 0.425rem;
 }
 
 .drugname {
-  font-size: 1.125rem;
+  font-size: .945rem;
   line-height: 1.25rem;
   font-weight: 400;
   color: #2e2e2e;
