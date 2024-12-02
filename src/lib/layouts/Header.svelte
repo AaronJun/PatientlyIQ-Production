@@ -53,28 +53,6 @@
 				<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
 				<span class="hidden sm:inline">Patiently IQ</span>
 			</a>
-			
-			<!-- Tools Dropdown - Desktop -->
-			<div class="hidden md:block relative group">
-				<button class="flex items-center space-x-1 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
-					<span>Tools</span>
-					<ChevronDown class="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
-				</button>
-				
-				<!-- Dropdown Menu -->
-				<div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-					<div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 min-w-[160px] overflow-hidden">
-						{#each toolsLinks as link}
-							<a 
-								href={link.href}
-								class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors duration-150"
-							>
-								{link.label}
-							</a>
-						{/each}
-					</div>
-				</div>
-			</div>
 		</div>
 	
 		<div class="ml-auto flex h-full items-center">

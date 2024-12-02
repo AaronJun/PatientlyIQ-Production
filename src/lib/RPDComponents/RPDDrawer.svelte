@@ -2,7 +2,18 @@
   import { fade, fly } from 'svelte/transition';
   import { circInOut } from 'svelte/easing';
   import SaleBenchmarks from './SaleBenchmarks.svelte';
+  import DrugDescription from './DrugDescription.svelte';
   import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
+  import { 
+    ArrowRight, 
+    ArrowUpRight,
+    Building, 
+    ReminderMedical, 
+    Medication, 
+    Stethoscope, 
+    WhitePaper, 
+    Money 
+  } from 'carbon-icons-svelte';
 
   export let isOpen: boolean = false;
   export let onClose: () => void;
@@ -11,15 +22,6 @@
   export let color: string;
   export let sponsorData: any = null;
 
-$: {
-  if (sponsorData) {
-    currentView = 'sponsor';
-    currentViewTitle = sponsorData.sponsor;
-    displayData = sponsorData.sponsorData[0] || {};
-    color = getColorForTherapeuticArea(displayData.name);
-  }
-}
-
   const ANIMATION_DURATION = 525;
   const TEXT_ANIMATION_DURATION = 300;
 
@@ -27,46 +29,54 @@ $: {
   let currentViewTitle = '';
   let displayData: any = data;
   let isTransitioning = false;
-  let breadcrumbs: string[] = ['Home'];
   let searchTerm = "";
 
-  // Update this reactive statement to handle sponsorData
   $: {
     if (sponsorData) {
       currentView = 'sponsor';
       currentViewTitle = sponsorData.sponsor;
-      displayData = sponsorData.sponsorData[0] || {}; // Use the first entry as display data
+      displayData = sponsorData.sponsorData[0] || {};
       color = getColorForTherapeuticArea(displayData.name);
-    } else {
-      displayData = data;
-      currentView = 'original';
-      color = getColorForTherapeuticArea(data.name);
     }
   }
 
   $: yearData = constellationData
-      .filter(d => d.Year === displayData.Year)
-      .sort((a, b) => {
-          const dateA = new Date(`${a.Year}-${a.Month}-${a.Date}`);
-          const dateB = new Date(`${b.Year}-${b.Month}-${b.Date}`);
-          return dateA.getTime() - dateB.getTime();
-      });
-  
+    .filter(d => d.Year === displayData.Year)
+    .sort((a, b) => {
+      const dateA = new Date(`${a.Year}-${a.Month}-${a.Date}`);
+      const dateB = new Date(`${b.Year}-${b.Month}-${b.Date}`);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+  function showTreatmentType(type: string) {
+    const typeData = constellationData.filter(d => d["Treatment Type"] === type);
+    currentView = 'treatmentType';
+    currentViewTitle = `${type}`;
+    return typeData;
+  }
+
+  function showTreatmentDetail(detail: string) {
+    const detailData = constellationData.filter(d => d["MOA"] === detail);
+    currentView = 'treatmentDetail';
+    currentViewTitle = `${detail}`;
+    return detailData;
+  }
+
   function formatDate(month: string, date: string, year: string): string {
-      const monthNames = ["January", "February", "March", "April", "May", "June",
+    const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"];
-      const monthIndex = monthNames.indexOf(month);
-      if (monthIndex === -1) {
-          console.error(`Invalid month: ${month}`);
-          return `${date}, ${year}`;
-      }
-      return `${monthNames[monthIndex]} ${date}, ${year}`;
+    const monthIndex = monthNames.indexOf(month);
+    if (monthIndex === -1) {
+      console.error(`Invalid month: ${month}`);
+      return `${date}, ${year}`;
+    }
+    return `${monthNames[monthIndex]} ${date}, ${year}`;
   }
 
   function formatSalePrice(price: string): string {
-      if (!price || price === "NA") return 'N/A';
-      const numPrice = parseFloat(price.replace(/[^0-9.-]+/g,""));
-      return numPrice ? `$${numPrice.toFixed(2)} million` : 'N/A';
+    if (!price || price === "NA") return 'N/A';
+    const numPrice = parseFloat(price.replace(/[^0-9.-]+/g,""));
+    return numPrice ? `$${numPrice.toFixed(2)} million` : 'N/A';
   }
 
   function showSponsorData(sponsor: string) {
@@ -75,60 +85,57 @@ $: {
       (d.Sponsor === sponsor && d.Purchased === "Y") || d.Purchaser === sponsor
     );
     currentView = 'sponsor';
-    currentViewTitle = `${sponsor}`;
+    currentViewTitle = sponsor;
     return { sponsorData, sponsorTransactions };
   }
 
   function showTherapeuticAreaData(ta: string) {
-      const taData = constellationData.filter(d => d.name === ta);
-      currentView = 'ta';
-      currentViewTitle = `${ta}`;
-      return taData;
+    const taData = constellationData.filter(d => d.name === ta);
+    currentView = 'ta';
+    currentViewTitle = ta;
+    return taData;
   }
 
   function showIndicationData(indication: string) {
-      const indicationData = constellationData.filter(d => d.id === indication);
-      currentView = 'indication';
-      currentViewTitle = `${indication}`;
-      return indicationData;
+    const indicationData = constellationData.filter(d => d.id === indication);
+    currentView = 'indication';
+    currentViewTitle = indication;
+    return indicationData;
   }
 
   function showEntryData(entry: any) {
-      displayData = entry;
-      currentView = 'original';
-      color = getColorForTherapeuticArea(entry.name);
+    displayData = entry;
+    currentView = 'original';
+    color = getColorForTherapeuticArea(entry.name);
   }
 
   function showSaleBenchmarks() {
-      currentView = 'saleBenchmarks';
-      currentViewTitle = 'Voucher Transactions';
+    currentView = 'saleBenchmarks';
+    currentViewTitle = 'Voucher Transactions';
   }
 
   function backToOriginalView() {
-      console.log('Returning to original view');
-      displayData = data;
-      currentView = 'original';
-      color = getColorForTherapeuticArea(data.name);
+    displayData = data;
+    currentView = 'original';
+    color = getColorForTherapeuticArea(data.name);
   }
 
   function closeDrawer() {
-      console.log('Closing drawer');
-      if (currentView !== 'original') {
-          backToOriginalView();
-      } else {
-          console.log('Calling onClose');
-          onClose();
-      }
+    if (currentView !== 'original') {
+      backToOriginalView();
+    } else {
+      onClose();
+    }
   }
 
   function handleClick(action) {
-      if (!isTransitioning) {
-          isTransitioning = true;
-          action();
-          setTimeout(() => {
-              isTransitioning = false;
-          }, TEXT_ANIMATION_DURATION);
-      }
+    if (!isTransitioning) {
+      isTransitioning = true;
+      action();
+      setTimeout(() => {
+        isTransitioning = false;
+      }, TEXT_ANIMATION_DURATION);
+    }
   }
 
   function handleLearnMore(action) {
@@ -142,27 +149,27 @@ $: {
   }
 
   function handleKeydown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-          closeDrawer();
-      }
+    if (event.key === 'Escape') {
+      closeDrawer();
+    }
   }
 
   function getColorForTherapeuticArea(ta: string): string {
-      const colorMap = {
-        "Gastroenterology": "#4CAE3B",
-        "Neurology": "#4D4DFF",
-        "Ophthalmology": "#E79028",
-        "Immunology": "#EA38A5",
-        "Metabolic": "#133B11",
-        "Dermatology": "#559368",
-        "Hematology": "#CF3630",
-        "Orthopedics": "#441780",
-        "Respiratory": "#CBC09F",
-        "Nephrology": "#ACA3DB",
-        "Oncology": "#FF84DE",
-        "Hepatology": "#FF00D4",
-      };
-      return colorMap[ta] || "#000000"; // Default to black if no match
+    const colorMap = {
+      "Gastroenterology": "#4CAE3B",
+      "Neurology": "#4D4DFF",
+      "Ophthalmology": "#E79028",
+      "Immunology": "#EA38A5",
+      "Metabolic": "#133B11",
+      "Dermatology": "#559368",
+      "Hematology": "#CF3630",
+      "Orthopedics": "#441780",
+      "Respiratory": "#CBC09F",
+      "Nephrology": "#ACA3DB",
+      "Oncology": "#FF84DE",
+      "Hepatology": "#FF00D4",
+    };
+    return colorMap[ta] || "#000000";
   }
 
   function filterData(data, searchTerm) {
@@ -178,64 +185,76 @@ $: {
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="drawer-backdrop"
-   on:click={closeDrawer} 
-   transition:fly={{duration: ANIMATION_DURATION}}>
-
-  <div class="drawer" 
-       on:click|stopPropagation
-       transition:fly={{x: 100, duration: ANIMATION_DURATION, easing: circInOut}}>
-
-    <button class="close-button" 
-            on:click={() => handleClick(closeDrawer)}>&times;</button>
+<div class="drawer-backdrop" on:click={closeDrawer} transition:fly={{duration: ANIMATION_DURATION}}>
+  <div class="drawer" on:click|stopPropagation transition:fly={{x: 100, duration: ANIMATION_DURATION, easing: circInOut}}>
+    <button class="close-button" on:click={() => handleClick(closeDrawer)}>&times;</button>
 
     <div class="drawer-content">
       {#if currentView === 'original'}
         <div class="view-header">
-          <h3>{displayData.Year}</h3>
-          <h2 style="color: {color};" 
-              in:fly={{duration: TEXT_ANIMATION_DURATION}}>
+          <h3 class="year">{displayData.Year}</h3>
+        <div class="view-subheader">
+          <h2 style="color: {color};" in:fly={{duration: TEXT_ANIMATION_DURATION}}>
             {displayData["Drug Name"]}
           </h2>
-   
-          <button class="sponsor-id" 
-                  on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))}
-                  in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-            {displayData.Sponsor}
+          <button class="sponsor-id" on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            {displayData.Sponsor} <ArrowUpRight size={12} />
           </button>
         </div>
+        </div>  
+
+        <!-- <DrugDescription {displayData} /> -->
+
         <div class="table-container">
-          <h3 in:fade={{duration: TEXT_ANIMATION_DURATION}}>Drug Details</h3>
           <table>
             <tbody>
-              {#each ['Therapeutic Area', 'Indication', 'FDA-Approved Therapy Prior to 2012', 'Treatment Type', 'Treatment Detail'] as field}
+              <h3>Disease Information</h3>
+              {#each [
+                { label: 'Therapeutic Area', icon: ReminderMedical, value: displayData.name },
+                { label: 'Indication', icon: Stethoscope, value: displayData.id }
+              ] as { label, icon, value }}
                 <tr class="clickable-row" 
-                    on:click={() => handleClick(() => field === 'Therapeutic Area' ? showTherapeuticAreaData(displayData.name) : 
-                                    field === 'Indication' ? showIndicationData(displayData.id) : null)}
+                    on:click={() => handleClick(() => label === 'Therapeutic Area' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))}
                     tabindex="0" role="button">
-                  <th class="label">{field}</th>
+                  <th class="label">
+                    <svelte:component this={icon} size={12} /> {label}
+                  </th>
                   <td in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-                    {#if field === 'Therapeutic Area'}
-                      {displayData.name}
-                      <!-- svelte-ignore a11y-click-events-have-key-events -->
-                      <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(() => showTherapeuticAreaData(displayData.name))}>
+                    {value}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(() => label === 'Therapeutic Area' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))}>
+                      All entries &rarr;
+                    </span>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <tbody>
+              <h3>Treatment Information</h3>
+              {#each [
+                { label: 'Previously Approved Therapies', icon: WhitePaper, value: displayData["FDA-Approved Therapy Prior to 2012"] || 'N/A' },
+                { label: 'Treatment Type', icon: Medication, value: displayData["Treatment Type"], onClick: () => showTreatmentType(displayData["Treatment Type"]) },
+                { label: 'Treatment Detail', icon: Building, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
+              ] as { label, icon, value, onClick }}
+                <tr class="clickable-row" 
+                    on:click={() => handleClick(onClick)}
+                    tabindex="0" role="button">
+                  <th class="label">
+                    <svelte:component this={icon} size={12} /> {label}
+                  </th>
+                  <td in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+                    {value}
+                    {#if value !== 'N/A' && label !== 'Previously Approved Therapies'}
+                      <!-- svelte-ignore a11y-no-static-element-interactions -->
+                      <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(onClick)}>
                         All entries &rarr;
                       </span>
-                    {:else if field === 'Indication'}
-                      {displayData.id}
-                      <!-- svelte-ignore a11y-click-events-have-key-events -->
-                      <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(() => showIndicationData(displayData.id))}>
-                        All entries &rarr;
-                      </span>
-                    {:else if field === 'FDA-Approved Therapy Prior to 2012'}
-                      {displayData["FDA-Approved Therapy Prior to 2012"] || 'N/A'}
-                    {:else if field === 'Treatment Type'}
-                      {displayData["Treatment Type"]}
-                    {:else if field === 'Treatment Detail'}
-                      {displayData["MOA"] || 'N/A'}
                     {/if}
                   </td>
                 </tr>
@@ -245,13 +264,9 @@ $: {
         </div>
 
         <div class="table-container">
-          <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
-          <h3 in:fade={{duration: TEXT_ANIMATION_DURATION}}
-              on:click={() => handleClick(showSaleBenchmarks)}
-              tabindex="0" role="button"
-              class="clickable">
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <h3 in:fade={{duration: TEXT_ANIMATION_DURATION}} on:click={() => handleClick(showSaleBenchmarks)} tabindex="0">
             Voucher Transaction
-            <span class="learn-more">Learn more &rarr;</span>
           </h3>
           <table>
             <tbody>
@@ -285,6 +300,7 @@ $: {
             </ToolbarContent>
           </Toolbar>
 
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
           <DataTable
             size="medium"
             stickyHeader
@@ -304,11 +320,8 @@ $: {
           >
             <svelte:fragment slot="cell" let:row let:cell>
               {#if cell.key === 'drugName'}
-                <div
-                  class="clickable-cell"
-                  class:active={isCurrentEntry(row)}
-                  on:click={() => handleClick(() => showEntryData(yearData.find(e => e["Drug Name"] === row.id)))}
-                >
+                <div class="clickable-cell" class:active={isCurrentEntry(row)}
+                     on:click={() => handleClick(() => showEntryData(yearData.find(e => e["Drug Name"] === row.id)))}>
                   {cell.value}
                 </div>
               {:else}
@@ -317,19 +330,83 @@ $: {
             </svelte:fragment>
           </DataTable>
         </div>
+
+      {:else if currentView === 'treatmentType' || currentView === 'treatmentDetail'}
+        <div> 
+          <button class="back-link" on:click={() => handleClick(closeDrawer)} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            &larr; Back
+          </button>
+
+        <div class="detailview-header">
+          <h2 style="color: {color};" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            {currentViewTitle}
+          </h2>
+          <h4 class="detail" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            All Entries
+          </h4>
+        </div>
+        </div>
+
+        <div class="table-container">
+          <Toolbar size="sm">
+            <ToolbarContent>
+              <ToolbarSearch bind:value={searchTerm} />
+            </ToolbarContent>
+          </Toolbar>
+          <DataTable
+            headers={[
+              { key: 'date', value: 'Date' },
+              { key: 'sponsor', value: 'Sponsor' },
+              { key: 'drugName', value: 'Drug Name' },
+              { key: 'therapeuticArea', value: 'Therapeutic Area' },
+              { key: 'indication', value: 'Indication' },
+              { key: currentView === 'treatmentType' ? 'treatmentType' : 'treatmentDetail', 
+                value: currentView === 'treatmentType' ? 'Treatment Type' : 'Treatment Detail' }
+            ]}
+            rows={filterData((currentView === 'treatmentType' ? 
+              constellationData.filter(d => d["Treatment Type"] === displayData["Treatment Type"]) :
+              constellationData.filter(d => d["MOA"] === displayData["MOA"])).map(entry => ({
+                id: entry["Drug Name"],
+                date: formatDate(entry.Month, entry.Date, entry.Year),
+                sponsor: entry.Sponsor,
+                drugName: entry["Drug Name"],
+                therapeuticArea: entry.name || 'N/A',
+                indication: entry.id || 'N/A',
+                treatmentType: entry["Treatment Type"] || 'N/A',
+                treatmentDetail: entry["MOA"] || 'N/A'
+            })), searchTerm)}
+            sortable
+            zebra
+          >
+            <svelte:fragment slot="cell" let:row let:cell>
+              {#if cell.key === 'drugName'}
+                <div class="clickable-cell"
+                     on:click={() => handleClick(() => showEntryData(
+                       (currentView === 'treatmentType' ? 
+                         constellationData.filter(d => d["Treatment Type"] === displayData["Treatment Type"]) :
+                         constellationData.filter(d => d["MOA"] === displayData["MOA"]))
+                         .find(e => e["Drug Name"] === row.id)
+                     ))}>
+                  {cell.value}
+                </div>
+              {:else}
+                {cell.value}
+              {/if}
+            </svelte:fragment>
+          </DataTable>
+        </div>
+
       {:else if currentView === 'sponsor'}
-        <button class="back-link" 
-          on:click={() => handleClick(closeDrawer)}
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>&larr; Back
+        <button class="back-link" on:click={() => handleClick(closeDrawer)} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+          &larr; Back
         </button>
-        <div class="view-header"> 
-          <h2 style="color: {color};" 
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          {currentViewTitle}</h2>
-          
-          <h4 class="detail" 
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          Sponsor Overview</h4>
+        <div class="detailview-header"> 
+          <h2 style="color: {color};" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            {currentViewTitle}
+          </h2>
+          <h4 class="detail" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            Sponsor Overview
+          </h4>
         </div>
 
         {#if sponsorData || showSponsorData(displayData.Sponsor)}
@@ -339,14 +416,13 @@ $: {
             <h3 in:fade={{duration: TEXT_ANIMATION_DURATION}}>Vouchers Awarded</h3>
             <Toolbar size="sm">
               <ToolbarContent>
-                <ToolbarSearch 
-                bind:value={searchTerm} />
+                <ToolbarSearch bind:value={searchTerm} />
               </ToolbarContent>
             </Toolbar>
         
             <DataTable
-             size="medium"
-             stickyHeader
+              size="medium"
+              stickyHeader
               headers={[
                 { key: 'date', value: 'Date' },
                 { key: 'drugName', value: 'Drug Name' },
@@ -365,10 +441,8 @@ $: {
             >
               <svelte:fragment slot="cell" let:row let:cell>
                 {#if cell.key === 'drugName'}
-                  <div
-                    class="clickable-cell"
-                    on:click={() => handleClick(() => showEntryData(currentSponsorData.find(e => e["Drug Name"] === row.id)))}
-                  >
+                  <div class="clickable-cell"
+                       on:click={() => handleClick(() => showEntryData(currentSponsorData.find(e => e["Drug Name"] === row.id)))}>
                     {cell.value}
                   </div>
                 {:else}
@@ -383,14 +457,15 @@ $: {
               <h3 in:fade={{duration: TEXT_ANIMATION_DURATION}}>Voucher Transactions</h3>
               <Toolbar size="sm">
                 <ToolbarContent>
-              <ToolbarSearch bind:value={searchTerm} />
+                  <ToolbarSearch bind:value={searchTerm} />
                 </ToolbarContent>
               </Toolbar>
              
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
               <DataTable
-              size="medium"
-              stickyHeader             
-              headers={[
+                size="medium"
+                stickyHeader             
+                headers={[
                   { key: 'date', value: 'Date' },
                   { key: 'drugName', value: 'Drug Name' },
                   { key: 'role', value: 'Role' },
@@ -412,10 +487,8 @@ $: {
               >
                 <svelte:fragment slot="cell" let:row let:cell>
                   {#if cell.key === 'drugName'}
-                    <div
-                      class="clickable-cell"
-                      on:click={() => handleClick(() => showEntryData(sponsorTransactions.find(e => e["Drug Name"] === row.id)))}
-                    >
+                    <div class="clickable-cell"
+                         on:click={() => handleClick(() => showEntryData(sponsorTransactions.find(e => e["Drug Name"] === row.id)))}>
                       {cell.value}
                     </div>
                   {:else}
@@ -428,84 +501,83 @@ $: {
             <p>No voucher transactions found for this sponsor.</p>
           {/if}
         {/if}
+
       {:else if currentView === 'saleBenchmarks'}
         <div class="view-header"> 
-          <button class="back-link" 
-          on:click={() => handleClick(closeDrawer)}
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>&larr; Back
-        </button>
-        
-          <h2 style="color: {color};" 
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          {currentViewTitle}</h2>
-        </div>
-
-        <SaleBenchmarks {constellationData} />
-      {:else}
-        <div class="view-header"> 
-          <button class="back-link" 
-             on:click={() => handleClick(closeDrawer)}
-             in:fade={{duration: TEXT_ANIMATION_DURATION}}>&larr; Back
+          <button class="back-link" on:click={() => handleClick(closeDrawer)} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            &larr; Back
           </button>
-        
-          <h2 style="color: {color};" 
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          {currentViewTitle}</h2>
-          
-          <h4 class="detail" 
-          in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          All Entries </h4>
+          <h2 style="color: {color};" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            {currentViewTitle}
+          </h2>
         </div>
+        <SaleBenchmarks {constellationData} />
 
-        <div class="table-container">
-          <Toolbar size="sm">
-            <ToolbarContent>
-              <ToolbarSearch bind:value={searchTerm} />
-            </ToolbarContent>
-          </Toolbar>
-          <DataTable
-            headers={[
-              { key: 'date', value: 'Date' },
-              { key: 'sponsor', value: 'Sponsor' },
-              { key: 'drugName', value: 'Drug Name' },
-              { key: 'indication', value: 'Indication' },
-              { key: 'treatmentType', value: 'Treatment Type' },
-              { key: 'salePrice', value: 'Sale Price' }
-            ]}
-            rows={filterData((currentView === 'ta' ? showTherapeuticAreaData(displayData.name) :
-                showIndicationData(displayData.id)).map(entry => ({
-              id: entry["Drug Name"],
-              date: formatDate(entry.Month, entry.Date, entry.Year),
-              sponsor: entry.Sponsor,
-              drugName: entry["Drug Name"],
-              indication: entry.id || 'N/A',
-              treatmentType: entry["Treatment Type"] || 'N/A',
-              salePrice: formatSalePrice(entry["Sale  Price (USD, Millions)"])
-            })), searchTerm)}
-            sortable
-            zebra
-          >
-            <svelte:fragment slot="cell" let:row let:cell>
-              {#if cell.key === 'drugName'}
-                <div
-                  class="clickable-cell"
-                  on:click={() => handleClick(() => showEntryData(
-                    (currentView === 'ta' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))
-                      .find(e => e["Drug Name"] === row.id)
-                  ))}
-                >
-                  {cell.value}
-                </div>
-              {:else}
-                {cell.value}
-              {/if}
-            </svelte:fragment>
-          </DataTable>
+      {:else}
+        <div> 
+          <button class="back-link" on:click={() => handleClick(closeDrawer)} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            &larr; Back
+          </button>
+          <div class="detailview-header">
+          <h2 style="color: {color};" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            {currentViewTitle}
+          </h2>
+          <h4 class="detail" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+            All Entries
+          </h4>
         </div>
-      {/if}
-    </div> <!-- Close drawer-content -->
-  </div> <!-- Close drawer -->
-</div> <!-- Close drawer-backdrop -->
+      </div>
+
+<div class="custom-table">
+  <div class="table-search">
+    <Toolbar size="sm">
+      <ToolbarContent>
+        <ToolbarSearch bind:value={searchTerm} />
+      </ToolbarContent>
+    </Toolbar>
+  </div>
+
+    <DataTable
+      headers={[
+        { key: 'date', value: 'Date' },
+        { key: 'sponsor', value: 'Sponsor' },
+        { key: 'drugName', value: 'Drug Name' },
+        { key: 'indication', value: 'Indication' },
+        { key: 'treatmentType', value: 'Treatment Type' },
+        { key: 'salePrice', value: 'Sale Price' }
+      ]}
+      rows={filterData((currentView === 'ta' ? showTherapeuticAreaData(displayData.name) :
+          showIndicationData(displayData.id)).map(entry => ({
+        id: entry["Drug Name"],
+        date: formatDate(entry.Month, entry.Date, entry.Year),
+        sponsor: entry.Sponsor,
+        drugName: entry["Drug Name"],
+        indication: entry.id || 'N/A',
+        treatmentType: entry["Treatment Type"] || 'N/A',
+        salePrice: formatSalePrice(entry["Sale  Price (USD, Millions)"])
+      })), searchTerm)}
+      sortable
+      zebra
+    >
+  <svelte:fragment slot="cell" let:row let:cell>
+    {#if cell.key === 'drugName'}
+      <div class="clickable-cell"
+           on:click={() => handleClick(() => showEntryData(
+             (currentView === 'ta' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))
+               .find(e => e["Drug Name"] === row.id)
+           ))}>
+        {cell.value}
+      </div>
+    {:else}
+      {cell.value}
+    {/if}
+  </svelte:fragment>
+</DataTable>
+</div>
+{/if}
+</div>
+</div>
+</div>
 
 <style>
   .drawer-backdrop {
@@ -534,18 +606,17 @@ $: {
   }
 
   h2 {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      color: #292F58;
       margin-left: -0.125rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.125rem;
       text-transform: uppercase;
   }
 
   h4.detail {
       font-weight: 800;
       font-family: "IBM Plex Mono", 1rem;
-      font-size: .625rem;
+      font-size: .725rem;
       color: #7c7c7c;
       text-transform: uppercase;
   }
@@ -556,7 +627,7 @@ $: {
 
   .close-button {
       position: absolute;
-      right: 1rem;
+      right: 2.25rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -565,12 +636,32 @@ $: {
       font-weight: 400;
       font-family: "IBM Plex Mono", monospace;
       margin-top: 1.25rem;
+      margin-right: 2.25rem;
       z-index: 1002;
   }
 
   .close-button:hover {
       color: #EC5E57;
       font-weight: 800;
+  }
+
+  .metadata-row {
+    display: flex;
+  }
+
+  .metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.725rem;
+    font-weight: 600;
+    color: #56709f;
+  }
+
+  .sponsor-id {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .sponsor-id, .view-id {
@@ -589,48 +680,28 @@ $: {
   }
 
   .table-container {
-      min-height: 250px;
       overflow-y: auto;
       max-width: 95%;
-      margin: 2.25rem 0 2.25rem 0;
+      margin: 1.25rem 0 2.25rem 0;
   }
 
   h3 {
       font-weight: 800;
       cursor: pointer;
       font-size: .725rem;
-      text-transform: uppercase;
-      color: #292F58;
-      margin-bottom: 12px;
+      text-transform: capitalize;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #d95656;
+      margin-bottom: .5rem;
   }
 
   .label {
+      display: flex;
+      gap: 0.525rem;
       font-size: .65rem;
-      max-width: 150px;
-      line-height: 1rem;
+      color: #292F58;
       font-family: "IBM Plex Mono", monospace;
-      font-weight: 600;
-  }
-
-  .back-link {
-    cursor: pointer;
-    color: #737dc0;
-    font-size: 2.25rem;
-    font-weight: 800;
-    font-family: "IBM Plex Mono", monospace;
-    margin-bottom: rem;
-    right: 1rem;
-    top: 1.25rem;
-    background: none;
-    border: none;
-    padding: 0;
-    z-index: 1002;
-  }
-
-  .back-link:hover {
-    color: #37587e;
-    font-weight: 800;
-    text-decoration: underline;
+      font-weight: 400;
   }
 
   .clickable, .sponsor-id, .back-link {
@@ -652,14 +723,33 @@ $: {
   }
 
   .view-header {
-      display: column;
-      justify-content: left;
-      border-bottom: .5px solid #292F58;
-      align-items: center;
-      padding-bottom: 1.725rem;
+      display: row;
+      border-bottom: 1.25px solid #161616;
       padding-top: 1.25rem;
-      margin-bottom: 2rem;
+      margin-right: 2.25rem;
+      margin-bottom: 1.725rem;
   }
+
+  .view-subheader {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      padding-bottom: 0.725rem;
+      padding-top: 1.25rem;
+    
+  }
+
+  .detailview-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1.25px solid #161616;
+      padding-top: 1.25rem;
+      padding-bottom: .725rem;
+      margin-bottom: 1.725rem;
+      margin-right: 2.25rem;
+  }
+
 
   table {
       width: 100%;
@@ -683,7 +773,7 @@ $: {
       font-family: "IBM Plex Mono", monospace;
       top: 0;
       padding-top: 1rem;
-      padding-bottom: 1rem;
+      padding-bottom: .25rem;
       font-weight: 600;
       text-align: left;
   }
@@ -697,14 +787,17 @@ $: {
   }
 
   tr {
-    border-bottom: .5px #292F58;
-    border-style: dotted;
+    display: flex;
+    flex-direction: row;
+    border-bottom: .5px dotted #292F58;
+    justify-content: space-between;
+    align-items: left;
+    gap: 2rem;
   }
 
   tr:hover {
-      background-color: #b7e0fe;
-      cursor: pointer;
-      border: 1px dotted #737dc0;
+    font-weight: 800;
+    color: #ff1515;
   }
 
   tr.active {
@@ -718,16 +811,40 @@ $: {
   }
 
   .learn-more {
-    font-size: 0.75rem;
-    color: #56709f;
-    cursor: pointer;
-    margin-left: 0.5rem;
+    font-size: 0.625rem;
+    padding: .25rem .5rem .25rem .5rem;
+    background-color: #37587e;
+    border-radius: 20px;
+    color: #eff7ff;
+    cursor:rgb(226, 226, 226);
+    margin-left: 2.25rem;
     font-weight: 600;
   }
 
+  .back-link {
+    font-size: 0.725rem;
+    padding: .425rem .75rem .425rem .75rem;
+    background-color: #37587e;
+    border-radius: 20px;
+    color: #eff7ff;
+    cursor:rgb(226, 226, 226);
+    font-weight: 600;
+  }
+
+  .back-link:hover {
+    color:#b7e0fe;
+  }
+
+  .year {
+    font-size: .625rem;
+    color: #313131;
+    padding: .25rem .5rem .25rem 0rem;
+    text-transform: uppercase;
+    margin-bottom: .25rem;
+  }
+
   .learn-more:hover {
-    color: #37587e;
-    text-decoration: underline;
+    background-color: #377e6b;
   }
 
   /* Ensure the learn more text doesn't wrap */
@@ -750,7 +867,16 @@ $: {
     width: 100%;
   }
 
-  :global(.bx--toolbar-content) {
-    margin-bottom: 1rem;
+  :global(.bx--data-table th) {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #292F58;
+   font-size: 10px;
   }
+
+  :global(.bx--toolbar-content) {
+    margin-bottom: 0.725rem;
+  }
+  
 </style>

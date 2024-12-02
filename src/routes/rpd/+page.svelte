@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { RadialTimeline, YearlySummary } from '$lib/componentStores';
+  import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
   import Tooltip from '$lib/RPDComponents/RPDTooltip.svelte';
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
   import RPDNavDrawer from '$lib/RPDComponents/RPDNavGuide.svelte';
+  import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
   import constellationDataRaw from '../data/RPDConstellationData.json';
 
   interface RPDData {
@@ -26,7 +28,7 @@
     Purchaser?: string;
   }
 
-  let currentYear = "2012";   
+let currentYear = "2012";   
   let hoveredPetalData: ConstellationEntry | null = null;
   let isDrawerOpen = false;
   let selectedData: ConstellationEntry | null = null;
@@ -141,9 +143,15 @@
   });
 </script>
 
+<RPDHeader />
 <div class="page-container">
   <RPDNavDrawer />
   <div class="info-panel">
+ <RPDPageSummary 
+  rpdPrvData={processedRpdPrvData}
+  constellationData={processedConstellationData} 
+  {currentYear} 
+/>
     {#if $YearlySummary && processedConstellationData.length > 0}
       <svelte:component 
         this={$YearlySummary}
@@ -193,24 +201,28 @@
 </div>
 
 <style>
+
 .page-container {
   position: relative;
   display: grid;
   grid-template-columns: 25vw 75vw;
   height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* Prevent page level scrolling */
 }
 
 .timeline-container {
-  padding-top: 5vh;
-  padding-bottom: 5vh;
+  padding: 2rem 2rem 2rem 1.25rem;
+  height: calc(100vh - 4rem); /* Account for padding */
+  overflow: hidden; /* Let the inner component handle scrolling */
+  position: relative;
 }
 
 .info-panel {
-  background-color: #fff;
-  height: 90vh;
+  background-color: #fefefef5;
+  border: .25px solid #e0e0e0;
+  height: calc(100vh - 4rem); /* Account for padding */
   padding: 1rem;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 h3 {

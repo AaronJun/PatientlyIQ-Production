@@ -21,7 +21,7 @@
   <Navbar />
 {/if} -->
 <Header />
-<div>
+<div class="mt-14">
   <slot />
 </div>
 <Footer />

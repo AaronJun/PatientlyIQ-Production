@@ -131,11 +131,12 @@
 
 <style>
 .horizontal-panel {
-    max-width: 425px;
-    height: 100%;
-    padding-top: 5rem;
+    max-width: 25vw;
+    height: 62.5%;
+    padding: 2.25rem 1.25rem 2.25rem 1rem;
+    margin-top: 5.25vh;
+    border-top: .25px solid #e0e0e0;
     overflow-x: hidden;
-    border-right: 1px dotted #e0e0e0;
   }
 
 .area-tabs {
@@ -181,7 +182,7 @@
   }
 
   .entry-card {
-    min-width: 95%;
+    min-width: 97.25%;
     max-width: 325px;
     height: 100%;
     margin-bottom: .525rem;
@@ -207,7 +208,7 @@
   }
 
   .card-header {
-    margin-bottom: .625rem;
+    margin-bottom: .3425rem;
     border-bottom: .5px dotte;
   }
 
