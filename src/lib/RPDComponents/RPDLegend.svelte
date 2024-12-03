@@ -4,34 +4,7 @@
   import "carbon-components-svelte/css/all.css";
   
   export let therapeuticAreaColors: Record<string, string>;
-  
-  let fourPetalSVG: string;
-  let isExpanded = true;
-
-  $: sortedEntries = Object.entries(therapeuticAreaColors).sort((a, b) => a[0].localeCompare(b[0]));
-
-  onMount(async () => {
-    const response = await fetch('/Petals/4Petal.svg');
-    fourPetalSVG = await response.text();
-  });
-
-  function toggleExpand() {
-    isExpanded = !isExpanded;
-  }
 </script>
-
-<div class="combined-container" class:collapsed={!isExpanded}>
-<button class="toggle-button" on:click={toggleExpand}>
-  {#if isExpanded}
-    <ChevronRight size={16} />
-  {:else}
-    <ChevronLeft size={16} />
-  {/if}
-</button>
-
-<div class="combined-label" class:visible={!isExpanded}>
-<Help size={22} />
-  </div>
 
 <div class="combined-content" class:hidden={!isExpanded}>
   <div class="legend-section">
@@ -45,43 +18,8 @@
       {/each}
     </div>
   </div>
-  
-  <div class="nav-section">
-    <h4>How to Navigate</h4>
-    <div class="nav">
-      <div class="navigation-squares">
-        <div class="square"><ArrowUp size="12"/></div>
-        <div class="square"><ArrowLeft size="12"/></div>
-      </div>
-      <p>The up + left keys navigate to the past.</p>
-    </div>  
+  </div>
 
-    <div class="nav">
-      <div class="navigation-squares">
-        <div class="square"><ArrowDown size="12"/></div>
-        <div class="square"><ArrowRight size="12"/></div>
-      </div>
-      <p>The down + right keys navigate to the future.</p>
-    </div> 
-  </div>
-  
-  <div class="legend-section">
-    <h4>How to Read</h4>
-    <div class="nav">            
-      <div class="cluster">
-        {@html fourPetalSVG}
-      </div>
-      <p>Each petal represents one awarded voucher from the year.</p>
-    </div>
-    <div class="nav">
-    <div class="line-holder">
-      <div class="vertical-line"></div>
-    </div>
-    <p>Each stem's height is based on the year's total RPD designations.</p>
-  </div>
-  </div>
-</div>
-</div>
 
 <style>
 .combined-container {

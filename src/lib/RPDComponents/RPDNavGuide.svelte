@@ -12,21 +12,6 @@
   });
 </script>
 
-<div class="navigation-drawer" class:open={isOpen}>
-  <button 
-    class="toggle-button" 
-    on:click={() => isOpen = !isOpen}
-    aria-label={isOpen ? 'Close navigation guide' : 'Open navigation guide'}
-  >
-    {#if isOpen}
-      <ChevronRight size={16} />
-    {:else}
-      <ChevronLeft size={16} />
-    {/if}
-  </button>
-
-  {#if isOpen}
-    <div class="drawer-content" transition:slide={{duration: 400}}>
       <div class="section">
         <h3>Navigation</h3>
         <div class="nav-item">
@@ -56,15 +41,9 @@
         </div>
         </div>
       </div>
-    </div>
-  {/if}
-</div>
 
 <style>
   .navigation-drawer {
-    position: fixed;
-    height: 100vh;
-    right: 0;
     background-color: #fffbf9;
     z-index: 50;
     display: flex;
@@ -73,19 +52,19 @@
   .toggle-button {
     background-color: #C9623F;
     color: white;
-    width: 1.25rem;
+    width: 2rem;
+    height: 10rem;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    margin-top: 10.5rem;
     cursor: pointer;
   }
 
   .drawer-content {
+    border: .5px solid #ccc;
     display: flex;
     flex-direction: column;
-    padding: 12.5rem 4.25rem 0 2.25rem;
-    max-width: 30vw;
   }
 
   .section {
@@ -95,9 +74,9 @@
   h3 {
     font-weight: 800;
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: .625rem;
     color: #C9623F;
-    margin-bottom: 1rem;
+    margin-bottom: .62rem;
   }
 
   .nav-item {
@@ -133,6 +112,7 @@
   .cluster {
     width: 34px;
     gap: .25rem;
+    
   }
 
   .line-guide {
@@ -150,6 +130,6 @@
   }
 
   p {
-    font-size: 0.875rem;
+    font-size: 0.8275rem;
   }
 </style>

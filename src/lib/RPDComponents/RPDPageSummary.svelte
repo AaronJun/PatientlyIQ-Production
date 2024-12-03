@@ -70,7 +70,7 @@
     <p class="summary-text">
       There were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers awarded.
-      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold for a total of
+      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>
   {/if}

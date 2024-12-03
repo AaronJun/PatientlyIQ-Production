@@ -16,22 +16,19 @@
   <style>
     .rpd-header {
       border-bottom: 1px solid #e5e7eb;
-      padding: 1rem 2rem;
       width: 100%;
     }
   
     .header-content {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1920px;
-      margin: 0 auto;
+      padding: 2.25rem 0 1.25rem 2.25rem;
+      align-items: left;
+      justify-content: left;
     }
   
     .header-left {
       display: flex;
-      align-items: center;
-      gap: 1rem;
+      align-items: left;
     }
   
     .database-icon {
@@ -42,7 +39,6 @@
       font-size: 1.25rem;
       font-weight: 400;
       color: #0c0c0c;
-      margin: 0;
     }
   
     .title-section p {
@@ -54,7 +50,6 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
     }
   
     .view-controls {

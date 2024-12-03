@@ -240,7 +240,7 @@
               {#each [
                 { label: 'Previously Approved Therapies', icon: WhitePaper, value: displayData["FDA-Approved Therapy Prior to 2012"] || 'N/A' },
                 { label: 'Treatment Type', icon: Medication, value: displayData["Treatment Type"], onClick: () => showTreatmentType(displayData["Treatment Type"]) },
-                { label: 'Treatment Detail', icon: Building, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
+                { label: 'Mechanism of Action', icon: Medication, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
               ] as { label, icon, value, onClick }}
                 <tr class="clickable-row" 
                     on:click={() => handleClick(onClick)}
