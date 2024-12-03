@@ -60,17 +60,19 @@
 		<HeroSection />
 	</section>
 
+	<div class="pb-16">
 	<section id="data-sources">
 		<DataSourcesSection />
 	</section>
+	</div>
 
-	<section id="use-cases">
+<!-- 	<section id="use-cases">
 		<BentoGridCombo />
 		<FeaturesSection />
 	</section>
 
 	<section id="analysis">
 		<AnalysisCapabilities />
-	</section>
+	</section> -->
 
 </div>

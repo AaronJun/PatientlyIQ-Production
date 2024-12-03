@@ -91,6 +91,25 @@
     }));
   }
 
+
+function getColorForTherapeuticArea(ta: string): string {
+  const colorMap = {
+    "Gastroenterology": "#4CAE3B",
+    "Neurology": "#4D4DFF",
+    "Ophthalmology": "#E79028",
+    "Immunology": "#EA38A5",
+    "Metabolic": "#133B11",
+    "Dermatology": "#559368",
+    "Hematology": "#CF3630",
+    "Orthopedics": "#441780",
+    "Respiratory": "#CBC09F",
+    "Nephrology": "#ACA3DB",
+    "Oncology": "#FF84DE",
+    "Hepatology": "#FF00D4",
+  };
+  return colorMap[ta] || "#000000";
+}
+
   function setActiveTab(tab: string) {
     activeTab = tab;
   }
@@ -164,7 +183,7 @@
         class="tab-button {activeTab === 'transactions' ? 'active' : ''}"
         on:click={() => setActiveTab('transactions')}
       >
-        <span>Transactions</span>
+        <span>By Transactions</span>
       </button>
     </div>
 
@@ -211,7 +230,13 @@
         </div>
       {:else if activeTab === 'transactions'}
         <div class="transactions-view">
-          <SaleBenchmarks constellationData={processedConstellationData} />
+          <SaleBenchmarks constellationData={processedConstellationData} 
+          onDrugClick={(drugData) => {
+            selectedData = drugData;
+            selectedColor = getColorForTherapeuticArea(drugData.name);
+            isDrawerOpen = true;
+          }}
+          />
         </div>
       {:else}
         <div class="therapeutic-area-view">
@@ -320,7 +345,7 @@
     border-right: 1px dotted #e5e7eb;
     min-height: 100%;
     width: 25%;
-    padding: 0 2.25rem 0 1rem;
+    padding: 1.25rem 2.25rem 0 1rem;
     overflow-y: hidden;
   }
 
@@ -329,7 +354,7 @@
     width: 22.5vw;
     padding: 0 2.25rem 0 1rem;
     position: absolute;
-    bottom: -70vh;
+    bottom: -72.5vh;
     overflow-y: hidden;
   }
 
