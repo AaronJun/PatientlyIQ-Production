@@ -29,7 +29,9 @@
           rpdCount: rpdPrvData.reduce((sum, d) => sum + (parseInt(d.RPD) || 0), 0),
           voucherCount: constellationData.length,
           soldCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-          totalValue: constellationData.reduce((sum, d) => sum + (parseFloat(d["Sale  Price (USD, Millions)"] || "0")), 0)
+          totalValue: constellationData
+            .filter(d => d["Sale  Price (USD, Millions)"] && !isNaN(parseFloat(d["Sale  Price (USD, Millions)"])))
+            .reduce((sum, d) => sum + parseFloat(d["Sale  Price (USD, Millions)"]), 0)
         };
       } else {
         const yearRpdData = rpdPrvData.find(d => d.Year === currentYear);
@@ -39,7 +41,9 @@
           rpdCount: parseInt(yearRpdData?.RPD || "0"),
           voucherCount: yearConstellationData.length,
           soldCount: yearConstellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-          totalValue: yearConstellationData.reduce((sum, d) => sum + (parseFloat(d["Sale  Price (USD, Millions)"] || "0")), 0)
+          totalValue: yearConstellationData
+            .filter(d => d["Sale  Price (USD, Millions)"] && !isNaN(parseFloat(d["Sale  Price (USD, Millions)"])))
+            .reduce((sum, d) => sum + parseFloat(d["Sale  Price (USD, Millions)"]), 0)
         };
       }
     }
