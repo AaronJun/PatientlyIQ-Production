@@ -56,7 +56,7 @@
     "Pulmonology": "#CBC09F",
     "Nephrology": "#ACA3DB",
     "Oncology": "#FF84DE",
-    "Genetic": "#4D4DFF",
+    "Genetic": "#4D4D",
     "Hepatology": "#FF00D4",
   };
 
@@ -64,7 +64,10 @@
     return therapeuticAreaColors[name] || "#000000";
   }
 
-  onMount(() => mounted = true);
+  function shouldUseDarkText(bgColor: string): boolean {
+    const lightColors = ['#FF84DE', '#CBC09F', '#ACA3DB', '#39FF14'];
+    return lightColors.includes(bgColor);
+  }
 
   const handleRowClick = (entry) => dispatch('clusterElementClick', { entry, color: getColor(entry.name) });
 
@@ -72,6 +75,8 @@
     if (isDrawerOpen && selectedData) return entry.id === selectedData.id;
     return hoveredPetalData && hoveredPetalData.id === entry.id;
   }
+
+  onMount(() => mounted = true);
 </script>
 
 {#if mounted}
@@ -85,7 +90,7 @@
             class="area-tab"
             class:active={area === activeArea}
             style="
-              color: {getColor(area)};
+              color: {area === activeArea ? (shouldUseDarkText(getColor(area)) ? '#1f1f1f' : '#f0f0f0') : getColor(area)};
               border-color: {getColor(area)};
               background-color: {area === activeArea ? getColor(area) : 'transparent'}
             "
@@ -148,26 +153,24 @@
 }
 
 .area-tab {
-  width: 100%;
-  font-weight: 800;
-  font-size: 0.525rem;
-  letter-spacing: 1px;
-  border-radius: 200px;
-  text-transform: uppercase;
-  padding: 0.325rem .25rem;
-  border: .5px solid;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: transparent;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-  .area-tab.active {
+    width: 100%;
+    font-weight: 800;
+    font-size: 0.525rem;
+    letter-spacing: 1px;
+    border-radius: 200px;
+    text-transform: uppercase;
+    padding: 0.325rem .25rem;
+    border: .5px solid;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }  /* .area-tab.active {
     color: #f0f0f0 !important;
-  }
+  } */
 
   .area-tab:hover:not(.active) {
     transform: scale(1.02);
@@ -239,7 +242,8 @@
     font-weight: 800;
     color: #6f6f6f;
     height: 100%;
-    text-transform: uppercase;  }
+    text-transform: uppercase;  
+  }
 
   .indication {
     font-size: 0.725rem;

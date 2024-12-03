@@ -55,20 +55,32 @@
 </script>
 
 <div class="summary-container">
-  {#if currentYear === "Overview"}
+  {#if currentYear === "2012"}
     <p class="summary-text">
-      The FDA's rare pediatric disease priority review voucher program produced
-      <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022. Through 2024,
+      The FDA's rare pediatric disease priority review voucher program produced an estimated 
+      <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022.These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
+      <br><br>
+      Through 2024,
       <span class="highlight">{formatNumber(54)}</span> priority review vouchers have been awarded. With each voucher representing 4 months of expedited review, the program has saved an estimated
       <span class="highlight">{formatNumber(216)}</span> months of regulatory review.
-    </p>
-  {:else if currentYear === "2012"}
-    <p class="summary-text">
-      The FDA launched the rare pediatric disease priority review voucher program in 2012 with the passage of the Food and Drug Administration Safety and Innovation Act (FDASIA).
+
+      <br><br>
+      Please scroll or click forward, tap on the flower petals or sidebar, and explore the ways this programmed nurtured key milestones in rare disease treatment.
     </p>
   {:else if currentYear === "2013"}
     <p class="summary-text">
       In 2013, the FDA granted <span class="highlight">{formatNumber(8)}</span> rare pediatric disease designations. Though no priority review vouchers were awarded this year, these designations were initial seeds which would grow into the program's success.
+    </p>
+
+    {:else if currentYear === "2020"}
+    <p class="summary-text">
+      2020 saw a significant increase in the number of RPD designations, with <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> granted. This was likely driven by the RPD program's planned sunset, which was to begin in September 2020.
+      <br><br>
+      <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded, which was also a record high. 
+      <br><br>
+      Additionally, 
+      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
+      <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>
   {:else}
     <p class="summary-text">

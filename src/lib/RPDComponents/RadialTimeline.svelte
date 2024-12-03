@@ -367,6 +367,7 @@ function handleKeydown(event: KeyboardEvent) {
 
   function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
     dispatch('petalHover', { event, entry, color });
+    dispatch('yearChange', { year: entry.Year });
   }
 
   function handlePetalLeave() {

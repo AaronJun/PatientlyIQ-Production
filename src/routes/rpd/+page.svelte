@@ -10,6 +10,7 @@
   import constellationDataRaw from '../data/RPDConstellationData.json';
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
   import DrugSunburst from '$lib/RPDComponents/DrugSunburst.svelte';
+  import SellerBuyerChord from '$lib/RPDComponents/SellerBuyerChord.svelte';
 
   interface RPDData {
     Year: string;
@@ -229,7 +230,9 @@ function getColorForTherapeuticArea(ta: string): string {
           </div>
         </div>
       {:else if activeTab === 'transactions'}
-        <div class="transactions-view">
+        <div class="grid grid-cols-2">
+          <h2 class="text-xl font-base col-span-2 mt-8 ml-12 mb-14">Voucher Sales Distribution</h2>
+          <SellerBuyerChord constellationData={processedConstellationData} />
           <SaleBenchmarks constellationData={processedConstellationData} 
           onDrugClick={(drugData) => {
             selectedData = drugData;
@@ -238,6 +241,7 @@ function getColorForTherapeuticArea(ta: string): string {
           }}
           />
         </div>
+   
       {:else}
         <div class="therapeutic-area-view">
           <DrugSunburst constellationData={processedConstellationData} />
