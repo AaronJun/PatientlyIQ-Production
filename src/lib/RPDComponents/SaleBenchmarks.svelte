@@ -344,9 +344,6 @@ onMount(() => {
         <tr>
           <td class="label">Median Sale Price</td>
           <td>{formatPrice(medianSale.price)}</td>
-          <td>{medianSale.buyer}</td>
-          <td>{medianSale.seller}</td>
-          <td>{medianSale.drugName}</td>
         </tr>
         <tr>
           <td class="label">Lowest Sale Price</td>
