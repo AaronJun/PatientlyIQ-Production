@@ -231,9 +231,19 @@ function getColorForTherapeuticArea(ta: string): string {
         </div>
       {:else if activeTab === 'transactions'}
         <div class="grid grid-cols-2">
-          <h2 class="text-xl font-base col-span-2 mt-8 ml-12 mb-14">Voucher Sales Distribution</h2>
+          <div class="header row col-span-2 mb-14 align-center p-8 pb-10 text-green-100">
+          <h2 class="text-xs mb-8 font-bold col-span-1">A View of Voucher Transactions</h2>
+          <p class="text-base w-full max-w-5xl col-span-2 text-white">
+            A PRV grants a four-month faster FDA review (6 vs 10 months) and can be used or sold to others. The opportunity to sell the vouchers has helped smaller companies invest in research for rare disease, whilst helping larger companies expedite their own rare programs.</p>
+            <br><br>
+            <p class="text-base w-full max-w-5xl col-span-2 text-white">
+            The vouchers command a median sales price of $110M, and at least 25 have been as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.</p>
+
+          </div>
+          <div class="p-6">
           <SellerBuyerChord constellationData={processedConstellationData} />
-          <SaleBenchmarks constellationData={processedConstellationData} 
+        </div>
+        <SaleBenchmarks constellationData={processedConstellationData} 
           onDrugClick={(drugData) => {
             selectedData = drugData;
             selectedColor = getColorForTherapeuticArea(drugData.name);
@@ -241,6 +251,7 @@ function getColorForTherapeuticArea(ta: string): string {
           }}
           />
         </div>
+        <div class="border-b-slate-700 border-b-2"></div>
    
       {:else}
         <div class="therapeutic-area-view">
@@ -279,6 +290,10 @@ function getColorForTherapeuticArea(ta: string): string {
     overflow: hidden;
   }
 
+  .header {
+    background-color: rgb(43, 130, 113);
+  }
+
   .main-content {
     display: block;
     width: 100vw;
@@ -305,6 +320,7 @@ function getColorForTherapeuticArea(ta: string): string {
     border-bottom: 2px solid transparent;
     transition: all 0.2s;
   }
+  
 
   .tab-button:hover {
     color: #C9623F;
@@ -312,6 +328,7 @@ function getColorForTherapeuticArea(ta: string): string {
 
   .tab-button.active {
     color: #C9623F;
+    border-bottom: 1px solid #C9623F;
     font-weight: 800;
   }
 

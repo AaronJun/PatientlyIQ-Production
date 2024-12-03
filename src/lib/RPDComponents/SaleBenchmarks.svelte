@@ -25,8 +25,8 @@
   let width, height;
   
   let selectedPoint = {
-    buyer: 'Click on a point for more details',
-    seller: 'Hover over a point for transaction information',
+    buyer: '',
+    seller: '',
     price: '',
     drugName: ''
   };
@@ -297,20 +297,20 @@
         <div class="beeswarm-wrapper">
           <div class="transaction-details-grid">
             <div class="detail-item">
-              <span class="detail-label"><PortOutput class="mb-1" />Seller</span>
               <span class="text-gray-800 font-semibold">{selectedPoint.seller}</span>
+              <span class="detail-label"><PortOutput class="mb-1" />Seller</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label"><PortInput class="mb-1" />Buyer</span>
               <span class="text-gray-800 font-semibold">{selectedPoint.buyer}</span>
+              <span class="detail-label"><PortInput class="mb-1" />Buyer</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label"><Money class="mb-1" />Price</span>
               <span class="text-gray-800 font-semibold">{selectedPoint.price}</span>
+              <span class="detail-label"><Money class="mb-1" />Price</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label"><Medication class="mb-1" />Associated Drug</span>
               <span class="text-gray-800 font-semibold">{selectedPoint.drugName}</span>
+              <span class="detail-label"><Medication class="mb-1" />Associated Drug</span>
             </div>
           </div>
           <div id="beeswarm-container">
@@ -492,6 +492,10 @@
   width: 100%;
   padding: 1rem;
   border-bottom: .25px solid #161616;
+}
+
+.text-gray-800 {
+ min-height: 1rem;
 }
 
 .detail-item {
