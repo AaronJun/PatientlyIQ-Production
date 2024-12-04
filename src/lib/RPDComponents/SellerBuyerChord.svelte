@@ -55,7 +55,7 @@
     function handleMouseOver(event, data, color, content) {
       tooltipContent = content;
       tooltipBorderColor = color;
-      tooltipX = event.pageX - 320; 
+      tooltipX = event.pageX - 320;
       tooltipY = event.pageY - 725;
       tooltipVisible = true;
       dispatch('tooltipShow', { x: tooltipX, y: tooltipY, content, color });
@@ -65,28 +65,26 @@
       tooltipVisible = false;
       dispatch('tooltipHide');
     }
-  
+
     onMount(() => {
-      // Filter valid transactions but include undisclosed ones
       const transactions = constellationData.filter(
         d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"] &&
              d.Purchaser !== "NA" && d.Sponsor !== "NA"
       );
-  
-      // Get all companies, replacing "Undisclosed" with our group name
+
       const companies = Array.from(new Set([
         ...transactions.map(d => d.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : d.Sponsor),
         ...transactions.map(d => d.Purchaser === "Undisclosed" ? UNDISCLOSED_GROUP : d.Purchaser)
       ])).filter(c => c !== UNDISCLOSED_GROUP);
       
-      // Add undisclosed group at the end
       companies.push(UNDISCLOSED_GROUP);
-  
+
       const matrix = Array(companies.length).fill(0).map(() => 
         Array(companies.length).fill(0)
       );
-  
+
       const transactionDetails = new Map();
+      const transactionValues = new Map(); // Store total values for each chord
       
       transactions.forEach(t => {
         const sourceCompany = t.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : t.Sponsor;
@@ -100,39 +98,150 @@
         const key = `${sourceIndex}-${targetIndex}`;
         if (!transactionDetails.has(key)) {
           transactionDetails.set(key, []);
+          transactionValues.set(key, 0);
         }
         transactionDetails.get(key).push({
           drugName: t["Drug Name"],
           therapeuticArea: t.name,
           indication: t.id,
-          price: t["Sale  Price (USD, Millions)"]
+          price: parseFloat(t["Sale  Price (USD, Millions)"]) || 0
         });
+        
+        // Sum up the total value for this chord
+        transactionValues.set(
+          key, 
+          transactionValues.get(key) + (parseFloat(t["Sale  Price (USD, Millions)"]) || 0)
+        );
       });
-  
+
       const chord = d3.chord()
         .padAngle(0.05)
         .sortSubgroups(d3.descending);
-  
+
       const chords = chord(matrix);
-  
-      const color = d3.scaleOrdinal()
+
+      // Create color scale for companies (arcs)
+      const companyColor = d3.scaleOrdinal()
         .domain(companies)
         .range(companies.map(company => 
           company === UNDISCLOSED_GROUP ? UNDISCLOSED_COLOR :
           d3.quantize(t => d3.interpolatePuOr(t * 1 + 0.325), companies.length)[companies.indexOf(company)]
         ));
-  
+
+      // Create color scale for transaction values (chords)
+      const values = Array.from(transactionValues.values());
+      const maxValue = d3.max(values);
+      const valueColor = d3.scaleSequential()
+        .domain([0, maxValue])
+        .interpolator(d3.interpolateBlues);
+
       const svgElement = d3.select(svg)
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
-  
+
+      // Add legend
+      const legendWidth = 200;
+      const legendHeight = 15;
+      const legendPosition = {
+        x: -width/2 + 40,
+        y: height/2 - 60
+      };
+
+      // Create gradient for legend
+      const defs = svgElement.append("defs");
+      const linearGradient = defs.append("linearGradient")
+        .attr("id", "value-gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+
+      // Add color stops to gradient
+      const numStops = 10;
+      for (let i = 0; i <= numStops; i++) {
+        const offset = (i / numStops) * 100;
+        const value = (maxValue * i) / numStops;
+        linearGradient.append("stop")
+          .attr("offset", `${offset}%`)
+          .attr("stop-color", valueColor(value));
+      }
+
+      // Add legend group
+      const legend = svgElement.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${legendPosition.x}, ${legendPosition.y})`);
+
+      // Add gradient rectangle
+      legend.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "url(#value-gradient)");
+
+      // Add border to rectangle
+      legend.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "none")
+        .style("stroke", "#666")
+        .style("stroke-width", "0.5px");
+
+      // Add legend title
+      legend.append("text")
+        .attr("x", 0)
+        .attr("y", -5)
+        .style("font-size", "8px")
+        .style("font-weight", "bold")
+        .style("fill", "#666")
+        .text("Reported Transaction Value (USD Millions)");
+
+      // Add legend ticks and labels
+      const tickValues = [0, maxValue/2, maxValue];
+      const tickScale = d3.scaleLinear()
+        .domain([0, maxValue])
+        .range([0, legendWidth]);
+
+      const legendTicks = legend.selectAll(".tick")
+        .data(tickValues)
+        .enter()
+        .append("g")
+        .attr("class", "tick")
+        .attr("transform", d => `translate(${tickScale(d)}, ${legendHeight})`);
+
+
+      // Add tick labels
+      legendTicks.append("text")
+        .attr("y", 12)
+        .style("font-size", "8px")
+        .style("fill", "#666")
+        .style("text-anchor", (d, i) => i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle")
+        .text(d => `$${d.toFixed(0)}M`);
+
+      // Add note about undisclosed transactions
+      legend.append("g")
+        .attr("transform", `translate(0, ${legendHeight + 30})`)
+        .call(g => {
+          g.append("rect")
+            .attr("width", 5)
+            .attr("height", 5)
+            .style("fill", UNDISCLOSED_COLOR)
+            .style("stroke", "#666")
+            .style("stroke-width", "0.5px");
+
+          g.append("text")
+            .attr("x", 10)
+            .attr("y", 5)
+            .style("font-size", "8px")
+            .style("fill", "#666")
+            .text("Undisclosed Value");
+        });
+
       const group = svgElement.append("g")
         .selectAll("g")
         .data(chords.groups)
         .join("g");
-  
+
       group.append("path")
         .attr("class", "group-arc")
-        .attr("fill", d => color(companies[d.index]))
+        .attr("fill", d => companyColor(companies[d.index]))
         .attr("d", d3.arc()
           .innerRadius(innerRadius)
           .outerRadius(outerRadius))
@@ -143,7 +252,7 @@
           const company = companies[d.index];
           const summary = getCompanySummary(transactions, company);
           
-          handleMouseOver(event, d, color(company), {
+          handleMouseOver(event, d, companyColor(company), {
             sponsor: company,
             drugName: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
             therapeuticArea: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`,
@@ -159,17 +268,13 @@
         .on("click", (event, d) => {
           if (onCompanyClick) {
             const company = companies[d.index];
-            const companyTransactions = transactions.filter(t => 
-              t.Sponsor === company || t.Purchaser === company
-            );
-            const firstTransaction = companyTransactions[0];
             onCompanyClick({
-              ...firstTransaction,
+              ...transactions.find(t => t.Sponsor === company || t.Purchaser === company),
               Sponsor: company
             });
           }
         });
-  
+
       const labels = group.append("text")
         .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
         .attr("dy", "0.35em")
@@ -184,37 +289,31 @@
         .style("font-size", "8px")
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
-  highlightCompany(d.index);
-  
-  const company = companies[d.index];
-  const summary = getCompanySummary(transactions, company);
-  
-  let tooltipContent;
-  if (summary.isUndisclosedBuyer) {
-    tooltipContent = {
-      sponsor: "Undisclosed Buyers",
-      drugName: `Total Transactions: ${summary.purchaseCount}`,
-      therapeuticArea: `Total Purchase Value: $${summary.totalPurchaseValue.toFixed(1)}M`,
-      id: `Sellers to Undisclosed Buyers: ${summary.sellers.join(", ")}`
-    };
-  } else {
-    tooltipContent = {
-      sponsor: company,
-      drugName: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
-      therapeuticArea: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`,
-      id: `Partners: ${[...summary.buyers, ...summary.sellers]
-        .filter(p => p !== company && p !== "Undisclosed")
-        .join(", ")}`
-    };
-  }          
-          handleMouseOver(event, d, color(company), {
-            sponsor: company,
-            drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
-              .filter(p => p !== company && p !== "Undisclosed")
-              .join(", ")}`,
-            therapeuticArea: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
-            id: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`
-          });
+          highlightCompany(d.index);
+          
+          const company = companies[d.index];
+          const summary = getCompanySummary(transactions, company);
+          
+          let tooltipContent;
+          if (summary.isUndisclosedBuyer) {
+            tooltipContent = {
+              sponsor: "Undisclosed Buyers",
+              drugName: `Total Transactions: ${summary.purchaseCount}`,
+              therapeuticArea: `Total Purchase Value: $${summary.totalPurchaseValue.toFixed(1)}M`,
+              id: `Sellers to Undisclosed Buyers: ${summary.sellers.join(", ")}`
+            };
+          } else {
+            tooltipContent = {
+              sponsor: company,
+              drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
+                .filter(p => p !== company && p !== "Undisclosed")
+                .join(", ")}`,
+              therapeuticArea: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
+              id: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`
+            };
+          }
+          
+          handleMouseOver(event, d, companyColor(company), tooltipContent);
         })
         .on("mouseout", () => {
           resetHighlight();
@@ -223,17 +322,13 @@
         .on("click", (event, d) => {
           if (onCompanyClick) {
             const company = companies[d.index];
-            const companyTransactions = transactions.filter(t => 
-              t.Sponsor === company || t.Purchaser === company
-            );
-            const firstTransaction = companyTransactions[0];
             onCompanyClick({
-              ...firstTransaction,
+              ...transactions.find(t => t.Sponsor === company || t.Purchaser === company),
               Sponsor: company
             });
           }
         });
-  
+
       const paths = svgElement.append("g")
         .attr("fill-opacity", 0.75)
         .selectAll("path")
@@ -241,8 +336,16 @@
         .join("path")
         .attr("class", "chord")
         .attr("d", d3.ribbon().radius(innerRadius))
-        .attr("fill", d => color(companies[d.source.index]))
-        .attr("stroke", d => d3.rgb(color(companies[d.source.index])).darker())
+        .attr("fill", d => {
+          const key = `${d.source.index}-${d.target.index}`;
+          const value = transactionValues.get(key);
+          return value ? valueColor(value) : UNDISCLOSED_COLOR;
+        })
+        .attr("stroke", d => {
+          const key = `${d.source.index}-${d.target.index}`;
+          const value = transactionValues.get(key);
+          return value ? d3.rgb(valueColor(value)).darker() : d3.rgb(UNDISCLOSED_COLOR).darker();
+        })
         .attr("stroke-width", .25)
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
@@ -250,11 +353,13 @@
           
           const key = `${d.source.index}-${d.target.index}`;
           const details = transactionDetails.get(key);
-          handleMouseOver(event, d, color(companies[d.source.index]), {
+          const totalValue = transactionValues.get(key);
+          
+          handleMouseOver(event, d, valueColor(totalValue), {
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
             drugName: details.map(t => t.drugName).join(", "),
             therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
-            id: `$${details[details.length-1].price}M`
+            id: `Total Value: $${totalValue.toFixed(1)}M`
           });
         })
         .on("mouseout", () => {
@@ -265,19 +370,17 @@
           if (onChordClick) {
             const key = `${d.source.index}-${d.target.index}`;
             const details = transactionDetails.get(key);
-            const lastTransaction = details[details.length - 1];
-            
             onChordClick({
               ...transactions.find(t => 
-                t["Drug Name"] === lastTransaction.drugName &&
+                t["Drug Name"] === details[0].drugName &&
                 t.Sponsor === companies[d.source.index] &&
                 t.Purchaser === companies[d.target.index]
               ),
-              name: lastTransaction.therapeuticArea
+              name: details[0].therapeuticArea
             });
           }
         });
-  
+
       function highlightCompany(index) {
         paths.style("opacity", d => 
           d.source.index === index || d.target.index === index ? 1 : 0.1
@@ -296,7 +399,7 @@
             d.index === index ? "10px" : "8px"
           );
       }
-  
+
       function highlightChord(chord) {
         paths.style("opacity", d => 
           d === chord ? 1 : 0.1
@@ -315,7 +418,7 @@
             d.index === chord.source.index || d.index === chord.target.index ? "10px" : "8px"
           );
       }
-  
+
       function resetHighlight() {
         paths.style("opacity", 0.75);
         group.selectAll(".group-arc").style("opacity", 1);
@@ -345,83 +448,79 @@
     style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
   >
     <div class="tooltip-content">
-        
       <div class="entry-title">
         <p class="text-base font-semibold">
           {tooltipContent.sponsor}
         </p>    
         <div class="entry-bottom">
-            <p class="text-sm mb-3 font-semibold text-gray-500">
-              {tooltipContent.drugName}
-            </p>
-          </div>
+          <p class="text-sm mb-3 font-semibold text-gray-500">
+            {tooltipContent.drugName}
+          </p>
+        </div>
       </div>
       <div class="entry-bottom">
-        <p class="text-xs font-semibold font-mono text-gray-500 mt-2 "> Reported Price</p>
+        <p class="text-xs font-semibold font-mono text-gray-500 mt-2">Reported Price</p>
         <p class="text-sm/2 font-bold">
           {tooltipContent.id}
         </p>
       </div>
-   
       <div class="entry-bottom">
         <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
-        </p>       
-
-         <p class="text-xs font-semibold font-mono text-gray-500 mt-1">
-            Click to view more details. 
         </p>
-    
-      </div>
-    </div>
-  </div>
+        <p class="text-xs font-semibold font-mono text-gray-500 mt-1">
+    Click to view more details. 
+  </p>
+</div>
+</div>
+</div>
 {/if}
 
 <style>
-    .chord-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  
-    svg {
-      width: 100%;
-      height: 100%;
-    }
-  
-    .tooltip {
-      position: fixed;
-      margin: 2rem 0 0 2rem;
-      background-color: rgba(255, 255, 255, 0.962);    
-      border: .5px solid #373737;
-      padding: 1rem .5rem .5rem .5rem;
-      pointer-events: none;
-      z-index: 1000;
-      min-width: 300px;
-      max-width: 300px;
-    }
-  
-    .tooltip::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: .625rem;
-      background-color: var(--border-color);
-    }
-  
-    :global(.chord) {
-      transition: opacity 0.2s ease;
-    }
-    
-    :global(.group-arc) {
-      transition: opacity 0.2s ease;
-    }
-    
-    :global(.group-label) {
-      transition: all 0.2s ease;
-    }
+.chord-container {
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+svg {
+width: 100%;
+height: 100%;
+}
+
+.tooltip {
+position: fixed;
+margin: 2rem 0 0 2rem;
+background-color: rgba(255, 255, 255, 0.962);    
+border: .5px solid #373737;
+padding: 1rem .5rem .5rem .5rem;
+pointer-events: none;
+z-index: 1000;
+min-width: 300px;
+max-width: 300px;
+}
+
+.tooltip::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: .625rem;
+background-color: var(--border-color);
+}
+
+:global(.chord) {
+transition: opacity 0.2s ease;
+}
+
+:global(.group-arc) {
+transition: opacity 0.2s ease;
+}
+
+:global(.group-label) {
+transition: all 0.2s ease;
+}
 </style>

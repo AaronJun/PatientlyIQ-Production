@@ -36,7 +36,7 @@
         </div>
 
         <div class="flex gap-2 items-baseline mb-4">
-          <Building size="16" class="text-gray-600" />
+          <Building size="16" class="text-gray-00" />
           <p class="text-base pl-2">{content.sponsor}</p> 
     </div>
 

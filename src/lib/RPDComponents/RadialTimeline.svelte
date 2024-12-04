@@ -209,7 +209,7 @@ function handleKeydown(event: KeyboardEvent) {
                 
                 d3.select(this)
                   .attr('fill', color)
-                  .attr('stroke', '#C2990D')
+
                   .style('filter', () => {
                     if (highlightedEntries.length === 0) return 'none';
                     return highlightedEntries.includes(entry.id) 
