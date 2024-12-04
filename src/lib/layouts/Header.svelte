@@ -32,7 +32,7 @@
 		const html = document.querySelector('html');
 		if (html) {
 			if (isDarkMode) {
-				html.classList.add('dark');
+				html.classList.add('light');
 			} else {
 				html.classList.remove('dark');
 			}
@@ -40,7 +40,7 @@
 	}
 
 	$: if (typeof window !== 'undefined') {
-		isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		isDarkMode = window.matchMedia('(prefers-color-scheme: light)').matches;
 	}
 </script>
 
@@ -51,12 +51,12 @@
 		<div class="flex items-center space-x-8">
 			<a class="text-xs flex items-center" href="/">
 				<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
-				<span class="hidden sm:inline">Patiently IQ</span>
+				<span class="hidden sm:inline text-gray-700">Patiently IQ</span>
 			</a>
 		</div>
 	
 		<div class="ml-auto flex h-full items-center">
-			<button
+<!-- 			<button
 				on:click={toggleDarkMode}
 				class="mr-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 				aria-label="Toggle dark mode"
@@ -66,9 +66,8 @@
 				{:else}
 					<Moon strokeWidth={1.2} class="w-5 h-5 text-gray-800" />
 				{/if}
-			</button>
-			<a class="mr-6 text-xs hidden sm:inline" href="/"> Log in </a>
-			<Button class="text-xs ante-fade-in gap-1 rounded-lg bg-[#ff5151] text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-white">Contact</Button>
+			</button> -->
+		
 		</div>
 
 		<!-- Mobile Menu Button -->

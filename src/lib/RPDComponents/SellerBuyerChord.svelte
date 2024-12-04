@@ -138,102 +138,6 @@
       const svgElement = d3.select(svg)
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
-      // Add legend
-      const legendWidth = 200;
-      const legendHeight = 15;
-      const legendPosition = {
-        x: -width/2 + 40,
-        y: height/2 - 60
-      };
-
-      // Create gradient for legend
-      const defs = svgElement.append("defs");
-      const linearGradient = defs.append("linearGradient")
-        .attr("id", "value-gradient")
-        .attr("x1", "0%")
-        .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "0%");
-
-      // Add color stops to gradient
-      const numStops = 10;
-      for (let i = 0; i <= numStops; i++) {
-        const offset = (i / numStops) * 100;
-        const value = (maxValue * i) / numStops;
-        linearGradient.append("stop")
-          .attr("offset", `${offset}%`)
-          .attr("stop-color", valueColor(value));
-      }
-
-      // Add legend group
-      const legend = svgElement.append("g")
-        .attr("class", "legend")
-        .attr("transform", `translate(${legendPosition.x}, ${legendPosition.y})`);
-
-      // Add gradient rectangle
-      legend.append("rect")
-        .attr("width", legendWidth)
-        .attr("height", legendHeight)
-        .style("fill", "url(#value-gradient)");
-
-      // Add border to rectangle
-      legend.append("rect")
-        .attr("width", legendWidth)
-        .attr("height", legendHeight)
-        .style("fill", "none")
-        .style("stroke", "#666")
-        .style("stroke-width", "0.5px");
-
-      // Add legend title
-      legend.append("text")
-        .attr("x", 0)
-        .attr("y", -5)
-        .style("font-size", "8px")
-        .style("font-weight", "bold")
-        .style("fill", "#666")
-        .text("Reported Transaction Value (USD Millions)");
-
-      // Add legend ticks and labels
-      const tickValues = [0, maxValue/2, maxValue];
-      const tickScale = d3.scaleLinear()
-        .domain([0, maxValue])
-        .range([0, legendWidth]);
-
-      const legendTicks = legend.selectAll(".tick")
-        .data(tickValues)
-        .enter()
-        .append("g")
-        .attr("class", "tick")
-        .attr("transform", d => `translate(${tickScale(d)}, ${legendHeight})`);
-
-
-      // Add tick labels
-      legendTicks.append("text")
-        .attr("y", 12)
-        .style("font-size", "8px")
-        .style("fill", "#666")
-        .style("text-anchor", (d, i) => i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle")
-        .text(d => `$${d.toFixed(0)}M`);
-
-      // Add note about undisclosed transactions
-      legend.append("g")
-        .attr("transform", `translate(0, ${legendHeight + 30})`)
-        .call(g => {
-          g.append("rect")
-            .attr("width", 5)
-            .attr("height", 5)
-            .style("fill", UNDISCLOSED_COLOR)
-            .style("stroke", "#666")
-            .style("stroke-width", "0.5px");
-
-          g.append("text")
-            .attr("x", 10)
-            .attr("y", 5)
-            .style("font-size", "8px")
-            .style("fill", "#666")
-            .text("Undisclosed Value");
-        });
-
       const group = svgElement.append("g")
         .selectAll("g")
         .data(chords.groups)
@@ -467,60 +371,59 @@
       <div class="entry-bottom">
         <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
+        </p><p class="text-xs font-semibold font-mono text-gray-500 mt-1">
+          Click to view more details. 
         </p>
-        <p class="text-xs font-semibold font-mono text-gray-500 mt-1">
-    Click to view more details. 
-  </p>
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 {/if}
 
 <style>
-.chord-container {
-width: 100%;
-height: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
-}
+  .chord-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-svg {
-width: 100%;
-height: 100%;
-}
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 
-.tooltip {
-position: fixed;
-margin: 2rem 0 0 2rem;
-background-color: rgba(255, 255, 255, 0.962);    
-border: .5px solid #373737;
-padding: 1rem .5rem .5rem .5rem;
-pointer-events: none;
-z-index: 1000;
-min-width: 300px;
-max-width: 300px;
-}
+  .tooltip {
+    position: fixed;
+    margin: 2rem 0 0 2rem;
+    background-color: rgba(255, 255, 255, 0.962);    
+    border: .5px solid #373737;
+    padding: 1rem .5rem .5rem .5rem;
+    pointer-events: none;
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 300px;
+  }
 
-.tooltip::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-height: .625rem;
-background-color: var(--border-color);
-}
+  .tooltip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: .625rem;
+    background-color: var(--border-color);
+  }
 
-:global(.chord) {
-transition: opacity 0.2s ease;
-}
-
-:global(.group-arc) {
-transition: opacity 0.2s ease;
-}
-
-:global(.group-label) {
-transition: all 0.2s ease;
-}
+  :global(.chord) {
+    transition: opacity 0.2s ease;
+  }
+  
+  :global(.group-arc) {
+    transition: opacity 0.2s ease;
+  }
+  
+  :global(.group-label) {
+    transition: all 0.2s ease;
+  }
 </style>

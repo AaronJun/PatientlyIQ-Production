@@ -198,7 +198,7 @@
             {displayData["Drug Name"]}
           </h2>
           <button class="sponsor-id" on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-            {displayData.Sponsor} <ArrowUpRight size={12} />
+            {displayData.Sponsor} <div class="circle"><ArrowUpRight size={12} /></div>
           </button>
         </div>
         </div>  
@@ -219,13 +219,15 @@
                   <th class="label">
                     <svelte:component this={icon} size={12} /> {label}
                   </th>
-                  <td in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+                  <td class="value-cell" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+                    <span class="truncate-text">
                     {value}
+                    </span>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(() => label === 'Therapeutic Area' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))}>
-                      All entries &rarr;
-                    </span>
+                    <button class="learn-more flex gap-2" on:click|stopPropagation={() => handleLearnMore(() => label === 'Therapeutic Area' ? showTherapeuticAreaData(displayData.name) : showIndicationData(displayData.id))}>
+                      All entries <ArrowRight size={12} />
+                    </button>
                   </td>
                 </tr>
               {/each}
@@ -233,6 +235,7 @@
           </table>
         </div>
 
+        
         <div class="table-container">
           <table>
             <tbody>
@@ -248,13 +251,12 @@
                   <th class="label">
                     <svelte:component this={icon} size={12} /> {label}
                   </th>
-                  <td in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-                    {value}
+                  <td class="value-cell" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+                    <span class="truncate-text">{value}</span>
                     {#if value !== 'N/A' && label !== 'Previously Approved Therapies'}
-                      <!-- svelte-ignore a11y-no-static-element-interactions -->
-                      <span class="learn-more" on:click|stopPropagation={() => handleLearnMore(onClick)}>
-                        All entries &rarr;
-                      </span>
+                      <button class="learn-more flex gap-2" on:click|stopPropagation={() => handleLearnMore(onClick)}>
+                        All entries <ArrowRight size={12} />
+                      </button>
                     {/if}
                   </td>
                 </tr>
@@ -262,6 +264,7 @@
             </tbody>
           </table>
         </div>
+
 
         <div class="table-container">
           <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -685,6 +688,18 @@
       margin: 1.25rem 0 2.25rem 0;
   }
 
+  .learn-more {
+      font-size: 0.625rem;
+      padding: .25rem .5rem .25rem .5rem;
+      background-color: #37587e;
+      border-radius: 20px;
+      min-width: 92.5px;
+      color: #eff7ff;
+      cursor: pointer;
+      margin-left: 2.25rem;
+      font-weight: 600;
+  }
+
   h3 {
       font-weight: 800;
       cursor: pointer;
@@ -761,10 +776,33 @@
       padding-bottom: .5rem;
       text-transform: capitalize;
       padding-right: .25rem;
-      font-size: .75rem;
+      font-size: .825rem;
       padding-right: 1rem;
       line-height: 1rem;
-      text-align: left;
+      max-width: 65%;
+  }
+
+  td.value-cell {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    text-align: right;
+    gap: 1rem;
+    width: 100%;
+    max-width: 65%;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-right: 1rem;
+  }
+
+  .truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    font-size: .825rem;
+    line-height: 1rem;
+    flex: 1;
   }
 
   th {
@@ -786,6 +824,28 @@
       font-weight: 800;
   }
 
+  .circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #37587e;
+      border-radius: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #eff7ff;
+  }
+
+  .circle:hover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #377e6b;
+      border-radius: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #eff7ff;
+  }
+
   tr {
     display: flex;
     flex-direction: row;
@@ -793,6 +853,11 @@
     justify-content: space-between;
     align-items: left;
     gap: 2rem;
+  }
+
+  tr:hover {
+    color: #37587e;  /* Changed from #ff1515 to match other hover states */
+    font-weight: 800;
   }
 
   tr:hover {
@@ -812,7 +877,9 @@
 
   .learn-more {
     font-size: 0.625rem;
-    padding: .25rem .5rem .25rem .5rem;
+    padding: .25rem .5rem .25rem .725rem;
+    width: 80px;
+    align-items: center;
     background-color: #37587e;
     border-radius: 20px;
     color: #eff7ff;
@@ -822,9 +889,10 @@
   }
 
   .back-link {
-    font-size: 0.725rem;
-    padding: .425rem .75rem .425rem .75rem;
+    font-size: 0.625rem;
+    padding: .325rem .825rem .325rem .5275rem;
     background-color: #37587e;
+    align-items: center;
     border-radius: 20px;
     color: #eff7ff;
     cursor:rgb(226, 226, 226);
@@ -832,7 +900,8 @@
   }
 
   .back-link:hover {
-    color:#b7e0fe;
+    background-color: #377e6b;
+    color: #eff7ff;
   }
 
   .year {
@@ -845,13 +914,6 @@
 
   .learn-more:hover {
     background-color: #377e6b;
-  }
-
-  /* Ensure the learn more text doesn't wrap */
-  td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 
   .clickable-cell {
