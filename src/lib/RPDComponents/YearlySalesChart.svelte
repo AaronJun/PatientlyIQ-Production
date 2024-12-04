@@ -1,57 +1,126 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
+    import { ArrowRight } from 'carbon-icons-svelte';
 
     export let constellationData: any[];
-  
+    const dispatch = createEventDispatcher();
+
     let svg;
     let chartWidth: number;
     let chartHeight: number;
     const margin = { top: 40, right: 180, bottom: 40, left: 60 };
     let width: number;
     let height: number;
+
+    // Add tooltip state
+    let tooltipVisible = false;
+    let tooltipBorderColor: string = '';
+    let tooltipX = 0;
+    let tooltipY = 0;
+    let tooltipContent = {
+      drugName: '',
+      therapeuticArea: '',
+      indication: '',
+      price: '',
+      seller: '',
+      buyer: '',
+      purchaseDate: ''
+    };
   
     $: {
       width = chartWidth - margin.left - margin.right;
       height = chartHeight - margin.top - margin.bottom;
     }
+
+    function getColorForTherapeuticArea(ta: string): string {
+      const colorMap = {
+        "Gastroenterology": "#4CAE3B",
+        "Neurology": "#4D4DFF",
+        "Ophthalmology": "#E79028",
+        "Immunology": "#EA38A5",
+        "Metabolic": "#133B11",
+        "Dermatology": "#559368",
+        "Hematology": "#CF3630",
+        "Orthopedics": "#441780",
+        "Respiratory": "#CBC09F",
+        "Nephrology": "#ACA3DB",
+        "Oncology": "#FF84DE",
+        "Hepatology": "#FF00D4",
+      };
+      return colorMap[ta] || "#000000";
+    }
   
+    function handleClick(transactionData) {
+      // Find the full original data entry
+      const originalEntry = constellationData.find(d => 
+        d["Drug Name"] === transactionData.drugName &&
+        d.Sponsor === transactionData.seller &&
+        d.Purchaser === transactionData.buyer
+      );
+
+      if (originalEntry) {
+        dispatch('clusterElementClick', {
+          entry: originalEntry,
+          color: getColorForTherapeuticArea(originalEntry.name)
+        });
+      }
+    }
+
     function createChart() {
       if (!width || !height) return;
   
       // Process the data
-      const yearlyData = d3.rollups(
-        constellationData.filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]),
-        group => ({
-          year: group[0].Year,
-          count: group.length,
-          value: d3.sum(group, d => parseFloat(d["Sale  Price (USD, Millions)"]) || 0)
-        }),
-        d => d.Year
-      ).map(([year, data]) => ({
-        year: +year,
-        count: data.count,
-        value: Math.round(data.value)
-      })).sort((a, b) => a.year - b.year);
-  
+      const salesData = constellationData
+        .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
+        .map(d => ({
+          year: +d.Year,
+          price: parseFloat(d["Sale  Price (USD, Millions)"]),
+          drugName: d["Drug Name"],
+          buyer: d.Purchaser,
+          seller: d.Sponsor,
+          therapeuticArea: d.name,
+          indication: d.id,
+          purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
+            `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
+        }))
+        .sort((a, b) => a.year - b.year);
+
+      // Group data by year for stacking
+      const groupedData = d3.group(salesData, d => d.year);
+      
+      // Calculate cumulative heights for each year
+      const stackedData = Array.from(groupedData, ([year, transactions]) => {
+        let cumHeight = 0;
+        return {
+          year,
+          transactions: transactions.map(t => {
+            const transaction = {
+              ...t,
+              y0: cumHeight,
+              y1: cumHeight + t.price
+            };
+            cumHeight += t.price;
+            return transaction;
+          }),
+          totalValue: cumHeight
+        };
+      });
+
       // Clear previous chart
       d3.select(svg).selectAll("*").remove();
-  
+
       // Create scales
-      const xScale = d3.scaleLinear()
-        .domain(d3.extent(yearlyData, d => d.year))
-        .range([0, width]);
-  
-      const yScaleCount = d3.scaleLinear()
-        .domain([0, d3.max(yearlyData, d => d.count)])
+      const xScale = d3.scaleBand()
+        .domain(stackedData.map(d => d.year.toString()))
+        .range([0, width])
+        .padding(0.1);
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(stackedData, d => d.totalValue)])
         .range([height, 0])
         .nice();
-  
-      const yScaleValue = d3.scaleLinear()
-        .domain([0, d3.max(yearlyData, d => d.value)])
-        .range([height, 0])
-        .nice();
-  
+
       // Create SVG and append groups
       const svgElement = d3.select(svg)
         .attr("width", width + margin.left + margin.right)
@@ -59,170 +128,89 @@
   
       const g = svgElement.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
-  
+
       // Add grid lines
       g.append("g")
         .attr("class", "grid")
-        .call(d3.axisLeft(yScaleCount)
+        .call(d3.axisLeft(yScale)
           .tickSize(-width)
           .tickFormat("")
         )
         .style("stroke-dasharray", "2,3")
         .style("stroke-opacity", 0.2);
-  
-      // Create line generators
-      const lineCount = d3.line()
-        .x(d => xScale(d.year))
-        .y(d => yScaleCount(d.count))
-        .curve(d3.curveMonotoneX);
-  
-      const lineValue = d3.line()
-        .x(d => xScale(d.year))
-        .y(d => yScaleValue(d.value))
-        .curve(d3.curveMonotoneX);
-  
-      // Add the lines
-      g.append("path")
-        .datum(yearlyData)
-        .attr("class", "line-count")
-        .attr("d", lineCount)
-        .style("fill", "none")
-        .style("stroke", "#C9623F")
-        .style("stroke-width", 2);
-  
-      g.append("path")
-        .datum(yearlyData)
-        .attr("class", "line-value")
-        .attr("d", lineValue)
-        .style("fill", "none")
-        .style("stroke", "#3B665D")
-        .style("stroke-width", 2);
-  
+
+      // Create the stacked bars
+      const yearGroups = g.selectAll(".year-group")
+        .data(stackedData)
+        .join("g")
+        .attr("class", "year-group")
+        .attr("transform", d => `translate(${xScale(d.year.toString())},0)`);
+
+        yearGroups.selectAll("rect")
+            .data(d => d.transactions)
+            .join("rect")
+            .attr("x", 0)
+            .attr("y", d => yScale(d.y1))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => yScale(d.y0) - yScale(d.y1))
+            .attr("fill", d => getColorForTherapeuticArea(d.therapeuticArea))
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1)
+            .attr("opacity", 0.8)
+            .style("cursor", "pointer")
+            .on("mouseover", (event, d) => {
+                tooltipContent = {
+                drugName: d.drugName,
+                therapeuticArea: d.therapeuticArea,  // Now used in tooltip text
+                indication: d.indication,
+                price: d.price.toLocaleString(),
+                seller: d.seller,
+                buyer: d.buyer,
+                purchaseDate: d.purchaseDate
+                };
+                tooltipX = event.pageX;
+                tooltipY = event.pageY;
+                tooltipBorderColor = getColorForTherapeuticArea(d.therapeuticArea);  // Set border color
+                tooltipVisible = true;
+
+          // Highlight the rectangle
+          d3.select(event.target)
+            .attr("opacity", 1)
+            .attr("stroke-width", 2);
+        })
+        .on("mouseout", (event) => {
+          tooltipVisible = false;
+          // Reset rectangle
+          d3.select(event.target)
+            .attr("opacity", 0.8)
+            .attr("stroke-width", 1);
+        })
+        .on("click", (event, d) => {
+          dispatch('clusterElementClick', {
+            entry: d,
+            color: getColorForTherapeuticArea(d.therapeuticArea)
+          });
+        });
+
       // Add axes
       g.append("g")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale)
-          .tickFormat(d3.format("d")))
-        .style("font-size", "12px");
+        .call(d3.axisBottom(xScale))
+        .style("font-size", "10px");
   
       g.append("g")
-        .call(d3.axisLeft(yScaleCount))
+        .call(d3.axisLeft(yScale))
         .style("font-size", "12px");
-  
-      g.append("g")
-        .attr("transform", `translate(${width},0)`)
-        .call(d3.axisRight(yScaleValue))
-        .style("font-size", "12px");
-  
-      // Add circles for data points
-      g.selectAll(".dot-count")
-        .data(yearlyData)
-        .join("circle")
-        .attr("class", "dot-count")
-        .attr("cx", d => xScale(d.year))
-        .attr("cy", d => yScaleCount(d.count))
-        .attr("r", 4)
-        .style("fill", "#C9623F");
-  
-      g.selectAll(".dot-value")
-        .data(yearlyData)
-        .join("circle")
-        .attr("class", "dot-value")
-        .attr("cx", d => xScale(d.year))
-        .attr("cy", d => yScaleValue(d.value))
-        .attr("r", 4)
-        .style("fill", "#3B665D");
-  
+
       // Add labels
       g.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", -margin.left + 20)
         .attr("x", -height / 2)
         .attr("text-anchor", "middle")
-        .style("fill", "#C9623F")
-        .style("font-size", "10px")
-        .text("Number of Transactions");
-  
-      g.append("text")
-        .attr("transform", "rotate(90)")
-        .attr("y", -width - margin.right + 20)
-        .attr("x", height / 2)
-        .attr("text-anchor", "middle")
         .style("fill", "#3B665D")
         .style("font-size", "10px")
-        .text("Total Value (USD Millions)");
-  
-      // Create styled tooltip
-      const tooltip = d3.select("body").append("div")
-        .attr("class", "chart-tooltip")
-        .style("opacity", 0)
-        .style("position", "fixed")
-        .style("pointer-events", "none")
-        .style("z-index", "1000")
-        .style("min-width", "300px")
-        .style("max-width", "300px")
-        .style("margin", "2rem 0 0 2rem")
-        .style("background-color", "rgba(255, 255, 255, 0.962)")
-        .style("border", "0.5px solid #373737")
-        .style("padding", "1rem 0.5rem 0.5rem 0.5rem");
-
-      // Add hover interaction
-      const hoverGroup = g.append("g")
-        .style("opacity", 0);
-
-      hoverGroup.append("line")
-        .attr("class", "hover-line")
-        .attr("y1", 0)
-        .attr("y2", height)
-        .style("stroke", "#000")
-        .style("stroke-width", "1px")
-        .style("stroke-dasharray", "3,3");
-
-      const mouseG = g.append("rect")
-        .attr("class", "mouse-over")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("fill", "none")
-        .attr("pointer-events", "all")
-        .on("mousemove", function(event) {
-          const [xPos] = d3.pointer(event);
-          const xYear = Math.round(xScale.invert(xPos));
-          const dataPoint = yearlyData.find(d => d.year === xYear);
-
-          if (dataPoint) {
-            hoverGroup.style("opacity", 1)
-              .attr("transform", `translate(${xScale(dataPoint.year)},0)`);
-
-            const tooltipContent = `
-              <div class="tooltip-content">
-                <div class="entry-title">
-                  <p class="text-xs font-semibold mb-1"> 
-                  ${dataPoint.year}</p>
-                </div>
-                <div class="entry-bottom">
-                  <p class="text-base">
-                  ${dataPoint.count} transactions </p>
-                </div>
-                  <div class="entry-bottom">
-                  <p class="text-base">
-                  $${dataPoint.value.toLocaleString()}M total value</p>
-                </div>
-              </div>
-            `
-            ;
-
-            tooltip
-              .style("opacity", 1)
-              .style("left", (event.pageX) + "px")
-              .style("top", (event.pageY) + "px")
-              .html(tooltipContent)
-              .style("border-top", "0.625rem solid #3B665D");
-          }
-        })
-        .on("mouseout", function() {
-          hoverGroup.style("opacity", 0);
-          tooltip.style("opacity", 0);
-        });
+        .text("Transaction Value (USD Millions)");
     }
   
     $: if (svg && width && height) {
@@ -243,29 +231,48 @@
   
       return () => {
         resizeObserver.disconnect();
-        // Clean up tooltip
-        d3.select("body").selectAll(".chart-tooltip").remove();
       };
     });
 </script>
   
 <div class="chart-container">
   <h3>PRV Sales Over Time</h3>
-  <div class="legend">
-    <div class="legend-item">
-      <span class="legend-color" style="background-color: #C9623F"></span>
-      <span>Number of Transactions</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-color" style="background-color: #3B665D"></span>
-      <span>Total Value</span>
-    </div>
-  </div>
   <div class="chart">
     <svg bind:this={svg}></svg>
   </div>
 </div>
-  
+{#if tooltipVisible}
+  <div
+    class="tooltip p-2 pt-1"
+    style="left: {tooltipX - 290}px; top: {tooltipY - 220}px; border-top: 0.625rem solid {tooltipBorderColor};"
+  >
+    <div>
+
+        <p class="text-lg font-medium">
+          {tooltipContent.drugName}
+        <p class="text-xs uppercase mb-4 font-mono font-semibold text-gray-600">
+            {tooltipContent.therapeuticArea}</p>
+      </div>
+        <p class="text-base font-medium">
+          ${tooltipContent.price}M
+        </p>
+        <p class="text-xs font-semibold font-mono text-gray-400">Transaction Value</p>
+      <div class="entry-bottom mt-4">
+        <p class="text-xs font-semibold font-mono mt-2 text-gray-800">
+          {tooltipContent.seller} → {tooltipContent.buyer}
+        </p>
+        <p class="text-xs font-semibold font-mono text-gray-400">
+          {tooltipContent.purchaseDate}
+        </p>
+
+        <p class="text-xs font-semibold font-mono mt-6 text-orange-600">
+          Click to view more details  →
+        </p>
+
+    </div>
+  </div>
+{/if}
+
 <style>
   .chart-container {
     width: 100%;
@@ -273,31 +280,18 @@
     margin: 2rem 0;
   }
 
-  h3 {
+  TA {
     font-size: 0.75rem;
     font-weight: 600;
     color: #374151;
     margin-bottom: 1rem;
   }
 
-  .legend {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  h3 {
     font-size: 0.75rem;
-    color: #6b7280;
-  }
-
-  .legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
   }
 
   .chart {
@@ -313,15 +307,31 @@
     stroke-width: 0;
   }
 
-  :global(.chart-tooltip .tooltip-content) {
-    margin-top: 2px;
+  .tooltip {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.962);    
+    border: .5px solid #373737;
+    pointer-events: none;
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 300px;
   }
 
-  :global(.chart-tooltip .entry-title) {
+  .tooltip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: .625rem;
+  }
+
+
+  .entry-title {
     margin-bottom: 1rem;
   }
 
-  :global(.chart-tooltip) {
+  .entry-bottom {
     margin-bottom: 0.425rem;
   }
 </style>

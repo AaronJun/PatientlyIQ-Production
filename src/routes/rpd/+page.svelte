@@ -250,7 +250,7 @@
             </p>
             <br><br>
             <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
-              The vouchers command a median sales price of $110M, and at least 25 have been sold as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.
+              The vouchers command a median sales price of $110M, and at least 25 have been as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.
             </p>
           </div>
 
@@ -376,7 +376,7 @@
   }
 
   .timeline-container {
-    padding: 1rem 2rem 2rem 1.25rem;
+    padding: rem 2rem 2rem 1.25rem;
     height: 95vh;
     width: 75vw;
     overflow: hidden;

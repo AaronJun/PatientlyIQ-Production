@@ -270,7 +270,8 @@
           resetHighlight();
           handleMouseOut();
         })
-        .on("click", (event, d) => {
+        paths
+    .on("click", (event, d) => {
       if (onChordClick) {
         const key = `${d.source.index}-${d.target.index}`;
         const details = transactionDetails.get(key);
@@ -291,8 +292,8 @@
             });
           }
         }
-        }
-        });
+      }
+    });
 
       function highlightCompany(index) {
         paths.style("opacity", d => 

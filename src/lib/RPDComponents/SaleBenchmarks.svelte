@@ -35,6 +35,8 @@
   }
 
   export let constellationData: ConstellationData[];
+  export let handleClusterElementClick: (event: CustomEvent) => void;
+
   export let onDrugClick: ((data: ConstellationData) => void) | undefined = undefined;
   export let onCompanySelect: (data: ConstellationData, color: string) => void;
 
@@ -402,8 +404,14 @@
           </ul>
         </div>  
 
-        <YearlySalesChart {constellationData} />
-      </div>
+        <YearlySalesChart 
+        {constellationData}
+        on:clusterElementClick={(event) => {
+          const { entry, color } = event.detail;
+          onCompanySelect(entry, color);
+        }}
+      />
+    </div>    
     {:else if activeVisualization === 'distribution'}
       <div class="viz-container">
         <div class="beeswarm-wrapper">
