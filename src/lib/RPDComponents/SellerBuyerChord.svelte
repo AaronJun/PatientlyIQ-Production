@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
+    import { ArrowUpRight } from 'carbon-icons-svelte';
   
     export let constellationData: any[];
     export let onCompanyClick = undefined;
@@ -14,7 +15,6 @@
     let innerRadius = Math.min(width, height) * 0.35;
     let outerRadius = innerRadius + 10;
   
-    // Add back tooltip state
     let tooltipVisible = false;
     let tooltipX = 0;
     let tooltipY = 0;
@@ -25,6 +25,10 @@
       id: ''
     };
     let tooltipBorderColor = '';
+
+    // Constants for handling undisclosed transactions
+    const UNDISCLOSED_GROUP = "Undisclosed Buyer";
+    const UNDISCLOSED_COLOR = "#e5e5e5";
 
     function getCompanySummary(transactions, company) {
       const sales = transactions.filter(t => t.Sponsor === company);
@@ -49,20 +53,12 @@
     }
 
     function handleMouseOver(event, data, color, content) {
-      // Update local tooltip
       tooltipContent = content;
       tooltipBorderColor = color;
-      tooltipX = event.pageX;
-      tooltipY = event.pageY;
+      tooltipX = event.pageX - 320; 
+      tooltipY = event.pageY - 725;
       tooltipVisible = true;
-
-      // Dispatch event for parent
-      dispatch('tooltipShow', {
-        x: event.pageX,
-        y: event.pageY,
-        content,
-        color
-      });
+      dispatch('tooltipShow', { x: tooltipX, y: tooltipY, content, color });
     }
 
     function handleMouseOut() {
@@ -71,16 +67,20 @@
     }
   
     onMount(() => {
+      // Filter valid transactions but include undisclosed ones
       const transactions = constellationData.filter(
-        d => d.Purchased === "Y" && d.Purchaser && d.Sponsor &&
-             d.Purchaser !== "NA" && d.Sponsor !== "NA" &&
-             d.Purchaser !== "Undisclosed"
+        d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"] &&
+             d.Purchaser !== "NA" && d.Sponsor !== "NA"
       );
   
+      // Get all companies, replacing "Undisclosed" with our group name
       const companies = Array.from(new Set([
-        ...transactions.map(d => d.Sponsor),
-        ...transactions.map(d => d.Purchaser)
-      ]));
+        ...transactions.map(d => d.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : d.Sponsor),
+        ...transactions.map(d => d.Purchaser === "Undisclosed" ? UNDISCLOSED_GROUP : d.Purchaser)
+      ])).filter(c => c !== UNDISCLOSED_GROUP);
+      
+      // Add undisclosed group at the end
+      companies.push(UNDISCLOSED_GROUP);
   
       const matrix = Array(companies.length).fill(0).map(() => 
         Array(companies.length).fill(0)
@@ -89,8 +89,12 @@
       const transactionDetails = new Map();
       
       transactions.forEach(t => {
-        const sourceIndex = companies.indexOf(t.Sponsor);
-        const targetIndex = companies.indexOf(t.Purchaser);
+        const sourceCompany = t.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : t.Sponsor;
+        const targetCompany = t.Purchaser === "Undisclosed" ? UNDISCLOSED_GROUP : t.Purchaser;
+        
+        const sourceIndex = companies.indexOf(sourceCompany);
+        const targetIndex = companies.indexOf(targetCompany);
+        
         matrix[sourceIndex][targetIndex]++;
         
         const key = `${sourceIndex}-${targetIndex}`;
@@ -113,7 +117,10 @@
   
       const color = d3.scaleOrdinal()
         .domain(companies)
-        .range(d3.quantize(t => d3.interpolatePuOr(t * 1 + 0.325), companies.length));
+        .range(companies.map(company => 
+          company === UNDISCLOSED_GROUP ? UNDISCLOSED_COLOR :
+          d3.quantize(t => d3.interpolatePuOr(t * 1 + 0.325), companies.length)[companies.indexOf(company)]
+        ));
   
       const svgElement = d3.select(svg)
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
@@ -177,11 +184,29 @@
         .style("font-size", "8px")
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
-          highlightCompany(d.index);
-          
-          const company = companies[d.index];
-          const summary = getCompanySummary(transactions, company);
-          
+  highlightCompany(d.index);
+  
+  const company = companies[d.index];
+  const summary = getCompanySummary(transactions, company);
+  
+  let tooltipContent;
+  if (summary.isUndisclosedBuyer) {
+    tooltipContent = {
+      sponsor: "Undisclosed Buyers",
+      drugName: `Total Transactions: ${summary.purchaseCount}`,
+      therapeuticArea: `Total Purchase Value: $${summary.totalPurchaseValue.toFixed(1)}M`,
+      id: `Sellers to Undisclosed Buyers: ${summary.sellers.join(", ")}`
+    };
+  } else {
+    tooltipContent = {
+      sponsor: company,
+      drugName: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
+      therapeuticArea: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`,
+      id: `Partners: ${[...summary.buyers, ...summary.sellers]
+        .filter(p => p !== company && p !== "Undisclosed")
+        .join(", ")}`
+    };
+  }          
           handleMouseOver(event, d, color(company), {
             sponsor: company,
             drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
@@ -218,6 +243,7 @@
         .attr("d", d3.ribbon().radius(innerRadius))
         .attr("fill", d => color(companies[d.source.index]))
         .attr("stroke", d => d3.rgb(color(companies[d.source.index])).darker())
+        .attr("stroke-width", .25)
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
           highlightChord(d);
@@ -228,7 +254,7 @@
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
             drugName: details.map(t => t.drugName).join(", "),
             therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
-            id: `Reported Price: $${details[details.length-1].price}M`
+            id: `$${details[details.length-1].price}M`
           });
         })
         .on("mouseout", () => {
@@ -297,14 +323,21 @@
           .style("font-weight", "normal")
           .style("font-size", "8px");
       }
+
+      // Add explanatory note
+      svgElement.append("text")
+        .attr("class", "undisclosed-note")
+        .attr("x", -width/2 + 20)
+        .attr("y", height/2 - 20)
+        .attr("text-anchor", "start")
+        .attr("font-size", "10px")
+        .attr("fill", "#666");
     });
 </script>
-  
+
 <div class="chord-container">
   <svg bind:this={svg}></svg>
 </div>
-
-
 
 {#if tooltipVisible}
   <div
@@ -312,25 +345,33 @@
     style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
   >
     <div class="tooltip-content">
+        
       <div class="entry-title">
-        <p class="text-base font-semibold mb-1">
+        <p class="text-base font-semibold">
           {tooltipContent.sponsor}
         </p>    
+        <div class="entry-bottom">
+            <p class="text-sm mb-3 font-semibold text-gray-500">
+              {tooltipContent.drugName}
+            </p>
+          </div>
       </div>
       <div class="entry-bottom">
-        <p class="text-sm mb-2">
+        <p class="text-xs font-semibold font-mono text-gray-500 mt-2 "> Reported Price</p>
+        <p class="text-sm/2 font-bold">
           {tooltipContent.id}
         </p>
       </div>
+   
       <div class="entry-bottom">
-        <p class="text-xs font-semibold text-gray-500">
-          {tooltipContent.drugName}
-        </p>
-      </div>
-      <div class="entry-bottom">
-        <p class="text-sm font-bold text-gray-500">
+        <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
+        </p>       
+
+         <p class="text-xs font-semibold font-mono text-gray-500 mt-1">
+            Click to view more details. 
         </p>
+    
       </div>
     </div>
   </div>
@@ -370,10 +411,6 @@
       right: 0;
       height: .625rem;
       background-color: var(--border-color);
-    }
-  
-    .tooltip-content {
-      margin-top: 4px;
     }
   
     :global(.chord) {

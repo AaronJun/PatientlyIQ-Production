@@ -28,23 +28,26 @@
     style="left: {x}px; top: {y}px; --border-color: {borderColor};"
   >
     <div class="tooltip-content">
-      <div class="entry-title">
-        <Medication size="12" />
-        <span class="drugname">{content.drugName}</span> 
-      </div>
-      <div class="entry-bottom">
-        <Building size="12" />
-        <span class="sponsor">{content.sponsor}</span> 
-      </div>
+        <div class="flex gap-2 items-baseline">
+          <Medication size="16" class="text-gray-600" />
+          <p class="text-base font-semibold pl-2">
+            {content.drugName}
+          </p>
+        </div>
 
-      <div class="entry-bottom">
-        <ReminderMedical size="12" />
-        <span class="therapeutic-area">{content.therapeuticArea}</span>
+        <div class="flex gap-2 items-baseline mb-4">
+          <Building size="16" class="text-gray-600" />
+          <p class="text-base pl-2">{content.sponsor}</p> 
     </div>
 
-    <div class="entry-bottom">
-      <Stethoscope size="12" />
-      <span class="indication">{content.id}</span>
+      <div class="flex gap-2 items-baseline">
+        <ReminderMedical class="text-gray-400"  size="16" />
+        <p class="text-xs font-semibold text-gray-600 pl-2">{content.therapeuticArea}</p>
+    </div>
+
+    <div class="flex gap-2 items-baseline capitalize">
+      <Stethoscope class="text-gray-400" size="16" />
+      <p class="text-xs font-semibold text-gray-600 pl-2">{content.id}</p>
   </div>
 </div>
 </div>
@@ -59,6 +62,7 @@
     padding: 1rem .5rem .5rem .5rem;
     font-size: 12px;
     pointer-events: none;
+    overflow: hidden;
     z-index: 1000;
     min-width: 300px;
     max-width: 300px;
@@ -91,7 +95,8 @@
 .sponsor, .sponsor-count {
   font-weight: 800;
   font-size: .725rem;
-  color: #6f6f6f;
+  text-overflow: ellipsis;
+
 }
 
 .therapeutic-area {
@@ -99,19 +104,19 @@
   max-width: 100%;
   text-transform: capitalize;
   font-weight: 800;
-  color: #6f6f6f;
 }
 
 .drug-name {
   font-size: .725rem;
   font-weight: 800;
-  color: #6f6f6f;
 }
 
 .therapeutic-area {
   font-size: .725rem;
   max-width: 100%;
   text-transform: capitalize;
+  text-overflow: ellipsis;
+
   font-weight: 800;
   color: #6f6f6f;
 }
@@ -129,9 +134,9 @@
 
 .entry-title {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: left;
-  align-items: center;
+  align-items: left;
   gap: 0.725rem;
   margin-bottom: 1.15rem;
 }

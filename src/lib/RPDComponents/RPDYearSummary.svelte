@@ -192,6 +192,7 @@
     flex-shrink: 0;
     background: #fffcf4;
     border: .5px solid #e0e0e0;
+    cursor: pointer;
     transition: all 0.2s ease;
   }
 

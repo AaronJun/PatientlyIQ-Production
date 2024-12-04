@@ -14,6 +14,7 @@
   import TenPetal from '../../assets//10Petal.svg?raw';
   import ElevenPetal from '../../assets//11Petal.svg?raw';
   import TwelvePetal from '../../assets//12Petal.svg?raw';
+  import FlowerExplainer from './FlowerExplainer.svelte';
 
   interface RPDData {
     Year: string;
@@ -237,12 +238,13 @@ function handleKeydown(event: KeyboardEvent) {
     }
   }
 
-  function drawTimeline() {
-    svg.selectAll("*").remove();
-    drawAxis();
-    drawDataLines();
-    drawClusters();
-  }
+// Update the drawTimeline function to include the explainer
+function drawTimeline() {
+  svg.selectAll("*").remove();
+  drawAxis();
+  drawDataLines();
+  drawClusters();
+}
 
   function drawAxis() {
     const fullWidth = Math.max(width, years.length * 200);
@@ -473,18 +475,27 @@ function handleClusterClick(event: MouseEvent, year: string) {
   });
 </script>
 
-<div class="timeline-container" bind:this={container}>
+<div class="timeline-container">
+  <FlowerExplainer />
+  <div class="visualization-wrapper" bind:this={container}>
+  </div>
 </div>
 
 <style>
-  .timeline-container {
+   .timeline-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .visualization-wrapper {
     width: 100%;
     height: 100%;
     padding: 0;
     overflow-x: auto;
     overflow-y: hidden;
-    position: relative;
   }
+
 
   :global(.timeline-container svg.timeline-svg) {
     min-width: 100%;
@@ -507,7 +518,40 @@ function handleClusterClick(event: MouseEvent, year: string) {
     pointer-events: none;
   }
 
-  :global(.year-indicator) {
-    transition: fill 0.3s ease;
-  }
+:global(.explainer-title) {
+  letter-spacing: 0.025em;
+}
+
+:global(.explainer-text) {
+  line-height: 1.5;
+}
+
+:global(.year-indicator) {
+  transition: fill 0.3s ease;
+}
+
+:global(.timeline-container svg.timeline-svg) {
+  min-width: 100%;
+  height: 100%;
+}
+
+:global(.fixed-y-axis) {
+  position: sticky;
+  left: 0;
+  border-right: .5px solid #eee;
+}
+
+:global(.fixed-y-axis::after) {
+  position: sticky;
+  top: 0;
+  right: -10px;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+:global(.year-indicator) {
+  transition: fill 0.3s ease;
+}
 </style>

@@ -392,12 +392,32 @@
   <div class="visualization-content">
     {#if activeVisualization === 'yearly'}
       <div class="viz-container">
+        <div class="explainer-section">
+          <p class="text-sm">This visualization shows the pattern of voucher sales over time. Each point represents a transaction, with:</p>
+          <ul>
+            <li>The y-axis showing the sale price in millions of USD</li>
+            <li>The x-axis displaying the year of the transaction</li>
+            <li>Hover over any point to see detailed transaction information</li>
+            <li>Click on a point to focus on that specific transaction</li>
+          </ul>
+        </div>  
+
         <YearlySalesChart {constellationData} />
       </div>
     {:else if activeVisualization === 'distribution'}
       <div class="viz-container">
         <div class="beeswarm-wrapper">
-          <div class="transaction-details-grid">
+            <div class="explainer-section">
+            <p class="text-sm">This beeswarm plot shows the distribution of voucher sale prices, where:</p>
+            <ul>
+              <li>Each circle represents a single transaction</li>
+              <li>Orange circles (<span class="color-sample orange"></span>) indicate the lowest price transactions</li>
+              <li>Green circles (<span class="color-sample green"></span>) indicate the highest price transactions</li>
+              <li>Gray circles (<span class="color-sample gray"></span>) represent transactions with undisclosed parties</li>
+              <li>Hover over any circle to see transaction details in the panel above</li>
+            </ul>
+          </div>
+      <!--     <div class="transaction-details-grid">
             <div class="detail-item">
               <span class="text-gray-800 font-semibold">{selectedPoint.seller}</span>
               <span class="detail-label"><PortOutput class="mb-1" />Seller</span>
@@ -414,7 +434,7 @@
               <span class="text-gray-800 font-semibold">{selectedPoint.drugName}</span>
               <span class="detail-label"><Medication class="mb-1" />Associated Drug</span>
             </div>
-          </div>
+          </div> -->
           <VoucherBeeswarmPlot 
             data={constellationData}
             onPointClick={handlePointClick}
@@ -424,6 +444,16 @@
       </div>
     {:else if activeVisualization === 'network'}
       <div class="viz-container">
+        <div class="explainer-section">
+          <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
+          <ul>
+            <li>Each segment represents a company (buyer or seller)</li>
+            <li>Connecting lines show transactions between companies</li>
+            <li>Thicker lines indicate higher total transaction values</li>
+            <li>Hover over segments to highlight related transactions</li>
+            <li>Click on any segment or connection to focus on specific companies</li>
+          </ul>
+        </div>
         <SellerBuyerChord 
           {constellationData}
           onCompanyClick={(companyData) => {
@@ -438,7 +468,7 @@
   </div>
 
   <!-- Statistics Tabs -->
-  <div class="tabs-container">
+  <div class="tabs-container mt-28">
     <div class="tab-buttons">
       <button 
         class="tab-button {currentTab === 'overview' ? 'active' : ''}"
@@ -584,12 +614,12 @@
     flex-direction: column;
     flex-grow: 1;
     gap: 2rem;
-    padding: 2rem;
+    padding: 2rem 2.25rem 0 2.25rem;
   }
 
   .visualization-tabs {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     border-bottom: 1px solid #e5e7eb;
     padding: 0 2rem 0 0;
   }
@@ -616,7 +646,6 @@
   }
 
   .visualization-content {
-    padding: 2rem;
     min-height: 400px;
   }
 
@@ -674,9 +703,8 @@
 
   .tab-buttons {
     display: flex;
-    gap: 1.725rem;
+    gap: 1.25rem;
     border-bottom: 1px solid #e5e7eb;
-
     color: #797979;
   }
 
@@ -719,6 +747,39 @@
     text-align: left;
   }
 
+  .explainer-section {
+    background-color: #f6f0e4f1;
+    padding: 1.25rem 0 1.25rem 1.25rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  .explainer-section h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.75rem;
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .explainer-section p {
+    color: #4a5568;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .explainer-section ul {
+    list-style-type: disc;
+    padding-left: 1.725rem;
+    font-size: 0.875rem;
+    color: #4a5568;
+  }
+
+  .explainer-section li {
+    margin-bottom: 0.425rem;
+    line-height: 1.25;
+  }
+
   th {
     position: sticky;
     font-size: 0.65rem;
@@ -744,7 +805,8 @@
     text-transform: uppercase;
     padding: 0.5rem 1rem;
     border: 1px solid #292F58;
-    border-radius: 4px;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
     background: transparent;
     color: #292F58;
     cursor: pointer;
@@ -767,6 +829,7 @@
 
   :global(.bx--data-table-container) {
     width: 100%;
+    background-color: #fff;
   }
 
   :global(.bx--toolbar-content) {

@@ -8,9 +8,9 @@
     <div class="header-content">
       <div class="header-left">
         <div class="title-section">
-          <h1 class="capitalize mb-2">Planting the seeds of rare disease treatment
+          <h1 class="capitalize mb-2">Planting the seeds of rare disease research
           </h1>
-          <p class="font-bold">Measuring the impact of the FDA's rare pediatric disease priority review voucher program</p>
+          <p class="font-base">Measuring the impact of the <span class="font-base text-orange-600 font-medium">FDA's Rare Pediatric Disease Priority Review Voucher Program</p>
         </div>
       </div>
   </header>

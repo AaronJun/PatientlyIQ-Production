@@ -195,7 +195,7 @@
       on:click={() => setActiveTab('By Sponsor')}
     >
     <div class="flex gap-8 justify-center">By Sponsor<Building /></div>
-    </button><!-- 
+    </button
     <button
     class="tab-button {activeTab === 'By Therapeutic Area' ? 'active' : ''}"
     on:click={() => setActiveTab('By Therapeutic Area')}
@@ -223,7 +223,6 @@
                 on:clusterElementClick={handleClusterElementClick}
               />
             {/if}
-              <RPDNavDrawer />
           </div>
 
           <div class="timeline-container">
@@ -244,7 +243,7 @@
         </div>
       {:else if activeTab === 'transactions'}
       <div class="flowers-view">
-        <div class="info-panel row col-span-2 mb-16 align-center p-8 pb-10 text-green-900">
+        <div class="info-panel row col-span-2 align-center p-8 pb-10 text-green-900">
             <h2 class="text-xs mb-8 font-bold col-span-1">A View of Voucher Transactions</h2>
             <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
               A PRV grants a four-month faster FDA review (6 vs 10 months) and can be used or sold to others. The opportunity to sell the vouchers has helped smaller companies invest in research for rare disease, whilst helping larger companies expedite their own rare programs.
@@ -331,6 +330,7 @@
     align-items: center;
     gap: 0.5rem;
     text-transform: uppercase;
+    max-width: 22.5vw;  
     letter-spacing: .325px;
     padding: 0.5rem 1rem 0.5rem 2.25rem;
     font-size: 0.875rem;
@@ -376,8 +376,8 @@
   }
 
   .timeline-container {
-    padding: 2rem 2rem 2rem 1.25rem;
-    height: 90vh;
+    padding: 1rem 2rem 2rem 1.25rem;
+    height: 95vh;
     width: 75vw;
     overflow: hidden;
   }
@@ -388,9 +388,9 @@
     padding: 2.25rem 1.25rem 0 1.25rem;
     width: 22.5vw;
     background-color: #f6f0e4f1;
-    border-right: 1px solid #C9623F;
-    border-left: 1px solid #C9623F;
-    border-bottom: 1px solid #C9623F;
+    border-right: .5px solid #e2e8f0;
+    border-left: .5px solid #e2e8f0;
+    border-bottom: .5px solid #e2e8f0;
     overflow: auto;
   }
 
