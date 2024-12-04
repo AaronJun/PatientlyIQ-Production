@@ -1,173 +1,175 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { RadialTimeline, YearlySummary } from '$lib/componentStores';
-  import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
-  import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
-  import Tooltip from '$lib/RPDComponents/RPDTooltip.svelte';
-  import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
-  import RPDNavDrawer from '$lib/RPDComponents/RPDNavGuide.svelte';
-  import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
-  import constellationDataRaw from '../data/RPDConstellationData.json';
-  import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
-  import DrugSunburst from '$lib/RPDComponents/DrugSunburst.svelte';
-  import SellerBuyerChord from '$lib/RPDComponents/SellerBuyerChord.svelte';
+  <script lang="ts">
+    import { onMount } from 'svelte';
+    import { RadialTimeline, YearlySummary } from '$lib/componentStores';
+    import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
+    import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
+    import Tooltip from '$lib/RPDComponents/RPDTooltip.svelte';
+    import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
+    import RPDNavDrawer from '$lib/RPDComponents/RPDNavGuide.svelte';
+    import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
+    import constellationDataRaw from '../data/RPDConstellationData.json';
+    import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
 
-  interface RPDData {
-    Year: string;
-    RPD: string;
-    "RPD PRV": string;
-  }
-
-  interface ConstellationEntry {
-    Year: string;
-    id: string;
-    name: string;
-    Sponsor: string;
-    "Drug Name": string;
-    "Treatment Type"?: string;
-    Purchased: string;
-    Month: string;
-    Date: string;
-    Purchaser?: string;
-  }
-
-  let activeTab = 'By Year';
-  let currentYear = "2012";   
-  let hoveredPetalData: ConstellationEntry | null = null;
-  let isDrawerOpen = false;
-  let selectedData: ConstellationEntry | null = null;
-  let selectedColor: string = "";
-  let processedRpdPrvData: RPDData[] = [];
-  let processedConstellationData: ConstellationEntry[] = [];
-
-  // Tooltip state
-  let tooltipVisible = false;
-  let tooltipX = 0;
-  let tooltipY = 0;
-  let tooltipContent = {
-    sponsor: '',
-    drugName: '',
-    therapeuticArea: '',
-    id: ''
-  };
-  let tooltipBorderColor = '';
-
-  function processRpdPrvData(data: RPDData[]): RPDData[] {
-    let processed = data.map(item => {
-      if (!item.RPD || item.RPD === "0") {
-        const averageRPD = calculateAverageRPD(data, parseInt(item.Year));
-        return { ...item, RPD: averageRPD.toString(), "RPD PRV": item["RPD PRV"] || "0" };
-      }
-      return item;
-    });
-
-    const currentDate = new Date().getFullYear();
-    for (let year = 2021; year <= currentDate; year++) {
-      if (!processed.find(item => item.Year === year.toString())) {
-        const averageRPD = calculateAverageRPD(processed, year);
-        processed.push({ 
-          Year: year.toString(), 
-          RPD: averageRPD.toString(), 
-          "RPD PRV": "0" 
-        });
-      }
-    }
-    return processed.sort((a, b) => parseInt(a.Year) - parseInt(b.Year));
-  }
-
-  function calculateAverageRPD(data: RPDData[], targetYear: number): number {
-    const lastFiveYears = data
-      .filter(item => +item.Year >= targetYear - 5 && +item.Year < targetYear)
-      .filter(item => item.RPD && item.RPD !== "0");
-    
-    if (lastFiveYears.length === 0) return 0;
-    const sum = lastFiveYears.reduce((acc, curr) => acc + parseInt(curr.RPD), 0);
-    return Math.round(sum / lastFiveYears.length);
-  }
-
-  function processConstellationData(data: ConstellationEntry[]): ConstellationEntry[] {
-    return data.map(entry => ({
-      ...entry,
-      Year: entry.Year.toString()
-    }));
-  }
-
-
-function getColorForTherapeuticArea(ta: string): string {
-  const colorMap = {
-    "Gastroenterology": "#4CAE3B",
-    "Neurology": "#4D4DFF",
-    "Ophthalmology": "#E79028",
-    "Immunology": "#EA38A5",
-    "Metabolic": "#133B11",
-    "Dermatology": "#559368",
-    "Hematology": "#CF3630",
-    "Orthopedics": "#441780",
-    "Respiratory": "#CBC09F",
-    "Nephrology": "#ACA3DB",
-    "Oncology": "#FF84DE",
-    "Hepatology": "#FF00D4",
-  };
-  return colorMap[ta] || "#000000";
-}
-
-  function setActiveTab(tab: string) {
-    activeTab = tab;
-  }
-
-  const handleYearChange = (event: CustomEvent) => {
-    currentYear = event.detail.year;
-  };
+    import {
+      Calendar, 
+      Purchase
+    } from 'carbon-icons-svelte';
   
-  const handlePetalHover = (event: CustomEvent) => {
-    const { event: mouseEvent, entry, color } = event.detail;
-    hoveredPetalData = entry;
-    
-    tooltipContent = {
-      sponsor: entry.Sponsor,
-      drugName: entry["Drug Name"],
-      therapeuticArea: entry.name,
-      id: entry.id
-    };
-    tooltipBorderColor = color;
-    tooltipX = mouseEvent.pageX;
-    tooltipY = mouseEvent.pageY;
-    tooltipVisible = true;
-  };
-
-  const handlePetalLeave = () => {
-    hoveredPetalData = null;
-    tooltipVisible = false;
-  };
-
-  const handleClusterElementClick = (event: CustomEvent) => {
-    const { entry, color } = event.detail;
-    selectedData = entry;
-    selectedColor = color;
-    isDrawerOpen = true;
-  };
-
-  const closeDrawer = () => {
-    isDrawerOpen = false;
-    selectedData = null;
-  };
-
-  onMount(async () => {
-    try {
-      processedRpdPrvData = processRpdPrvData(rpdPrvDataRaw as RPDData[]);
-      processedConstellationData = processConstellationData(constellationDataRaw as ConstellationEntry[]);
-      
-      const [RadialTimelineComp, YearlySummaryComp] = await Promise.all([
-        import('$lib/RPDComponents/RadialTimeline.svelte'),
-        import('$lib/RPDComponents/RPDYearSummary.svelte')
-      ]);
-      
-      RadialTimeline.set(RadialTimelineComp.default);
-      YearlySummary.set(YearlySummaryComp.default);
-    } catch (error) {
-      console.error('Error initializing:', error);
+    interface RPDData {
+      Year: string;
+      RPD: string;
+      "RPD PRV": string;
     }
-  });
+  
+    interface ConstellationEntry {
+      Year: string;
+      id: string;
+      name: string;
+      Sponsor: string;
+      "Drug Name": string;
+      "Treatment Type"?: string;
+      Purchased: string;
+      Month: string;
+      Date: string;
+      Purchaser?: string;
+    }
+  
+    let activeTab = 'By Year';
+    let currentYear = "2012";   
+    let hoveredPetalData: ConstellationEntry | null = null;
+    let isDrawerOpen = false;
+    let selectedData: ConstellationEntry | null = null;
+    let selectedColor: string = "";
+    let processedRpdPrvData: RPDData[] = [];
+    let processedConstellationData: ConstellationEntry[] = [];
+  
+    // Tooltip state
+    let tooltipVisible = false;
+    let tooltipX = 0;
+    let tooltipY = 0;
+    let tooltipContent = {
+      sponsor: '',
+      drugName: '',
+      therapeuticArea: '',
+      id: ''
+    };
+    let tooltipBorderColor = '';
+  
+    function processRpdPrvData(data: RPDData[]): RPDData[] {
+      let processed = data.map(item => {
+        if (!item.RPD || item.RPD === "0") {
+          const averageRPD = calculateAverageRPD(data, parseInt(item.Year));
+          return { ...item, RPD: averageRPD.toString(), "RPD PRV": item["RPD PRV"] || "0" };
+        }
+        return item;
+      });
+  
+      const currentDate = new Date().getFullYear();
+      for (let year = 2021; year <= currentDate; year++) {
+        if (!processed.find(item => item.Year === year.toString())) {
+          const averageRPD = calculateAverageRPD(processed, year);
+          processed.push({ 
+            Year: year.toString(), 
+            RPD: averageRPD.toString(), 
+            "RPD PRV": "0" 
+          });
+        }
+      }
+      return processed.sort((a, b) => parseInt(a.Year) - parseInt(b.Year));
+    }
+  
+    function calculateAverageRPD(data: RPDData[], targetYear: number): number {
+      const lastFiveYears = data
+        .filter(item => +item.Year >= targetYear - 5 && +item.Year < targetYear)
+        .filter(item => item.RPD && item.RPD !== "0");
+      
+      if (lastFiveYears.length === 0) return 0;
+      const sum = lastFiveYears.reduce((acc, curr) => acc + parseInt(curr.RPD), 0);
+      return Math.round(sum / lastFiveYears.length);
+    }
+  
+    function processConstellationData(data: ConstellationEntry[]): ConstellationEntry[] {
+      return data.map(entry => ({
+        ...entry,
+        Year: entry.Year.toString()
+      }));
+    }
+  
+    function getColorForTherapeuticArea(ta: string): string {
+      const colorMap = {
+        "Gastroenterology": "#4CAE3B",
+        "Neurology": "#4D4DFF",
+        "Ophthalmology": "#E79028",
+        "Immunology": "#EA38A5",
+        "Metabolic": "#133B11",
+        "Dermatology": "#559368",
+        "Hematology": "#CF3630",
+        "Orthopedics": "#441780",
+        "Respiratory": "#CBC09F",
+        "Nephrology": "#ACA3DB",
+        "Oncology": "#FF84DE",
+        "Hepatology": "#FF00D4",
+      };
+      return colorMap[ta] || "#000000";
+    }
+  
+    function setActiveTab(tab: string) {
+      activeTab = tab;
+    }
+  
+    const handleYearChange = (event: CustomEvent) => {
+      currentYear = event.detail.year;
+    };
+    
+    const handlePetalHover = (event: CustomEvent) => {
+      const { event: mouseEvent, entry, color } = event.detail;
+      hoveredPetalData = entry;
+      
+      tooltipContent = {
+        sponsor: entry.Sponsor,
+        drugName: entry["Drug Name"],
+        therapeuticArea: entry.name,
+        id: entry.id
+      };
+      tooltipBorderColor = color;
+      tooltipX = mouseEvent.pageX;
+      tooltipY = mouseEvent.pageY;
+      tooltipVisible = true;
+    };
+  
+    const handlePetalLeave = () => {
+      hoveredPetalData = null;
+      tooltipVisible = false;
+    };
+  
+    const handleClusterElementClick = (event: CustomEvent) => {
+      const { entry, color } = event.detail;
+      selectedData = entry;
+      selectedColor = color;
+      isDrawerOpen = true;
+    };
+  
+    const closeDrawer = () => {
+      isDrawerOpen = false;
+      selectedData = null;
+    };
+  
+    onMount(async () => {
+      try {
+        processedRpdPrvData = processRpdPrvData(rpdPrvDataRaw as RPDData[]);
+        processedConstellationData = processConstellationData(constellationDataRaw as ConstellationEntry[]);
+        
+        const [RadialTimelineComp, YearlySummaryComp] = await Promise.all([
+          import('$lib/RPDComponents/RadialTimeline.svelte'),
+          import('$lib/RPDComponents/RPDYearSummary.svelte')
+        ]);
+        
+        RadialTimeline.set(RadialTimelineComp.default);
+        YearlySummary.set(YearlySummaryComp.default);
+      } catch (error) {
+        console.error('Error initializing:', error);
+      }
+    });
 </script>
 
 <RPDHeader />
@@ -178,13 +180,13 @@ function getColorForTherapeuticArea(ta: string): string {
         class="tab-button {activeTab === 'By Year' ? 'active' : ''}"
         on:click={() => setActiveTab('By Year')}
       >
-        <span>By Year</span>
+      <div class="flex gap-8 justify-center">By Year <Calendar /></div>
       </button>
       <button
         class="tab-button {activeTab === 'transactions' ? 'active' : ''}"
         on:click={() => setActiveTab('transactions')}
       >
-        <span>By Transactions</span>
+        <div class="flex gap-8">By Transaction <Purchase /> </div>
       </button>
     </div>
 
@@ -208,9 +210,7 @@ function getColorForTherapeuticArea(ta: string): string {
                 on:clusterElementClick={handleClusterElementClick}
               />
             {/if}
-            <div class="info-panel-nav">
-            <RPDNavDrawer />
-            </div>  
+              <RPDNavDrawer />
           </div>
 
           <div class="timeline-container">
@@ -231,31 +231,35 @@ function getColorForTherapeuticArea(ta: string): string {
         </div>
       {:else if activeTab === 'transactions'}
         <div class="grid grid-cols-2">
-          <div class="header row col-span-2 mb-14 align-center p-8 pb-10 text-green-100">
-          <h2 class="text-xs mb-8 font-bold col-span-1">A View of Voucher Transactions</h2>
-          <p class="text-base w-full max-w-5xl col-span-2 text-white">
-            A PRV grants a four-month faster FDA review (6 vs 10 months) and can be used or sold to others. The opportunity to sell the vouchers has helped smaller companies invest in research for rare disease, whilst helping larger companies expedite their own rare programs.</p>
+          <div class="header row col-span-2 mb-16 align-center p-8 pb-10 text-green-900">
+            <h2 class="text-xs mb-8 font-bold col-span-1">A View of Voucher Transactions</h2>
+            <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
+              A PRV grants a four-month faster FDA review (6 vs 10 months) and can be used or sold to others. The opportunity to sell the vouchers has helped smaller companies invest in research for rare disease, whilst helping larger companies expedite their own rare programs.
+            </p>
             <br><br>
-            <p class="text-base w-full max-w-5xl col-span-2 text-white">
-            The vouchers command a median sales price of $110M, and at least 25 have been as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.</p>
-
+            <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
+              The vouchers command a median sales price of $110M, and at least 25 have been as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.
+            </p>
           </div>
-          <div class="p-6">
-          <SellerBuyerChord constellationData={processedConstellationData} />
-        </div>
-        <SaleBenchmarks constellationData={processedConstellationData} 
+    
+          
+          <SaleBenchmarks 
+          constellationData={processedConstellationData} 
+          onCompanySelect={(data, color) => {
+            selectedData = data;
+            selectedColor = color;
+            isDrawerOpen = true;
+          }}
           onDrugClick={(drugData) => {
             selectedData = drugData;
             selectedColor = getColorForTherapeuticArea(drugData.name);
             isDrawerOpen = true;
           }}
-          />
+        />
         </div>
         <div class="border-b-slate-700 border-b-2"></div>
-   
       {:else}
         <div class="therapeutic-area-view">
-          <DrugSunburst constellationData={processedConstellationData} />
         </div>
       {/if}
     </div>
@@ -272,8 +276,8 @@ function getColorForTherapeuticArea(ta: string): string {
   {/if}
 
   <Tooltip
-    x={tooltipX}
-    y={tooltipY}
+    x={tooltipX-290}
+    y={tooltipY-220}
     visible={tooltipVisible}
     content={tooltipContent}
     borderColor={tooltipBorderColor}
@@ -284,52 +288,58 @@ function getColorForTherapeuticArea(ta: string): string {
   .page-container {
     position: relative;
     display: block;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
+    padding: 2.25rem;
     align-content: space-around;
-    overflow: hidden;
+    overflow: auto;
   }
 
   .header {
-    background-color: rgb(43, 130, 113);
+    background-color: #f6f0e4;
   }
 
   .main-content {
     display: block;
-    width: 100vw;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
   }
 
   .tabs {
-    display: flex;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    display: grid;
+    font-size: 0.8725rem;
+    grid-template-columns: repeat(2, 1fr);
+    border-bottom: .5px dotted #6b7280;
+    padding-top: 2.25rem;
+    gap: .525rem;
     background-color: #fff;
-    gap: 1rem;
-    min-width: 100%;
   }
 
   .tab-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: .325px;
+    padding: 0.5rem 1rem 0.5rem 2.25rem;
     font-size: 0.875rem;
     color: #6b7280;
-    border-bottom: 2px solid transparent;
+    border-bottom: .5px solid #797979;
     transition: all 0.2s;
   }
-  
 
   .tab-button:hover {
     color: #C9623F;
+    border-bottom: 1px solid #C9623F;
+    transition: ease-in 0.2s;    
   }
 
   .tab-button.active {
-    color: #C9623F;
-    border-bottom: 1px solid #C9623F;
+    background-color: #fff;
     font-weight: 800;
+    padding: 0.5rem 1rem 0.5rem 2.25rem;
+    color: #C9623F;
+    border-bottom: 2px solid #C9623F;
   }
 
   .tab-content {
@@ -362,20 +372,17 @@ function getColorForTherapeuticArea(ta: string): string {
   }
 
   .info-panel {
-    background-color: #f9f9f9e7;
     border-right: 1px dotted #e5e7eb;
     min-height: 100%;
     width: 25%;
-    padding: 1.25rem 2.25rem 0 1rem;
-    overflow-y: hidden;
+    overflow: auto;
   }
 
   .info-panel-nav {
     height: 100%;
-    width: 22.5vw;
-    padding: 0 2.25rem 0 1rem;
-    position: absolute;
-    bottom: -72.5vh;
+    padding: 0 2.25rem 0 0rem;
+    position: relative;
+    align-content: space-between;
     overflow-y: hidden;
   }
 

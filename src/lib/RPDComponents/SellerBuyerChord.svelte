@@ -3,6 +3,8 @@
     import * as d3 from 'd3';
   
     export let constellationData: any[];
+    export let onCompanyClick = undefined;
+    export let onChordClick = undefined;
     
     let svg;
     let width = 800;
@@ -102,6 +104,7 @@
         .attr("d", d3.arc()
           .innerRadius(innerRadius)
           .outerRadius(outerRadius))
+        .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
           highlightCompany(d.index);
           
@@ -124,6 +127,19 @@
         .on("mouseout", () => {
           resetHighlight();
           tooltipVisible = false;
+        })
+        .on("click", (event, d) => {
+          if (onCompanyClick) {
+            const company = companies[d.index];
+            const companyTransactions = transactions.filter(t => 
+              t.Sponsor === company || t.Purchaser === company
+            );
+            const firstTransaction = companyTransactions[0];
+            onCompanyClick({
+              ...firstTransaction,
+              Sponsor: company
+            });
+          }
         });
   
       const labels = group.append("text")
@@ -146,14 +162,13 @@
           const summary = getCompanySummary(transactions, company);
           
           tooltipContent = {
-  sponsor: company,
-  drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
-    .filter(p => p !== company && p !== "Undisclosed")
-    .join(", ")}`,
-  therapeuticArea: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
-  id: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`
-};
-
+            sponsor: company,
+            drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
+              .filter(p => p !== company && p !== "Undisclosed")
+              .join(", ")}`,
+            therapeuticArea: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
+            id: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`
+          };
           tooltipBorderColor = color(company);
           tooltipX = event.pageX;
           tooltipY = event.pageY;
@@ -162,6 +177,19 @@
         .on("mouseout", () => {
           resetHighlight();
           tooltipVisible = false;
+        })
+        .on("click", (event, d) => {
+          if (onCompanyClick) {
+            const company = companies[d.index];
+            const companyTransactions = transactions.filter(t => 
+              t.Sponsor === company || t.Purchaser === company
+            );
+            const firstTransaction = companyTransactions[0];
+            onCompanyClick({
+              ...firstTransaction,
+              Sponsor: company
+            });
+          }
         });
   
       const paths = svgElement.append("g")
@@ -173,17 +201,18 @@
         .attr("d", d3.ribbon().radius(innerRadius))
         .attr("fill", d => color(companies[d.source.index]))
         .attr("stroke", d => d3.rgb(color(companies[d.source.index])).darker())
+        .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
           highlightChord(d);
           
           const key = `${d.source.index}-${d.target.index}`;
           const details = transactionDetails.get(key);
-        tooltipContent = {
+          tooltipContent = {
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
             drugName: details.map(t => t.drugName).join(", "),
             therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
             id: `Reported Price: $${details[details.length-1].price}M`
-            };
+          };
           tooltipBorderColor = color(companies[d.source.index]);
           tooltipX = event.pageX;
           tooltipY = event.pageY;
@@ -192,6 +221,22 @@
         .on("mouseout", () => {
           resetHighlight();
           tooltipVisible = false;
+        })
+        .on("click", (event, d) => {
+          if (onChordClick) {
+            const key = `${d.source.index}-${d.target.index}`;
+            const details = transactionDetails.get(key);
+            const lastTransaction = details[details.length - 1];
+            
+            onChordClick({
+              ...transactions.find(t => 
+                t["Drug Name"] === lastTransaction.drugName &&
+                t.Sponsor === companies[d.source.index] &&
+                t.Purchaser === companies[d.target.index]
+              ),
+              name: lastTransaction.therapeuticArea
+            });
+          }
         });
   
       function highlightCompany(index) {
@@ -253,22 +298,24 @@
     >
       <div class="tooltip-content">
         <div class="entry-title">
-            <p class="text-base font-semibold mb-1">
-            {tooltipContent.sponsor}</p>    
+          <p class="text-base font-semibold mb-1">
+            {tooltipContent.sponsor}
+          </p>    
         </div>
         <div class="entry-bottom">
-            <p class="text-sm mb-2">
-                {tooltipContent.id}
-            </p>
+          <p class="text-sm mb-2">
+            {tooltipContent.id}
+          </p>
         </div>
         <div class="entry-bottom">
           <p class="text-xs font-semibold text-gray-500">
             {tooltipContent.drugName}
-        </p>
+          </p>
         </div>
         <div class="entry-bottom">
-            <p class="text-sm font-bold text-gray-500">                {tooltipContent.therapeuticArea}
-            </p>
+          <p class="text-sm font-bold text-gray-500">
+            {tooltipContent.therapeuticArea}
+          </p>
         </div>
       </div>
     </div>
@@ -313,7 +360,7 @@
     .tooltip-content {
       margin-top: 4px;
     }
-
+  
     :global(.chord) {
       transition: opacity 0.2s ease;
     }

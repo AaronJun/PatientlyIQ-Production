@@ -35,7 +35,7 @@
           <div class="cluster">
             {@html fourPetalSVG}
           </div>
-          <div class="grid grid-rows-2 gap-4">
+          <div class="grid grid-rows-2 gap-4 pr-12">
           <p class="text-xs">Each petal represents one awarded voucher from that year</p>
           <p class="text-xs">Line height shows total RPD designations for the year</p>
         </div>

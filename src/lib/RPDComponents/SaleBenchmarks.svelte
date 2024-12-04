@@ -1,12 +1,46 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
+  import VoucherBeeswarmPlot from './VoucherBeeswarmPlot.svelte';
+  import YearlySalesChart from './YearlySalesChart.svelte';
+  import SellerBuyerChord from './SellerBuyerChord.svelte';
   import { Money, PortInput, PortOutput, Medication } from 'carbon-icons-svelte';
   import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
   
   export let constellationData: any[];
-  export let onDrugClick = undefined;
-  
+  export let onDrugClick: (data: any) => void = undefined;
+  export let onCompanySelect: (data: any, color: string) => void;
+
+  // Tooltip state
+  let tooltipVisible = false;
+  let tooltipX = 0;
+  let tooltipY = 0;
+  let tooltipContent = {
+    sponsor: '',
+    drugName: '',
+    therapeuticArea: '',
+    id: ''
+  };
+  let tooltipBorderColor = '';
+
+  function getColorForTherapeuticArea(ta: string): string {
+    const colorMap = {
+      "Gastroenterology": "#4CAE3B",
+      "Neurology": "#4D4DFF",
+      "Ophthalmology": "#E79028",
+      "Immunology": "#EA38A5",
+      "Metabolic": "#133B11",
+      "Dermatology": "#559368",
+      "Hematology": "#CF3630",
+      "Orthopedics": "#441780",
+      "Respiratory": "#CBC09F",
+      "Nephrology": "#ACA3DB",
+      "Oncology": "#FF84DE",
+      "Hepatology": "#FF00D4",
+    };
+    return colorMap[ta] || "#000000";
+  }
+
   let currentTab = "overview";
   let averageSale = { price: 0, buyer: '', seller: '', drugName: '' };
   let medianSale = { price: 0, buyer: '', seller: '', drugName: '' };
@@ -20,9 +54,12 @@
   let expandedSellers = false;
   let searchTermBuyers = "";
   let searchTermSellers = "";
-  let svg, g, simulation;
+  let svg;
+  let g;
+  let simulation;
   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-  let width, height;
+  let width: number;
+  let height: number;
   
   let selectedPoint = {
     buyer: '',
@@ -277,7 +314,7 @@
       .on("click", (event, d) => {
         if (onDrugClick) {
           event.stopPropagation();
-          onDrugClick(d);
+          onCompanySelect(d, getColorForTherapeuticArea(d.name));
         }
       });
   
@@ -288,183 +325,242 @@
       resizeObserver.disconnect();
     };
   });
-  </script>
-  
-  <div class="sale-benchmarks">
-  
-    <div class="flex">
-      <div class="visualization-container">
-        <div class="beeswarm-wrapper">
-          <div class="transaction-details-grid">
-            <div class="detail-item">
-              <span class="text-gray-800 font-semibold">{selectedPoint.seller}</span>
-              <span class="detail-label"><PortOutput class="mb-1" />Seller</span>
-            </div>
-            <div class="detail-item">
-              <span class="text-gray-800 font-semibold">{selectedPoint.buyer}</span>
-              <span class="detail-label"><PortInput class="mb-1" />Buyer</span>
-            </div>
-            <div class="detail-item">
-              <span class="text-gray-800 font-semibold">{selectedPoint.price}</span>
-              <span class="detail-label"><Money class="mb-1" />Price</span>
-            </div>
-            <div class="detail-item">
-              <span class="text-gray-800 font-semibold">{selectedPoint.drugName}</span>
-              <span class="detail-label"><Medication class="mb-1" />Associated Drug</span>
-            </div>
-          </div>
-          <div id="beeswarm-container">
-            <div id="beeswarm-plot"></div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="chord-diagram-container">
-        <!-- Second visualization placeholder -->
-      </div>
-    </div>
-  
-    <div class="tabs-container">
-      <div class="tab-buttons">
-        <button 
-          class="tab-button {currentTab === 'overview' ? 'active' : ''}"
-          on:click={() => currentTab = 'overview'}
-        >
-          Overview
-        </button>
-        <button 
-          class="tab-button {currentTab === 'buyers' ? 'active' : ''}"
-          on:click={() => currentTab = 'buyers'}
-        >
-          Most Active Buyers
-        </button>
-        <button 
-          class="tab-button {currentTab === 'sellers' ? 'active' : ''}"
-          on:click={() => currentTab = 'sellers'}
-        >
-          Most Active Sellers
-        </button>
-      </div>
-  
-      <div class="tab-content">
-        {#if currentTab === 'overview'}
-          <table>
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Price</th>
-                <th>Buyer</th>
-                <th>Seller</th>
-                <th>Associated Drug</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="label">Average Sale Price</td>
-              <td>{formatPrice(averageSale.price)}</td>
-              <td>{averageSale.buyer}</td>
-              <td>{averageSale.seller}</td>
-              <td>{averageSale.drugName}</td>
-            </tr>
-            <tr>
-              <td class="label">Median Sale Price</td>
-              <td>{formatPrice(medianSale.price)}</td>
-            </tr>
-            <tr>
-              <td class="label">Lowest Sale Price</td>
-              <td>{formatPrice(minSale.price)}</td>
-              <td>{minSale.buyer}</td>
-              <td>{minSale.seller}</td>
-              <td>{minSale.drugName}</td>
-            </tr>
-            <tr>
-              <td class="label">Highest Sale Price</td>
-              <td>{formatPrice(maxSale.price)}</td>
-              <td>{maxSale.buyer}</td>
-              <td>{maxSale.seller}</td>
-              <td>{maxSale.drugName}</td>
-            </tr>
-          </tbody>
-        </table>
-      {:else if currentTab === 'buyers'}
-        <div class="buyers-section">
-          <div class="section-header">
-            <button 
-              class="expand-button" 
-              on:click={() => expandedBuyers = !expandedBuyers}
-            >
-              {expandedBuyers ? "Show Top 3" : "Show All"}
-            </button>
-          </div>
-          
-          <Toolbar size="sm">
-            <ToolbarContent>
-              <ToolbarSearch bind:value={searchTermBuyers} />
-            </ToolbarContent>
-          </Toolbar>
-          
-          <DataTable
-            headers={[
-              { key: 'name', value: 'Buyer' },
-              { key: 'count', value: 'Number of Vouchers Purchased' },
-              { key: 'totalPrice', value: 'Total Purchase Amount' },
-              { key: 'avgPrice', value: 'Average Price of Purchase' }
-            ]}
-            rows={filterData((expandedBuyers ? allBuyers : topBuyers).map(buyer => ({
-              id: buyer.name,
-              name: buyer.name,
-              count: buyer.count,
-              totalPrice: formatPrice(buyer.totalPrice),
-              avgPrice: formatPrice(buyer.avgPrice)
-            })), searchTermBuyers)}
-            sortable
-            zebra
-          />
-        </div>
-      {:else}
-        <div class="sellers-section">
-          <div class="section-header">
-            <button 
-              class="expand-button" 
-              on:click={() => expandedSellers = !expandedSellers}
-            >
-              {expandedSellers ? "Show Top 3" : "Show All"}
-            </button>
-          </div>
-          
-          <Toolbar size="sm">
-            <ToolbarContent>
-              <ToolbarSearch bind:value={searchTermSellers} />
-            </ToolbarContent>
-          </Toolbar>
-          
-          <DataTable
-            headers={[
-              { key: 'name', value: 'Seller' },
-              { key: 'count', value: 'Number of Vouchers Sold' },
-              { key: 'totalPrice', value: 'Total Sale Amount' },
-              { key: 'avgPrice', value: 'Average Price of Sale' }
-            ]}
-            rows={filterData((expandedSellers ? allSellers : topSellers).map(seller => ({
-              id: seller.name,
-              name: seller.name,
-              count: seller.count,
-              totalPrice: formatPrice(seller.totalPrice),
-              avgPrice: formatPrice(seller.avgPrice)
-            })), searchTermSellers)}
-            sortable
-            zebra
-          />
-        </div>
-      {/if}
-    </div>
+</script>
+
+<div class="sale-benchmarks">
+<div class="sale-container flex flex-col">
+  <div class="flex col-span-1">
+  <YearlySalesChart {constellationData} />
   </div>
+
+    <div class="visualization-container">
+      <div class="beeswarm-wrapper">
+        <div class="grid grid-col-4 transaction-details-grid">
+          <div class="detail-item">
+            <span class="text-gray-800 font-semibold">{selectedPoint.seller}</span>
+            <span class="detail-label"><PortOutput class="mb-1" />Seller</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="text-gray-800 font-semibold">{selectedPoint.buyer}</span>
+            <span class="detail-label"><PortInput class="mb-1" />Buyer</span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="text-gray-800 font-semibold">{selectedPoint.price}</span>
+            <span class="detail-label"><Money class="mb-1" />Price</span>
+          </div>
+          <div class="detail-item">
+            <span class="text-gray-800 font-semibold">{selectedPoint.drugName}</span>
+            <span class="detail-label"><Medication class="mb-1" />Associated  Drug</span>
+          </div>
+          </div>
+          
+        
+      
+          </div>
+        <div id="beeswarm-container">
+        <div id="beeswarm-plot"></div>
+      </div>
+
+ <div class="flex col-span-1">
+</div>
+</div>
+<SellerBuyerChord 
+{constellationData}
+onCompanyClick={(companyData) => {
+onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
+}}
+onChordClick={(transactionData) => {
+onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
+}}
+/>
+</div>
+
+
+<div class="tabs-container">
+<div class="tab-buttons">
+<button 
+class="tab-button {currentTab === 'overview' ? 'active' : ''}"
+on:click={() => currentTab = 'overview'}
+>
+Overview
+</button>
+<button 
+class="tab-button {currentTab === 'buyers' ? 'active' : ''}"
+on:click={() => currentTab = 'buyers'}
+>
+Most Active Buyers
+</button>
+<button 
+class="tab-button {currentTab === 'sellers' ? 'active' : ''}"
+on:click={() => currentTab = 'sellers'}
+>
+Most Active Sellers
+</button>
+</div>
+
+<div class="tab-content">
+{#if currentTab === 'overview'}
+<table>
+<thead>
+  <tr>
+    <th>Metric</th>
+    <th>Price</th>
+    <th>Buyer</th>
+    <th>Seller</th>
+    <th>Associated Drug</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="label">Average Sale Price</td>
+  <td>{formatPrice(averageSale.price)}</td>
+  <td>{averageSale.buyer}</td>
+  <td>{averageSale.seller}</td>
+  <td>{averageSale.drugName}</td>
+</tr>
+<tr>
+  <td class="label">Median Sale Price</td>
+  <td>{formatPrice(medianSale.price)}</td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td class="label">Lowest Sale Price</td>
+  <td>{formatPrice(minSale.price)}</td>
+  <td>{minSale.buyer}</td>
+  <td>{minSale.seller}</td>
+  <td>{minSale.drugName}</td>
+</tr>
+<tr>
+  <td class="label">Highest Sale Price</td>
+  <td>{formatPrice(maxSale.price)}</td>
+  <td>{maxSale.buyer}</td>
+  <td>{maxSale.seller}</td>
+  <td>{maxSale.drugName}</td>
+</tr>
+</tbody>
+</table>
+{:else if currentTab === 'buyers'}
+<div class="buyers-section">
+<div class="section-header">
+<button 
+  class="expand-button" 
+  on:click={() => expandedBuyers = !expandedBuyers}
+>
+  {expandedBuyers ? "Show Top 3" : "Show All"}
+</button>
+</div>
+
+<Toolbar size="sm">
+<ToolbarContent>
+  <ToolbarSearch bind:value={searchTermBuyers} />
+</ToolbarContent>
+</Toolbar>
+
+<DataTable
+headers={[
+  { key: 'name', value: 'Buyer' },
+  { key: 'count', value: 'Number of Vouchers Purchased' },
+  { key: 'totalPrice', value: 'Total Purchase Amount' },
+  { key: 'avgPrice', value: 'Average Price of Purchase' }
+]}
+rows={filterData((expandedBuyers ? allBuyers : topBuyers).map(buyer => ({
+  id: buyer.name,
+  name: buyer.name,
+  count: buyer.count,
+  totalPrice: formatPrice(buyer.totalPrice),
+  avgPrice: formatPrice(buyer.avgPrice)
+})), searchTermBuyers)}
+sortable
+zebra
+/>
+</div>
+{:else}
+<div class="sellers-section">
+<div class="section-header">
+<button 
+  class="expand-button" 
+  on:click={() => expandedSellers = !expandedSellers}
+>
+  {expandedSellers ? "Show Top 3" : "Show All"}
+</button>
+</div>
+
+<Toolbar size="sm">
+<ToolbarContent>
+  <ToolbarSearch bind:value={searchTermSellers} />
+</ToolbarContent>
+</Toolbar>
+
+<DataTable
+headers={[
+  { key: 'name', value: 'Seller' },
+  { key: 'count', value: 'Number of Vouchers Sold' },
+  { key: 'totalPrice', value: 'Total Sale Amount' },
+  { key: 'avgPrice', value: 'Average Price of Sale' }
+]}
+rows={filterData((expandedSellers ? allSellers : topSellers).map(seller => ({
+  id: seller.name,
+  name: seller.name,
+  count: seller.count,
+  totalPrice: formatPrice(seller.totalPrice),
+  avgPrice: formatPrice(seller.avgPrice)
+})), searchTermSellers)}
+sortable
+zebra
+/>
+</div>
+{/if}
+</div>
+</div>
+
+{#if tooltipVisible}
+<div
+class="tooltip"
+style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
+>
+<div class="tooltip-content">
+<div class="entry-title">
+<p class="text-base font-semibold mb-1">
+{tooltipContent.sponsor}
+</p>    
+</div>
+<div class="entry-bottom">
+<p class="text-sm mb-2">
+{tooltipContent.id}
+</p>
+</div>
+<div class="entry-bottom">
+<p class="text-xs font-semibold text-gray-500">
+{tooltipContent.drugName}
+</p>
+</div>
+<div class="entry-bottom">
+<p class="text-sm font-bold text-gray-500">
+{tooltipContent.therapeuticArea}
+</p>
+</div>
+</div>
+</div>
+{/if}
 </div>
 
 <style>
 .sale-benchmarks {
+  display: grid;
+  grid-template-columns: repeat(3);
   padding: 0 4.25rem 0 0;
-  width: 100%;
+
+}
+
+.sales-container {
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  gap: 1.5rem;
 }
 
 .grid {
@@ -526,37 +622,48 @@
 }
 
 .tabs-container {
-  margin-top: 2rem;
-  border: 1px solid #e5e7eb;
+  border: .5px solid #b4b4b4;
+  padding: 2.25rem;
   overflow: hidden;
 }
 
 .tab-buttons {
   display: flex;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  color: #797979;
+  gap: 1.725rem;
 }
 
 .tab-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
-  color: #6b7280;
-  border-bottom: 2px solid transparent;
+  padding: 0.525rem .925rem;
+  font-size: 0.725rem;
+  padding-top: 2.25rem;
+  text-transform: uppercase;
+  letter-spacing: .325px;
+  color: #797979;
+  border-bottom: 1.25px solid #acacac;
   transition: all 0.2s;
 }
 
 .tab-button:hover {
   color: #C9623F;
+  border-bottom: 1.25px solid #C9623F;
 }
 
 .tab-button.active {
   color: #C9623F;
-  border-bottom-color: #C9623F;
-  background-color: white;
+  border-bottom: 2px solid #C9623F;
+  font-weight: 800;
 }
 
 .tab-content {
-  padding: 1.5rem;
+  padding: 2.425rem 0 0 0;
+}
+
+.sale-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 85vw;
 }
 
 table {

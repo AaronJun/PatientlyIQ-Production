@@ -1,23 +1,81 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   
-  export let data;
-  let svg;
+  export let data: any[];
+  export let onPointClick: (data: any) => void;
   
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  const width = 600 - margin.left - margin.right;
-  const height = 200 - margin.top - margin.bottom;
+  let svg;
+  let g;
+  let simulation;
+  let selectedPoint = {
+    buyer: '',
+    seller: '',
+    price: '',
+    drugName: ''
+  };
+  
+  const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+  let width: number;
+  let height: number;
+  
+  function updateDimensions() {
+    const container = d3.select("#beeswarm-container").node();
+    if (!container) return;
+    
+    width = container.getBoundingClientRect().width - margin.left - margin.right;
+    height = 225 - margin.top - margin.bottom;
+    
+    if (svg) {
+      svg.attr("width", width + margin.left + margin.right)
+         .attr("height", height + margin.top + margin.bottom);
+      
+      const purchasedVouchers = data.filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]);
+      const prices = purchasedVouchers.map(d => parseFloat(d["Sale  Price (USD, Millions)"]));
+      
+      const x = d3.scaleLinear()
+        .domain([0, d3.max(prices)])
+        .range([0, width]);
+  
+      g.select(".axis")
+        .call(d3.axisBottom(x))
+        .call(g => {
+          const ticks = g.selectAll(".tick");
+          ticks.each(function(d, i) {
+            if (i === 0 || i === ticks.size() - 1) {
+              d3.select(this).select("line").remove();
+            }
+          });
+          g.select(".domain").attr("stroke", "#161616").attr("stroke-width", "0.5px");
+        });
+  
+      if (simulation) {
+        simulation
+          .force("x", d3.forceX(d => x(parseFloat(d["Sale  Price (USD, Millions)"]))).strength(1))
+          .force("y", d3.forceY(height));
+        
+        simulation.alpha(1).restart();
+      }
+    }
+  }
   
   onMount(() => {
     const purchasedVouchers = data.filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]);
     const prices = purchasedVouchers.map(d => parseFloat(d["Sale  Price (USD, Millions)"]));
     
+    svg = d3.select("#beeswarm-plot")
+      .append("svg");
+    
+    g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    updateDimensions();
+    
     const x = d3.scaleLinear()
       .domain([0, d3.max(prices)])
       .range([0, width]);
   
-    const simulation = d3.forceSimulation(purchasedVouchers)
+    simulation = d3.forceSimulation(purchasedVouchers)
       .force("x", d3.forceX(d => x(parseFloat(d["Sale  Price (USD, Millions)"]))).strength(1))
       .force("y", d3.forceY(height / 2))
       .force("collide", d3.forceCollide(5))
@@ -25,13 +83,19 @@
   
     for (let i = 0; i < 120; ++i) simulation.tick();
   
-    const g = d3.select(svg)
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
-  
     g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x));
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${height-12})`)
+      .call(d3.axisBottom(x))
+      .call(g => {
+        const ticks = g.selectAll(".tick");
+        ticks.each(function(d, i) {
+          if (i === 0 || i === ticks.size() - 1) {
+            d3.select(this).select("line").remove();
+          }
+        });
+        g.select(".domain").attr("stroke", "#161616").attr("stroke-width", "0.5px");
+      });
   
     const minPrice = d3.min(prices);
     const maxPrice = d3.max(prices);
@@ -40,37 +104,83 @@
       .data(purchasedVouchers)
       .enter()
       .append("circle")
-      .attr("cx", width / 2)  // Start from the middle of the chart
-      .attr("cy", height / 2) // Start from the middle of the chart
-      .attr("r", 0)           // Start with radius 0
-      .attr("stroke", "#161616")
-      .attr("stroke-width", 2)
-      .attr("fill", d => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
-        if (price === minPrice) return "#FFCC33";
-        if (price === maxPrice) return "#00B8A6";
-        return "#ACA3DB";
-      })
-      .append("title")
-      .text(d => `${d.Sponsor}: $${d["Sale  Price (USD, Millions)"]} million`);
-  
-    // Animate the circles
-    g.selectAll("circle")
-      .transition()
-      .duration(1000)  // Animation duration in milliseconds
-      .delay((d, i) => i * 10)  // Stagger the animation for each circle
       .attr("cx", d => d.x)
       .attr("cy", d => d.y)
-      .attr("r", 7.5)
-      .ease(d3.easeElasticOut);  // Add a bouncy effect to the animation
+      .attr("r", 6.25)
+      .attr("fill", d => {
+        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+        if (isNaN(price)) return "none";
+        if (d.Purchaser.toLowerCase() === 'undisclosed' || d.Sponsor.toLowerCase() === 'undisclosed') {
+          return "#e5e5e5";
+        }
+        if (price === minPrice) return "#E59F64";
+        if (price === maxPrice) return "#3B665D";
+        return "#BFD3CF";
+      })
+      .attr("stroke", d => {
+        if (d.Purchaser.toLowerCase() === 'undisclosed' || d.Sponsor.toLowerCase() === 'undisclosed') {
+          return "#a8a8a8";
+        }
+        return "#161616";
+      })
+      .attr("stroke-width", 0.5)
+      .attr("stroke-dasharray", d => {
+        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+        return isNaN(price) ? "2,2" : "none";
+      })
+      .attr("cursor", "pointer")
+      .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget)
+          .attr("stroke", "#ff1515")
+          .attr("stroke-width", 2.25)
+          .attr("stroke-dasharray", "none");
+        
+        selectedPoint = {
+          buyer: d.Purchaser || 'N/A',
+          seller: d.Sponsor || 'N/A',
+          price: d["Sale  Price (USD, Millions)"] ? 
+            `$${d["Sale  Price (USD, Millions)"]} million` : 'N/A',
+          drugName: d["Drug Name"] || 'N/A'
+        };
+        
+        dispatch('pointUpdate', selectedPoint);
+      })
+      .on("mouseout", (event, d) => {
+        d3.select(event.currentTarget)
+          .attr("stroke", "#161616")
+          .attr("stroke-width", 0.5)
+          .attr("stroke-dasharray", d => {
+            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+            return isNaN(price) ? "2,2" : "none";
+          });
+      })
+      .on("click", (event, d) => {
+        if (onPointClick) {
+          event.stopPropagation();
+          onPointClick(d);
+        }
+      });
+  
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(d3.select("#beeswarm-container").node());
+    
+    return () => {
+      resizeObserver.disconnect();
+    };
   });
-  </script>
-  
-  <svg bind:this={svg} width={width + margin.left + margin.right} height={height + margin.top + margin.bottom}></svg>
-  
-  <style>
-  svg {
-    max-width: 100%;
-    height: auto;
+</script>
+
+<div id="beeswarm-container">
+  <div id="beeswarm-plot"></div>
+</div>
+
+<style>
+  #beeswarm-container {
+    width: 100%;
+    position: relative;
   }
-  </style>
+
+  #beeswarm-plot {
+    width: 100%;
+  }
+</style>
