@@ -271,18 +271,27 @@
           handleMouseOut();
         })
         .on("click", (event, d) => {
-          if (onChordClick) {
-            const key = `${d.source.index}-${d.target.index}`;
-            const details = transactionDetails.get(key);
+      if (onChordClick) {
+        const key = `${d.source.index}-${d.target.index}`;
+        const details = transactionDetails.get(key);
+        if (details && details.length > 0) {
+          // Find the matching transaction in the original data
+          const sourceCompany = companies[d.source.index];
+          const targetCompany = companies[d.target.index];
+          const matchingTransaction = transactions.find(t => 
+            (t.Sponsor === sourceCompany || t.Sponsor === "Undisclosed") && 
+            (t.Purchaser === targetCompany || t.Purchaser === "Undisclosed") &&
+            t["Drug Name"] === details[0].drugName
+          );
+          
+          if (matchingTransaction) {
             onChordClick({
-              ...transactions.find(t => 
-                t["Drug Name"] === details[0].drugName &&
-                t.Sponsor === companies[d.source.index] &&
-                t.Purchaser === companies[d.target.index]
-              ),
+              ...matchingTransaction,
               name: details[0].therapeuticArea
             });
           }
+        }
+        }
         });
 
       function highlightCompany(index) {
