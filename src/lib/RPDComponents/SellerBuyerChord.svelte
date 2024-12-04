@@ -1,10 +1,12 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
   
     export let constellationData: any[];
     export let onCompanyClick = undefined;
     export let onChordClick = undefined;
+    
+    const dispatch = createEventDispatcher();
     
     let svg;
     let width = 800;
@@ -12,6 +14,7 @@
     let innerRadius = Math.min(width, height) * 0.35;
     let outerRadius = innerRadius + 10;
   
+    // Add back tooltip state
     let tooltipVisible = false;
     let tooltipX = 0;
     let tooltipY = 0;
@@ -22,7 +25,7 @@
       id: ''
     };
     let tooltipBorderColor = '';
-  
+
     function getCompanySummary(transactions, company) {
       const sales = transactions.filter(t => t.Sponsor === company);
       const purchases = transactions.filter(t => t.Purchaser === company);
@@ -43,6 +46,28 @@
         buyers: uniqueBuyers,
         sellers: uniqueSellers
       };
+    }
+
+    function handleMouseOver(event, data, color, content) {
+      // Update local tooltip
+      tooltipContent = content;
+      tooltipBorderColor = color;
+      tooltipX = event.pageX;
+      tooltipY = event.pageY;
+      tooltipVisible = true;
+
+      // Dispatch event for parent
+      dispatch('tooltipShow', {
+        x: event.pageX,
+        y: event.pageY,
+        content,
+        color
+      });
+    }
+
+    function handleMouseOut() {
+      tooltipVisible = false;
+      dispatch('tooltipHide');
     }
   
     onMount(() => {
@@ -111,22 +136,18 @@
           const company = companies[d.index];
           const summary = getCompanySummary(transactions, company);
           
-          tooltipContent = {
+          handleMouseOver(event, d, color(company), {
             sponsor: company,
             drugName: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
             therapeuticArea: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`,
             id: `Partners: ${[...summary.buyers, ...summary.sellers]
               .filter(p => p !== company && p !== "Undisclosed")
               .join(", ")}`
-          };
-          tooltipBorderColor = color(company);
-          tooltipX = event.pageX;
-          tooltipY = event.pageY;
-          tooltipVisible = true;
+          });
         })
         .on("mouseout", () => {
           resetHighlight();
-          tooltipVisible = false;
+          handleMouseOut();
         })
         .on("click", (event, d) => {
           if (onCompanyClick) {
@@ -161,22 +182,18 @@
           const company = companies[d.index];
           const summary = getCompanySummary(transactions, company);
           
-          tooltipContent = {
+          handleMouseOver(event, d, color(company), {
             sponsor: company,
             drugName: `Partners: ${[...summary.buyers, ...summary.sellers]
               .filter(p => p !== company && p !== "Undisclosed")
               .join(", ")}`,
             therapeuticArea: `Total Transactions: ${summary.salesCount + summary.purchaseCount}`,
             id: `Sales: $${summary.totalSalesValue.toFixed(1)}M | Purchases: $${summary.totalPurchaseValue.toFixed(1)}M`
-          };
-          tooltipBorderColor = color(company);
-          tooltipX = event.pageX;
-          tooltipY = event.pageY;
-          tooltipVisible = true;
+          });
         })
         .on("mouseout", () => {
           resetHighlight();
-          tooltipVisible = false;
+          handleMouseOut();
         })
         .on("click", (event, d) => {
           if (onCompanyClick) {
@@ -207,20 +224,16 @@
           
           const key = `${d.source.index}-${d.target.index}`;
           const details = transactionDetails.get(key);
-          tooltipContent = {
+          handleMouseOver(event, d, color(companies[d.source.index]), {
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
             drugName: details.map(t => t.drugName).join(", "),
             therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
             id: `Reported Price: $${details[details.length-1].price}M`
-          };
-          tooltipBorderColor = color(companies[d.source.index]);
-          tooltipX = event.pageX;
-          tooltipY = event.pageY;
-          tooltipVisible = true;
+          });
         })
         .on("mouseout", () => {
           resetHighlight();
-          tooltipVisible = false;
+          handleMouseOut();
         })
         .on("click", (event, d) => {
           if (onChordClick) {
@@ -285,43 +298,45 @@
           .style("font-size", "8px");
       }
     });
-  </script>
+</script>
   
-  <div class="chord-container">
-    <svg bind:this={svg}></svg>
-  </div>
-  
-  {#if tooltipVisible}
-    <div
-      class="tooltip"
-      style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
-    >
-      <div class="tooltip-content">
-        <div class="entry-title">
-          <p class="text-base font-semibold mb-1">
-            {tooltipContent.sponsor}
-          </p>    
-        </div>
-        <div class="entry-bottom">
-          <p class="text-sm mb-2">
-            {tooltipContent.id}
-          </p>
-        </div>
-        <div class="entry-bottom">
-          <p class="text-xs font-semibold text-gray-500">
-            {tooltipContent.drugName}
-          </p>
-        </div>
-        <div class="entry-bottom">
-          <p class="text-sm font-bold text-gray-500">
-            {tooltipContent.therapeuticArea}
-          </p>
-        </div>
+<div class="chord-container">
+  <svg bind:this={svg}></svg>
+</div>
+
+
+
+{#if tooltipVisible}
+  <div
+    class="tooltip"
+    style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
+  >
+    <div class="tooltip-content">
+      <div class="entry-title">
+        <p class="text-base font-semibold mb-1">
+          {tooltipContent.sponsor}
+        </p>    
+      </div>
+      <div class="entry-bottom">
+        <p class="text-sm mb-2">
+          {tooltipContent.id}
+        </p>
+      </div>
+      <div class="entry-bottom">
+        <p class="text-xs font-semibold text-gray-500">
+          {tooltipContent.drugName}
+        </p>
+      </div>
+      <div class="entry-bottom">
+        <p class="text-sm font-bold text-gray-500">
+          {tooltipContent.therapeuticArea}
+        </p>
       </div>
     </div>
-  {/if}
-  
-  <style>
+  </div>
+{/if}
+
+<style>
     .chord-container {
       width: 100%;
       height: 100%;
@@ -372,4 +387,4 @@
     :global(.group-label) {
       transition: all 0.2s ease;
     }
-  </style>
+</style>

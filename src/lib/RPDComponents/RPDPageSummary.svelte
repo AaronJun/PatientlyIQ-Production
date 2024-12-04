@@ -93,10 +93,6 @@
 </div>
 
 <style>
-  .summary-container {
-    padding: 0 0 0 1rem;
-  }
-
   .summary-text {
     font-size: .925rem;
     color: #2b2b2b;

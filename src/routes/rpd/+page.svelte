@@ -12,7 +12,9 @@
 
     import {
       Calendar, 
-      Purchase
+      Purchase,
+      Building,
+      WatsonHealthDna,
     } from 'carbon-icons-svelte';
   
     interface RPDData {
@@ -188,8 +190,19 @@
       >
         <div class="flex gap-8">By Transaction <Purchase /> </div>
       </button>
-    </div>
+  <!--     <button
+      class="tab-button {activeTab === 'By Sponsor' ? 'active' : ''}"
+      on:click={() => setActiveTab('By Sponsor')}
+    >
+    <div class="flex gap-8 justify-center">By Sponsor<Building /></div>
+    </button><!-- 
+    <button
+    class="tab-button {activeTab === 'By Therapeutic Area' ? 'active' : ''}"
+    on:click={() => setActiveTab('By Therapeutic Area')}
 
+  <div class="flex gap-8 justify-center">By Therapeutic Area <WatsonHealthDna /></div>
+  </button>   -->
+  </div>
     <div class="tab-content">
       {#if activeTab === 'By Year'}
         <div class="flowers-view">
@@ -230,8 +243,8 @@
           </div>
         </div>
       {:else if activeTab === 'transactions'}
-        <div class="grid grid-cols-2">
-          <div class="header row col-span-2 mb-16 align-center p-8 pb-10 text-green-900">
+      <div class="flowers-view">
+        <div class="info-panel row col-span-2 mb-16 align-center p-8 pb-10 text-green-900">
             <h2 class="text-xs mb-8 font-bold col-span-1">A View of Voucher Transactions</h2>
             <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
               A PRV grants a four-month faster FDA review (6 vs 10 months) and can be used or sold to others. The opportunity to sell the vouchers has helped smaller companies invest in research for rare disease, whilst helping larger companies expedite their own rare programs.
@@ -241,8 +254,7 @@
               The vouchers command a median sales price of $110M, and at least 25 have been as of November 2024. Below, you'll find what we believe is the most comprehensive and up-to-date record of PRV transactions. We welcome you to explore the data.
             </p>
           </div>
-    
-          
+
           <SaleBenchmarks 
           constellationData={processedConstellationData} 
           onCompanySelect={(data, color) => {
@@ -287,11 +299,9 @@
 <style>
   .page-container {
     position: relative;
-    display: block;
     min-height: 100vh;
     width: 100vw;
     padding: 2.25rem;
-    align-content: space-around;
     overflow: auto;
   }
 
@@ -302,13 +312,14 @@
   .main-content {
     display: block;
     height: 100%;
+    width: 100%;
     overflow: hidden;
   }
 
   .tabs {
     display: grid;
     font-size: 0.8725rem;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     border-bottom: .5px dotted #6b7280;
     padding-top: 2.25rem;
     gap: .525rem;
@@ -357,7 +368,7 @@
   .transactions-view, .therapeutic-area-view {
     padding: 2rem;
     height: 100%;
-    width: 100%;
+    min-width: 100%;
     overflow-y: auto;
     display: flex;
     justify-content: center;
@@ -374,7 +385,12 @@
   .info-panel {
     border-right: 1px dotted #e5e7eb;
     min-height: 100%;
-    width: 25%;
+    padding: 2.25rem 1.25rem 0 1.25rem;
+    width: 22.5vw;
+    background-color: #f6f0e4f1;
+    border-right: 1px solid #C9623F;
+    border-left: 1px solid #C9623F;
+    border-bottom: 1px solid #C9623F;
     overflow: auto;
   }
 

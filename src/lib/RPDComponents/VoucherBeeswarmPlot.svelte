@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
+  import { Money, PortInput, PortOutput, Medication } from 'carbon-icons-svelte';
   
   export let data: any[];
   export let onPointClick: (data: any) => void;
+  
+  const dispatch = createEventDispatcher();
   
   let svg;
   let g;
@@ -170,11 +173,22 @@
   });
 </script>
 
-<div id="beeswarm-container">
-  <div id="beeswarm-plot"></div>
+<div class="beeswarm-wrapper">
+
+
+  <div id="beeswarm-container">
+    <div id="beeswarm-plot"></div>
+  </div>
 </div>
 
 <style>
+  .beeswarm-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
   #beeswarm-container {
     width: 100%;
     position: relative;
@@ -182,5 +196,34 @@
 
   #beeswarm-plot {
     width: 100%;
+  }
+
+  .transaction-details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border-bottom: 0.25px solid #161616;
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #ff1515;
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7245rem;
+    font-size: 0.725rem;
+    text-transform: uppercase;
+    color: #de3333;
+  }
+
+  .text-gray-800 {
+    min-height: 1rem;
   }
 </style>

@@ -137,7 +137,7 @@
 <style>
 .horizontal-panel {
     max-width: 25vw;
-    padding: 2.25rem 1.25rem 2.25rem 1rem;
+    padding: 2.25rem 0 0 0;
     margin-top: 5.25vh;
     min-height: 34.25vh;
     border-top: .25px solid #e0e0e0;
@@ -190,7 +190,7 @@
     height: 100%;
     margin-bottom: .525rem;
     flex-shrink: 0;
-    background: #f8f8f8;
+    background: #fffcf4;
     border: .5px solid #e0e0e0;
     transition: all 0.2s ease;
   }
