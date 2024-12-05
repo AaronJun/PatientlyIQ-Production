@@ -382,8 +382,8 @@
         <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
         </p>
-        <p class="text-xs font-semibold font-mono text-gray-500 mt-4">
-          Click to view more details. 
+        <p class="text-xs font-semibold font-mono mt-6 text-orange-600">
+            Click to view more details  →
         </p>
       </div>
     </div>
