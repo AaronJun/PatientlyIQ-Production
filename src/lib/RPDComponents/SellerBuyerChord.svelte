@@ -56,7 +56,7 @@
       tooltipContent = content;
       tooltipBorderColor = color;
       tooltipX = event.pageX - 320;
-      tooltipY = event.pageY - 725;
+      tooltipY = event.pageY - 505;
       tooltipVisible = true;
       dispatch('tooltipShow', { x: tooltipX, y: tooltipY, content, color });
     }

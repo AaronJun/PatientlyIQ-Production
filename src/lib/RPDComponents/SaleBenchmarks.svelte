@@ -478,32 +478,30 @@
           </ul>
         </div>
       </div>
-       {:else if activeVisualization === 'network'}
-      <div class="viz-container">
-        <SellerBuyerChord 
-        {constellationData}
-        onCompanyClick={(companyData) => {
-          onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
-        }}
-          onChordClick={(transactionData) => {
-            onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
-          }}
-        />
-        <div class="explainer-section">
-          <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
-          <ul>
-            <li>Each segment represents a company (buyer or seller)</li>
-            <li>Connecting lines show transactions between companies</li>
-            <li>Thicker lines indicate higher total transaction values</li>
-            <li>Hover over segments to highlight related transactions</li>
-            <li>Click on any segment or connection to focus on specific companies</li>
-          </ul>
-        </div>
-      </div>
-      
-      {/if}
+      {:else if activeVisualization === 'network'}
+     <div class="viz-container">
+       <SellerBuyerChord 
+       {constellationData}
+       onCompanyClick={(companyData) => {
+         onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
+       }}
+         onChordClick={(transactionData) => {
+           onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
+         }}
+       />
+       <div class="explainer-section">
+         <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
+         <ul>
+           <li>Each segment represents a company (buyer or seller)</li>
+           <li>Connecting lines show transactions between companies</li>
+           <li>Thicker lines indicate higher total transaction values</li>
+           <li>Hover over segments to highlight related transactions</li>
+           <li>Click on any segment or connection to focus on specific companies</li>
+         </ul>
+       </div>
     </div>
-  
+    {:else if activeVisualization === 'tables'}
+     
 
   <!-- Statistics Tabs -->
   <div class="tabs-container">
@@ -641,8 +639,15 @@
             zebra
           />
         </div>
+
       {/if}
+
     </div>
+  </div>
+      
+      {/if}
+
+
   </div>
 </div>
 
