@@ -374,14 +374,15 @@
       </div>
       <div class="entry-bottom">
         <p class="text-xs font-semibold font-mono text-gray-500 mt-2">Reported Price</p>
-        <p class="text-sm/2 font-bold">
+        <p class="text-sm font-semibold">
           {tooltipContent.id}
         </p>
       </div>
       <div class="entry-bottom">
         <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
-        </p><p class="text-xs font-semibold font-mono text-gray-500 mt-1">
+        </p>
+        <p class="text-xs font-semibold font-mono text-gray-500 mt-4">
           Click to view more details. 
         </p>
       </div>

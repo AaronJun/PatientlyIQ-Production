@@ -1,240 +1,248 @@
 <script lang="ts">
-    import { onMount, createEventDispatcher } from 'svelte';
-    import * as d3 from 'd3';
-    import { ArrowRight } from 'carbon-icons-svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
+  import * as d3 from 'd3';
+  import { ArrowRight } from 'carbon-icons-svelte';
 
-    export let constellationData: any[];
-    const dispatch = createEventDispatcher();
+  export let constellationData: any[];
+  const dispatch = createEventDispatcher();
 
-    let svg;
-    let chartWidth: number;
-    let chartHeight: number;
-    const margin = { top: 40, right: 180, bottom: 40, left: 60 };
-    let width: number;
-    let height: number;
+  let svg;
+  let chartWidth: number;
+  let chartHeight: number;
+  const margin = { top: 40, right: 180, bottom: 40, left: 60 };
+  let width: number;
+  let height: number;
 
-    // Add tooltip state
-    let tooltipVisible = false;
-    let tooltipBorderColor: string = '';
-    let tooltipX = 0;
-    let tooltipY = 0;
-    let tooltipContent = {
-      drugName: '',
-      therapeuticArea: '',
-      indication: '',
-      price: '',
-      seller: '',
-      buyer: '',
-      purchaseDate: ''
+  // Add tooltip state
+  let tooltipVisible = false;
+  let tooltipBorderColor: string = '';
+  let tooltipX = 0;
+  let tooltipY = 0;
+  let tooltipContent = {
+    drugName: '',
+    therapeuticArea: '',
+    indication: '',
+    price: '',
+    seller: '',
+    buyer: '',
+    purchaseDate: ''
+  };
+
+  $: {
+    width = chartWidth - margin.left - margin.right;
+    height = chartHeight - margin.top - margin.bottom;
+  }
+
+  function getColorForTherapeuticArea(ta: string): string {
+    const colorMap = {
+      "Gastroenterology": "#4CAE3B",
+      "Neurology": "#4D4DFF",
+      "Ophthalmology": "#E79028",
+      "Immunology": "#EA38A5",
+      "Metabolic": "#133B11",
+      "Dermatology": "#559368",
+      "Hematology": "#CF3630",
+      "Orthopedics": "#441780",
+      "Respiratory": "#CBC09F",
+      "Nephrology": "#ACA3DB",
+      "Oncology": "#FF84DE",
+      "Hepatology": "#FF00D4",
     };
-  
-    $: {
-      width = chartWidth - margin.left - margin.right;
-      height = chartHeight - margin.top - margin.bottom;
-    }
+    return colorMap[ta] || "#000000";
+  }
 
-    function getColorForTherapeuticArea(ta: string): string {
-      const colorMap = {
-        "Gastroenterology": "#4CAE3B",
-        "Neurology": "#4D4DFF",
-        "Ophthalmology": "#E79028",
-        "Immunology": "#EA38A5",
-        "Metabolic": "#133B11",
-        "Dermatology": "#559368",
-        "Hematology": "#CF3630",
-        "Orthopedics": "#441780",
-        "Respiratory": "#CBC09F",
-        "Nephrology": "#ACA3DB",
-        "Oncology": "#FF84DE",
-        "Hepatology": "#FF00D4",
-      };
-      return colorMap[ta] || "#000000";
-    }
-  
-    function handleClick(transactionData) {
-      // Find the full original data entry
-      const originalEntry = constellationData.find(d => 
-        d["Drug Name"] === transactionData.drugName &&
-        d.Sponsor === transactionData.seller &&
-        d.Purchaser === transactionData.buyer
-      );
-
-      if (originalEntry) {
-        dispatch('clusterElementClick', {
-          entry: originalEntry,
-          color: getColorForTherapeuticArea(originalEntry.name)
-        });
-      }
-    }
-
-    function createChart() {
-      if (!width || !height) return;
-  
-      // Process the data
-      const salesData = constellationData
-        .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
-        .map(d => ({
-          year: +d.Year,
-          price: parseFloat(d["Sale  Price (USD, Millions)"]),
-          drugName: d["Drug Name"],
-          buyer: d.Purchaser,
-          seller: d.Sponsor,
-          therapeuticArea: d.name,
-          indication: d.id,
-          purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
-            `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
-        }))
-        .sort((a, b) => a.year - b.year);
-
-      // Group data by year for stacking
-      const groupedData = d3.group(salesData, d => d.year);
-      
-      // Calculate cumulative heights for each year
-      const stackedData = Array.from(groupedData, ([year, transactions]) => {
-        let cumHeight = 0;
-        return {
-          year,
-          transactions: transactions.map(t => {
-            const transaction = {
-              ...t,
-              y0: cumHeight,
-              y1: cumHeight + t.price
-            };
-            cumHeight += t.price;
-            return transaction;
-          }),
-          totalValue: cumHeight
-        };
-      });
-
-      // Clear previous chart
-      d3.select(svg).selectAll("*").remove();
-
-      // Create scales
-      const xScale = d3.scaleBand()
-        .domain(stackedData.map(d => d.year.toString()))
-        .range([0, width])
-        .padding(0.1);
-
-      const yScale = d3.scaleLinear()
-        .domain([0, d3.max(stackedData, d => d.totalValue)])
-        .range([height, 0])
-        .nice();
-
-      // Create SVG and append groups
-      const svgElement = d3.select(svg)
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
-  
-      const g = svgElement.append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-      // Add grid lines
-      g.append("g")
-        .attr("class", "grid")
-        .call(d3.axisLeft(yScale)
-          .tickSize(-width)
-          .tickFormat("")
-        )
-        .style("stroke-dasharray", "2,3")
-        .style("stroke-opacity", 0.2);
-
-      // Create the stacked bars
-      const yearGroups = g.selectAll(".year-group")
-        .data(stackedData)
-        .join("g")
-        .attr("class", "year-group")
-        .attr("transform", d => `translate(${xScale(d.year.toString())},0)`);
-
-        yearGroups.selectAll("rect")
-            .data(d => d.transactions)
-            .join("rect")
-            .attr("x", 0)
-            .attr("y", d => yScale(d.y1))
-            .attr("width", xScale.bandwidth())
-            .attr("height", d => yScale(d.y0) - yScale(d.y1))
-            .attr("fill", d => getColorForTherapeuticArea(d.therapeuticArea))
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 1)
-            .attr("opacity", 0.8)
-            .style("cursor", "pointer")
-            .on("mouseover", (event, d) => {
-                tooltipContent = {
-                drugName: d.drugName,
-                therapeuticArea: d.therapeuticArea,  // Now used in tooltip text
-                indication: d.indication,
-                price: d.price.toLocaleString(),
-                seller: d.seller,
-                buyer: d.buyer,
-                purchaseDate: d.purchaseDate
-                };
-                tooltipX = event.pageX;
-                tooltipY = event.pageY;
-                tooltipBorderColor = getColorForTherapeuticArea(d.therapeuticArea);  // Set border color
-                tooltipVisible = true;
-
-          // Highlight the rectangle
-          d3.select(event.target)
-            .attr("opacity", 1)
-            .attr("stroke-width", 2);
-        })
-        .on("mouseout", (event) => {
-          tooltipVisible = false;
-          // Reset rectangle
-          d3.select(event.target)
-            .attr("opacity", 0.8)
-            .attr("stroke-width", 1);
-        })
-        .on("click", (event, d) => {
-          dispatch('clusterElementClick', {
-            entry: d,
-            color: getColorForTherapeuticArea(d.therapeuticArea)
-          });
-        });
-
-      // Add axes
-      g.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale))
-        .style("font-size", "10px");
-  
-      g.append("g")
-        .call(d3.axisLeft(yScale))
-        .style("font-size", "12px");
-
-      // Add labels
-      g.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left + 20)
-        .attr("x", -height / 2)
-        .attr("text-anchor", "middle")
-        .style("fill", "#3B665D")
-        .style("font-size", "10px")
-        .text("Transaction Value (USD Millions)");
-    }
-  
-    $: if (svg && width && height) {
-      createChart();
-    }
-  
-    onMount(() => {
-      const resizeObserver = new ResizeObserver(entries => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          chartWidth = width;
-          chartHeight = height;
-        }
-      });
-  
-      const container = svg.parentElement;
-      resizeObserver.observe(container);
-  
-      return () => {
-        resizeObserver.disconnect();
+  function processTransactionData(salesData) {
+    // Group data by year for stacking
+    const groupedData = d3.group(salesData, d => d.year);
+    
+    // Calculate cumulative heights for each year
+    return Array.from(groupedData, ([year, transactions]) => {
+      let cumHeight = 0;
+      return {
+        year,
+        transactions: transactions.map(t => {
+          const transaction = {
+            ...t,
+            y0: cumHeight,
+            y1: cumHeight + t.price,
+            // Store original constellation data reference
+            originalData: constellationData.find(d => 
+              d["Drug Name"] === t.drugName && 
+              d.Year === t.year.toString() &&
+              d.Sponsor === t.seller &&
+              (d.Purchaser === t.buyer || (t.buyer === "Undisclosed" && d.Purchaser === "Undisclosed"))
+            )
+          };
+          cumHeight += t.price;
+          return transaction;
+        }),
+        totalValue: cumHeight
       };
     });
+  }
+
+  function handleClick(transactionData) {
+    console.log("Click data:", transactionData);
+    
+    if (transactionData.originalData) {
+      dispatch('clusterElementClick', {
+        entry: transactionData.originalData,
+        color: getColorForTherapeuticArea(transactionData.originalData.name)
+      });
+    } else {
+      console.warn("No original data found for transaction:", transactionData);
+    }
+  }
+
+  function createChart() {
+    if (!width || !height) return;
+
+    // Process the data
+    const salesData = constellationData
+      .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
+      .map(d => ({
+        year: +d.Year,
+        price: parseFloat(d["Sale  Price (USD, Millions)"]),
+        drugName: d["Drug Name"],
+        buyer: d.Purchaser,
+        seller: d.Sponsor,
+        therapeuticArea: d.name,
+        indication: d.id,
+        purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
+          `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
+      }))
+      .sort((a, b) => a.year - b.year);
+
+    // Process into stacked data with original references
+    const stackedData = processTransactionData(salesData);
+
+    // Clear previous chart
+    d3.select(svg).selectAll("*").remove();
+
+    // Create scales
+    const xScale = d3.scaleBand()
+      .domain(stackedData.map(d => d.year.toString()))
+      .range([0, width])
+      .padding(0.1);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(stackedData, d => d.totalValue)])
+      .range([height, 0])
+      .nice();
+
+    // Create SVG and append groups
+    const svgElement = d3.select(svg)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom);
+
+    const g = svgElement.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Add grid lines
+    g.append("g")
+      .attr("class", "grid")
+      .call(d3.axisLeft(yScale)
+        .tickSize(-width)
+        .tickFormat("")
+      )
+      .style("stroke-dasharray", "2,3")
+      .style("stroke-opacity", 0.2);
+
+    // Create the stacked bars
+    const yearGroups = g.selectAll(".year-group")
+      .data(stackedData)
+      .join("g")
+      .attr("class", "year-group")
+      .attr("transform", d => `translate(${xScale(d.year.toString())},0)`);
+
+    yearGroups.selectAll("rect")
+      .data(d => d.transactions)
+      .join("rect")
+      .attr("x", 0)
+      .attr("y", d => yScale(d.y1))
+      .attr("width", xScale.bandwidth())
+      .attr("height", d => yScale(d.y0) - yScale(d.y1))
+      .attr("fill", d => getColorForTherapeuticArea(d.therapeuticArea))
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.8)
+      .style("cursor", "pointer")
+      .on("mouseover", (event, d) => {
+        tooltipContent = {
+          drugName: d.drugName,
+          therapeuticArea: d.therapeuticArea,
+          indication: d.indication,
+          price: d.price.toLocaleString(),
+          seller: d.seller,
+          buyer: d.buyer,
+          purchaseDate: d.purchaseDate
+        };
+        tooltipX = event.pageX;
+        tooltipY = event.pageY;
+        tooltipBorderColor = getColorForTherapeuticArea(d.therapeuticArea);
+        tooltipVisible = true;
+
+        d3.select(event.target)
+          .attr("opacity", 1)
+          .attr("stroke-width", 2)
+          .attr("stroke", "#ff1515");
+      })
+      .on("mouseout", (event) => {
+        tooltipVisible = false;
+        d3.select(event.target)
+          .attr("opacity", 0.8)
+          .attr("stroke-width", 1)
+          .attr("stroke", "#fff");
+      })
+      .on("click", (event, d) => {
+        event.stopPropagation();
+        handleClick(d);
+      });
+
+    // Add axes
+    g.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(xScale))
+      .style("font-size", "10px");
+
+    g.append("g")
+      .call(d3.axisLeft(yScale))
+      .style("font-size", "12px");
+
+    // Add labels
+    g.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 10)
+      .attr("x", -height / 2)
+      .attr("text-anchor", "middle")
+      .style("fill", "#3B665D")
+      .style("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text("Transaction Value (USD Millions)");
+  }
+
+  $: if (svg && width && height) {
+    createChart();
+  }
+
+  onMount(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        chartWidth = width;
+        chartHeight = height;
+      }
+    });
+
+    const container = svg.parentElement;
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  });
 </script>
-  
+
 <div class="chart-container">
   <h3>PRV Sales Over Time</h3>
   <div class="chart">

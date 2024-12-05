@@ -388,43 +388,39 @@
     >
       Price Distribution
     </button>
+    <button 
+    class="viz-tab-button {activeVisualization === 'tables' ? 'active' : ''}"
+    on:click={() => activeVisualization = 'tables'}
+  >
+    Data Tables
+  </button>
   </div>
 
   <!-- Visualization Content -->
   <div class="visualization-content">
     {#if activeVisualization === 'yearly'}
       <div class="viz-container">
-        <div class="explainer-section">
-          <p class="text-sm">This visualization shows the pattern of voucher sales over time. Each point represents a transaction, with:</p>
-          <ul>
-            <li>The y-axis showing the sale price in millions of USD</li>
-            <li>The x-axis displaying the year of the transaction</li>
-            <li>Hover over any point to see detailed transaction information</li>
-            <li>Click on a point to focus on that specific transaction</li>
-          </ul>
-        </div>  
-
+        
         <YearlySalesChart 
         {constellationData}
         on:clusterElementClick={(event) => {
           const { entry, color } = event.detail;
-          onCompanySelect(entry, color);
+          onCompanySelect(entry, color);[]
         }}
       />
+      <div class="explainer-section">
+        <p class="text-sm">This visualization shows the pattern of voucher sales over time. Each point represents a transaction, with:</p>
+        <ul>
+          <li>The y-axis showing the sale price in millions of USD</li>
+          <li>The x-axis displaying the year of the transaction</li>
+          <li>Hover over any point to see detailed transaction information</li>
+          <li>Click on a point to focus on that specific transaction</li>
+        </ul>
+      </div>  
     </div>    
     {:else if activeVisualization === 'distribution'}
       <div class="viz-container">
         <div class="beeswarm-wrapper">
-            <div class="explainer-section">
-            <p class="text-sm">This beeswarm plot shows the distribution of voucher sale prices, where:</p>
-            <ul>
-              <li>Each circle represents a single transaction</li>
-              <li>Orange circles (<span class="color-sample orange"></span>) indicate the lowest price transactions</li>
-              <li>Green circles (<span class="color-sample green"></span>) indicate the highest price transactions</li>
-              <li>Gray circles (<span class="color-sample gray"></span>) represent transactions with undisclosed parties</li>
-              <li>Hover over any circle to see transaction details in the panel above</li>
-            </ul>
-          </div>
       <!--     <div class="transaction-details-grid">
             <div class="detail-item">
               <span class="text-gray-800 font-semibold">{selectedPoint.seller}</span>
@@ -448,10 +444,29 @@
             onPointClick={handlePointClick}
             on:pointUpdate={handlePointUpdate}
           />
+          <div class="explainer-section">
+            <p class="text-sm">This beeswarm plot shows the distribution of voucher sale prices, where:</p>
+            <ul>
+              <li>Each circle represents a single transaction</li>
+              <li>Orange circles (<span class="color-sample orange"></span>) indicate the lowest price transactions</li>
+              <li>Green circles (<span class="color-sample green"></span>) indicate the highest price transactions</li>
+              <li>Gray circles (<span class="color-sample gray"></span>) represent transactions with undisclosed parties</li>
+              <li>Hover over any circle to see transaction details in the panel above</li>
+            </ul>
+          </div>
         </div>
       </div>
     {:else if activeVisualization === 'network'}
       <div class="viz-container">
+        <SellerBuyerChord 
+        {constellationData}
+        onCompanyClick={(companyData) => {
+          onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
+        }}
+          onChordClick={(transactionData) => {
+            onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
+          }}
+        />
         <div class="explainer-section">
           <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
           <ul>
@@ -462,21 +477,36 @@
             <li>Click on any segment or connection to focus on specific companies</li>
           </ul>
         </div>
+      </div>
+       {:else if activeVisualization === 'network'}
+      <div class="viz-container">
         <SellerBuyerChord 
-          {constellationData}
-          onCompanyClick={(companyData) => {
-            onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
-          }}
+        {constellationData}
+        onCompanyClick={(companyData) => {
+          onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
+        }}
           onChordClick={(transactionData) => {
             onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
           }}
         />
+        <div class="explainer-section">
+          <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
+          <ul>
+            <li>Each segment represents a company (buyer or seller)</li>
+            <li>Connecting lines show transactions between companies</li>
+            <li>Thicker lines indicate higher total transaction values</li>
+            <li>Hover over segments to highlight related transactions</li>
+            <li>Click on any segment or connection to focus on specific companies</li>
+          </ul>
+        </div>
       </div>
-    {/if}
-  </div>
+      
+      {/if}
+    </div>
+  
 
   <!-- Statistics Tabs -->
-  <div class="tabs-container mt-28">
+  <div class="tabs-container">
     <div class="tab-buttons">
       <button 
         class="tab-button {currentTab === 'overview' ? 'active' : ''}"
