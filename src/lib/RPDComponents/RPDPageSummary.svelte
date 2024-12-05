@@ -82,10 +82,21 @@
       <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>
+
+    {:else if currentYear >= "2023"}
+    <p class="summary-text">
+      An estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> desginations were granted, and
+      <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded
+      <br><br>
+      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
+      <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
+    </p>
+
   {:else}
     <p class="summary-text">
       There were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers awarded.
+      <br><br>
       <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>

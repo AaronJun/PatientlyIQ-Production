@@ -52,8 +52,8 @@
   }
 
   function processTransactionData(salesData) {
-    // Group data by year for stacking
-    const groupedData = d3.group(salesData, d => d.year);
+    // Group data by purchase year for stacking
+    const groupedData = d3.group(salesData, d => d.purchaseYear);
     
     // Calculate cumulative heights for each year
     return Array.from(groupedData, ([year, transactions]) => {
@@ -68,7 +68,7 @@
             // Store original constellation data reference
             originalData: constellationData.find(d => 
               d["Drug Name"] === t.drugName && 
-              d.Year === t.year.toString() &&
+              d["Purchase Year"] === t.purchaseYear.toString() &&
               d.Sponsor === t.seller &&
               (d.Purchaser === t.buyer || (t.buyer === "Undisclosed" && d.Purchaser === "Undisclosed"))
             )
@@ -101,7 +101,7 @@
     const salesData = constellationData
       .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
       .map(d => ({
-        year: +d.Year,
+        purchaseYear: +d["Purchase Year"],
         price: parseFloat(d["Sale  Price (USD, Millions)"]),
         drugName: d["Drug Name"],
         buyer: d.Purchaser,
@@ -111,7 +111,7 @@
         purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
           `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
       }))
-      .sort((a, b) => a.year - b.year);
+      .sort((a, b) => a.purchaseYear - b.purchaseYear);
 
     // Process into stacked data with original references
     const stackedData = processTransactionData(salesData);
@@ -255,7 +255,6 @@
     style="left: {tooltipX - 290}px; top: {tooltipY - 220}px; border-top: 0.625rem solid {tooltipBorderColor};"
   >
     <div>
-
         <p class="text-lg font-medium">
           {tooltipContent.drugName}
         <p class="text-xs uppercase mb-4 font-mono font-semibold text-gray-600">
@@ -273,10 +272,9 @@
           {tooltipContent.purchaseDate}
         </p>
 
-        <p class="text-xs font-semibold font-mono mt-6 text-orange-600">
+        <p class="text-xs font-semibold font-mono mt-6 text-green-600">
           Click to view more details  →
         </p>
-
     </div>
   </div>
 {/if}
@@ -324,22 +322,4 @@
     min-width: 300px;
     max-width: 300px;
   }
-
-  .tooltip::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: .625rem;
-  }
-
-
-  .entry-title {
-    margin-bottom: 1rem;
-  }
-
-  .entry-bottom {
-    margin-bottom: 0.425rem;
-  }
-</style>
+  </style>

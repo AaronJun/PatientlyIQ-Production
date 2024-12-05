@@ -263,7 +263,7 @@
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
             drugName: details.map(t => t.drugName).join(", "),
             therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
-            id: `Total Value: $${totalValue.toFixed(1)}M`
+            id: `$${totalValue.toFixed(1)}M`
           });
         })
         .on("mouseout", () => {
@@ -382,9 +382,10 @@
         <p class="text-xs font-semibold font-mono mt-2 text-gray-500">
           {tooltipContent.therapeuticArea}
         </p>
-        <p class="text-xs font-semibold font-mono mt-6 text-orange-600">
-            Click to view more details  →
-        </p>
+    
+            <p class="text-xs font-semibold font-mono mt-6 text-green-600">
+                Click to view more details  →
+              </p>
       </div>
     </div>
   </div>

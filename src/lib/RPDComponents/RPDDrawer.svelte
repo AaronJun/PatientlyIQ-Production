@@ -191,17 +191,22 @@
 
     <div class="drawer-content">
       {#if currentView === 'original'}
-        <div class="view-header">
-          <h3 class="year">{displayData.Year}</h3>
+      <div class="view-header">
+         <p class="text-xs mt-2 font-semibold text-gray-600" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+          Approved {formatDate(displayData.Month, displayData.Date, displayData.Year)}
+         </p>
         <div class="view-subheader">
-          <h2 style="color: {color};" in:fly={{duration: TEXT_ANIMATION_DURATION}}>
-            {displayData["Drug Name"]}
-          </h2>
+          <div class="title-group">
+            <h2 style="color: {color};" in:fly={{duration: TEXT_ANIMATION_DURATION}}>
+              {displayData["Drug Name"]}
+            </h2>
+
+          </div>
           <button class="sponsor-id" on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
             {displayData.Sponsor} <div class="circle"><ArrowUpRight size={12} /></div>
           </button>
         </div>
-        </div>  
+      </div>  
 
         <!-- <DrugDescription {displayData} /> -->
 
@@ -609,8 +614,8 @@
   }
 
   h2 {
-      font-size: 1.15rem;
-      font-weight: 800;
+      font-size: 1.325rem;
+      font-weight: 500;
       margin-left: -0.125rem;
       margin-bottom: 0.125rem;
       text-transform: uppercase;

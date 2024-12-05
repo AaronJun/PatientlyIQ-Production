@@ -208,8 +208,9 @@
         <p class="text-sm/2 font-bold">
           {tooltipContent.price}
         </p>
-        <p class="text-xs font-semibold text-gray-500 mt-4 font-mono">Click for more details.</p>
-      </div>
+        <p class="text-xs font-semibold font-mono mt-6 text-green-600">
+          Click to view more details  →
+        </p>      </div>
     </div>
   </div>
 {/if}
