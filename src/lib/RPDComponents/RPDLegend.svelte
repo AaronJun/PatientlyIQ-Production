@@ -106,7 +106,7 @@ h4 {
 .legend-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.5rem;
+  gap: 1.5rem;
   margin-bottom: 1rem;
 }
 

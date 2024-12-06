@@ -8,12 +8,12 @@
   import { resetMode, setMode } from "mode-watcher";
     import Header from '$lib/layouts/Header.svelte';
   import Footer from "$lib/layouts/Footer.svelte";
-    setMode("dark");
+    setMode("light");
   let pageWidth = 0;
 </script>
 
 <svelte:window bind:innerWidth={pageWidth} />
-<ModeWatcher />
+
 <!-- {#if pageWidth > 1023 && routeID[1] === "examples"}
   <Navbar />  
 {:else if routeID[1] === ""}

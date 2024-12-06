@@ -173,16 +173,18 @@
       }
     });
 </script>
+<div class="light">
+
 
 <RPDHeader />
-<div class="page-container">
-  <div class="main-content">
+<div class="page-container content-start">
+  <div class="main-content dark:bg-white">
     <div class="tabs">
       <button
         class="tab-button {activeTab === 'By Year' ? 'active' : ''}"
         on:click={() => setActiveTab('By Year')}
       >
-      <div class="flex gap-8 justify-center">By Year <Calendar /></div>
+      <div class="flex gap-8 content-start justify-center">By Year <Calendar /></div>
       </button>
       <button
         class="tab-button {activeTab === 'transactions' ? 'active' : ''}"
@@ -205,7 +207,7 @@
   </div>
     <div class="tab-content">
       {#if activeTab === 'By Year'}
-        <div class="flowers-view">
+        <div class="flowers-view content-start">
           <div class="info-panel flex flex-col pr-16 col-span-1 border-r-2 border-orange-600">
             <RPDPageSummary 
               rpdPrvData={processedRpdPrvData}
@@ -225,7 +227,7 @@
             {/if}
           </div>
 
-          <div class="timeline-container">
+          <div class="timeline-container content-start">
             {#if $RadialTimeline && processedRpdPrvData.length > 0 && processedConstellationData.length > 0}
               <svelte:component 
                 this={$RadialTimeline}
@@ -294,7 +296,7 @@
     borderColor={tooltipBorderColor}
   />
 </div>
-
+</div>  
 <style>
   .page-container {
     position: relative;
@@ -356,6 +358,7 @@
   .tab-content {
     overflow: hidden;
     min-width: 100%;
+    align-items: top;
   }
 
   .flowers-view {
@@ -379,11 +382,12 @@
     padding: rem 2rem 2rem 1.25rem;
     height: 95vh;
     width: 75vw;
+
     overflow: hidden;
   }
 
   .info-panel {
-    width: 25vw;
+    width: 22.25vw;
   }
 
   .info-panel-nav {

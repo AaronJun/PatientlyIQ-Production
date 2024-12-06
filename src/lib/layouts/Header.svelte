@@ -45,18 +45,18 @@
 </script>
 
 <header
-	class="fixed left-0 top-0 z-40 w-full -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl"
+	class="flex justify-start left-0 top-0 z-40 -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl light"
 >
-	<div class="container flex-grow w-full flex h-14 w-full items-baseline justify-around">
-		<div class="flex items-center space-x-8">
-			<a class="text-xs flex items-center" href="/">
-				<img src={PIQLogo} alt="PIQ Logo" class="h-10 mr-0" />
+	<div class="container flex-grow w-full flex h-14 items-baseline justify-start pb-2">
+		<div class="flex justify-start">
+			<img src={PIQLogo} alt="PIQ Logo" class="h-8 mr-1" />
+			<a class="text-xs flex items-center justify-start" href="/">
 				<span class="hidden sm:inline text-gray-700">Patiently IQ</span>
 			</a>
 		</div>
 	
-		<div class="ml-auto flex h-full items-center">
-<!-- 			<button
+		<div class="flex h-full items-center">
+			<!-- <button
 				on:click={toggleDarkMode}
 				class="mr-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
 				aria-label="Toggle dark mode"
@@ -71,7 +71,7 @@
 		</div>
 
 		<!-- Mobile Menu Button -->
-		<button class="ml-6 md:hidden" use:toggleOverflowHidden>
+		<button class="md:hidden" use:toggleOverflowHidden>
 			<span class="sr-only">Toggle menu</span>
 			{#if hamburgerMenuIsOpen}
 				<XIcon strokeWidth={1.4} class='text-gray-300'/>

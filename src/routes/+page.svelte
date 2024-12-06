@@ -52,7 +52,7 @@
 	onSectionClick={scrollToSection}
 />
 
-<div class="pt-14"> <!-- Add padding to account for fixed header -->
+<div class="pt-14 pb-32"> <!-- Add padding to account for fixed header -->
 	<section id="hero">
 		<HeroSection />
 	</section>
@@ -65,11 +65,11 @@
 
 <!-- 	<section id="use-cases">
 		<BentoGridCombo />
-		<FeaturesSection />
-	</section>
-
-	<section id="analysis">
-		<AnalysisCapabilities />
 	</section> -->
+	<FeaturesSection />
+
+	<section id="analysis pb-12">
+		<AnalysisCapabilities />
+	</section>
 
 </div>

@@ -17,6 +17,7 @@
   import TwelvePetal from '../../assets/12Petal.svg?raw';
   import Tooltip from './RPDTooltip.svelte';
   import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
+  import RpdtaLegend from './RPDTALegend.svelte';
   
   interface RPDData {
     Year: string;
@@ -54,7 +55,7 @@
   let containerHeight: number;
   
   $: width = (containerWidth || 800) * 1.1;
-  $: height = (containerHeight || 800) * 1.1;
+  $: height = (containerHeight || 800) * 1.34;
   $: radius = Math.min(width, height) / 2.2725;
   
   $: margin = {
@@ -90,7 +91,6 @@
     "Pulmonology": "#CBC09F",
     "Nephrology": "#ACA3DB",
     "Oncology": "#FF84DE",
-    "Genetic": "#4D4DFF",
     "Hepatology": "#FF00D4",
   };
   
@@ -117,6 +117,7 @@
   $: activeYear = years[activeYearIndex];
   let hoveredYearIndex: number | null = null;
   $: hoveredYear = hoveredYearIndex !== null ? years[hoveredYearIndex] : null;
+  let hoveredTherapeuticArea: string | null = null;
   
   $: angleScale = d3.scaleBand()
     .range([0, 2 * Math.PI])
@@ -549,6 +550,59 @@ if (year) {
 }
 }
 
+
+function handleLegendAreaHover(event: CustomEvent<{ area: string }>) {
+    hoveredTherapeuticArea = event.detail.area;
+    updatePetalHighlights();
+  }
+
+  function handleLegendAreaLeave() {
+    hoveredTherapeuticArea = null;
+    updatePetalHighlights();
+  }
+
+  function updatePetalHighlights() {
+    svg.selectAll(".petal")
+      .transition()
+      .duration(200)
+      .style("filter", function() {
+        const petalElement = this as SVGElement;
+        const cluster = petalElement.closest('.cluster');
+        if (!cluster) return "saturate(0.2)";
+        
+        const year = cluster.classList[1].split('-')[1];
+        const entries = groupedConstellationData.get(year) || [];
+        const petalIndex = Array.from(cluster.querySelectorAll('.petal')).indexOf(petalElement);
+        const entry = entries[petalIndex];
+        
+        if (!hoveredTherapeuticArea) {
+          // No area hovered - normal state
+          return year === activeYear ? "saturate(1)" : "saturate(0.2)";
+        }
+        
+        // Area is hovered - highlight matching petals
+        if (entry?.name === hoveredTherapeuticArea) {
+          return "saturate(1.2) brightness(1.1)"; // Slightly enhance matched petals
+        } else {
+          return "saturate(0) brightness(0.9)"; // Fully desaturate and slightly dim others
+        }
+      })
+      .style("opacity", function() {
+        if (!hoveredTherapeuticArea) return 1;
+        
+        const petalElement = this as SVGElement;
+        const cluster = petalElement.closest('.cluster');
+        if (!cluster) return 1;
+        
+        const year = cluster.classList[1].split('-')[1];
+        const entries = groupedConstellationData.get(year) || [];
+        const petalIndex = Array.from(cluster.querySelectorAll('.petal')).indexOf(petalElement);
+        const entry = entries[petalIndex];
+        
+        return entry?.name === hoveredTherapeuticArea ? 1 : 0.8; // Slight opacity reduction for non-matches
+      });
+  }
+
   function handleResize() {
     containerWidth = container.clientWidth;
     containerHeight = container.clientHeight;
@@ -570,6 +624,11 @@ if (year) {
     };
   });
 </script>
+<RpdtaLegend 
+  position="top-right"
+  on:areaHover={handleLegendAreaHover}
+  on:areaLeave={handleLegendAreaLeave}
+/>
 
 <div class="radial-timeline" bind:this={container}>
   {#if tooltipVisible}
@@ -612,12 +671,13 @@ if (year) {
   }
 
   :global(.cluster .petal) {
-    transition: filter 0.3s ease, transform 0.3s ease;
+    transition: filter 0.3s ease, transform 0.3s ease, opacity 0.2s ease;
     transform-origin: bottom center;
   }
 
   :global(.cluster .petal:hover) {
-    transform: scale(1.1);
+    filter: saturate(1.2) brightness(1.1) !important;
+    opacity: 1 !important;
   }
 
   :global(.center-circle) {

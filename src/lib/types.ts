@@ -18,3 +18,27 @@ export interface RPDData {
     Purchaser?: string;
     "Sale  Price (USD, Millions)"?: string;
   }
+
+  interface DrawerProps {
+    isOpen: boolean;
+    onClose: () => void;
+    data: any;
+    constellationData: any[];
+    color: string;
+    sponsorData?: any;
+  }
+  
+  interface TableItem {
+    label: string;
+    icon: any;
+    value: string;
+    onClick?: () => void;
+  }
+  
+  interface HeaderProps {
+    date: string;
+    drugName: string;
+    sponsor: string;
+    onSponsorClick: () => void;
+    TEXT_ANIMATION_DURATION: number;
+  }
