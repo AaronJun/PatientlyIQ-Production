@@ -191,24 +191,26 @@
 
     <div class="drawer-content">
       {#if currentView === 'original'}
+
       <div class="view-header">
-         <p class="text-xs mt-2 font-semibold text-gray-600" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
-          Approved {formatDate(displayData.Month, displayData.Date, displayData.Year)}
-         </p>
+        <h3 class="year">{displayData.Year}</h3>
         <div class="view-subheader">
           <div class="title-group">
             <h2 style="color: {color};" in:fly={{duration: TEXT_ANIMATION_DURATION}}>
               {displayData["Drug Name"]}
             </h2>
-
+            <div class="metadata-row" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+              
+              <div class="text-xs mt-1 font-mono approval-badge">
+                Approved {formatDate(displayData.Month, displayData.Date, displayData.Year)}
+              </div>
+            </div>
           </div>
-          <button class="sponsor-id" on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+          <div class="sponsor-id" on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))} in:fade={{duration: TEXT_ANIMATION_DURATION}}>
             {displayData.Sponsor} <div class="circle"><ArrowUpRight size={12} /></div>
-          </button>
+          </div>
         </div>
       </div>  
-
-        <!-- <DrugDescription {displayData} /> -->
 
         <div class="table-container">
           <table>

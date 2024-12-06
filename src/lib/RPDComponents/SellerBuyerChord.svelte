@@ -84,7 +84,7 @@
       );
 
       const transactionDetails = new Map();
-      const transactionValues = new Map(); // Store total values for each chord
+      const transactionValues = new Map();
       
       transactions.forEach(t => {
         const sourceCompany = t.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : t.Sponsor;
@@ -107,7 +107,6 @@
           price: parseFloat(t["Sale  Price (USD, Millions)"]) || 0
         });
         
-        // Sum up the total value for this chord
         transactionValues.set(
           key, 
           transactionValues.get(key) + (parseFloat(t["Sale  Price (USD, Millions)"]) || 0)
@@ -120,7 +119,6 @@
 
       const chords = chord(matrix);
 
-      // Create color scale for companies (arcs)
       const companyColor = d3.scaleOrdinal()
         .domain(companies)
         .range(companies.map(company => 
@@ -128,7 +126,6 @@
           d3.quantize(t => d3.interpolatePuOr(t * 1 + 0.325), companies.length)[companies.indexOf(company)]
         ));
 
-      // Create color scale for transaction values (chords)
       const values = Array.from(transactionValues.values());
       const maxValue = d3.max(values);
       const valueColor = d3.scaleSequential()
@@ -137,6 +134,100 @@
 
       const svgElement = d3.select(svg)
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+      // Add legend
+      const legendWidth = 200;
+      const legendHeight = 15;
+      const legendPosition = {
+        x: -width/2 + 40,
+        y: height/2 - 60
+      };
+
+      // Create gradient for legend
+      const defs = svgElement.append("defs");
+      const linearGradient = defs.append("linearGradient")
+        .attr("id", "value-gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+
+      // Add color stops to gradient
+      const numStops = 10;
+      for (let i = 0; i <= numStops; i++) {
+        const offset = (i / numStops) * 100;
+        const value = (maxValue * i) / numStops;
+        linearGradient.append("stop")
+          .attr("offset", `${offset}%`)
+          .attr("stop-color", valueColor(value));
+      }
+
+      // Add legend group
+      const legend = svgElement.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${legendPosition.x}, ${legendPosition.y})`);
+
+      // Add gradient rectangle
+      legend.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "url(#value-gradient)");
+
+      // Add border to rectangle
+      legend.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "none")
+        .style("stroke", "#666")
+        .style("stroke-width", "0.5px");
+
+      // Add legend title
+      legend.append("text")
+        .attr("x", 0)
+        .attr("y", -5)
+        .style("font-size", "8px")
+        .style("font-weight", "bold")
+        .style("fill", "#666")
+        .text("Reported Transaction Value (USD Millions)");
+
+      // Add legend ticks and labels
+      const tickValues = [0, maxValue/2, maxValue];
+      const tickScale = d3.scaleLinear()
+        .domain([0, maxValue])
+        .range([0, legendWidth]);
+
+      const legendTicks = legend.selectAll(".tick")
+        .data(tickValues)
+        .enter()
+        .append("g")
+        .attr("class", "tick")
+        .attr("transform", d => `translate(${tickScale(d)}, ${legendHeight})`);
+
+      // Add tick labels
+      legendTicks.append("text")
+        .attr("y", 12)
+        .style("font-size", "8px")
+        .style("fill", "#666")
+        .style("text-anchor", (d, i) => i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle")
+        .text(d => `$${d.toFixed(0)}M`);
+
+      // Add note about undisclosed transactions
+      legend.append("g")
+        .attr("transform", `translate(0, ${legendHeight + 30})`)
+        .call(g => {
+          g.append("rect")
+            .attr("width", 5)
+            .attr("height", 5)
+            .style("fill", UNDISCLOSED_COLOR)
+            .style("stroke", "#666")
+            .style("stroke-width", "0.5px");
+          g.append("text")
+            .attr("x", 10)
+            .attr("y", 5)
+            .style("font-size", "8px")
+            .style("fill", "#666")
+            .text("Undisclosed Value");
+        });
 
       const group = svgElement.append("g")
         .selectAll("g")
@@ -393,8 +484,8 @@
 
 <style>
   .chord-container {
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 90%;
     display: flex;
     justify-content: center;
     align-items: center;

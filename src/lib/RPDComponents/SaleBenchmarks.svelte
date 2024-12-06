@@ -458,15 +458,6 @@
       </div>
     {:else if activeVisualization === 'network'}
       <div class="viz-container">
-        <div class="explainer-section">
-          <p class="text-sm">This chord diagram visualizes the relationships between buyers and sellers in the voucher market:</p>
-          <ul>
-            <li>Connecting lines show transactions between companies</li>
-            <li>Thicker lines indicate higher total transaction values</li>
-            <li>Hover over segments to highlight related transactions</li>
-            <li>Click on any segment or connection to focus on specific companies</li>
-          </ul>
-        </div>
      
         <SellerBuyerChord 
         {constellationData}
@@ -479,6 +470,7 @@
         />
         
       </div>
+      
     {:else if activeVisualization === 'tables'}
      
 

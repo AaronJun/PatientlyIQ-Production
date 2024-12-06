@@ -15,8 +15,8 @@
   import TenPetal from '../../assets/10Petal.svg?raw';
   import ElevenPetal from '../../assets/11Petal.svg?raw';
   import TwelvePetal from '../../assets/12Petal.svg?raw';
-  import { YearlySummary } from '../../lib/componentStores';
   import Tooltip from './RPDTooltip.svelte';
+  import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
   
   interface RPDData {
     Year: string;
@@ -339,7 +339,7 @@
       const svgHeight = svgElement.getAttribute("height");
       
       if (svgWidth && svgHeight) {
-        const scale = radius * 0.0015;
+        const scale = radius * 0.001825;
         cluster.attr("transform", `
           translate(${position.x},${position.y})
           rotate(${position.angle * 180 / Math.PI})
@@ -519,7 +519,7 @@ if (year) {
     // Main RPD value text
     const mainText = textGroup.append("text")
       .attr("fill", "#063D37")
-      .attr("font-size", `${Math.min(Math.max(radius * 0.0125, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
+      .attr("font-size", `${Math.min(Math.max(radius * 0.045, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
       .attr("font-weight", "600")
       .attr("y", +2)
       .text(`${(+yearData.RPD).toLocaleString()} RPDs`);

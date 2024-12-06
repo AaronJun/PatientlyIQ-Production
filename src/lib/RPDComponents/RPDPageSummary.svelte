@@ -22,32 +22,42 @@
     totalValue: 0
   };
 
-  $: {
-    if (currentYear && rpdPrvData && constellationData) {
-      if (currentYear === "Overview") {
-        summaryStats = {
-          rpdCount: rpdPrvData.reduce((sum, d) => sum + (parseInt(d.RPD) || 0), 0),
-          voucherCount: constellationData.length,
-          soldCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-          totalValue: constellationData
-            .filter(d => d["Sale  Price (USD, Millions)"] && !isNaN(parseFloat(d["Sale  Price (USD, Millions)"])))
-            .reduce((sum, d) => sum + parseFloat(d["Sale  Price (USD, Millions)"]), 0)
-        };
-      } else {
-        const yearRpdData = rpdPrvData.find(d => d.Year === currentYear);
-        const yearConstellationData = constellationData.filter(d => d.Year === currentYear);
-        
-        summaryStats = {
-          rpdCount: parseInt(yearRpdData?.RPD || "0"),
-          voucherCount: yearConstellationData.length,
-          soldCount: yearConstellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-          totalValue: yearConstellationData
-            .filter(d => d["Sale  Price (USD, Millions)"] && !isNaN(parseFloat(d["Sale  Price (USD, Millions)"])))
-            .reduce((sum, d) => sum + parseFloat(d["Sale  Price (USD, Millions)"]), 0)
-        };
-      }
+
+$: {
+  if (currentYear && rpdPrvData && constellationData) {
+    if (currentYear === "Overview") {
+      summaryStats = {
+        rpdCount: rpdPrvData.reduce((sum, d) => sum + (parseInt(d.RPD) || 0), 0),
+        voucherCount: constellationData.length,
+        soldCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
+        totalValue: constellationData
+          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+          .reduce((sum, d) => {
+            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+            return !isNaN(price) ? sum + price : sum;
+          }, 0)
+      };
+    } else {
+      const yearRpdData = rpdPrvData.find(d => d.Year === currentYear);
+      const yearConstellationData = constellationData.filter(d => {
+        // Check Purchase Year instead of Year field
+        return d["Purchase Year"] === currentYear;
+      });
+      
+      summaryStats = {
+        rpdCount: parseInt(yearRpdData?.RPD || "0"),
+        voucherCount: yearConstellationData.length,
+        soldCount: yearConstellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
+        totalValue: yearConstellationData
+          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+          .reduce((sum, d) => {
+            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+            return !isNaN(price) ? sum + price : sum;
+          }, 0)
+      };
     }
   }
+}
 
   function formatNumber(num: number): string {
     return num.toLocaleString();
@@ -55,9 +65,16 @@
 </script>
 
 <div class="summary-container">
+
   {#if currentYear === "2012"}
-    <p class="summary-text">
-      The FDA's rare pediatric disease priority review voucher program produced an estimated 
+  
+  <div class="info-panel row col-span-2 align-center p-8 pl-0 text-orange-600">
+    <h2 class="text-xs mb-2 font-bold col-span-1">
+      Nurturing New Treatments</h2>
+      </div>
+
+  <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">      
+    The FDA's rare pediatric disease priority review voucher program produced an estimated 
       <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022.These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
       <br><br>
       Through 2024,
@@ -65,16 +82,16 @@
       <span class="highlight">{formatNumber(216)}</span> months of regulatory review.
 
       <br><br>
-      Please scroll or click forward, tap on the flower petals or sidebar, and explore the ways this programmed nurtured key milestones in rare disease treatment.
+      Hover over and tap on the flower petals, the sidebar cards, or individual years to explore the ways this programmed nurtured key milestones in rare disease treatment.
     </p>
   {:else if currentYear === "2013"}
-    <p class="summary-text">
-      In 2013, the FDA granted <span class="highlight">{formatNumber(8)}</span> rare pediatric disease designations. Though no priority review vouchers were awarded this year, these designations were initial seeds which would grow into the program's success.
+    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+      In <span class="highlight">2013</span>, the FDA granted <span class="highlight">{formatNumber(8)}</span> rare pediatric disease designations. Though no priority review vouchers were awarded this year, these designations were initial seeds which would grow into the program's success.
     </p>
 
     {:else if currentYear === "2020"}
-    <p class="summary-text">
-      2020 saw a significant increase in the number of RPD designations, with <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> granted. This was likely driven by the RPD program's planned sunset, which was to begin in September 2020.
+    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+      <span class="highlight">2020</span> saw a significant increase in the number of RPD designations, with <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> granted. This was likely driven by the RPD program's planned sunset, which was to begin in September 2020.
       <br><br>
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded, which was also a record high. 
       <br><br>
@@ -84,8 +101,8 @@
     </p>
 
     {:else if currentYear >= "2023"}
-    <p class="summary-text">
-      An estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> desginations were granted, and
+    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+      In <span class="highlight">{currentYear}</span>, an estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> desginations were granted, and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded
       <br><br>
       <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
@@ -93,11 +110,11 @@
     </p>
 
   {:else}
-    <p class="summary-text">
-      There were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
+    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+      In <span class="highlight">{currentYear}</span>, there were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers awarded.
       <br><br>
-      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
+      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>
   {/if}
@@ -107,7 +124,6 @@
   .summary-text {
     font-size: .925rem;
     color: #2b2b2b;
-    margin-top: 1rem;
   }
 
   .highlight {

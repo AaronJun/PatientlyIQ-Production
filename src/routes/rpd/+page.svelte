@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { RadialTimeline, YearlySummary } from '$lib/componentStores';
     import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
-    import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
+  import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
     import Tooltip from '$lib/RPDComponents/RPDTooltip.svelte';
     import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
     import RPDNavDrawer from '$lib/RPDComponents/RPDNavGuide.svelte';
@@ -206,8 +206,7 @@
     <div class="tab-content">
       {#if activeTab === 'By Year'}
         <div class="flowers-view">
-          <div class="info-panel flex flex-col pr-16 col-span-1">
-            <h2 class="text-xs mt-8 font-bold col-span-1">Nurturing New Treatments</h2>
+          <div class="info-panel flex flex-col pr-16 col-span-1 border-r-2 border-orange-600">
             <RPDPageSummary 
               rpdPrvData={processedRpdPrvData}
               constellationData={processedConstellationData} 
@@ -225,7 +224,7 @@
               />
             {/if}
           </div>
-          
+
           <div class="timeline-container">
             {#if $RadialTimeline && processedRpdPrvData.length > 0 && processedConstellationData.length > 0}
               <svelte:component 
@@ -244,13 +243,13 @@
         </div>
       {:else if activeTab === 'transactions'}
       <div class="flowers-view">
-        <div class="info-panel row col-span-2 align-center p-8 pb-10 text-green-900">
+        <div class="info-panel row col-span-2 align-center p-8 pl-0 pb-10 text-orange-600">
             <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
-            <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
+            <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
               Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
             </p>
             <br><br>
-            <p class="text-base w-full max-w-4xl col-span-2 text-gray-900">
+            <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
               With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.
             </p>
           </div>

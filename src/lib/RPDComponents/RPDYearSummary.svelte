@@ -2,7 +2,7 @@
   import { fly } from 'svelte/transition';
   import { onMount, createEventDispatcher } from 'svelte';
   import { ArrowRight, Building, Medication, Stethoscope } from 'carbon-icons-svelte';
-
+  import 'carbon-components-svelte/css/all.css';
   export let constellationData: any[];
   export let currentYear: string;
   export let hoveredPetalData: any = null;
@@ -190,7 +190,7 @@
     height: 100%;
     margin-bottom: .525rem;
     flex-shrink: 0;
-    background: #fffcf4;
+    background: #fff;
     border: .5px solid #e0e0e0;
     cursor: pointer;
     transition: all 0.2s ease;

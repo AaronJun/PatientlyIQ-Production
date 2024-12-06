@@ -1,18 +1,19 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
-  
+  import { ArrowRight } from 'carbon-icons-svelte';
+
   export let constellationData: any[];
   const dispatch = createEventDispatcher();
 
   let svg;
   let chartWidth: number;
   let chartHeight: number;
-  const margin = { top: 40, right: 45, bottom: 40, left: 60 };
+  const margin = { top: 40, right: 180, bottom: 40, left: 60 };
   let width: number;
   let height: number;
 
-  // Same tooltip state as before...
+  // Add tooltip state
   let tooltipVisible = false;
   let tooltipBorderColor: string = '';
   let tooltipX = 0;
@@ -34,7 +35,7 @@
 
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-    "Gastroenterology": "#4CAE3B",
+      "Gastroenterology": "#4CAE3B",
       "Neurology": "#4D4DFF",
       "Ophthalmology": "#E79028",
       "Immunology": "#EA38A5",
@@ -51,103 +52,81 @@
   }
 
   function processTransactionData(salesData) {
-    // Create array of all years from 2012 to 2024
-    const allYears = Array.from({length: 13}, (_, i) => 2012 + i);
+    // Group data by purchase year for stacking
+    const groupedData = d3.group(salesData, d => d.purchaseYear);
     
-    // First, sort the data by year and price
-    const sortedData = [...salesData].sort((a, b) => {
-      if (a.purchaseYear !== b.purchaseYear) {
-        return a.purchaseYear - b.purchaseYear;
-      }
-      // Put undisclosed prices at the top of each year's stack
-      if (a.price === null && b.price !== null) return -1;
-      if (a.price !== null && b.price === null) return 1;
-      return (b.price || 0) - (a.price || 0);
-    });
-
-    // Group data by purchase year
-    const yearGroups = d3.group(sortedData, d => d.purchaseYear);
-    
-    // Process each year, including years with no transactions
-    return allYears.map(year => {
-      const transactions = yearGroups.get(year) || [];
+    // Calculate cumulative heights for each year
+    return Array.from(groupedData, ([year, transactions]) => {
       let cumHeight = 0;
-      
-      const processedTransactions = transactions.map(t => {
-        const transaction = {
-          ...t,
-          y0: cumHeight,
-          y1: t.price === null ? cumHeight + 85 : cumHeight + t.price, // Use fixed height for undisclosed prices
-          originalData: constellationData.find(d => 
-            d["Drug Name"] === t.drugName && 
-            d["Purchase Year"] === year.toString()
-          )
-        };
-        cumHeight = transaction.y1;
-        return transaction;
-      });
-
       return {
         year,
-        transactions: processedTransactions,
-        totalValue: cumHeight || 0 // Ensure we return 0 for years with no transactions
+        transactions: transactions.map(t => {
+          const transaction = {
+            ...t,
+            y0: cumHeight,
+            y1: cumHeight + t.price,
+            // Store original constellation data reference
+            originalData: constellationData.find(d => 
+              d["Drug Name"] === t.drugName && 
+              d["Purchase Year"] === t.purchaseYear.toString() &&
+              d.Sponsor === t.seller &&
+              (d.Purchaser === t.buyer || (t.buyer === "Undisclosed" && d.Purchaser === "Undisclosed"))
+            )
+          };
+          cumHeight += t.price;
+          return transaction;
+        }),
+        totalValue: cumHeight
       };
     });
   }
 
   function handleClick(transactionData) {
+    console.log("Click data:", transactionData);
+    
     if (transactionData.originalData) {
       dispatch('clusterElementClick', {
         entry: transactionData.originalData,
         color: getColorForTherapeuticArea(transactionData.originalData.name)
       });
+    } else {
+      console.warn("No original data found for transaction:", transactionData);
     }
   }
 
   function createChart() {
     if (!width || !height) return;
 
-    // Process the data - FIXED: Include all purchased entries regardless of price
+    // Process the data
     const salesData = constellationData
-      .filter(d => d.Purchased === "Y") // Only filter for purchased entries
-      .map(d => {
-        // Parse the price, but allow for null values
-        let price = null;
-        if (d["Sale  Price (USD, Millions)"]) {
-          const parsedPrice = parseFloat(d["Sale  Price (USD, Millions)"]);
-          if (!isNaN(parsedPrice)) {
-            price = parsedPrice;
-          }
-        }
+      .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
+      .map(d => ({
+        purchaseYear: +d["Purchase Year"],
+        price: parseFloat(d["Sale  Price (USD, Millions)"]),
+        drugName: d["Drug Name"],
+        buyer: d.Purchaser,
+        seller: d.Sponsor,
+        therapeuticArea: d.name,
+        indication: d.id,
+        purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
+          `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
+      }))
+      .sort((a, b) => a.purchaseYear - b.purchaseYear);
 
-        return {
-          purchaseYear: +d["Purchase Year"],
-          price: price, // This will be null for undisclosed prices
-          drugName: d["Drug Name"],
-          buyer: d.Purchaser,
-          seller: d.Sponsor,
-          therapeuticArea: d.name,
-          indication: d.id,
-          purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
-            `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
-        };
-      });
-
-    // Process into stacked data
+    // Process into stacked data with original references
     const stackedData = processTransactionData(salesData);
 
     // Clear previous chart
     d3.select(svg).selectAll("*").remove();
 
-    // Create scales - now using all years
+    // Create scales
     const xScale = d3.scaleBand()
       .domain(stackedData.map(d => d.year.toString()))
       .range([0, width])
       .padding(0.1);
 
-    const maxValue = d3.max(stackedData, d => d.totalValue);
     const yScale = d3.scaleLinear()
-      .domain([0, maxValue])
+      .domain([0, d3.max(stackedData, d => d.totalValue)])
       .range([height, 0])
       .nice();
 
@@ -163,7 +142,7 @@
     g.append("g")
       .attr("class", "grid")
       .call(d3.axisLeft(yScale)
-        .tickSize(-width)
+        .tickSize(width)
         .tickFormat("")
       )
       .style("stroke-dasharray", "2,3")
@@ -183,29 +162,17 @@
       .attr("y", d => yScale(d.y1))
       .attr("width", xScale.bandwidth())
       .attr("height", d => yScale(d.y0) - yScale(d.y1))
-      .attr("fill", d => {
-        if (d.price === null) {
-          return "#f5f5f5"; // Light grey fill for undisclosed prices
-        }
-        return getColorForTherapeuticArea(d.therapeuticArea);
-      })
-      .attr("stroke", d => {
-        if (d.price === null) {
-          return getColorForTherapeuticArea(d.therapeuticArea);
-        }
-        return "#fff";
-      })
-      .attr("stroke-width", d => d.price === null ? 2 : 1)
-      .attr("stroke-dasharray", d => d.price === null ? "4,4" : "none")
-      .attr("opacity", d => d.price === null ? 0.9 : 0.8)
+      .attr("fill", d => getColorForTherapeuticArea(d.therapeuticArea))
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.8)
       .style("cursor", "pointer")
-      
       .on("mouseover", (event, d) => {
         tooltipContent = {
           drugName: d.drugName,
           therapeuticArea: d.therapeuticArea,
           indication: d.indication,
-          price: d.price === null ? 'Undisclosed' : `$${d.price.toLocaleString()}M`,
+          price: d.price.toLocaleString(),
           seller: d.seller,
           buyer: d.buyer,
           purchaseDate: d.purchaseDate
@@ -216,20 +183,16 @@
         tooltipVisible = true;
 
         d3.select(event.target)
-          .attr("opacity", d.price === null ? 0.9 : 0.8)
+          .attr("opacity", 1)
           .attr("stroke-width", 2)
-          .attr("stroke", "#ff1515")
-          .attr("stroke-dasharray", d.price === null ? "1,2.5" : "none");
+          .attr("stroke", "#ff1515");
       })
-
-      .on("mouseout", (event, d) => {
+      .on("mouseout", (event) => {
         tooltipVisible = false;
         d3.select(event.target)
-          .attr("opacity", d.price === null ? 0.9 : 0.8)
-          .attr("stroke-width", d.price === null ? 2 : 1)
-          .attr("stroke", d.price === null ? 
-            getColorForTherapeuticArea(d.therapeuticArea) : "#fff")
-          .attr("stroke-dasharray", d.price === null ? "2,2" : "none");
+          .attr("opacity", 0.8)
+          .attr("stroke-width", 1)
+          .attr("stroke", "#fff");
       })
       .on("click", (event, d) => {
         event.stopPropagation();
@@ -240,22 +203,11 @@
     g.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(xScale))
-      .style("font-size", "8px");
+      .style("font-size", "10px");
 
-      g.append("g")
-  .call(d3.axisLeft(yScale)
-    .tickFormat(d => `${d}M`))
-  .call(g => {
-    g.selectAll(".tick text") // Select all tick text elements
-      .style("font-size", "8px")
-      .style("font-weight", "medium");
-    g.selectAll(".tick line") // Optional: style the tick lines if needed
-      .style("stroke", "#666")
-      .style("stroke-width", "0.5");
-    g.select(".domain") // Optional: style the axis line if needed
-      .style("stroke", "#666")
-      .style("stroke-width", "0.5");
-  });
+    g.append("g")
+      .call(d3.axisLeft(yScale))
+      .style("font-size", "12px");
 
     // Add labels
     g.append("text")
@@ -264,8 +216,8 @@
       .attr("x", -height / 2)
       .attr("text-anchor", "middle")
       .style("fill", "#3B665D")
-      .style("font-size", "9px")
-      .attr("font-weight", "medium")
+      .style("font-size", "10px")
+      .attr("font-weight", "bold")
       .text("Transaction Value (USD Millions)");
   }
 
@@ -296,7 +248,6 @@
     <svg bind:this={svg}></svg>
   </div>
 </div>
-
 {#if tooltipVisible}
   <div
     class="tooltip p-2 pt-1"
@@ -305,41 +256,52 @@
     <div>
         <p class="text-lg font-medium">
           {tooltipContent.drugName}
-        </p>
         <p class="text-xs uppercase mb-4 font-mono font-semibold text-gray-600">
-          {tooltipContent.therapeuticArea}
+            {tooltipContent.therapeuticArea}</p>
+      </div>
+        <p class="text-base font-medium">
+          ${tooltipContent.price}M
         </p>
-    </div>
-    <p class="text-base font-medium">
-      {tooltipContent.price}
-    </p>
-    <p class="text-xs font-semibold font-mono text-gray-400">Transaction Value</p>
-    <div class="entry-bottom mt-4">
-      <p class="text-xs font-semibold font-mono mt-2 text-gray-800">
-        {tooltipContent.seller} → {tooltipContent.buyer}
-      </p>
-      <p class="text-xs font-semibold font-mono text-gray-400">
-        {tooltipContent.purchaseDate}
-      </p>
-      <p class="text-xs font-semibold font-mono mt-6 text-green-600">
-        Click to view more details →
-      </p>
+        <p class="text-xs font-semibold font-mono text-gray-400">Transaction Value</p>
+      <div class="entry-bottom mt-4">
+        <p class="text-xs font-semibold font-mono mt-2 text-gray-800">
+          {tooltipContent.seller} → {tooltipContent.buyer}
+        </p>
+        <p class="text-xs font-semibold font-mono text-gray-400">
+          {tooltipContent.purchaseDate}
+        </p>
+
+        <p class="text-xs font-semibold font-mono mt-6 text-green-600">
+          Click to view more details  →
+        </p>
     </div>
   </div>
 {/if}
 
 <style>
   .chart-container {
-    width: 97.25%;
-    overflow: scroll;
-    height: 650px;
+    width: 100%;
+    height: 550px;
     margin: 2rem 0;
+  }
+
+  TA {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
   }
 
   .chart {
     width: 100%;
     height: calc(100% - 4rem);
-    overflow: auto;
   }
 
   :global(.grid line) {
@@ -360,4 +322,4 @@
     min-width: 300px;
     max-width: 300px;
   }
-</style>
+  </style>
