@@ -96,14 +96,14 @@ $: {
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded, which was also a record high. 
       <br><br>
       Additionally, 
-      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
+      <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
     </p>
 
     {:else if currentYear >= "2023"}
     <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
       In <span class="highlight">{currentYear}</span>, an estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> desginations were granted, and
-      <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded
+      <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded.
       <br><br>
       <span class="highlight">{formatNumber(summaryStats.soldCount)}</span> vouchers were sold  for a total of
       <span class="highlight">${formatNumber(summaryStats.totalValue)}</span> million.
