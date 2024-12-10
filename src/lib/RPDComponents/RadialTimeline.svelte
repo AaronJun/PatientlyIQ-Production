@@ -615,7 +615,7 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
       
       return therapeuticArea === hoveredTherapeuticArea
         ? "saturate(1.2) brightness(1.1)"
-        : "saturate(0) brightness(0.9)";
+        : "saturate(0) brightness(0.74)";
     })
     .style("opacity", function() {
       if (!hoveredTherapeuticArea) return 1;
@@ -623,7 +623,7 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
       const petalElement = d3.select(this);
       const therapeuticArea = petalElement.attr('data-therapeutic-area');
       
-      return therapeuticArea === hoveredTherapeuticArea ? 1 : 1;
+      return therapeuticArea === hoveredTherapeuticArea ? 1 : .2;
     });
 
   // Specifically update background petals

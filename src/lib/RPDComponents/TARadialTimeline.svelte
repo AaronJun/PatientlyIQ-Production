@@ -25,15 +25,6 @@
     Month: string;
     Date: string;
     Purchaser?: string;
-    "Sale  Price (USD, Millions)"?: string;
-  }
-
-  interface TASummaryStats {
-    totalVouchers: number;
-    purchasedCount: number;
-    totalValue: number;
-    uniqueSponsors: number;
-    yearRange: { start: string; end: string };
   }
 
   export let constellationData: ConstellationEntry[];
@@ -46,22 +37,30 @@
   let containerWidth: number;
   let containerHeight: number;
 
+  // Constants for visualization
+  const SATURATION = {
+    DEFAULT: 0.025,
+    HOVERED: 1.2,
+    CLUSTER: 0.725
+  };
+
+  const OPACITY = {
+    DEFAULT: 0.8,
+    HOVERED: 1,
+    DIMMED: 0.3
+  };
+
   const MIN_FONT_SIZE = 8;
   const MAX_FONT_SIZE = 12;
-  const MAX_PETALS = 10;
-  const CLUSTER_SCALE = 0.0002025;
-  const INNER_RADIUS_RATIO = 0.0625;
-  const OUTER_RADIUS_RATIO = 1.625;
-  const LABEL_RADIUS_OFFSET = 0.6725;
-  // Add new constant for cluster spacing
-  const CLUSTER_SPACING_RATIO = 0.7275; // Controls how spread out multiple clusters are
+  const MAX_PETALS = 12;
 
-  $: width = (containerWidth || 900) * 1.5;
+  $: width = (containerWidth || 900) * 1.15;
   $: height = (containerHeight || 900) * 1.25;
-  $: maxRadius = Math.min(width, height) / 2.125;
-  $: innerRadius = maxRadius * INNER_RADIUS_RATIO/2.725;
-  $: outerRadius = maxRadius * OUTER_RADIUS_RATIO/1.725;
+  $: radius = Math.min(width, height) / 2.0725;
+  $: innerRadius = radius * 0;
+  $: outerRadius = radius * .9125;
 
+  // Therapeutic area colors
   const therapeuticAreaColors = {
     "Gastroenterology": "#a6cee3",
     "Neurology": "#1f78b4",
@@ -93,52 +92,17 @@
     12: TwelvePetal
   };
 
+  // Process data
   $: groupedData = d3.group(constellationData, d => d.name);
-  $: areaStats = Array.from(groupedData.entries()).map(([area, entries]) => {
-    const clusters = [];
-    for (let i = 0; i < entries.length; i += MAX_PETALS) {
-      clusters.push(entries.slice(i, i + MAX_PETALS));
-    }
-    return {
-      area,
-      totalCount: entries.length,
-      clusters,
-      clusterCount: Math.ceil(entries.length / MAX_PETALS)
-    };
-  });
-
-  $: summaryStats = (area: string | null): TASummaryStats => {
-    const relevantData = area 
-      ? constellationData.filter(d => d.name === area)
-      : constellationData;
-
-    const uniqueSponsors = new Set(relevantData.map(d => d.Sponsor)).size;
-    const years = relevantData.map(d => parseInt(d.Year));
-    const yearRange = {
-      start: Math.min(...years).toString(),
-      end: Math.max(...years).toString()
-    };
-
-    return {
-      totalVouchers: relevantData.length,
-      purchasedCount: relevantData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-      totalValue: relevantData
-        .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
-        .reduce((sum, d) => {
-          const price = parseFloat(d["Sale  Price (USD, Millions)"] || "0");
-          return !isNaN(price) ? sum + price : sum;
-        }, 0),
-      uniqueSponsors,
-      yearRange
-    };
-  };
+  $: therapeuticAreas = Array.from(groupedData.keys());
+  $: angleScale = d3.scaleBand()
+    .range([0, 2 * Math.PI])
+    .domain(therapeuticAreas)
+    .padding(0.1);
 
   let hoveredArea: string | null = null;
 
-  function formatNumber(num: number): string {
-    return num.toLocaleString();
-  }
-
+  
   function createColorScale(baseColor: string, count: number): d3.ScaleLinear<string, string> {
     return d3.scaleLinear<string>()
       .domain([0, count - 1])
@@ -154,206 +118,255 @@
     return colorScale(idIndex);
   }
 
-  function createPetalCluster(
-    entries: ConstellationEntry[],
-    position: { x: number; y: number; angle: number },
-    area: string,
-    clusterIndex: number,
-    totalClusters: number
-  ) {
-    const petalCount = Math.min(entries.length, MAX_PETALS);
-    const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
-    const uniqueIds = [...new Set(entries.map(e => e.id))];
-    
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgContent, 'image/svg+xml');
-    
-    entries.forEach((entry, index) => {
-      const petalPaths = Array.from(doc.querySelectorAll('path')).filter(path => {
-        const d = path.getAttribute('d');
-        return d && d.includes('C');
+  function updatePetalStyles() {
+    // Update regular petals
+    svg.selectAll('.petal-part:not(.background-petal)')
+      .transition()
+      .duration(200)
+      .style("filter", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        
+        if (!hoveredArea) {
+          return `saturate(${SATURATION.DEFAULT})`;
+        }
+        
+        return therapeuticArea === hoveredArea
+          ? `saturate(${SATURATION.HOVERED}) brightness(1.1)`
+          : `saturate(${SATURATION.CLUSTER}) brightness(0.9)`;
+      })
+      .style("opacity", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        
+        if (!hoveredArea) {
+          return OPACITY.DEFAULT;
+        }
+        
+        return therapeuticArea === hoveredArea ? OPACITY.HOVERED : OPACITY.DIMMED;
       });
 
-      const startIdx = index * 3;
-      const color = getColorForId(area, entry.id, uniqueIds);
-      const isApproved = entry["Treatment Type"] && entry["Treatment Type"] !== "N";
-      const isPurchased = entry.Purchased?.toLowerCase() === 'y';
-      
-      if (petalPaths[startIdx]) {
-        petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
-        petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx].setAttribute('data-original-fill', '#231F20');
-        petalPaths[startIdx].setAttribute('fill', '#231F20');
-        petalPaths[startIdx].setAttribute('opacity', '0');
-      }
-      
-      if (petalPaths[startIdx + 1]) {
-        petalPaths[startIdx + 1].setAttribute('class', 'petal-part outer-petal');
-        petalPaths[startIdx + 1].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx + 1].setAttribute('fill', color);
-        petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
-        petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
-      }
-      
-      if (petalPaths[startIdx + 2]) {
-        petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
-        petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx + 2].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx + 2].setAttribute('fill', isPurchased ? '#1e1e1e' : '#FFE7A0');
-      }
-    });
-
-    const cluster = svg.append("g")
-      .attr("class", `cluster area-${area.toLowerCase().replace(/\s+/g, '-')}`)
-      .attr("cursor", "pointer")
-      .on("mouseover", () => handleClusterHover(area))
-      .on("mouseout", handleClusterLeave)
-      .html(doc.documentElement.outerHTML);
-
-    const svgElement = cluster.select("svg").node();
-    if (svgElement instanceof SVGElement) {
-    const svgWidth = svgElement.getAttribute("width");
-    const svgHeight = svgElement.getAttribute("height");
-      
-    
-      if (svgWidth && svgHeight) {
-        const scale = width * CLUSTER_SCALE;
-        cluster.attr("transform", `
-          translate(${position.x},${position.y})
-          rotate(${position.angle * 180 / Math.PI})
-          scale(${scale/1.25})
-          translate(${-parseFloat(svgWidth)/2},${-parseFloat(svgHeight)})        
-        `);
-
-        cluster.selectAll("path")
-          .style("filter", "saturate(0.2)")
-          .style("opacity", 0.7)
-          .style("transition", "all 300ms ease-in-out")
-          .each(function(_, i) {
-            const path = d3.select(this);
-            const petalIndex = Math.floor(i / 3);
-            
-            if (petalIndex < entries.length) {
-              const entry = entries[petalIndex];
-              const color = getColorForId(area, entry.id, uniqueIds);
-              
-              path
-                .on("mouseover", function(event) {
-                  handlePetalHover(event, entry, color, this);
-                })
-                .on("mouseout", function() {
-                  handlePetalLeave(this, area);
-                })
-                .on("click", (event) => handlePetalClick(event, entry, color));
-            }
-          });
-      }
-    }
+    // Update background petals
+    svg.selectAll('.background-petal')
+      .transition()
+      .duration(200)
+      .style("opacity", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return therapeuticArea === hoveredArea ? OPACITY.HOVERED : 0;
+      })
+      .style("fill", function() {
+        return hoveredArea ? "#FF1515" : "#231F20";
+      });
   }
 
-  function handleClusterHover(area: string) {
+  function createPetalCluster(entries: ConstellationEntry[], area: string, angle: number) {
+    const clusters: ConstellationEntry[][] = [];
+    for (let i = 0; i < entries.length; i += MAX_PETALS) {
+      clusters.push(entries.slice(i, i + MAX_PETALS));
+    }
+
+    clusters.forEach((clusterEntries, clusterIndex) => {
+      const clusterRadius = innerRadius + (outerRadius - innerRadius) * 
+        ((clusterIndex + 1) / (clusters.length + 1));
+      
+      const x = Math.cos(angle - Math.PI / 2) * clusterRadius;
+      const y = Math.sin(angle - Math.PI / 2) * clusterRadius;
+
+      const petalCount = Math.min(clusterEntries.length, MAX_PETALS);
+      const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
+      const uniqueIds = [...new Set(clusterEntries.map(e => e.id))];
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+
+      clusterEntries.forEach((entry, index) => {
+        const petalPaths = Array.from(doc.querySelectorAll('path')).filter(path => {
+          const d = path.getAttribute('d');
+          return d && d.includes('C');
+        });
+
+        const startIdx = index * 3;
+        const color = getColorForId(area, entry.id, uniqueIds);
+        const isApproved = entry["Treatment Type"] && entry["Treatment Type"] !== "N";
+        const isPurchased = entry.Purchased?.toLowerCase() === 'y';
+
+        if (petalPaths[startIdx]) {
+          petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
+          petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx].setAttribute('fill', '#231F20');
+          petalPaths[startIdx].setAttribute('opacity', '0');
+          petalPaths[startIdx].setAttribute('style', `filter: saturate(${SATURATION.DEFAULT})`);
+        }
+
+        if (petalPaths[startIdx + 1]) {
+          petalPaths[startIdx + 1].setAttribute('class', 'petal-part outer-petal');
+          petalPaths[startIdx + 1].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx + 1].setAttribute('fill', color);
+          petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
+          petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
+          petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(${SATURATION.DEFAULT})`);
+        }
+
+        if (petalPaths[startIdx + 2]) {
+          petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
+          petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx + 2].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx + 2].setAttribute('fill', isPurchased ? '#1e1e1e' : '#FFE7A0');
+          petalPaths[startIdx + 2].setAttribute('style', `filter: saturate(${SATURATION.DEFAULT})`);
+        }
+      });
+
+      const cluster = svg.append("g")
+        .attr("class", `cluster area-${area.toLowerCase().replace(/\s+/g, '-')}`)
+        .attr("cursor", "pointer")
+        .on("mouseover", () => handleAreaHover(area))
+        .on("mouseout", handleAreaLeave)
+        .html(doc.documentElement.outerHTML);
+
+      const scale = radius * 0.00072725;
+      cluster.attr("transform", `
+        translate(${x},${y})
+        rotate(${(angle * 180 / Math.PI)})
+        scale(${scale})
+        translate(-${parseFloat(doc.documentElement.getAttribute('width') || '0')/2},-${parseFloat(doc.documentElement.getAttribute('height') || '0')/2})
+      `);
+
+      cluster.selectAll("path")
+        .each(function(_, i) {
+          const element = d3.select(this);
+          const entry = clusterEntries[Math.floor(i/3)];
+          if (entry) {
+            const color = getColorForId(area, entry.id, uniqueIds);
+            element
+              .on("mouseover", (event) => handlePetalHover(event, entry, color))
+              .on("mouseout", () => handlePetalLeave(area))
+              .on("click", (event) => handlePetalClick(event, entry, color));
+          }
+        });
+    });
+  }
+
+
+  function updatePetalHighlights() {
+  svg.selectAll('.petal-part')
+    .transition()
+    .duration(200)
+    .style("filter", function() {
+      const petalElement = d3.select(this);
+      const therapeuticArea = petalElement.attr('data-therapeutic-area');
+      
+      if (!hoveredArea) {
+        return "saturate(.125)"; // Set default saturation to .125
+      }
+      
+      return therapeuticArea === hoveredArea
+        ? "saturate(1.2) brightness(1.1)"
+        : "saturate(.125) brightness(0.9)";
+    })
+    .style("opacity", function() {
+      if (!hoveredArea) return 0.8;
+      
+      const petalElement = d3.select(this);
+      const therapeuticArea = petalElement.attr('data-therapeutic-area');
+      
+      return therapeuticArea === hoveredArea ? 1 : 0.8;
+    });
+
+  // Update background petals
+  svg.selectAll('.background-petal')
+    .transition()
+    .duration(200)
+    .style("opacity", function() {
+      const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+      return therapeuticArea === hoveredArea ? 1 : 0;
+    })
+    .style("fill", function() {
+      const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+      return therapeuticArea === hoveredArea ? "#ff1515" : "#231F20";
+    });
+  }
+
+  function handleAreaHover(area: string) {
     hoveredArea = area;
-    const stats = summaryStats(area);
+    const entries = groupedData.get(area) || [];
     
-    const summaryText = `${area} has contributed ${formatNumber(stats.totalVouchers)} priority review vouchers from ${
-      stats.yearRange.start} to ${stats.yearRange.end}, involving ${formatNumber(stats.uniqueSponsors)} sponsor${
-      stats.uniqueSponsors !== 1 ? 's' : ''}` + 
-      (stats.purchasedCount > 0 ? `. ${formatNumber(stats.purchasedCount)} voucher${
-        stats.purchasedCount !== 1 ? 's were' : ' was'} sold for a total of $${formatNumber(stats.totalValue)} million` : '') +
-      '. Hover over petals to explore specific therapeutics.';
-    
+    const stats = {
+      totalVouchers: entries.length,
+      purchasedCount: entries.filter(d => d.Purchased?.toLowerCase() === 'y').length,
+      uniqueSponsors: new Set(entries.map(d => d.Sponsor)).size,
+      yearRange: {
+        start: Math.min(...entries.map(d => parseInt(d.Year))).toString(),
+        end: Math.max(...entries.map(d => parseInt(d.Year))).toString()
+      }
+    };
+
+    const summaryText = `${area} has contributed ${stats.totalVouchers} priority review vouchers from ${
+      stats.yearRange.start} to ${stats.yearRange.end}, involving ${stats.uniqueSponsors} sponsor${
+      stats.uniqueSponsors !== 1 ? 's' : ''}${
+      stats.purchasedCount > 0 ? `. ${stats.purchasedCount} voucher${
+      stats.purchasedCount !== 1 ? 's were' : ' was'} sold` : ''
+    }. Hover over petals to explore specific therapeutics.`;
+
     dispatch('areaSummary', { summaryText });
     dispatch('areaHover', { area });
-    
+
     svg.selectAll(".cluster")
       .transition()
       .duration(300)
       .style("opacity", function() {
         return this.classList.contains(`area-${area.toLowerCase().replace(/\s+/g, '-')}`) ? 1 : 0.3;
       });
-  
-      svg.selectAll("path")
-      .style("filter", function() {
-        return this.closest(`.area-${area.toLowerCase().replace(/\s+/g, '-')}`) 
-          ? "saturate(1.2)" 
-          : "saturate(0.2)";
-      });
 
     updatePetalHighlights();
   }
 
-  function handleClusterLeave() {
+  function handleAreaLeave() {
     hoveredArea = null;
     dispatch('areaSummary', { summaryText: '' });
     dispatch('areaLeave');
-    
+
     svg.selectAll(".cluster")
       .transition()
       .duration(200)
-      .style("opacity", 1)
-      .selectAll("path")
-      .style("filter", "saturate(0.2)");
-
-    svg.selectAll('.background-petal')
-      .transition()
-      .duration(200)
-      .style("fill", function() {
-        return d3.select(this).attr('data-original-fill');
-      });
+      .style("opacity", 1);
 
     updatePetalHighlights();
   }
 
-  function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string, element: SVGPathElement) {
-    const petalGroup = d3.select(element.parentElement)
+  function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
+    const petalGroup = d3.select((event.target as Element).parentElement)
       .selectAll("path")
-      .filter((_, i) => Math.floor(i / 3) === Math.floor(Array.from(element.parentElement?.children || []).indexOf(element) / 2));
-    
+      .filter((_, i, nodes) => {
+        const idx = Array.from(nodes).indexOf(event.target as Element);
+        return Math.floor(i / 3) === Math.floor(idx / 3);
+      });
+      
+
     petalGroup
       .transition()
-      .duration(100)
-      .style("filter", "saturate(1.5) brightness(1.1)")
+      .duration(200)
+      .style("filter", "saturate(.125) brightness(1.1)")
       .style("opacity", 1);
 
-    petalGroup.each(function() {
-      const path = d3.select(this);
-      if (!path.property("_originalFill")) {
-        path.property("_originalFill", path.style("fill"));
-      }
-    });
-
-    // Set background petal to red for hovered petal
     petalGroup.filter(".background-petal")
-      .style("opacity", 1);
+      .style("opacity", 1)
+      .style("fill", "#ff1515");
 
     dispatch('petalHover', { event, entry, color });
   }
 
-  function handlePetalLeave(element: SVGPathElement, area: string) {
-    const petalGroup = d3.select(element.parentElement)
-      .selectAll("path")
-      .filter((_, i) => Math.floor(i / 3) === Math.floor(
-        Array.from(element.parentElement?.children || []).indexOf(element) / 3));
-    
-    // Reset to area hover state if area is still hovered, otherwise to default state
-    petalGroup
+  function handlePetalLeave(area: string) {
+    svg.selectAll(`.cluster.area-${area.toLowerCase().replace(/\s+/g, '-')} path`)
       .transition()
       .duration(200)
-      .style("filter", hoveredArea === area ? "saturate(1.2)" : "saturate(0.2)")
-      .each(function() {
-        const path = d3.select(this);
-        const originalFill = path.property("_originalFill");
-        if (originalFill) {
-          path.style("fill", originalFill);
-        }
-      });
+      .style("filter", hoveredArea === area ? "saturate(1.2)" : "saturate(0.125)")
+      .style("opacity", hoveredArea === area ? 1 : 0.3);
 
-    // Reset background petal
-    petalGroup.filter(".background-petal")
-      .style("fill", "#231F20")
-      .style("opacity", 0);
+    svg.selectAll('.background-petal')
+      .style("opacity", 0)
+      .style("fill", function() {
+        return d3.select(this).attr('data-original-fill');
+      });
 
     dispatch('petalLeave');
   }
@@ -362,60 +375,114 @@
     event.stopPropagation();
     dispatch('clusterElementClick', { entry, color });
   }
-
-  function updatePetalHighlights() {
+  function updateVisibility(year: string, isHovered: boolean = false) {
+  // Update clusters and petals
+  svg.selectAll(".cluster")
+    .each(function() {
+      const cluster = d3.select(this);
+      const clusterYear = this.classList[1].split("-")[1];
+      
+      cluster.selectAll("path")
+        .transition()
+        .duration(300)
+        .style("filter", "saturate(0.2)") // Always start at default saturation
+        .style("opacity", clusterYear === year ? 1 : 0.5);
+    });
     svg.selectAll('.petal-part')
       .transition()
       .duration(200)
       .style("filter", function() {
-        const petalElement = d3.select(this);
-        const therapeuticArea = petalElement.attr('data-therapeutic-area');
-        const cluster = this.closest('.cluster');
-        if (!cluster) return "saturate(0.2)";
-        
-        if (!hoveredArea) {
-          return "saturate(0.2)";
-        }
-        
-        return therapeuticArea === hoveredArea
-          ? "saturate(1.2) brightness(1.1)"
-          : "saturate(0) brightness(0.9)";
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return !hoveredArea ? "saturate(0.2)" :
+          therapeuticArea === hoveredArea ? "saturate(1.2) brightness(1.1)" : "saturate(0) brightness(0.9)";
       })
       .style("opacity", function() {
-        if (!hoveredArea) return 0.7;
-        
-        const petalElement = d3.select(this);
-        const therapeuticArea = petalElement.attr('data-therapeutic-area');
-        
-        return therapeuticArea === hoveredArea ? 1 : 0.3;
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return !hoveredArea ? 0.8 :
+          therapeuticArea === hoveredArea ? 1 : 0.3;
       });
 
-    // Update background petals
     svg.selectAll('.background-petal')
       .transition()
       .duration(200)
-      .style("fill", function() {
-        const petalElement = d3.select(this);
-        const therapeuticArea = petalElement.attr('data-therapeutic-area');
-        
-        if (!hoveredArea) {
-          return petalElement.attr('data-original-fill');
-        }
-        
-        return therapeuticArea === hoveredArea
-          ? "#ff1515"
-          : petalElement.attr('data-original-fill');
-      })
       .style("opacity", function() {
-        const petalElement = d3.select(this);
-        const therapeuticArea = petalElement.attr('data-therapeutic-area');
-        
-        if (!hoveredArea) {
-          return 0;
-        }
-        
-        return therapeuticArea === hoveredArea ? 0.8 : 0;
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return !hoveredArea ? 0 :
+          therapeuticArea === hoveredArea ? 0.8 : 0;
+      })
+      .style("fill", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return therapeuticArea === hoveredArea ? "#ff1515" : 
+          d3.select(this).attr('data-original-fill');
       });
+  }
+
+  function drawVisualization() {
+    if (!svg) return;
+
+    svg.selectAll("*").remove();
+
+    // Draw guide circles
+    const guideRadii = [innerRadius, (innerRadius + outerRadius) / 2, outerRadius];
+    svg.selectAll(".guide-circle")
+      .data(guideRadii)
+      .join("circle")
+      .attr("class", "guide-circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", d => d)
+      .attr("fill","none")
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 0.5)
+      .attr("stroke-dasharray", "2,4")
+      .style("opacity", 0.3);
+
+    // Draw axis lines and labels for each therapeutic area
+    therapeuticAreas.forEach(area => {
+      const angle = angleScale(area)! + angleScale.bandwidth() / 2;
+      const entries = groupedData.get(area) || [];
+
+      // Draw axis line
+      svg.append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", Math.cos(angle - Math.PI / 2) * outerRadius/2)
+        .attr("y2", Math.sin(angle - Math.PI / 2) * outerRadius/2)
+        .attr("stroke", "#ccc")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-opacity", 0.5);
+
+      // Add label
+      const labelRadius = outerRadius * .825;
+      const labelAngle = angle - Math.PI / 2;
+      const labelX = Math.cos(labelAngle) * labelRadius;
+      const labelY = Math.sin(labelAngle) * labelRadius;
+      
+      const textRotation = (angle * 180 / Math.PI);
+      const finalRotation = textRotation > 90 && textRotation < 270 
+        ? textRotation
+        : textRotation;
+
+      const labelGroup = svg.append("g")
+        .attr("class", `area-label-group area-${area.toLowerCase().replace(/\s+/g, '-')}`)
+        .style("cursor", "pointer")
+        .on("mouseover", () => handleAreaHover(area))
+        .on("mouseout", handleAreaLeave);
+
+      labelGroup.append("text")
+        .attr("class", "area-label")
+        .attr("transform", `translate(${labelX},${labelY}) rotate(${finalRotation})`)
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("font-size", `${Math.min(Math.max(radius * 0.02, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
+        .attr("fill", "#231F20")
+        .text(area);
+
+      // Create petal clusters
+      if (entries.length > 0) {
+        createPetalCluster(entries, area, angle);
+      }
+    });
   }
 
   onMount(() => {
@@ -435,7 +502,8 @@
       containerWidth = container.clientWidth;
       containerHeight = container.clientHeight;
       
-      svg.select('svg')
+      d3.select(container)
+        .select("svg")
         .attr("width", width)
         .attr("height", height);
       
@@ -448,100 +516,9 @@
       resizeObserver.disconnect();
     };
   });
-  function drawVisualization() {
-  if (!svg || !width || !height) return;
-
-  svg.selectAll("*").remove();
-
-  const angleScale = d3.scaleLinear()
-    .domain([0, areaStats.length])
-    .range([0, 2 * Math.PI]);
-
-  areaStats.forEach((stat, i) => {
-    const angle = angleScale(i);
-    const mainX = Math.cos(angle - Math.PI / 2) * innerRadius;
-    const mainY = Math.sin(angle - Math.PI / 2) * innerRadius;
-
-    // Center circle
-    svg.append("circle")
-      .attr("cx", mainX)
-      .attr("cy", mainY)
-      .attr("r", 3)
-      .attr("fill", therapeuticAreaColors[stat.area as keyof typeof therapeuticAreaColors])
-      .attr("stroke", "#161616")
-      .attr("stroke-width", .5);
-
-    // Outer label
-    const labelAngle = angle;
-    const labelRadius = outerRadius * LABEL_RADIUS_OFFSET;
-    const labelX = Math.cos(labelAngle - Math.PI / 2) * labelRadius;
-    const labelY = Math.sin(labelAngle - Math.PI / 2) * labelRadius;
-    
-    const textRotation = (labelAngle / Math.PI) * 180;
-    const finalRotation = textRotation > 90 && textRotation < 270 
-      ? textRotation + 180 
-      : textRotation;
-
-    const labelGroup = svg.append("g")
-      .attr("class", `area-label-group area-${stat.area.toLowerCase().replace(/\s+/g, '-')}`)
-      .style("cursor", "pointer")
-      .on("mouseover", () => handleClusterHover(stat.area))
-      .on("mouseout", handleClusterLeave);
-
-    labelGroup.append("text")
-      .attr("class", "area-label")
-      .attr("transform", `
-        translate(${labelX},${labelY})
-        rotate(${finalRotation})
-      `)
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "central")
-      .attr("background-color", "#fff")
-      .attr("font-size", `${Math.min(Math.max(innerRadius * 1, 8), 12)}px`)
-      .attr("fill", "#4a5568")
-      .text(stat.area);
-
-    // Calculate and draw clusters
-    stat.clusters.forEach((clusterEntries, clusterIndex) => {
-      // Calculate available space between inner and outer radius
-      const availableSpace = outerRadius - innerRadius;
-      
-      // If there's only one cluster, place it in the middle
-      // If there are multiple clusters, spread them out based on CLUSTER_SPACING_RATIO
-      const t = stat.clusters.length === 1 
-        ? 0.5 
-        : CLUSTER_SPACING_RATIO * (clusterIndex + 1) / (stat.clusters.length + 1);
-      
-      const clusterRadius = innerRadius + (availableSpace * t);
-      const lineAngle = angle - Math.PI / 2;
-      const clusterX = Math.cos(lineAngle) * clusterRadius;
-      const clusterY = Math.sin(lineAngle) * clusterRadius;
-
-      // Draw line from center circle to cluster
-      svg.append("line")
-        .attr("x1", mainX)
-        .attr("y1", mainY)
-        .attr("x2", clusterX)
-        .attr("y2", clusterY)
-        .attr("stroke", "#ccc")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-opacity", 0.5);
-
-      // Create cluster of petals
-      createPetalCluster(
-        clusterEntries,
-        { x: clusterX, y: clusterY, angle },
-        stat.area,
-        clusterIndex,
-        stat.clusters.length
-      );
-    });
-  });
-}
-
 </script>
 
-<div class="therapeutic-area-radial py-24" bind:this={container}>
+<div class="therapeutic-area-radial" bind:this={container}>
 </div>
 
 <style>
@@ -582,11 +559,7 @@
     opacity: 0.8;
   }
 
-  :global(.area-label), :global(.area-count) {
+  :global(.area-label) {
     font-family: 'IBM Plex Sans', sans-serif;
-  }
-
-  :global(.label-hitbox) {
-    opacity: 0;
   }
 </style>
