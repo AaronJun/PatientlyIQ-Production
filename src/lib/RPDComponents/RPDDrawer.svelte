@@ -164,18 +164,19 @@
   // Utility functions
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-      "Gastroenterology": "#4CAE3B",
-      "Neurology": "#4D4DFF",
-      "Ophthalmology": "#E79028",
-      "Immunology": "#EA38A5",
-      "Metabolic": "#133B11",
-      "Dermatology": "#559368",
-      "Hematology": "#CF3630",
-      "Orthopedics": "#441780",
-      "Respiratory": "#CBC09F",
-      "Nephrology": "#ACA3DB",
-      "Oncology": "#FF84DE",
-      "Hepatology": "#FF00D4",
+      "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#ffff99",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
     };
     return colorMap[ta] || "#000000";
   }
@@ -200,7 +201,7 @@
 >
 
   <div 
-    class="relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
+    class="drawer relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
     on:click={handleDrawerClick}
     style="border-color: {color}"
   >
@@ -210,23 +211,23 @@
         <!-- Original View -->
 
         <div class="header grid grid-cols-2 justify-stretch gap-4 pb-4 mr-6">
-          <h3 class="text-xs col-span-2 font-semibold text-sky-800">
+          <h3 class="text-xs col-span-2 font-semibold text-slate-800">
             {formatDate(displayData.Month, displayData.Date, displayData.Year)}
           </h3>
           
           <div class="col-span-2 flex justify-between align-bottom items-end">
-            <h2 class="text-4xl font-light text-sky-800" 
+            <h2 class="text-4xl font-light text-slate-800" 
                 in:fly={{duration: TEXT_ANIMATION_DURATION}}>
               {displayData["Drug Name"]}
             </h2>
             <div class="flex items-end gap-4 underline-offset-4 justify-end w-full"> <!-- Added items-end, justify-end, and w-full -->
             <button 
-              class="text-lg text-sky-800 hover:text-green-600 font-base flex items-center gap-2"
+              class="text-lg text-slate-800 hover:text-green-600 font-base flex items-center gap-2"
               on:click={() => handleClick(() => showSponsorData(displayData.Sponsor))}
               in:fade={{duration: TEXT_ANIMATION_DURATION}}
             >   
               {displayData.Sponsor} 
-              <div class="bg-sky-900 text-sky-50 rounded-full p-1"><ArrowUpRight size={16} /></div>
+              <div class="bg-slate-900 text-slate-50 rounded-full p-1"><ArrowUpRight size={16} /></div>
             </button>
             </div>
           </div>
@@ -234,7 +235,7 @@
 
         <!-- Disease Information Section -->
         <section class="mb-8">
-          <h3 class="text-lg font-base text-sky-800 mt-12 mb-8">
+          <h3 class="text-lg font-base text-slate-800 mt-12 mb-8">
             Disease Information
           </h3>
           
@@ -275,16 +276,16 @@
 
         <!-- Treatment Information Section -->
         <section class="mb-8">
-          <h3 class="text-lg font-base text-sky-800 mt-12 mb-8">
+          <h3 class="text-lg font-base text-slate-800 mt-12 mb-8">
             Treatment Information
           </h3>
           
           <table>
             <tbody>
               {#each [
-                { label: 'Previously Approved Therapies', icon: WhitePaper, value: displayData["FDA-Approved Therapy Prior to 2012"] || 'N/A' },
+                { label: 'Approved Treatment Pre-2012', icon: WhitePaper, value: displayData["FDA-Approved Therapy Prior to 2012"] || 'N/A' },
                 { label: 'Treatment Type', icon: Medication, value: displayData["Treatment Type"], onClick: () => showTreatmentType(displayData["Treatment Type"]) },
-                { label: 'Mechanism', icon: WatsonHealthDna, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
+                { label: 'Mechanism of Action', icon: WatsonHealthDna, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
               ] as { label, icon, value, onClick }}
                 <tr class="h-12">
                   <div class="flex flex-none w-3/12 gap-2">                    
@@ -314,7 +315,7 @@
 
         <!-- Voucher Transaction Section -->
         <section class="mb-8">
-          <h3 class="text-lg font-base text-sky-800 mt-8 mb-4">
+          <h3 class="text-lg font-base text-slate-800 mt-8 mb-4">
             Voucher Transaction
           </h3>
           
@@ -350,7 +351,7 @@
 
         <!-- Awarded Vouchers Section -->
         <section>
-          <h3 class="text-lg font-base text-sky-800 mt-12 mb-8" 
+          <h3 class="text-lg font-base text-slate-800 mt-12 mb-8" 
               in:fade={{duration: TEXT_ANIMATION_DURATION}}>
             Vouchers Awarded in {displayData.Year}
           </h3>
@@ -403,7 +404,7 @@
           </button>
 
           <div class="col-span-2 flex justify-between align-bottom items-end">
-            <h2 class="text-lg text-sky-800 capitalize" 
+            <h2 class="text-lg text-slate-800 capitalize" 
                 in:fade={{duration: TEXT_ANIMATION_DURATION}}>
               {currentViewTitle}
             </h2>
@@ -478,7 +479,7 @@
         </button>
 
         <div class="header col-span-2 flex justify-between items-end pb-4 mb-8 mr-12">
-          <h2 class="text-xl text-sky-800" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+          <h2 class="text-xl text-slate-800" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
             {currentViewTitle}
           </h2>
           <h3 class="text-xs font-bold text-gray-500" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
@@ -491,7 +492,7 @@
           
           <!-- Vouchers Awarded Section -->
           <section class="mb-8">
-            <h3 class="text-lg font-base text-sky-800 mt-8 mb-4" 
+            <h3 class="text-lg font-base text-slate-800 mt-8 mb-4" 
                 in:fade={{duration: TEXT_ANIMATION_DURATION}}>
               Vouchers Awarded
             </h3>
@@ -538,7 +539,7 @@
           <!-- Transactions Section -->
           {#if sponsorTransactions.length > 0}
             <section class="mb-8">
-              <h3 class="text-lg font-base text-sky-800 mt-8 mb-4" 
+              <h3 class="text-lg font-base text-slate-800 mt-8 mb-4" 
                   in:fade={{duration: TEXT_ANIMATION_DURATION}}>
                 Voucher Transactions
               </h3>
@@ -601,7 +602,7 @@
             <ArrowLeft /> Back
           </button>
 
-          <h2 class="text-xl text-sky-800" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
+          <h2 class="text-xl text-slate-800" in:fade={{duration: TEXT_ANIMATION_DURATION}}>
             {currentViewTitle}
           </h2>
         </div>
@@ -620,7 +621,7 @@
           </button>
 
           <div class="col-span-2 flex justify-between align-bottom items-end">
-            <h2 class="text-xl text-sky-800 capitalize" 
+            <h2 class="text-xl text-slate-800 capitalize" 
                 in:fade={{duration: TEXT_ANIMATION_DURATION}}>
               {currentViewTitle}
             </h2>
@@ -687,6 +688,10 @@
 </div>
 
 <style>
+  .drawer {
+    border-left: 10px solid #377e6b;
+  }
+
   .drawer-content {
     padding: 2rem;
   }
@@ -795,12 +800,12 @@
 
   :global(.bx--search-input) {
     background-color: white;
-    border: 1px solid #dde1e6;
+    border: 1px solid #3b5779;
     height: 2rem;
   }
 
   :global(.bx--search-input:focus) {
-    border-color: #37587e;
+    border-color: #ff1515;
   }
 
   :global(.bx--search-magnifier) {

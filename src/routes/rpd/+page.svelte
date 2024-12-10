@@ -210,13 +210,13 @@
 <div class="light">
   <RPDHeader on:readMoreClick={handleProgramInfoClick} />
   <div class="page-container content-start">
-    <div class="main-content dark:bg-white">
+    <div class="main-content min-h-full dark:bg-white">
       <div class="tabs">
         <button
-          class="tab-button {activeTab === 'By Year' ? 'active' : ''}"
+          class="tab-button justify-start sm:justify-start {activeTab === 'By Year' ? 'active' : ''}"
           on:click={() => setActiveTab('By Year')}
         >
-          <div class="flex gap-8 content-start justify-center">
+          <div class="flex gap-8 content-start justify-start">
             By Year <Calendar />
           </div>
         </button>
@@ -243,7 +243,7 @@
       <div class="tab-content">
         {#if activeTab === 'By Year'}
           <div class="flowers-view content-start">
-            <div class="info-panel flex flex-col pr-4 col-span-1 border-orange-600">
+            <div class="w-1/6 lg:w-1/5 md:w-5/6 sm:w-full min-[400px]:w-full flex flex-col pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <RPDPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
@@ -262,7 +262,7 @@
               {/if}
             </div>
 
-            <div class="timeline-container content-start">
+            <div class="w-5/6 sm:w-full min-[400px]:w-full md:w-full timeline-container content-start">
               {#if $RadialTimeline && processedRpdPrvData.length > 0 && processedConstellationData.length > 0}
                 <svelte:component 
                   this={$RadialTimeline}
@@ -281,7 +281,7 @@
 
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flowers-view content-start">
-            <div class="info-panel flex flex-col pr-16 col-span-1 border-r-2 border-orange-600">
+            <div class="w-1/6 lg:w-1/6 sm:w-full min-[400px]:w-full flex flex-col lg:pr-0 lg:pb-7 lg:border-r-0">
               <TAPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
@@ -289,7 +289,7 @@
               />
             </div>
 
-            <div class="therapeutic-area-container content-start">
+            <div class="flex w-5/6 lg:w-5/6 sm:w-full min-[400px]:w-full timeline-container content-start">
               <TherapeuticAreaGrid
                 constellationData={processedConstellationData}
                 selectedArea={hoveredPetalData?.name || null}
@@ -305,7 +305,7 @@
 
         {:else if activeTab === 'transactions'}
           <div class="flowers-view">
-            <div class="info-panel row col-span-2 align-center p-8 pl-0 pb-10 text-orange-600">
+            <div class="w-1/6 lg:w-1/5 sm:w-full min-[400px]:w-full flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
               <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
                 Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
@@ -314,7 +314,7 @@
                 With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.
               </p>
             </div>
-
+            <div class="sales-container w-5/6 sm:w-full min-[400px]:w-full content-start min-h-full">
             <SaleBenchmarks 
               constellationData={processedConstellationData} 
               onCompanySelect={(data, color) => {
@@ -328,6 +328,7 @@
                 isDrawerOpen = true;
               }}
             />
+            </div>
           </div>
         {/if}
       </div>
@@ -382,7 +383,7 @@
   .tabs {
     display: grid;
     font-size: 0.725rem;
-    grid-template-columns: repeat(3,.25fr);
+    grid-template-columns: repeat(3,.35fr);
     border-bottom: .5px dotted #6b7280;
     padding-top: 2.25rem;
     gap: .525rem;
@@ -392,12 +393,13 @@
   .tab-button {
     display: flex;
     align-items: center;
+    text-align: left;
     gap: 0.25rem;
     text-transform: uppercase;
-    max-width: 22.5vw;  
+    min-width: 22.5vw;  
     letter-spacing: .325px;
     padding: 0.5rem 1rem 0.5rem 0.25rem;
-    font-size: 0.775rem;
+    margin-right: 1.25rem;
     color: #6b7280;
     border-bottom: .5px solid #797979;
     transition: all 0.2s;
@@ -433,19 +435,15 @@
   .timeline-container {
     padding: 1rem 2rem 2rem 1.25rem;
     height: 95vh;
-    width: 78vw;
+    width: 75vw;
     overflow: hidden;
   }
 
-  .therapeutic-area-container {
+.timeline-container {
     padding: 1rem 2rem 2rem 1.25rem;
-    height: 95vh;
-    width: 78vw;
+    height: 90vh;
+    width: 75vw;
     overflow: hidden;
-  }
-
-  .info-panel {
-    width: 20vw;
   }
 
   .info-panel-nav {
@@ -573,13 +571,10 @@
       grid-template-columns: repeat(3, .25fr);
     }
 
-    .info-panel {
-      width: 22vw;
-    }
-
     .timeline-container,
     .therapeutic-area-container {
-      width: 80vw;
+      width: 78vw;
+      height: 90vh;
     }
   }
 
@@ -601,43 +596,4 @@
     }
   }
 
-  @media (max-width: 768px) {
-    .page-container {
-      padding: 1rem;
-    }
-
-    .tabs {
-      grid-template-columns: 1fr;
-      gap: 0.25rem;
-    }
-
-    .tab-button {
-      max-width: none;
-      padding: 0.5rem 0.25rem;
-    }
-
-    .timeline-container,
-    .therapeutic-area-container {
-      height: 60vh;
-    }
-
-    h2 {
-      font-size: 0.625rem;
-    }
-
-    .text-base {
-      font-size: 0.825rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .page-container {
-      padding: 0.5rem;
-    }
-
-    .timeline-container,
-    .therapeutic-area-container {
-      height: 50vh;
-    }
-  }
 </style>

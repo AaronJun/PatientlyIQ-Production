@@ -458,7 +458,6 @@
       </div>
     {:else if activeVisualization === 'network'}
       <div class="viz-container">
-     
         <SellerBuyerChord 
         {constellationData}
         onCompanyClick={(companyData) => {

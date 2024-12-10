@@ -16,7 +16,6 @@
   import TenPetal from '../../assets/10PetalNew.svg?raw';
   import ElevenPetal from '../../assets/11PetalNew.svg?raw';
   import TwelvePetal from '../../assets/12PetalNew.svg?raw';
-  import Tooltip from './RPDTooltip.svelte';
   import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
   import RpdtaLegend from './RPDTALegend.svelte';
   
@@ -47,8 +46,8 @@
   
   const dispatch = createEventDispatcher();
   
-  const MIN_FONT_SIZE = 8;
-  const MAX_FONT_SIZE = 10;
+  const MIN_FONT_SIZE = 10;
+  const MAX_FONT_SIZE = 14;
   
   let container: HTMLElement;
   let svg: Selection<SVGGElement, unknown, HTMLElement, any>;
@@ -56,8 +55,8 @@
   let containerHeight: number;
   
   $: width = (containerWidth || 900) * 1.1;
-  $: height = (containerHeight || 800) * 1.34;
-  $: radius = Math.min(width, height) / 2.2725;
+  $: height = (containerHeight || 800);
+  $: radius = Math.min(width, height) / 2.525;
   
   $: margin = {
     top: height * 0.15,
@@ -190,7 +189,9 @@
         yearSegment.focus();
       }
     });
-  }function initializeChart() {
+  }
+  
+  function initializeChart() {
   d3.select(container).selectAll("*").remove();
 
   const svgElement = d3.select(container)
@@ -205,6 +206,32 @@
   drawYearArcs();
   drawDataLines();
   drawPetalClusters(); // Make sure this is called
+}
+
+// Add sorting function at the top level
+function sortEntriesByTherapeuticArea(entries: ConstellationEntry[]): ConstellationEntry[] {
+  // Create a map for consistent ordering of therapeutic areas
+  const areaOrder = new Map([
+    ["Neurology", 0],
+    ["Oncology", 1],
+    ["Hematology", 2],
+    ["Immunology", 3],
+    ["Metabolic", 4],
+    ["Gastroenterology", 5],
+    ["Hepatology", 6],
+    ["Pulmonology", 7],
+    ["Nephrology", 8],
+    ["Dermatology", 9],
+    ["Ophthalmology", 10],
+    ["Orthopedics", 11],
+    ["Endocrinology", 12]
+  ]);
+
+  return [...entries].sort((a, b) => {
+    const orderA = areaOrder.get(a.name) ?? Number.MAX_VALUE;
+    const orderB = areaOrder.get(b.name) ?? Number.MAX_VALUE;
+    return orderA - orderB;
+  });
 }
 
 function drawGuideCircles() {
@@ -325,14 +352,18 @@ function drawYearArcs() {
   });
 }
   
+// Modify the createPetalCluster function
 function createPetalCluster(year: string, entries: ConstellationEntry[], position: { x: number, y: number, angle: number }) {
-  const petalCount = Math.min(entries.length, 12);
+  // Sort entries by therapeutic area before creating the cluster
+  const sortedEntries = sortEntriesByTherapeuticArea(entries);
+  const petalCount = Math.min(sortedEntries.length, 12);
   const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
   
   const parser = new DOMParser();
   const doc = parser.parseFromString(svgContent, 'image/svg+xml');
   
-  entries.forEach((entry, index) => {
+  // Use sortedEntries instead of entries
+  sortedEntries.forEach((entry, index) => {
     const paths = doc.querySelectorAll('path');
     const petalPaths = Array.from(paths).filter(path => {
       const d = path.getAttribute('d');
@@ -346,7 +377,7 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
       petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
       petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
       petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
-      petalPaths[startIdx].setAttribute('data-original-fill', '#231F20'); // Store original fill
+      petalPaths[startIdx].setAttribute('data-original-fill', '#231F20');
     }
     
     if (petalPaths[startIdx + 1]) {
@@ -373,7 +404,7 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
     .on("mouseout", handleClusterLeave)
     .html(doc.documentElement.outerHTML);
 
-  // Rest of the positioning and scaling code remains the same
+  // Position and scale the cluster
   const svgElement = cluster.select("svg").node();
   if (svgElement instanceof SVGElement) {
     const svgWidth = svgElement.getAttribute("width");
@@ -392,12 +423,12 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
       cluster.selectAll("path")
         .each(function(_, i) {
           const element = d3.select(this);
-          const entry = entries[Math.floor(i/3)]; // Every 3 paths make up one petal
+          const entry = sortedEntries[Math.floor(i/3)]; // Use sortedEntries here
           if (entry) {
             const color = therapeuticAreaColors[entry.name];
             element
               .style("opacity", 1)
-              .style("filter", year === activeYear ? "saturate(1)" : "saturate(0.2)")
+              .style("filter", year === activeYear ? "saturate(1)" : "saturate(0.1)")
               .style("transform-origin", "bottom center")
               .style("transition", "all 500ms circ-in-out")
               .on("mouseover", (event) => handlePetalHover(event, entry, color))
@@ -410,7 +441,6 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
   
   return cluster;
 }
-
 
 function drawPetalClusters() {
   years.forEach(year => {
@@ -454,7 +484,7 @@ function handleYearLeave() {
     hoveredYearIndex = null;
     svg.selectAll(".value-label")
       .transition()
-      .duration(675)
+      .duration(375)
       .style("opacity", 0)
       .remove();
     
@@ -500,60 +530,9 @@ function handleClusterLeave() {
   }
 }
 
-function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
-  // Update tooltip
-  tooltipContent = {
-    sponsor: entry.Sponsor,
-    drugName: entry["Drug Name"],
-    therapeuticArea: entry.name,
-    id: entry.id
-  };
-  tooltipBorderColor = color;
-  tooltipX = event.pageX;
-  tooltipY = event.pageY;
-  tooltipVisible = true;
-
-  const currentElement = event.currentTarget as SVGElement;
-  const cluster = currentElement.closest(".cluster");
-  const clusterYear = cluster?.classList[1].split("-")[1];
-  
-  // Get the current petal group (3 paths that make up a complete petal)
-  const petalIndex = Math.floor(Array.from(currentElement.parentElement?.children || []).indexOf(currentElement) / 3);
-  const petalGroup = d3.select(currentElement.parentElement)
-    .selectAll("path")
-    .filter((_, i) => Math.floor(i / 3) === petalIndex);
-
-  // Store original fills for reset
-  petalGroup.each(function() {
-    const path = d3.select(this);
-    if (!path.property("_originalFill")) {
-      path.property("_originalFill", path.style("fill"));
-    }
-  });
-
-  // Apply animations to the specific petal
-  petalGroup
-    .transition()
-    .duration(200)
-    .style("filter", "saturate(1.5) brightness(1.1)")
-    .each(function(_, i) {
-      const path = d3.select(this);
-      // If this is the background petal (first in group of 3)
-      if (i % 3 === 0) {
-        path.style("fill", "#ff1515");
-      }
-    });
-
-  // Ensure cluster remains saturated
-  if (clusterYear) {
-    handleClusterHover(clusterYear);
-  }
-
-  dispatch('petalHover', { entry, color });
-}
-
 function handlePetalLeave(year: string) {
-  tooltipVisible = false;
+  // Properly set tooltip visibility to false first
+  dispatch('petalLeave');
   
   // Reset the specific petal
   svg.selectAll(`.cluster.year-${year} path`)
@@ -562,7 +541,6 @@ function handlePetalLeave(year: string) {
     .style("transform", "rotate(0deg)")
     .each(function() {
       const path = d3.select(this);
-      // Restore original fill
       const originalFill = path.property("_originalFill");
       if (originalFill) {
         path.style("fill", originalFill);
@@ -573,14 +551,62 @@ function handlePetalLeave(year: string) {
   const isClusterHovered = hoveredYear === year;
   if (isClusterHovered) {
     svg.selectAll(`.cluster.year-${year} path`)
-      .style("filter", "saturate(1)")
+      .style("filter", "saturate(.25)")
       .style("opacity", 1);
   } else {
     handleClusterLeave();
   }
-
-  dispatch('petalLeave');
 }
+
+  function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
+    const currentElement = event.currentTarget as SVGElement;
+    const cluster = currentElement.closest(".cluster");
+    const clusterYear = cluster?.classList[1].split("-")[1];
+    
+    const petalIndex = Math.floor(Array.from(currentElement.parentElement?.children || []).indexOf(currentElement) / 3);
+    const petalGroup = d3.select(currentElement.parentElement)
+      .selectAll("path")
+      .filter((_, i) => Math.floor(i / 3) === petalIndex);
+
+    // Store original fills
+    petalGroup.each(function() {
+      const path = d3.select(this);
+      if (!path.property("_originalFill")) {
+        path.property("_originalFill", path.style("fill"));
+      }
+    });
+
+    // Apply hover effects
+    petalGroup
+      .transition()
+      .duration(200)
+      .style("filter", "saturate(1.25) brightness(1.1)")
+      .each(function(_, i) {
+        const path = d3.select(this);
+        if (i % 3 === 0) {
+          path.style("fill", "#ff1515");
+        }
+      });
+
+    if (clusterYear) {
+      handleClusterHover(clusterYear);
+    }
+
+    // Calculate center position of the radial
+    const containerRect = container.getBoundingClientRect();
+    const centerX = containerRect.left + (containerRect.width / 1.5725);
+    const centerY = containerRect.top + (containerRect.height /1.6725);
+
+    // Dispatch event with center coordinates
+    dispatch('petalHover', { 
+      event: { 
+        pageX: centerX,
+        pageY: centerY
+      }, 
+      entry, 
+      color 
+    });
+  }
 
 function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: string) {
   event.stopPropagation();
@@ -800,7 +826,7 @@ onMount(() => {
 
 
 <RpdtaLegend 
-  position="top-right"
+  position="bottom-right"
   on:areaHover={handleLegendAreaHover}
   on:areaLeave={handleLegendAreaLeave}
 />

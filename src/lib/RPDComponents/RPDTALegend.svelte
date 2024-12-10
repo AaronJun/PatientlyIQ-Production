@@ -24,7 +24,7 @@
   $: positionClass = {
     'top-right': 'top-32 right-8',
     'top-left': 'top-4 left-4',
-    'bottom-right': 'bottom-8 right-10',
+    'bottom-right': 'bottom-16 right-10',
     'bottom-left': 'bottom-4 left-4'
   }[position];
 
