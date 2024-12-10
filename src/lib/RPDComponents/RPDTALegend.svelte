@@ -4,21 +4,20 @@
   
   const dispatch = createEventDispatcher();
 
-  export const therapeuticAreaColors = {
+  export  const therapeuticAreaColors = {
     "Gastroenterology": "#39FF14",
-      "Neurology": "#4D4DFF",
-      "Ophthalmology": "#E79028",
-      "Immunology": "#9C8E2C",
-      "Metabolic": "#133B11",
-      "Dermatology": "#FFEA01",
-      "Hematology": "#943CFF",
-      "Orthopedics": "#441780",
-      "Pulmonology": "#CBC09F",
-      "Nephrology": "#ACA3DB",
-      "Oncology": "#FF84DE",
-      "Hepatology": "#814C28",
+    "Neurology": "#4D4DFF",
+    "Ophthalmology": "#E79028",
+    "Immunology": "#EA38A5",
+    "Metabolic": "#133B11",
+    "Dermatology": "#559368",
+    "Hematology": "#CF3630",
+    "Orthopedics": "#441780",
+    "Pulmonology": "#CBC09F",
+    "Nephrology": "#ACA3DB",
+    "Oncology": "#FF84DE",
+    "Hepatology": "#FF00D4",
   };
-
   export let position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
 
   $: positionClass = {

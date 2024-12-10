@@ -81,9 +81,7 @@
 
 {#if mounted}
   <div class="horizontal-panel">
-    <div class="year-container">
-      <h3>Vouchers Awarded in <span class="bold">{currentYear}</span></h3>
-      
+    <div class="year-container">      
       <div class="area-tabs">
         {#each therapeuticAreas as area}
           <button 

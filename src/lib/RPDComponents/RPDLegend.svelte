@@ -3,7 +3,7 @@
   import { ChevronRight, ChevronLeft, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Help} from 'carbon-icons-svelte';
   import "carbon-components-svelte/css/all.css";
   
-  export let therapeuticAreaColors: Record<string, string>;
+export let therapeuticAreaColors: Record<string, string>;
 </script>
 
 <div class="combined-content" class:hidden={!isExpanded}>

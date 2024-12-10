@@ -3,18 +3,19 @@
   import * as d3 from 'd3';
   import type { Selection } from 'd3';
   import "carbon-components-svelte/css/all.css";
-  import OnePetal from '../../assets/1Petal.svg?raw';
-  import TwoPetal from '../../assets/2Petal.svg?raw';
-  import ThreePetal from '../../assets/3Petal.svg?raw';
-  import FourPetal from '../../assets/4Petal.svg?raw';
-  import FivePetal from '../../assets/5Petal.svg?raw';
-  import SixPetal from '../../assets/6Petal.svg?raw';
-  import SevenPetal from '../../assets/7Petal.svg?raw';
-  import EightPetal from '../../assets/8Petal.svg?raw';
-  import NinePetal from '../../assets/9Petal.svg?raw';
-  import TenPetal from '../../assets/10Petal.svg?raw';
-  import ElevenPetal from '../../assets/11Petal.svg?raw';
-  import TwelvePetal from '../../assets/12Petal.svg?raw';
+  import ZeroPetal from '../../assets/0PetalNew.svg?raw';
+  import OnePetal from '../../assets/1PetalNew.svg?raw';
+  import TwoPetal from '../../assets/2PetalNew.svg?raw';
+  import ThreePetal from '../../assets/3PetalNew.svg?raw';
+  import FourPetal from '../../assets/4PetalNew.svg?raw';
+  import FivePetal from '../../assets/5PetalNew.svg?raw';
+  import SixPetal from '../../assets/6PetalNew.svg?raw';
+  import SevenPetal from '../../assets/7PetalNew.svg?raw';
+  import EightPetal from '../../assets/8PetalNew.svg?raw';
+  import NinePetal from '../../assets/9PetalNew.svg?raw';
+  import TenPetal from '../../assets/10PetalNew.svg?raw';
+  import ElevenPetal from '../../assets/11PetalNew.svg?raw';
+  import TwelvePetal from '../../assets/12PetalNew.svg?raw';
   import Tooltip from './RPDTooltip.svelte';
   import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
   import RpdtaLegend from './RPDTALegend.svelte';
@@ -66,7 +67,7 @@
   };
   
   $: innerRadius = radius * 0.1;
-  $: outerRadius = radius * 0.7925;
+  $: outerRadius = radius * 0.8925;
   
   let tooltipVisible = false;
   let tooltipX = 0;
@@ -81,20 +82,21 @@
   
   const therapeuticAreaColors = {
     "Gastroenterology": "#39FF14",
-      "Neurology": "#4D4DFF",
-      "Ophthalmology": "#E79028",
-      "Immunology": "#9C8E2C",
-      "Metabolic": "#133B11",
-      "Dermatology": "#FFEA01",
-      "Hematology": "#943CFF",
-      "Orthopedics": "#441780",
-      "Pulmonology": "#CBC09F",
-      "Nephrology": "#ACA3DB",
-      "Oncology": "#FF84DE",
-      "Hepatology": "#814C28",
+    "Neurology": "#4D4DFF",
+    "Ophthalmology": "#E79028",
+    "Immunology": "#EA38A5",
+    "Metabolic": "#133B11",
+    "Dermatology": "#559368",
+    "Hematology": "#CF3630",
+    "Orthopedics": "#441780",
+    "Pulmonology": "#CBC09F",
+    "Nephrology": "#ACA3DB",
+    "Oncology": "#FF84DE",
+    "Hepatology": "#FF00D4",
   };
   
   const petalSVGs = {
+    0: ZeroPetal,
     1: OnePetal,
     2: TwoPetal,
     3: ThreePetal,
@@ -117,16 +119,17 @@
   $: activeYear = years[activeYearIndex];
   let hoveredYearIndex: number | null = null;
   $: hoveredYear = hoveredYearIndex !== null ? years[hoveredYearIndex] : null;
-  let hoveredTherapeuticArea: string | null = null;
   
   $: angleScale = d3.scaleBand()
     .range([0, 2 * Math.PI])
     .domain(years)
-    .padding(0.1);
+    .padding(0.02);
   
   $: radiusScale = d3.scaleLog()
     .range([innerRadius, outerRadius])
-    .domain([0.1, maxRPD]);
+    .domain([0.1825, maxRPD]);
+
+  let hoveredTherapeuticArea: string | null = null;
 
   function handleKeydown(event: KeyboardEvent) {
     if (!document.activeElement?.classList.contains('year-segment')) {
@@ -186,121 +189,119 @@
         yearSegment.focus();
       }
     });
-  }
-  
-  function initializeChart() {
-    d3.select(container).selectAll("*").remove();
-  
-    const svgElement = d3.select(container)
-      .append("svg")
-      .attr("viewBox", [-width / 2, -height / 2, width, height])
-      .attr("width", "100%")
-      .attr("height", "100%");
-  
-    svg = svgElement.append("g");
-  
-    drawGuideCircles();
-    drawYearArcs();
-    drawDataLines();
-    drawPetalClusters();
-  }
-  
-  function drawGuideCircles() {
-    const logBase = 1.8725;
-    const guideValues = d3.range(Math.floor(Math.log(maxRPD) / Math.log(logBase)) + 1)
-      .map(i => Math.pow(logBase, i));
-  
-    const guides = svg.append("g")
-      .attr("class", "guide-circles");
-  
-    guides.selectAll("circle")
-      .data(guideValues)
-      .join("circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", d => radiusScale(Math.max(0.1, d)))
-      .attr("fill", "none")
-      .attr("stroke", "#ccc")
-      .attr("stroke-dasharray", "3,3")
-      .style("opacity", 0.5)
-      .attr("class", "guide-circle")
-      .style("pointer-events", "none");
-  
-    const calculatedFontSize = Math.min(
-      Math.max(radius * 0.02, MIN_FONT_SIZE),
-      MAX_FONT_SIZE
-    );
-  
-    guides.selectAll("text")
-      .data(guideValues)
-      .join("text")
-      .attr("x", 0)
-      .attr("y", d => -radiusScale(Math.max(0.1, d)))
-      .text(d => d3.format(".0s")(d))
-      .attr("font-size", `${calculatedFontSize}px`)
-      .attr("fill", "#666")
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "middle")
-      .style("pointer-events", "none");
-  }
-  
-  function drawYearArcs() {
-    const arcGenerator = d3.arc()
-      .innerRadius(outerRadius * 1.1)
-      .outerRadius(outerRadius * 1.12)
-      .startAngle(d => angleScale(d)!)
-      .endAngle(d => angleScale(d)! + angleScale.bandwidth());
-  
-    const yearGroup = svg.append("g")
-      .attr("class", "year-arcs");
-  
-    yearGroup.selectAll("path")
-      .data(years)
-      .join("path")
-      .attr("d", arcGenerator)
-      .attr("fill", d => d === activeYear ? "#C9623F" : "#fff")
-      .attr("stroke", "#ccc")
-      .attr("stroke-width", .5)
-      .attr("class", d => `year-segment year-${d}`)
-      .attr("tabindex", 0)
-      .attr("role", "button")
-      .attr("aria-label", d => `View data for year ${d}`)
-      .attr("aria-current", d => d === activeYear ? "true" : "false")
-      .style("cursor", "pointer")
-      .on("mouseover", handleYearHover)
-      .on("mouseout", handleYearLeave)
-      .on("click", handleYearClick)
-      .on("focus", (event, d) => handleYearHover(event, d))
-      .on("blur", () => handleYearLeave());
-  
-    const calculatedYearFontSize = Math.min(
-      Math.max(radius * 0.025, MIN_FONT_SIZE),
-      MAX_FONT_SIZE
-    );
-  
-    yearGroup.selectAll("text")
-      .data(years)
-      .join("text")
-      .attr("transform", d => {
-        const angle = angleScale(d)! + angleScale.bandwidth() / 2;
-        const radius = outerRadius * 1.2;
-        return `
-          translate(${Math.sin(angle) * radius},${-Math.cos(angle) * radius})
-          rotate(${(angle * 180 / Math.PI) - 90})
-        `;
-      })
-      .text(d => d)
-      .attr("font-size", `${calculatedYearFontSize}px`)
-      .attr("fill", d => d === activeYear ? "#C9623F" : "#666")
-      .attr("font-weight", d => d === activeYear ? "bold" : "normal")
-      .attr("text-anchor", "top")
-      .attr("alignment-baseline", "top")
-      .style("cursor", "pointer")
-      .on("mouseover", handleYearHover)
-      .on("mouseout", handleYearLeave)
-      .on("click", handleYearClick);
-  }
-  
+  }function initializeChart() {
+  d3.select(container).selectAll("*").remove();
+
+  const svgElement = d3.select(container)
+    .append("svg")
+    .attr("viewBox", [-width / 2, -height / 2, width, height])
+    .attr("width", "100%")
+    .attr("height", "100%");
+
+  svg = svgElement.append("g");
+
+  drawGuideCircles();
+  drawYearArcs();
+  drawDataLines();
+  drawPetalClusters(); // Make sure this is called
+}
+
+function drawGuideCircles() {
+  const logBase = 1.8725;
+  const guideValues = d3.range(Math.floor(Math.log(maxRPD) / Math.log(logBase)) + 1)
+    .map(i => Math.pow(logBase, i));
+
+  const guides = svg.append("g")
+    .attr("class", "guide-circles");
+
+  guides.selectAll("circle")
+    .data(guideValues)
+    .join("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", d => radiusScale(Math.max(0.1, d)))
+    .attr("fill", "none")
+    .attr("stroke", "#ccc")
+    .attr("stroke-dasharray", "3,3")
+    .style("opacity", 0.5)
+    .attr("class", "guide-circle")
+    .style("pointer-events", "none");
+
+  const calculatedFontSize = Math.min(
+    Math.max(radius * 0.02, MIN_FONT_SIZE),
+    MAX_FONT_SIZE
+  );
+
+  guides.selectAll("text")
+    .data(guideValues)
+    .join("text")
+    .attr("x", 0)
+    .attr("y", d => -radiusScale(Math.max(0.1, d)))
+    .text(d => d3.format(".0s")(d))
+    .attr("font-size", `${calculatedFontSize}px`)
+    .attr("fill", "#666")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .style("pointer-events", "none");
+}
+
+function drawYearArcs() {
+  const arcGenerator = d3.arc()
+    .innerRadius(outerRadius * 1.1)
+    .outerRadius(outerRadius * 1.12)
+    .startAngle(d => angleScale(d)!)
+    .endAngle(d => angleScale(d)! + angleScale.bandwidth());
+
+  const yearGroup = svg.append("g")
+    .attr("class", "year-arcs");
+
+  yearGroup.selectAll("path")
+    .data(years)
+    .join("path")
+    .attr("d", arcGenerator)
+    .attr("fill", d => d === activeYear ? "#C9623F" : "#fff")
+    .attr("stroke", "#ccc")
+    .attr("stroke-width", .5)
+    .attr("class", d => `year-segment year-${d}`)
+    .attr("tabindex", 0)
+    .attr("role", "button")
+    .attr("aria-label", d => `View data for year ${d}`)
+    .attr("aria-current", d => d === activeYear ? "true" : "false")
+    .style("cursor", "pointer")
+    .on("mouseover", handleYearHover)
+    .on("mouseout", handleYearLeave)
+    .on("click", handleYearClick)
+    .on("focus", (event, d) => handleYearHover(event, d))
+    .on("blur", () => handleYearLeave());
+
+  const calculatedYearFontSize = Math.min(
+    Math.max(radius * 0.025, MIN_FONT_SIZE),
+    MAX_FONT_SIZE
+  );
+
+  yearGroup.selectAll("text")
+    .data(years)
+    .join("text")
+    .attr("transform", d => {
+      const angle = angleScale(d)! + angleScale.bandwidth() / 2;
+      const radius = outerRadius * 1.2;
+      return `
+        translate(${Math.sin(angle) * radius},${-Math.cos(angle) * radius})
+        rotate(${(angle * 180 / Math.PI) - 90})
+      `;
+    })
+    .text(d => d)
+    .attr("font-size", `${calculatedYearFontSize}px`)
+    .attr("fill", d => d === activeYear ? "#C9623F" : "#666")
+    .attr("font-weight", d => d === activeYear ? "bold" : "normal")
+    .attr("text-anchor", "top")
+    .attr("alignment-baseline", "top")
+    .style("cursor", "pointer")
+    .on("mouseover", handleYearHover)
+    .on("mouseout", handleYearLeave)
+    .on("click", handleYearClick);
+}
+
   function drawDataLines() {
   const lines = svg.append("g")
     .attr("class", "data-lines");
@@ -323,128 +324,270 @@
   });
 }
   
-  function createPetalCluster(year: string, entries: ConstellationEntry[], position: { x: number, y: number, angle: number }) {
-    const petalCount = Math.min(entries.length, 12);
-    const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
+function createPetalCluster(year: string, entries: ConstellationEntry[], position: { x: number, y: number, angle: number }) {
+  const petalCount = Math.min(entries.length, 12);
+  const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
+  
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+  
+  entries.forEach((entry, index) => {
+    const paths = doc.querySelectorAll('path');
+    const petalPaths = Array.from(paths).filter(path => {
+      const d = path.getAttribute('d');
+      return d && d.includes('C');
+    });
     
-    const cluster = svg.append("g")
-      .attr("class", `cluster year-${year}`)
-      .attr("cursor", "pointer")
-      .on("mouseover", () => handleClusterHover(year))
-      .on("mouseout", handleClusterLeave)
-      .html(svgContent);
-  
-    const svgElement = cluster.select("svg").node();
-    if (svgElement instanceof SVGElement) {
-      const svgWidth = svgElement.getAttribute("width");
-      const svgHeight = svgElement.getAttribute("height");
-      
-      if (svgWidth && svgHeight) {
-        const scale = radius * 0.001825;
-        cluster.attr("transform", `
-          translate(${position.x},${position.y})
-          rotate(${position.angle * 180 / Math.PI})
-          scale(${scale})
-          translate(${-parseFloat(svgWidth)/2},${-parseFloat(svgHeight)/2})
-        `);
-  
-        cluster.select("circle")
-          .attr("class", "center-circle")
-          .style("pointer-events", "none");
-  
-        cluster.selectAll("path:not(.center-circle)")
-          .attr("class", (_, i) => `petal petal-${year}-${i}`)
-          .each(function(_, i) {
-            if (i < entries.length) {
-              const entry = entries[i];
-              const color = therapeuticAreaColors[entry.name as keyof typeof therapeuticAreaColors];
-              
-              d3.select(this)
-                .attr("fill", color)
-                .attr("stroke", "#fff")
-                .style("opacity", 1)
-                .style("filter", year === activeYear ? "saturate(1)" : "saturate(0.2)")
-                .on("mouseover", (event) => handlePetalHover(event, entry, color))
-                .on("mouseout", () => handlePetalLeave(year))
-                .on("click", (event) => handlePetalClick(event, entry, color));
-            }
-          });
-      }
+    const startIdx = index * 3;
+    
+    // Add data attributes and classes to each path
+    if (petalPaths[startIdx]) {
+      petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
+      petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
+      petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
+      petalPaths[startIdx].setAttribute('data-original-fill', '#FFFFFF'); // Store original fill
+    }
+    
+    if (petalPaths[startIdx + 1]) {
+      petalPaths[startIdx + 1].setAttribute('fill', therapeuticAreaColors[entry.name] || '#4D4DFF');
+      petalPaths[startIdx + 1].setAttribute('class', 'petal-part outer-petal');
+      petalPaths[startIdx + 1].setAttribute('data-therapeutic-area', entry.name);
+      petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
+    }
+    
+    if (petalPaths[startIdx + 2]) {
+      const isPurchased = entry.Purchased?.toLowerCase() === 'y';
+      const innerPetalColor = isPurchased ? '#FFD700' : '#FFFFFF';
+      petalPaths[startIdx + 2].setAttribute('fill', innerPetalColor);
+      petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
+      petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);
+      petalPaths[startIdx + 2].setAttribute('data-petal-index', index.toString());
+    }
+  });
+
+  const cluster = svg.append("g")
+    .attr("class", `cluster year-${year}`)
+    .attr("cursor", "pointer")
+    .on("mouseover", () => handleClusterHover(year))
+    .on("mouseout", handleClusterLeave)
+    .html(doc.documentElement.outerHTML);
+
+  // Rest of the positioning and scaling code remains the same
+  const svgElement = cluster.select("svg").node();
+  if (svgElement instanceof SVGElement) {
+    const svgWidth = svgElement.getAttribute("width");
+    const svgHeight = svgElement.getAttribute("height");
+    
+    if (svgWidth && svgHeight) {
+      const scale = radius * 0.0008725;
+      cluster.attr("transform", `
+        translate(${position.x},${position.y})
+        rotate(${position.angle * 180 / Math.PI})
+        scale(${scale})
+        translate(${-parseFloat(svgWidth)/2},${-parseFloat(svgHeight)/2})
+      `);
+
+      // Set up event handlers with proper class targeting
+      cluster.selectAll("path")
+        .each(function(_, i) {
+          const element = d3.select(this);
+          const entry = entries[Math.floor(i/3)]; // Every 3 paths make up one petal
+          if (entry) {
+            const color = therapeuticAreaColors[entry.name];
+            element
+              .style("opacity", 1)
+              .style("filter", year === activeYear ? "saturate(1)" : "saturate(0.2)")
+              .style("transform-origin", "bottom center")
+              .style("transition", "all 500ms circ-in-out")
+              .on("mouseover", (event) => handlePetalHover(event, entry, color))
+              .on("mouseout", () => handlePetalLeave(year))
+              .on("click", (event) => handlePetalClick(event, entry, color));
+          }
+        });
     }
   }
   
-  function drawPetalClusters() {
-    years.forEach(year => {
-      const entries = groupedConstellationData.get(year) || [];
-      if (entries.length > 0) {
-        const angle = angleScale(year)! + angleScale.bandwidth() / 2;
-        const radius = radiusScale(Math.max(0.1, +data.find(d => d.Year === year)!.RPD));
-        createPetalCluster(year, entries, {
-          x: Math.sin(angle) * radius,
-          y: -Math.cos(angle) * radius,
-          angle
-        });
+  return cluster;
+}
+
+
+function drawPetalClusters() {
+  years.forEach(year => {
+    const entries = groupedConstellationData.get(year) || [];
+    if (entries.length > 0) {
+      const angle = angleScale(year)! + angleScale.bandwidth() / 2;
+      const radius = radiusScale(Math.max(0.1, +data.find(d => d.Year === year)!.RPD));
+      createPetalCluster(year, entries, {
+        x: Math.sin(angle) * radius,
+        y: -Math.cos(angle) * radius,
+        angle
+      });
+    }
+  });
+}
+
+function handleYearHover(event: MouseEvent, year: string) {
+  if (year !== activeYear) {
+    hoveredYearIndex = years.indexOf(year);
+    updateVisibility(year, true); // Pass true to indicate hover state
+    dispatch('yearChange', { year });
+
+    // Update year segments
+    svg.selectAll(".year-segment")
+      .transition()
+      .duration(120)
+      .attr("fill", d => d === year ? "#C9623F" : "#fff");
+
+    // Update text
+    svg.selectAll("text")
+      .transition()
+      .duration(300)
+      .attr("fill", d => d === year ? "#C9623F" : "#666")
+      .attr("font-weight", d => d === year ? "bold" : "normal");
+  }
+ 
+}
+
+function handleYearLeave() {
+  if (hoveredYear !== activeYear) {
+    hoveredYearIndex = null;
+    svg.selectAll(".value-label")
+      .transition()
+      .duration(675)
+      .style("opacity", 0)
+      .remove();
+    
+    updateVisibility(activeYear, false);
+  }
+}
+
+function handleClusterHover(year: string) {
+  if (year !== activeYear) {
+    hoveredYearIndex = years.indexOf(year);
+    updateVisibility(year, true);
+    dispatch('yearChange', { year });
+  }
+  hoveredYearIndex = years.indexOf(year);
+    updateVisibility(year, true); // Pass true to indicate hover state
+    dispatch('yearChange', { year });
+
+    // Update year segments
+    svg.selectAll(".year-segment")
+      .transition()
+      .duration(120)
+      .attr("fill", d => d === year ? "#C9623F" : "#fff");
+
+    // Update text
+    svg.selectAll("text")
+      .transition()
+      .duration(520)
+      .attr("fill", d => d === year ? "#C9623F" : "#666")
+      .attr("font-weight", d => d === year ? "bold" : "normal");
+}
+
+// Update the handleClusterLeave and handleYearLeave functions
+function handleClusterLeave() {
+  if (hoveredYear !== activeYear) {
+    hoveredYearIndex = null;
+    svg.selectAll(".value-label")
+      .transition()
+      .duration(800)
+      .style("opacity", 0)
+      .remove();
+    
+    updateVisibility(activeYear, false);
+  }
+}
+
+function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
+  // Update tooltip
+  tooltipContent = {
+    sponsor: entry.Sponsor,
+    drugName: entry["Drug Name"],
+    therapeuticArea: entry.name,
+    id: entry.id
+  };
+  tooltipBorderColor = color;
+  tooltipX = event.pageX;
+  tooltipY = event.pageY;
+  tooltipVisible = true;
+
+  const currentElement = event.currentTarget as SVGElement;
+  const cluster = currentElement.closest(".cluster");
+  const clusterYear = cluster?.classList[1].split("-")[1];
+  
+  // Get the current petal group (3 paths that make up a complete petal)
+  const petalIndex = Math.floor(Array.from(currentElement.parentElement?.children || []).indexOf(currentElement) / 3);
+  const petalGroup = d3.select(currentElement.parentElement)
+    .selectAll("path")
+    .filter((_, i) => Math.floor(i / 3) === petalIndex);
+
+  // Store original fills for reset
+  petalGroup.each(function() {
+    const path = d3.select(this);
+    if (!path.property("_originalFill")) {
+      path.property("_originalFill", path.style("fill"));
+    }
+  });
+
+  // Apply animations to the specific petal
+  petalGroup
+    .transition()
+    .duration(200)
+    .style("filter", "saturate(1.5) brightness(1.1)")
+    .each(function(_, i) {
+      const path = d3.select(this);
+      // If this is the background petal (first in group of 3)
+      if (i % 3 === 0) {
+        path.style("fill", "#ff1515");
       }
     });
+
+  // Ensure cluster remains saturated
+  if (clusterYear) {
+    handleClusterHover(clusterYear);
   }
 
-  function handleYearHover(event: MouseEvent, year: string) {
-    if (year !== activeYear) {
-      hoveredYearIndex = years.indexOf(year);
-      updateVisibility(year);
-      dispatch('yearChange', { year });
-    }
+  dispatch('petalHover', { entry, color });
+}
+
+function handlePetalLeave(year: string) {
+  tooltipVisible = false;
+  
+  // Reset the specific petal
+  svg.selectAll(`.cluster.year-${year} path`)
+    .transition()
+    .duration(620)
+    .style("transform", "rotate(0deg)")
+    .each(function() {
+      const path = d3.select(this);
+      // Restore original fill
+      const originalFill = path.property("_originalFill");
+      if (originalFill) {
+        path.style("fill", originalFill);
+      }
+    });
+
+  // Maintain cluster saturation state
+  const isClusterHovered = hoveredYear === year;
+  if (isClusterHovered) {
+    svg.selectAll(`.cluster.year-${year} path`)
+      .style("filter", "saturate(1)")
+      .style("opacity", 1);
+  } else {
+    handleClusterLeave();
   }
 
-  function handleYearLeave() {
-    if (hoveredYear !== activeYear) {
-      hoveredYearIndex = null;
-      updateVisibility(activeYear);
-    }
-  }
+  dispatch('petalLeave');
+}
 
-  function handleClusterHover(year: string) {
-    if (year !== activeYear) {
-      hoveredYearIndex = years.indexOf(year);
-      updateVisibility(year);
-      dispatch('yearChange', { year });
-    }
-  }
-
-  function handleClusterLeave() {
-    if (hoveredYear !== activeYear) {
-      hoveredYearIndex = null;
-      updateVisibility(activeYear);
-    }
-  }
-
-  function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
-    tooltipContent = {
-      sponsor: entry.Sponsor,
-      drugName: entry["Drug Name"],
-      therapeuticArea: entry.name,
-      id: entry.id
-    };
-    tooltipBorderColor = color;
-    tooltipX = event.pageX;
-    tooltipY = event.pageY;
-    tooltipVisible = true;
-
-    dispatch('petalHover', { entry, color });
-  }
-
-  function handlePetalLeave(year: string) {
-    tooltipVisible = false;
-    dispatch('petalLeave');
-  }
-
-  function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: string) {
-    event.stopPropagation();
-    dispatch('clusterElementClick', { entry, color });
-    activeYearIndex = years.indexOf(entry.Year);
-    activeYear = entry.Year;
-    updateVisibility(entry.Year);
-  }
+function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: string) {
+  event.stopPropagation();
+  dispatch('clusterElementClick', { entry, color });
+  activeYearIndex = years.indexOf(entry.Year);
+  activeYear = entry.Year;
+  updateVisibility(entry.Year, false);
+}
 
   function handleYearClick(event: MouseEvent, year: string) {
     activeYearIndex = years.indexOf(year);
@@ -453,56 +596,118 @@
     dispatch('yearChange', { year });
   }
 
-  function updateVisibility(year: string) {
+  function updatePetalHighlights() {
+    svg.selectAll('.petal-part')
+    .transition()
+    .duration(200)
+    .style("filter", function() {
+      const petalElement = d3.select(this);
+      const therapeuticArea = petalElement.attr('data-therapeutic-area');
+      const cluster = this.closest('.cluster');
+      if (!cluster) return "saturate(0.2)";
+      
+      const year = cluster.classList[1].split('-')[1];
+      
+      if (!hoveredTherapeuticArea) {
+        return year === activeYear ? "saturate(1)" : "saturate(0.2)";
+      }
+      
+      return therapeuticArea === hoveredTherapeuticArea
+        ? "saturate(1.2) brightness(1.1)"
+        : "saturate(0) brightness(0.9)";
+    })
+    .style("opacity", function() {
+      if (!hoveredTherapeuticArea) return 1;
+      
+      const petalElement = d3.select(this);
+      const therapeuticArea = petalElement.attr('data-therapeutic-area');
+      
+      return therapeuticArea === hoveredTherapeuticArea ? 1 : 1;
+    });
+
+  // Specifically update background petals
+  svg.selectAll('.background-petal')
+    .transition()
+    .duration(200)
+    .style("fill", function() {
+      const petalElement = d3.select(this);
+      const therapeuticArea = petalElement.attr('data-therapeutic-area');
+      
+      if (!hoveredTherapeuticArea) {
+        return petalElement.attr('data-original-fill');
+      }
+      
+      return therapeuticArea === hoveredTherapeuticArea
+        ? "#ff1515"
+        : petalElement.attr('data-original-fill');
+    });
+}
+// Update the updateVisibility function to include label handling
+function updateVisibility(year: string, isHovered: boolean = false) {
+  // Existing timeline line updates
   svg.selectAll(".timeline-line")
     .transition()
-    .duration(300)
+    .duration(400)
     .style("opacity", d => d === year ? 1 : 0.5)
     .attr("stroke-dasharray", function() {
-      // Get the year from the class name
       const lineYear = this.classList[1].split('-')[1];
       return +lineYear >= 2023 ? "4,4" : "none";
     });
 
-    svg.selectAll(".cluster")
-      .style("opacity", 1)
-      .selectAll(".petal")
-      .transition()
-      .duration(300)
-      .style("filter", function() {
-        const clusterYear = this.closest(".cluster").classList[1].split("-")[1];
-        return clusterYear === year ? "saturate(1)" : "saturate(0.2)";
-      });
+  // Update clusters and petals
+  svg.selectAll(".cluster")
+    .each(function() {
+      const cluster = d3.select(this);
+      const clusterYear = this.classList[1].split("-")[1];
+      
+      if (clusterYear === year) {
+        cluster.selectAll("path")
+          .transition()
+          .duration(300)
+          .style("filter", isHovered ? "saturate(1.2)" : "saturate(1)")
+          .style("opacity", 1);
+      } else {
+        cluster.selectAll("path")
+          .transition()
+          .duration(500)
+          .style("filter", "saturate(0.2)")
+          .style("opacity", 0.5);
+      }
+    });
 
-    svg.selectAll(".year-segment")
-      .transition()
-      .duration(300)
-      .attr("fill", d => d === year ? "#C9623F" : "#fff");
+  // Update year segments
+  svg.selectAll(".year-segment")
+    .transition()
+    .duration(300)
+    .attr("fill", d => d === year ? "#C9623F" : "#fff");
 
-    svg.selectAll("text")
-      .transition()
-      .duration(300)
-      .attr("fill", d => d === year ? "#C9623F" : "#666")
-      .attr("font-weight", d => d === activeYear ? "bold" : "normal");
+  // Update text
+  svg.selectAll("text")
+    .transition()
+    .duration(300)
+    .attr("fill", d => d === year ? "#C9623F" : "#666")
+    .attr("font-weight", d => d === year ? "bold" : "normal");
 
-    svg.selectAll(".center-circle")
-      .style("transform", "none")
-      .style("transition", "none")
-      .style("pointer-events", "none");
+  // Show RPD label
+  showRPDLabel(year);
+}
 
-      svg.selectAll(".value-label").remove();
+function showRPDLabel(year: string) {
+  // Remove any existing labels first
+  svg.selectAll(".value-label").remove();
 
-if (year) {
   const yearData = data.find(d => d.Year === year);
   if (yearData && +yearData.RPD > 0) {
     const angle = angleScale(year)! + angleScale.bandwidth() / 2;
     const value = Math.max(0.1, +yearData.RPD);
     const radius = radiusScale(value);
 
+    // Position label at 24.5% of the distance from innerRadius to the point
     const labelRadius = innerRadius + (radius - innerRadius) * 0.245;
     const x = Math.sin(angle) * labelRadius;
     const y = -Math.cos(angle) * labelRadius;
 
+    // Calculate rotation to keep text readable
     const rotationAngle = (angle * 180 / Math.PI) - 90;
     const finalRotation = rotationAngle > 90 && rotationAngle < 270 
       ? rotationAngle + 180 
@@ -512,24 +717,24 @@ if (year) {
       .attr("class", "value-label")
       .attr("transform", `translate(${x}, ${y}) rotate(${finalRotation})`);
 
-    // Create a group for both text elements
+    // Create a group for text elements
     const textGroup = labelGroup.append("g")
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle");
 
     // Main RPD value text
-    const mainText = textGroup.append("text")
+    textGroup.append("text")
       .attr("fill", "#063D37")
-      .attr("font-size", `${Math.min(Math.max(radius * 0.045, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
-      .attr("font-weight", "600")
+      .attr("font-size", `${Math.min(Math.max(radius * 0.045, 8), 10)}px`)
+      .attr("font-weight", "semibold")
       .attr("y", +2)
       .text(`${(+yearData.RPD).toLocaleString()} RPDs`);
 
-    // Get combined bounding box for both texts
+    // Get bounding box for background
     const textBox = textGroup.node()?.getBBox();
-  if (textBox) {
+    if (textBox) {
       // Add background rectangle
-      labelGroup.insert("rect", "g")  // Insert before the text group
+      labelGroup.insert("rect", "g")
         .attr("x", textBox.x - 10)
         .attr("y", textBox.y - 5)
         .attr("width", textBox.width + 20)
@@ -541,13 +746,13 @@ if (year) {
         .attr("opacity", 0.9);
     }
 
+    // Fade in the label
     labelGroup
       .style("opacity", 0)
       .transition()
-      .duration(300)
+      .duration(200)
       .style("opacity", 1);
   }
-}
 }
 
 
@@ -555,80 +760,50 @@ function handleLegendAreaHover(event: CustomEvent<{ area: string }>) {
     hoveredTherapeuticArea = event.detail.area;
     updatePetalHighlights();
   }
-
   function handleLegendAreaLeave() {
-    hoveredTherapeuticArea = null;
-    updatePetalHighlights();
-  }
+  hoveredTherapeuticArea = null;
+  updatePetalHighlights();
+  
+  // Reset all background petals to their original fill
+  svg.selectAll('.background-petal')
+    .transition()
+    .duration(200)
+    .style("fill", function() {
+      return d3.select(this).attr('data-original-fill');
+    });
+}
 
-  function updatePetalHighlights() {
-    svg.selectAll(".petal")
-      .transition()
-      .duration(200)
-      .style("filter", function() {
-        const petalElement = this as SVGElement;
-        const cluster = petalElement.closest('.cluster');
-        if (!cluster) return "saturate(0.2)";
-        
-        const year = cluster.classList[1].split('-')[1];
-        const entries = groupedConstellationData.get(year) || [];
-        const petalIndex = Array.from(cluster.querySelectorAll('.petal')).indexOf(petalElement);
-        const entry = entries[petalIndex];
-        
-        if (!hoveredTherapeuticArea) {
-          // No area hovered - normal state
-          return year === activeYear ? "saturate(1)" : "saturate(0.2)";
-        }
-        
-        // Area is hovered - highlight matching petals
-        if (entry?.name === hoveredTherapeuticArea) {
-          return "saturate(1.2) brightness(1.1)"; // Slightly enhance matched petals
-        } else {
-          return "saturate(0) brightness(0.9)"; // Fully desaturate and slightly dim others
-        }
-      })
-      .style("opacity", function() {
-        if (!hoveredTherapeuticArea) return 1;
-        
-        const petalElement = this as SVGElement;
-        const cluster = petalElement.closest('.cluster');
-        if (!cluster) return 1;
-        
-        const year = cluster.classList[1].split('-')[1];
-        const entries = groupedConstellationData.get(year) || [];
-        const petalIndex = Array.from(cluster.querySelectorAll('.petal')).indexOf(petalElement);
-        const entry = entries[petalIndex];
-        
-        return entry?.name === hoveredTherapeuticArea ? 1 : 0.8; // Slight opacity reduction for non-matches
-      });
-  }
+// Handle resize
+function handleResize() {
+  containerWidth = container.clientWidth;
+  containerHeight = container.clientHeight;
+  initializeChart();
+  updateVisibility(activeYear);
+}
 
-  function handleResize() {
-    containerWidth = container.clientWidth;
-    containerHeight = container.clientHeight;
-    initializeChart();
-    updateVisibility(activeYear);
-  }
-
-  onMount(() => {
-    activeYearIndex = years.indexOf(years[0]);
-    
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(container);
-    
-    window.addEventListener('keydown', handleKeydown);
-    
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  });
+// Initialize on mount
+onMount(() => {
+  activeYearIndex = years.indexOf(years[0]);
+  
+  const resizeObserver = new ResizeObserver(handleResize);
+  resizeObserver.observe(container);
+  
+  window.addEventListener('keydown', handleKeydown);
+  
+  return () => {
+    resizeObserver.disconnect();
+    window.removeEventListener('keydown', handleKeydown);
+  };
+});
 </script>
+
+
 <RpdtaLegend 
   position="top-right"
   on:areaHover={handleLegendAreaHover}
   on:areaLeave={handleLegendAreaLeave}
 />
+
 
 <div class="radial-timeline" bind:this={container}>
   {#if tooltipVisible}
@@ -671,14 +846,29 @@ function handleLegendAreaHover(event: CustomEvent<{ area: string }>) {
   }
 
   :global(.cluster .petal) {
-    transition: filter 0.3s ease, transform 0.3s ease, opacity 0.2s ease;
-    transform-origin: bottom center;
+    transition: filter 0.3s ease, transform 0.3s ease;
+    transform-origin: top center;
   }
 
   :global(.cluster .petal:hover) {
-    filter: saturate(1.2) brightness(1.1) !important;
-    opacity: 1 !important;
+    transform: scale(1.025);
   }
+
+  :global(.cluster path) {
+  transition: all 200ms ease-in-out;
+  transform-origin: top center;
+}
+
+:global(.cluster path:hover) {
+  cursor: pointer;
+}
+
+/* Ensure smooth transitions for all properties */
+:global(.cluster .petal) {
+  transition: filter 200ms ease-in-out,
+              transform 200ms ease-in-out,
+              fill 200ms ease-in-out;
+}
 
   :global(.center-circle) {
     transform: none !important;
@@ -689,12 +879,31 @@ function handleLegendAreaHover(event: CustomEvent<{ area: string }>) {
   :global(.guide-circle) {
     pointer-events: none;
   }
-
   :global(.value-label) {
-    pointer-events: none;
-    text-shadow: -1px -1px 0 #fff,  
-            1px -1px 0 #fff,
-           -1px  1px 0 #fff,
-            1px  1px 0 #fff;
+  pointer-events: none;
+  text-shadow: 
+    -1px -1px 0 #fff,  
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff;
+}
+
+:global(.value-label rect) {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+:global(.value-label text) {
+  user-select: none;
+}
+
+:global(.petal-part) {
+    transition: filter 200ms ease-in-out,
+                opacity 200ms ease-in-out,
+                transform 200ms ease-in-out,
+                fill 200ms ease-in-out;
+  }
+
+  :global(.petal-part:hover) {
+    cursor: pointer;
   }
 </style>

@@ -161,12 +161,6 @@
     event.stopPropagation();
   }
 
-  function handleBackdropClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      closeDrawer();
-    }
-  }
-
   // Utility functions
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
@@ -199,12 +193,12 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
-
 <div 
   class="fixed inset-0 w-full h-full bg-black/60 z-[1000] flex justify-end cursor-pointer"
-  on:click={handleBackdropClick}
+  on:click|self={onClose}
   transition:fly={{duration: ANIMATION_DURATION}}
 >
+
   <div 
     class="relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
     on:click={handleDrawerClick}

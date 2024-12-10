@@ -4,9 +4,12 @@
   import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
   import TherapeuticAreaGrid from '$lib/RPDComponents/TARadialTimeline.svelte';
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
+  import TextDrawer from '$lib/RPDComponents/TextContentDrawer.svelte';
   import Tooltip from '$lib/RPDComponents/RPDTooltip.svelte';
   import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
+  import TAPageSummary from '$lib/RPDComponents/TASummary.svelte';
+  import { RpdProgramInfoMd } from '$lib/content/RPDprogramInfo';
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
   import constellationDataRaw from '../data/RPDConstellationData.json';
 
@@ -39,10 +42,13 @@
   let currentYear = "2012";   
   let hoveredPetalData: ConstellationEntry | null = null;
   let isDrawerOpen = false;
+  let isProgramInfoDrawerOpen = false;
   let selectedData: ConstellationEntry | null = null;
   let selectedColor: string = "";
   let processedRpdPrvData: RPDData[] = [];
   let processedConstellationData: ConstellationEntry[] = [];
+  let currentArea: string | null = null;
+  let taSummaryText: string = '';
 
   // Tooltip state
   let tooltipVisible = false;
@@ -98,24 +104,42 @@
 
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-      "Gastroenterology": "#39FF14",
-      "Neurology": "#4D4DFF",
-      "Ophthalmology": "#E79028",
-      "Immunology": "#9C8E2C",
-      "Metabolic": "#133B11",
-      "Dermatology": "#FFEA01",
-      "Hematology": "#943CFF",
-      "Orthopedics": "#441780",
-      "Pulmonology": "#CBC09F",
-      "Nephrology": "#ACA3DB",
-      "Oncology": "#FF84DE",
-      "Hepatology": "#814C28",
-    };
+    "Gastroenterology": "#39FF14",
+    "Neurology": "#4D4DFF",
+    "Ophthalmology": "#E79028",
+    "Immunology": "#EA38A5",
+    "Metabolic": "#133B11",
+    "Dermatology": "#559368",
+    "Hematology": "#CF3630",
+    "Orthopedics": "#441780",
+    "Pulmonology": "#CBC09F",
+    "Nephrology": "#ACA3DB",
+    "Oncology": "#FF84DE",
+    "Hepatology": "#FF00D4",
+  };
     return colorMap[ta] || "#000000";
   }
 
   function setActiveTab(tab: string) {
     activeTab = tab;
+  }
+
+  function handleAreaSummary(event: CustomEvent<{ summaryText: string }>) {
+    // Replace numbers with highlighted span
+    const text = event.detail.summaryText.replace(
+      /\b(\d+(?:,\d{3})*(?:\.\d+)?)\b/g, 
+      '<span class="highlight">$1</span>'
+    );
+    taSummaryText = text;
+  }
+
+  function handleAreaHover(event: CustomEvent<{ area: string }>) {
+    currentArea = event.detail.area;
+  }
+
+  function handleAreaLeave() {
+    currentArea = null;
+    taSummaryText = '';
   }
 
   const handleYearChange = (event: CustomEvent) => {
@@ -155,6 +179,15 @@
     selectedData = null;
   };
 
+  function handleProgramInfoClick() {
+  console.log('handleProgramInfoClick called');
+  isProgramInfoDrawerOpen = true;
+}
+
+  function closeProgramInfoDrawer() {
+    isProgramInfoDrawerOpen = false;
+  }
+
   onMount(async () => {
     try {
       processedRpdPrvData = processRpdPrvData(rpdPrvDataRaw as RPDData[]);
@@ -174,7 +207,7 @@
 </script>
 
 <div class="light">
-  <RPDHeader />
+  <RPDHeader on:readMoreClick={handleProgramInfoClick} />
   <div class="page-container content-start">
     <div class="main-content dark:bg-white">
       <div class="tabs">
@@ -261,6 +294,9 @@
                 selectedArea={hoveredPetalData?.name || null}
                 on:petalHover={handlePetalHover}
                 on:petalLeave={handlePetalLeave}
+                on:areaSummary={handleAreaSummary}
+                on:areaHover={handleAreaHover}
+                on:areaLeave={handleAreaLeave}
                 on:clusterElementClick={handleClusterElementClick}
               />
             </div>
@@ -303,6 +339,16 @@
         data={selectedData}
         color={selectedColor}
         constellationData={processedConstellationData}
+      />
+    {/if}
+
+    {#if isProgramInfoDrawerOpen}
+      <TextDrawer 
+        isOpen={isProgramInfoDrawerOpen}
+        onClose={closeProgramInfoDrawer}
+        content={RpdProgramInfoMd}
+        contentType="ts"
+        color="#C9623F"
       />
     {/if}
 
