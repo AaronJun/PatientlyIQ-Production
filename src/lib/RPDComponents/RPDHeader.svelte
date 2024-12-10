@@ -15,17 +15,17 @@
 
 </script>
 
-<div class="flex flex-col justify-start pl-28 mt-8">
-  <h1 class="capitalize mb-2">Planting the seeds of rare disease research</h1>
+<div class="flex flex-col justify-start pl-12 py-8 mt-8">
+  <h1 class="capitalize font-light text-3xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
   <p class="font-base">Measuring the impact of the <span class="font-base text-orange-600 font-medium">FDA's Rare Pediatric Disease Priority Review Voucher Program</span></p>
   <button 
-    class="w-fit flex gap-4 pr-3 pl-4 py-3 mt-8 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
+    class="w-fit flex gap-8 pr-3 pl-4 py-3 mt-12 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
     on:click={handleReadMore}
   >
     <div class="absolute inset-0 bg-[#ff1515] z-0"></div>
     <div class="absolute inset-0 bg-sky-800 -translate-x-full group-hover:translate-x-0 transition-transform duration-400 circ-in-out z-0"></div>
     <span class="relative z-10 flex items-center gap-4">
-      Read more about the program
+      Get the Details 
       <ArrowUpRight size={16} />
     </span>
   </button>
@@ -39,7 +39,7 @@
 
 .header-content {
   display: flex;
-  padding: 2.25rem 0 1.25rem 2.25rem;
+  padding: 2.25rem 0 1.25rem 0.25rem;
   align-items: left;
   justify-content: left;
 }

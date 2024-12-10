@@ -497,7 +497,7 @@
   }
 
   .tooltip {
-    position: fixed;
+    position: absolute;
     margin: 2rem 0 0 2rem;
     background-color: rgba(255, 255, 255, 0.962);    
     border: .5px solid #373737;

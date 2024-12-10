@@ -45,15 +45,13 @@
 </script>
 
 <header
-	class="flex justify-start left-0 top-0 z-40 -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl light"
+	class="flex justify-start pl-12 py-4 left-0 top-0 z-40 -translate-y-4 animate-fade-in border-b opacity-0 backdrop-blur-xl light"
 >
-	<div class="container flex-grow w-full flex h-14 items-baseline justify-start pb-2">
 		<div class="flex justify-start">
 			<img src={PIQLogo} alt="PIQ Logo" class="h-8 mr-1" />
 			<a class="text-xs flex items-center justify-start" href="/">
 				<span class="hidden sm:inline text-gray-700">Patiently IQ</span>
 			</a>
-		</div>
 	
 		<div class="flex h-full items-center">
 			<!-- <button
@@ -86,8 +84,8 @@
 				class="absolute left-0 top-full w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 md:hidden"
 				transition:fly={{ y: -20, duration: 200 }}
 			>
-				<nav class="container py-4">
-					<div class="px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400">Tools</div>
+				<nav class="container">
+					<div class="px-4 py-text-sm font-semibold text-gray-600 dark:text-gray-400">Tools</div>
 					{#each toolsLinks as link}
 						<a 
 							href={link.href}

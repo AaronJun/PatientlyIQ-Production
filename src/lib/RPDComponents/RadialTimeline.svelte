@@ -55,7 +55,7 @@
   let containerWidth: number;
   let containerHeight: number;
   
-  $: width = (containerWidth || 800) * 1.1;
+  $: width = (containerWidth || 900) * 1.1;
   $: height = (containerHeight || 800) * 1.34;
   $: radius = Math.min(width, height) / 2.2725;
   
@@ -81,18 +81,19 @@
   let tooltipBorderColor = '';
   
   const therapeuticAreaColors = {
-    "Gastroenterology": "#39FF14",
-    "Neurology": "#4D4DFF",
-    "Ophthalmology": "#E79028",
-    "Immunology": "#EA38A5",
-    "Metabolic": "#133B11",
-    "Dermatology": "#559368",
-    "Hematology": "#CF3630",
-    "Orthopedics": "#441780",
-    "Pulmonology": "#CBC09F",
-    "Nephrology": "#ACA3DB",
-    "Oncology": "#FF84DE",
-    "Hepatology": "#FF00D4",
+    "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#ffff99",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
   };
   
   const petalSVGs = {
@@ -222,7 +223,7 @@ function drawGuideCircles() {
     .attr("r", d => radiusScale(Math.max(0.1, d)))
     .attr("fill", "none")
     .attr("stroke", "#ccc")
-    .attr("stroke-dasharray", "3,3")
+    .attr("stroke-dasharray", "2,4")
     .style("opacity", 0.5)
     .attr("class", "guide-circle")
     .style("pointer-events", "none");
@@ -345,7 +346,7 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
       petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
       petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
       petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
-      petalPaths[startIdx].setAttribute('data-original-fill', '#FFFFFF'); // Store original fill
+      petalPaths[startIdx].setAttribute('data-original-fill', '#231F20'); // Store original fill
     }
     
     if (petalPaths[startIdx + 1]) {
@@ -357,7 +358,7 @@ function createPetalCluster(year: string, entries: ConstellationEntry[], positio
     
     if (petalPaths[startIdx + 2]) {
       const isPurchased = entry.Purchased?.toLowerCase() === 'y';
-      const innerPetalColor = isPurchased ? '#FFD700' : '#FFFFFF';
+      const innerPetalColor = isPurchased ? '#E0FFF9' : '#32363A';
       petalPaths[startIdx + 2].setAttribute('fill', innerPetalColor);
       petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
       petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);

@@ -104,18 +104,19 @@
 
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-    "Gastroenterology": "#39FF14",
-    "Neurology": "#4D4DFF",
-    "Ophthalmology": "#E79028",
-    "Immunology": "#EA38A5",
-    "Metabolic": "#133B11",
-    "Dermatology": "#559368",
-    "Hematology": "#CF3630",
-    "Orthopedics": "#441780",
-    "Pulmonology": "#CBC09F",
-    "Nephrology": "#ACA3DB",
-    "Oncology": "#FF84DE",
-    "Hepatology": "#FF00D4",
+      "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#ffff99",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
   };
     return colorMap[ta] || "#000000";
   }
@@ -242,7 +243,7 @@
       <div class="tab-content">
         {#if activeTab === 'By Year'}
           <div class="flowers-view content-start">
-            <div class="info-panel flex flex-col pr-16 col-span-1 border-r-2 border-orange-600">
+            <div class="info-panel flex flex-col pr-4 col-span-1 border-orange-600">
               <RPDPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
@@ -281,14 +282,14 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flowers-view content-start">
             <div class="info-panel flex flex-col pr-16 col-span-1 border-r-2 border-orange-600">
-              <RPDPageSummary 
+              <TAPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
                 {currentYear} 
               />
             </div>
 
-            <div class="therapeutic-area-container">
+            <div class="therapeutic-area-container content-start">
               <TherapeuticAreaGrid
                 constellationData={processedConstellationData}
                 selectedArea={hoveredPetalData?.name || null}
@@ -380,8 +381,8 @@
 
   .tabs {
     display: grid;
-    font-size: 0.8725rem;
-    grid-template-columns: repeat(3, 1fr);
+    font-size: 0.725rem;
+    grid-template-columns: repeat(3,.25fr);
     border-bottom: .5px dotted #6b7280;
     padding-top: 2.25rem;
     gap: .525rem;
@@ -391,12 +392,12 @@
   .tab-button {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
     text-transform: uppercase;
     max-width: 22.5vw;  
     letter-spacing: .325px;
-    padding: 0.5rem 1rem 0.5rem 2.25rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 1rem 0.5rem 0.25rem;
+    font-size: 0.775rem;
     color: #6b7280;
     border-bottom: .5px solid #797979;
     transition: all 0.2s;
@@ -411,13 +412,13 @@
   .tab-button.active {
     background-color: #fff;
     font-weight: 800;
-    padding: 0.5rem 1rem 0.5rem 2.25rem;
+    padding: 0.5rem 1rem 0.5rem 1.25rem;
     color: #C9623F;
     border-bottom: 2px solid #C9623F;
   }
 
   .tab-content {
-    overflow: hidden;
+    overflow: auto;
     min-width: 100%;
     align-items: top;
   }
@@ -432,19 +433,19 @@
   .timeline-container {
     padding: 1rem 2rem 2rem 1.25rem;
     height: 95vh;
-    width: 75vw;
+    width: 78vw;
     overflow: hidden;
   }
 
   .therapeutic-area-container {
     padding: 1rem 2rem 2rem 1.25rem;
     height: 95vh;
-    width: 75vw;
+    width: 78vw;
     overflow: hidden;
   }
 
   .info-panel {
-    width: 22.25vw;
+    width: 20vw;
   }
 
   .info-panel-nav {
@@ -569,16 +570,16 @@
     }
 
     .tabs {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, .25fr);
     }
 
     .info-panel {
-      width: 30vw;
+      width: 22vw;
     }
 
     .timeline-container,
     .therapeutic-area-container {
-      width: 70vw;
+      width: 80vw;
     }
   }
 
@@ -588,17 +589,15 @@
     }
 
     .info-panel {
-      width: 100%;
-      border-right: none;
-      border-bottom: 2px solid #C9623F;
-      padding-bottom: 2rem;
-      margin-bottom: 2rem;
+      width: 20vw;
+      padding-bottom: 1.725rem;
+      margin-bottom: 1.25rem;
     }
 
     .timeline-container,
     .therapeutic-area-container {
-      width: 100%;
-      height: 70vh;
+      width: 80vw;
+      height: 80vh;
     }
   }
 
@@ -614,7 +613,7 @@
 
     .tab-button {
       max-width: none;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.25rem;
     }
 
     .timeline-container,

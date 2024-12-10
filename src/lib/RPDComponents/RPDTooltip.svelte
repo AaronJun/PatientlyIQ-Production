@@ -25,7 +25,7 @@
 {#if visible}
   <div
     class="tooltip"
-    style="left: {x}px; top: {y}px; --border-color: {borderColor};"
+    style="left: {x}px; top: {y/1.25}px; --border-color: {borderColor};"
   >
     <div class="tooltip-content">
         <div class="flex gap-2 items-baseline">
@@ -49,6 +49,7 @@
       <Stethoscope class="text-gray-400" size="16" />
       <p class="text-xs font-semibold text-gray-600 pl-2">{content.id}</p>
   </div>
+
 </div>
 </div>
 {/if}

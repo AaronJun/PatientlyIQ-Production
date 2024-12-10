@@ -47,33 +47,35 @@
   let containerHeight: number;
 
   const MIN_FONT_SIZE = 8;
-  const MAX_FONT_SIZE = 10;
+  const MAX_FONT_SIZE = 12;
   const MAX_PETALS = 10;
-  const CLUSTER_SCALE = 0.0003215;
-  const INNER_RADIUS_RATIO = 0.1;
-  const OUTER_RADIUS_RATIO = 0.7525;
-  const LABEL_RADIUS_OFFSET = 0.925;
+  const CLUSTER_SCALE = 0.0002025;
+  const INNER_RADIUS_RATIO = 0.0625;
+  const OUTER_RADIUS_RATIO = 1.625;
+  const LABEL_RADIUS_OFFSET = 0.6725;
+  // Add new constant for cluster spacing
+  const CLUSTER_SPACING_RATIO = 0.7275; // Controls how spread out multiple clusters are
 
-  $: width = (containerWidth || 920) * 1;
-  $: height = (containerHeight || 800) * 1.34;
-  $: maxRadius = Math.min(width, height) / 2;
-  $: innerRadius = maxRadius * INNER_RADIUS_RATIO/2;
-  $: outerRadius = maxRadius * OUTER_RADIUS_RATIO;
-  $: radius = Math.min(width, height) / 2.2725;
+  $: width = (containerWidth || 900) * 1.5;
+  $: height = (containerHeight || 900) * 1.25;
+  $: maxRadius = Math.min(width, height) / 2.125;
+  $: innerRadius = maxRadius * INNER_RADIUS_RATIO/2.725;
+  $: outerRadius = maxRadius * OUTER_RADIUS_RATIO/1.725;
 
   const therapeuticAreaColors = {
-    "Gastroenterology": "#39FF14",
-    "Neurology": "#4D4DFF",
-    "Ophthalmology": "#E79028",
-    "Immunology": "#EA38A5",
-    "Metabolic": "#133B11",
-    "Dermatology": "#559368",
-    "Hematology": "#CF3630",
-    "Orthopedics": "#441780",
-    "Pulmonology": "#CBC09F",
-    "Nephrology": "#ACA3DB",
-    "Oncology": "#FF84DE",
-    "Hepatology": "#FF00D4",
+    "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#ffff99",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
   };
 
   const petalSVGs = {
@@ -212,19 +214,17 @@
 
     const svgElement = cluster.select("svg").node();
     if (svgElement instanceof SVGElement) {
-      const viewBox = svgElement.getAttribute("viewBox");
-      const [, , vbWidth, vbHeight] = (viewBox?.split(" ") || []).map(Number);
+    const svgWidth = svgElement.getAttribute("width");
+    const svgHeight = svgElement.getAttribute("height");
       
-      const svgWidth = vbWidth || parseFloat(svgElement.getAttribute("width") || "0");
-      const svgHeight = vbHeight || parseFloat(svgElement.getAttribute("height") || "0");
-      
+    
       if (svgWidth && svgHeight) {
         const scale = width * CLUSTER_SCALE;
         cluster.attr("transform", `
           translate(${position.x},${position.y})
           rotate(${position.angle * 180 / Math.PI})
-          scale(${scale})
-          translate(${-svgWidth/2},${-svgHeight/2})
+          scale(${scale/1.25})
+          translate(${-parseFloat(svgWidth)/2},${-parseFloat(svgHeight)})        
         `);
 
         cluster.selectAll("path")
@@ -272,8 +272,9 @@
       .duration(300)
       .style("opacity", function() {
         return this.classList.contains(`area-${area.toLowerCase().replace(/\s+/g, '-')}`) ? 1 : 0.3;
-      })
-      .selectAll("path")
+      });
+  
+      svg.selectAll("path")
       .style("filter", function() {
         return this.closest(`.area-${area.toLowerCase().replace(/\s+/g, '-')}`) 
           ? "saturate(1.2)" 
@@ -290,7 +291,7 @@
     
     svg.selectAll(".cluster")
       .transition()
-      .duration(300)
+      .duration(200)
       .style("opacity", 1)
       .selectAll("path")
       .style("filter", "saturate(0.2)");
@@ -308,11 +309,11 @@
   function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string, element: SVGPathElement) {
     const petalGroup = d3.select(element.parentElement)
       .selectAll("path")
-      .filter((_, i) => Math.floor(i / 3) === Math.floor(Array.from(element.parentElement?.children || []).indexOf(element) / 3));
+      .filter((_, i) => Math.floor(i / 3) === Math.floor(Array.from(element.parentElement?.children || []).indexOf(element) / 2));
     
     petalGroup
       .transition()
-      .duration(200)
+      .duration(100)
       .style("filter", "saturate(1.5) brightness(1.1)")
       .style("opacity", 1);
 
@@ -325,8 +326,7 @@
 
     // Set background petal to red for hovered petal
     petalGroup.filter(".background-petal")
-      .style("fill", "#ff1515")
-      .style("opacity", 0.8);
+      .style("opacity", 1);
 
     dispatch('petalHover', { event, entry, color });
   }
@@ -342,7 +342,6 @@
       .transition()
       .duration(200)
       .style("filter", hoveredArea === area ? "saturate(1.2)" : "saturate(0.2)")
-      .style("opacity", hoveredArea === area ? 1 : 0.7)
       .each(function() {
         const path = d3.select(this);
         const originalFill = path.property("_originalFill");
@@ -449,97 +448,108 @@
       resizeObserver.disconnect();
     };
   });
-
   function drawVisualization() {
-    if (!svg || !width || !height) return;
+  if (!svg || !width || !height) return;
 
-    svg.selectAll("*").remove();
+  svg.selectAll("*").remove();
 
-    const angleScale = d3.scaleLinear()
-      .domain([0, areaStats.length])
-      .range([0, 2 * Math.PI]);
+  const angleScale = d3.scaleLinear()
+    .domain([0, areaStats.length])
+    .range([0, 2 * Math.PI]);
 
-    areaStats.forEach((stat, i) => {
-      const angle = angleScale(i);
-      const mainX = Math.cos(angle - Math.PI / 2) * innerRadius;
-      const mainY = Math.sin(angle - Math.PI / 2) * innerRadius;
+  areaStats.forEach((stat, i) => {
+    const angle = angleScale(i);
+    const mainX = Math.cos(angle - Math.PI / 2) * innerRadius;
+    const mainY = Math.sin(angle - Math.PI / 2) * innerRadius;
 
-      // Center circle
-      svg.append("circle")
-        .attr("cx", mainX)
-        .attr("cy", mainY)
-        .attr("r", 5)
-        .attr("fill", therapeuticAreaColors[stat.area as keyof typeof therapeuticAreaColors])
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 2);
+    // Center circle
+    svg.append("circle")
+      .attr("cx", mainX)
+      .attr("cy", mainY)
+      .attr("r", 3)
+      .attr("fill", therapeuticAreaColors[stat.area as keyof typeof therapeuticAreaColors])
+      .attr("stroke", "#161616")
+      .attr("stroke-width", .5);
 
-      // Outer label
-      const labelAngle = angle;
-      const labelRadius = outerRadius * LABEL_RADIUS_OFFSET;
-      const labelX = Math.cos(labelAngle - Math.PI / 2) * labelRadius;
-      const labelY = Math.sin(labelAngle - Math.PI / 2) * labelRadius;
+    // Outer label
+    const labelAngle = angle;
+    const labelRadius = outerRadius * LABEL_RADIUS_OFFSET;
+    const labelX = Math.cos(labelAngle - Math.PI / 2) * labelRadius;
+    const labelY = Math.sin(labelAngle - Math.PI / 2) * labelRadius;
+    
+    const textRotation = (labelAngle / Math.PI) * 180;
+    const finalRotation = textRotation > 90 && textRotation < 270 
+      ? textRotation + 180 
+      : textRotation;
+
+    const labelGroup = svg.append("g")
+      .attr("class", `area-label-group area-${stat.area.toLowerCase().replace(/\s+/g, '-')}`)
+      .style("cursor", "pointer")
+      .on("mouseover", () => handleClusterHover(stat.area))
+      .on("mouseout", handleClusterLeave);
+
+    labelGroup.append("text")
+      .attr("class", "area-label")
+      .attr("transform", `
+        translate(${labelX},${labelY})
+        rotate(${finalRotation})
+      `)
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "central")
+      .attr("background-color", "#fff")
+      .attr("font-size", `${Math.min(Math.max(innerRadius * 1, 8), 12)}px`)
+      .attr("fill", "#4a5568")
+      .text(stat.area);
+
+    // Calculate and draw clusters
+    stat.clusters.forEach((clusterEntries, clusterIndex) => {
+      // Calculate available space between inner and outer radius
+      const availableSpace = outerRadius - innerRadius;
       
-      const textRotation = (labelAngle * 180 / Math.PI) - 90;
-      const finalRotation = textRotation > 90 && textRotation < 270 
-        ? textRotation + 180 
-        : textRotation;
+      // If there's only one cluster, place it in the middle
+      // If there are multiple clusters, spread them out based on CLUSTER_SPACING_RATIO
+      const t = stat.clusters.length === 1 
+        ? 0.5 
+        : CLUSTER_SPACING_RATIO * (clusterIndex + 1) / (stat.clusters.length + 1);
+      
+      const clusterRadius = innerRadius + (availableSpace * t);
+      const lineAngle = angle - Math.PI / 2;
+      const clusterX = Math.cos(lineAngle) * clusterRadius;
+      const clusterY = Math.sin(lineAngle) * clusterRadius;
 
-      const labelGroup = svg.append("g")
-        .attr("class", `area-label-group area-${stat.area.toLowerCase().replace(/\s+/g, '-')}`)
-        .style("cursor", "pointer")
-        .on("mouseover", () => handleClusterHover(stat.area))
-        .on("mouseout", handleClusterLeave);
+      // Draw line from center circle to cluster
+      svg.append("line")
+        .attr("x1", mainX)
+        .attr("y1", mainY)
+        .attr("x2", clusterX)
+        .attr("y2", clusterY)
+        .attr("stroke", "#ccc")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-opacity", 0.5);
 
-      labelGroup.append("text")
-        .attr("class", "area-label")
-        .attr("transform", `
-          translate(${labelX},${labelY})
-          rotate(${finalRotation})
-        `)
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "middle")
-        .attr("font-size", "10px")
-        .attr("fill", "#4a5568")
-        .text(stat.area);
-
-      // Calculate and draw clusters
-      stat.clusters.forEach((clusterEntries, clusterIndex) => {
-        const t = (clusterIndex + 1) / (stat.clusters.length + 1);
-        const clusterRadius = innerRadius + (outerRadius - innerRadius) * t;
-        const lineAngle = angle - Math.PI / 2;
-        const clusterX = Math.cos(lineAngle) * clusterRadius;
-        const clusterY = Math.sin(lineAngle) * clusterRadius;
-
-        svg.append("line")
-          .attr("x1", mainX)
-          .attr("y1", mainY)
-          .attr("x2", clusterX)
-          .attr("y2", clusterY)
-          .attr("stroke", "#ccc")
-          .attr("stroke-width", 0.5)
-          .attr("stroke-opacity", 0.5);
-
-        createPetalCluster(
-          clusterEntries,
-          { x: clusterX, y: clusterY, angle },
-          stat.area,
-          clusterIndex,
-          stat.clusters.length
-        );
-      });
+      // Create cluster of petals
+      createPetalCluster(
+        clusterEntries,
+        { x: clusterX, y: clusterY, angle },
+        stat.area,
+        clusterIndex,
+        stat.clusters.length
+      );
     });
-  }
+  });
+}
+
 </script>
 
-<div class="therapeutic-area-radial" bind:this={container}>
+<div class="therapeutic-area-radial py-24" bind:this={container}>
 </div>
 
 <style>
   .therapeutic-area-radial {
     width: 100%;
-    height: 95%;
+    height: 90%;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
   :global(.cluster) {
@@ -573,7 +583,7 @@
   }
 
   :global(.area-label), :global(.area-count) {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
   }
 
   :global(.label-hitbox) {
