@@ -50,10 +50,11 @@
   let currentArea: string | null = null;
   let taSummaryText: string = '';
 
-  const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
-  const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
-  const pageImage = "/rpd-program-preview.png"; // You'll need to add this image to your static assets
-  const pageUrl = "https://patientlyiq.com/rpd"; // Replace with your actual URL
+  const siteUrl = 'https://patientlyiq.com';
+const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
+const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
+const pageImage = `${siteUrl}/rpd-program-preview.png`; // Make image URL absolute
+const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
 
   // Tooltip state
   let tooltipVisible = false;
