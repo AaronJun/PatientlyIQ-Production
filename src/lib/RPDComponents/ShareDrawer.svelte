@@ -13,7 +13,7 @@
     const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareTitle = "The FDA's Rare Disease Research Garden is Blooming";
   const shareText = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet—help us keep this garden growing.";
-  const callToAction = "Join the EveryLife Foundation in advocating for rare disease patients. Together, we can ensure this vital program continues to grow:";
+  const callToAction = "Explore the data and learn how to advocate for the program renewal.";
   const previewImage = "/rpd-program-preview.png";
 
   
@@ -101,19 +101,19 @@ transition:fly={{duration: ANIMATION_DURATION}}
     <!-- Action Card -->
     <Card class="mt-8 border-2 border-orange-600">
       <CardHeader>
-        <CardTitle class="text-lg font-semibold text-[#ff1515]">
-          Advocate for Program Renewal
+        <CardTitle class="text-xl font-medium text-[#ff1515]">
+          <span class="font-bold">Advocate</span> for Program Renewal
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p class="text-sm text-gray-600 mb-4">
+        <p class="text-base text-gray-600 mb-4">
           The EveryLife Foundation for Rare Diseases is leading the charge to renew and strengthen the RPD Priority Review Voucher Program. Their advocacy has been instrumental in creating opportunities for rare disease treatments.
         </p>
         <a 
           href="https://everylifefoundation.org/prv/"
           target="_blank"
           rel="noopener noreferrer"
-          class="w-full flex gap-4 pr-3 pl-4 py-3 mt-12 items-center justify-start rounded-full text-sm font-semibold text-white relative overflow-hidden group bg-[#ff1515] hover:bg-sky-700 transition-colors"
+          class="w-full flex gap-4 max-w-fit pr-3 pl-4 py-3 mt-12 items-center justify-start rounded-full text-sm font-semibold text-white relative overflow-hidden group bg-[#ff1515] hover:bg-sky-700 transition-colors"
         >
           Support Program Renewal 
           <ArrowUpRight size={16} />
