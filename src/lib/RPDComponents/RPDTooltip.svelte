@@ -27,7 +27,7 @@
 <div
 class="tooltip"
 style="left: {x}px; top: {y}px; --border-color: {borderColor};"
-transition:fade={{ duration: 250 }}
+transition:fade={{ duration: 550 }}
 >
     <div class="tooltip-content">
       <div class="flex gap-2 items-baseline">
@@ -70,6 +70,7 @@ transition:fade={{ duration: 250 }}
     min-width: 200px;
     max-width: 200px;
     margin: 0;
+    transition: all 0.3s ease;
   }
 
   .tooltip::before {

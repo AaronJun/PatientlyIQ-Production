@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
+
+import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
   import type { Selection } from 'd3';
   import "carbon-components-svelte/css/all.css";
@@ -18,6 +19,7 @@
   import TwelvePetal from '../../assets/12PetalNew.svg?raw';
   import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
   import RpdtaLegend from './RPDTALegend.svelte';
+  import Tooltip from './RPDTooltip.svelte';
   
   interface RPDData {
     Year: string;
@@ -94,7 +96,7 @@
     "Endocrinology": "#b15928",
     "Hepatology": "#8dd3c7",
   };
-  
+
   const petalSVGs = {
     0: ZeroPetal,
     1: OnePetal,
@@ -465,8 +467,8 @@ function handleYearHover(event: MouseEvent, year: string) {
 
     // Update year segments
     svg.selectAll(".year-segment")
-      .transition()
-      .duration(120)
+      .transition("ease-in-out")
+      .duration(220)
       .attr("fill", d => d === year ? "#C9623F" : "#fff");
 
     // Update text
@@ -476,7 +478,6 @@ function handleYearHover(event: MouseEvent, year: string) {
       .attr("fill", d => d === year ? "#C9623F" : "#666")
       .attr("font-weight", d => d === year ? "bold" : "normal");
   }
- 
 }
 
 function handleYearLeave() {
@@ -484,7 +485,7 @@ function handleYearLeave() {
     hoveredYearIndex = null;
     svg.selectAll(".value-label")
       .transition()
-      .duration(375)
+      .duration(805)
       .style("opacity", 0)
       .remove();
     
@@ -531,33 +532,33 @@ function handleClusterLeave() {
 }
 
 function handlePetalLeave(year: string) {
-  // Properly set tooltip visibility to false first
-  dispatch('petalLeave');
-  
-  // Reset the specific petal
-  svg.selectAll(`.cluster.year-${year} path`)
-    .transition()
-    .duration(620)
-    .style("transform", "rotate(0deg)")
-    .each(function() {
-      const path = d3.select(this);
-      const originalFill = path.property("_originalFill");
-      if (originalFill) {
-        path.style("fill", originalFill);
-      }
-    });
-
-  // Maintain cluster saturation state
-  const isClusterHovered = hoveredYear === year;
-  if (isClusterHovered) {
+    tooltipVisible = false;
+    
+    // Reset the specific petal
     svg.selectAll(`.cluster.year-${year} path`)
-      .style("filter", "saturate(.25)")
-      .style("opacity", 1);
-  } else {
-    handleClusterLeave();
-  }
-}
+      .transition()
+      .duration(620)
+      .style("transform", "rotate(0deg)")
+      .each(function() {
+        const path = d3.select(this);
+        const originalFill = path.property("_originalFill");
+        if (originalFill) {
+          path.style("fill", originalFill);
+        }
+      });
 
+    // Maintain cluster saturation state
+    const isClusterHovered = hoveredYear === year;
+    if (isClusterHovered) {
+      svg.selectAll(`.cluster.year-${year} path`)
+        .style("filter", "saturate(.25)")
+        .style("opacity", 1);
+    } else {
+      handleClusterLeave();
+    }
+
+    dispatch('petalLeave');
+  }
   function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
     const currentElement = event.currentTarget as SVGElement;
     const cluster = currentElement.closest(".cluster");
@@ -592,16 +593,26 @@ function handlePetalLeave(year: string) {
       handleClusterHover(clusterYear);
     }
 
-    // Calculate center position of the radial
+    // Set tooltip content and position
+    tooltipContent = {
+      sponsor: entry.Sponsor,
+      drugName: entry["Drug Name"],
+      therapeuticArea: entry.name,
+      id: entry.id
+    };
+    tooltipBorderColor = color;
+    
+    // Calculate position relative to viewport
     const containerRect = container.getBoundingClientRect();
-    const centerX = containerRect.left + (containerRect.width / 1.5725);
-    const centerY = containerRect.top + (containerRect.height /1.6725);
+    tooltipX = containerRect.left + (containerRect.width / 2.25);
+    tooltipY = containerRect.top + (containerRect.height / 2.215);
+    tooltipVisible = true;
 
-    // Dispatch event with center coordinates
+    // Still dispatch the event for other listeners
     dispatch('petalHover', { 
       event: { 
-        pageX: centerX,
-        pageY: centerY
+        pageX: tooltipX,
+        pageY: tooltipY
       }, 
       entry, 
       color 
@@ -630,7 +641,7 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
     .style("filter", function() {
       const petalElement = d3.select(this);
       const therapeuticArea = petalElement.attr('data-therapeutic-area');
-      const cluster = this.closest('.cluster');
+      const cluster = ('.cluster');
       if (!cluster) return "saturate(0.2)";
       
       const year = cluster.classList[1].split('-')[1];
@@ -720,8 +731,6 @@ function updateVisibility(year: string, isHovered: boolean = false) {
 }
 
 function showRPDLabel(year: string) {
-  // Remove any existing labels first
-  svg.selectAll(".value-label").remove();
 
   const yearData = data.find(d => d.Year === year);
   if (yearData && +yearData.RPD > 0) {
@@ -749,29 +758,7 @@ function showRPDLabel(year: string) {
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle");
 
-    // Main RPD value text
-    textGroup.append("text")
-      .attr("fill", "#063D37")
-      .attr("font-size", `${Math.min(Math.max(radius * 0.045, 8), 10)}px`)
-      .attr("font-weight", "semibold")
-      .attr("y", +2)
-      .text(`${(+yearData.RPD).toLocaleString()} RPDs`);
 
-    // Get bounding box for background
-    const textBox = textGroup.node()?.getBBox();
-    if (textBox) {
-      // Add background rectangle
-      labelGroup.insert("rect", "g")
-        .attr("x", textBox.x - 10)
-        .attr("y", textBox.y - 5)
-        .attr("width", textBox.width + 20)
-        .attr("height", textBox.height + 10)
-        .attr("rx", 10)
-        .attr("ry", 10)
-        .attr("stroke", "#063D37")
-        .attr("fill", "white")
-        .attr("opacity", 0.9);
-    }
 
     // Fade in the label
     labelGroup
@@ -824,13 +811,11 @@ onMount(() => {
 });
 </script>
 
-
 <RpdtaLegend 
   position="bottom-right"
   on:areaHover={handleLegendAreaHover}
   on:areaLeave={handleLegendAreaLeave}
 />
-
 
 <div class="radial-timeline" bind:this={container}>
   {#if tooltipVisible}
@@ -913,10 +898,6 @@ onMount(() => {
     1px -1px 0 #fff,
     -1px 1px 0 #fff,
     1px 1px 0 #fff;
-}
-
-:global(.value-label rect) {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 :global(.value-label text) {

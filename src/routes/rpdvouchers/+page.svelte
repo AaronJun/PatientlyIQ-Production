@@ -52,8 +52,8 @@
 
   const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
   const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
-  const pageImage = "/rpd-program-preview.png"; // You'll need to add this image to your static assets
-  const pageUrl = "https://patientlyiq.com/rpd"; // Replace with your actual URL
+  const pageImage = "/rpd-program-preview.png";
+  const pageUrl = "https://patientlyiq.com/rpdvouchers"; // Replace with your actual URL
 
   // Tooltip state
   let tooltipVisible = false;
@@ -211,31 +211,6 @@
     }
   });
 </script>
-
-<svelte:head>
-  <!-- Basic Meta Tags -->
-  <title>{pageTitle}</title>
-  <meta name="description" content={pageDescription} />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={pageUrl} />
-  <meta property="og:title" content={pageTitle} />
-  <meta property="og:description" content={pageDescription} />
-  <meta property="og:image" content={pageImage} />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content={pageUrl} />
-  <meta name="twitter:title" content={pageTitle} />
-  <meta name="twitter:description" content={pageDescription} />
-  <meta name="twitter:image" content={pageImage} />
-
-  <!-- Additional SEO -->
-  <meta name="keywords" content="FDA, Rare Disease, Priority Review Voucher, RPD, Pediatric Disease, Healthcare Policy" />
-  <link rel="canonical" href={pageUrl} />
-</svelte:head>
-
 
 <div class="light">
   <RPDHeader on:readMoreClick={handleProgramInfoClick} />

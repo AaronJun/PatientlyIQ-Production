@@ -45,19 +45,19 @@
   }
 
   const therapeuticAreaColors = {
-    "Gastroenterology": "#39FF14",
-    "Neurology": "#4D4DFF",
-    "Ophthalmology": "#E79028",
-    "Immunology": "#EA38A5",
-    "Metabolic": "#133B11",
-    "Dermatology": "#559368",
-    "Hematology": "#CF3630",
-    "Orthopedics": "#441780",
-    "Pulmonology": "#CBC09F",
-    "Nephrology": "#ACA3DB",
-    "Oncology": "#FF84DE",
-    "Genetic": "#4D4D",
-    "Hepatology": "#FF00D4",
+    "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#C1A46E",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
   };
 
   function getColor(name: string): string {

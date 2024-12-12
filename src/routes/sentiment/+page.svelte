@@ -205,7 +205,7 @@
 </div>
 
 {#if isDrawerOpen && currentDiseaseData}
-    <SimpleSentimentDrawer 
+    <SimpleSentimentDrawer class="z-index-1000"
         isOpen={isDrawerOpen}
         onClose={handleDrawerClose}
         disease={currentDiseaseData.name}
