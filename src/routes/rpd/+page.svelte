@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { RadialTimeline, YearlySummary } from '$lib/componentStores';
+  import MobileWarning from '$lib/RPDComponents/MobileWarning.svelte';
   import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
   import TherapeuticAreaGrid from '$lib/RPDComponents/TARadialTimeline.svelte';
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
   import TextDrawer from '$lib/RPDComponents/TextContentDrawer.svelte';
   import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
+
   import TAPageSummary from '$lib/RPDComponents/TASummary.svelte';
   import { RpdProgramInfoMd } from '$lib/content/RPDprogramInfo';
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
@@ -33,7 +35,7 @@
     "Drug Name": string;
     "Treatment Type"?: string;
     Purchased: string;
-    Month: string;
+    Month: string;x
     Date: string;
     Purchaser?: string;
   }
@@ -49,6 +51,9 @@
   let processedConstellationData: ConstellationEntry[] = [];
   let currentArea: string | null = null;
   let taSummaryText: string = '';
+
+  let isMobileDevice = false;
+  const MOBILE_BREAKPOINT = 520;
 
   const siteUrl = 'https://patientlyiq.com';
 const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
@@ -110,7 +115,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
 
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-      "Gastroenterology": "#a6cee3",
+    "Gastroenterology": "#a6cee3",
     "Neurology": "#1f78b4",
     "Ophthalmology": "#6C6C6C",
     "Immunology": "#33a02c",
@@ -195,6 +200,17 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
     isProgramInfoDrawerOpen = false;
   }
 
+
+  function checkMobile() {
+    isMobileDevice = window.innerWidth <= MOBILE_BREAKPOINT;
+  }
+
+  onMount(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  });
+
   onMount(async () => {
     try {
       processedRpdPrvData = processRpdPrvData(rpdPrvDataRaw as RPDData[]);
@@ -237,6 +253,9 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
   <link rel="canonical" href={pageUrl} />
 </svelte:head>
 
+{#if isMobileDevice}
+  <MobileWarning />
+{/if}
 
 <div class="light">
   <RPDHeader on:readMoreClick={handleProgramInfoClick} />
@@ -260,15 +279,15 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
             By Therapeutic Area <WatsonHealthDna />
           </div>
         </button>
-<!-- 
-        <button
+
+<!--         <button
         class="tab-button justify-start sm:justify-start {activeTab === 'stories' ? 'active' : ''}"
         on:click={() => setActiveTab('stories')}>
         <div class="flex gap-8 content-start justify-start">
           Stories <UserSpeaker/>
         </div>
-        </button> -->
-
+        </button>
+ -->
         <button
           class="tab-button {activeTab === 'transactions' ? 'active' : ''}"
           on:click={() => setActiveTab('transactions')}
@@ -282,12 +301,13 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
       <div class="tab-content">
         {#if activeTab === 'By Year'}
           <div class="flowers-view content-start">
-            <div class="w-1/6 lg:w-1/5 md:w-5/6 sm:w-full min-[400px]:w-full flex flex-col pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
+            <div class="w-1/6 max-w-[400px] max-w-[400px] lg:w-1/5 md:w-5/6 sm:w-full min-[400px]:w-full flex flex-col pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <RPDPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
                 {currentYear} 
               />
+              
               {#if $YearlySummary && processedConstellationData.length > 0}
                 <svelte:component 
                   this={$YearlySummary}
@@ -301,7 +321,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
               {/if}
             </div>
 
-            <div class="w-5/6 sm:w-full min-[400px]:w-full md:w-full timeline-container content-start">
+            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
               {#if $RadialTimeline && processedRpdPrvData.length > 0 && processedConstellationData.length > 0}
                 <svelte:component 
                   this={$RadialTimeline}
@@ -320,7 +340,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
 
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flowers-view content-start">
-            <div class="w-1/6 lg:w-1/6 sm:w-full min-[400px]:w-full flex flex-col lg:pr-0 lg:pb-7 lg:border-r-0">
+            <div class="w-1/6 max-w-[400px] lg:w-1/6 max-w-[400px] sm:w-full min-[400px]:w-full flex flex-col lg:pr-0 lg:pb-7 lg:border-r-0">
               <TAPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
@@ -328,7 +348,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
               />
             </div>
 
-            <div class="flex w-5/6 lg:w-5/6 sm:w-full min-[400px]:w-full timeline-container content-start">
+            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
               <TherapeuticAreaGrid
                 constellationData={processedConstellationData}
                 selectedArea={hoveredPetalData?.name || null}
@@ -345,27 +365,18 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
 
         {:else if activeTab === 'stories'}
         <div class="flowers-view content-start">
-          <div class="w-1/6 lg:w-1/6 sm:w-full min-[400px]:w-full flex flex-col lg:pr-0 lg:pb-7 lg:border-r-0">
+          <div class="w-1/6 max-w-[400px] lg:w-1/6 max-w-[400px] sm:w-full min-[400px]:w-full flex flex-col lg:pr-0 lg:pb-7 lg:border-r-0">
             <h2 class="text-xs mb-8 mt-8 font-bold col-span-1">Stories</h2>
           </div>
 
           <div class="flex w-5/6 lg:w-5/6 sm:w-full min-[400px]:w-full timeline-container content-start">
-            <TherapeuticAreaGrid
-              constellationData={processedConstellationData}
-              selectedArea={hoveredPetalData?.name || null}
-              on:petalHover={handlePetalHover}
-              on:petalLeave={handlePetalLeave}
-              on:areaSummary={handleAreaSummary}
-              on:areaHover={handleAreaHover}
-              on:areaLeave={handleAreaLeave}
-              on:clusterElementClick={handleClusterElementClick}
-            />
+            <SentimentBars data={radialSampleData}/>
           </div>
         </div>
 
         {:else if activeTab === 'transactions'}
           <div class="flowers-view">
-            <div class="w-1/6 lg:w-1/5 sm:w-full min-[400px]:w-full flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
+            <div class="w-1/6 max-w-[400px] lg:w-1/5 sm:w-full min-[400px]:w-full flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
               <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
                 Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
@@ -374,7 +385,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
                 With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.
               </p>
             </div>
-            <div class="sales-container w-5/6 sm:w-full min-[400px]:w-full content-start min-h-full">
+            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
             <SaleBenchmarks 
               constellationData={processedConstellationData} 
               onCompanySelect={(data, color) => {

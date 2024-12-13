@@ -32,7 +32,7 @@
     <div class="flex gap-4 mt-12">
       <!-- Get Details Button -->
       <button 
-        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
+        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-sm text-xs font-semibold text-gray-100 relative overflow-hidden group" 
         on:click={handleReadMore}
       >
         <div class="absolute inset-0 bg-[#ff1515] z-0"></div>
@@ -45,11 +45,11 @@
 
       <!-- Share Button -->
       <button 
-        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
+        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-sm text-xs font-semibold text-gray-100 relative overflow-hidden group" 
         on:click={handleShare}
       >
         <div class="absolute inset-0 bg-sky-800 z-0"></div>
-        <div class="absolute inset-0 bg-[#12503d] -translate-x-full group-hover:translate-x-0 transition-transform duration-600 ease-in-out z-0"></div>
+        <div class="absolute inset-0 bg-[#828CF0] -translate-x-full group-hover:translate-x-0 transition-transform duration-600 ease-in-out z-0"></div>
         <span class="relative z-10 flex items-center gap-4">
          Advocate for the Program
           <Share size={16} />
@@ -61,7 +61,7 @@
         href="https://everylifefoundation.org/prv/"
         target="_blank"
         rel="noopener noreferrer"
-        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group"
+        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-sm text-xs font-semibold text-gray-100 relative overflow-hidden group"
       >
       </a>
     </div>

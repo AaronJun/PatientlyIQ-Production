@@ -82,9 +82,9 @@ transition:fly={{duration: ANIMATION_DURATION}}
 >
   <div class="drawer-content">
     <!-- Header -->
-    <div class="header grid grid-cols-2 justify-stretch gap-4 pb-4 px-2 pt-4 mr-6">
+    <div class="header grid grid-cols-2 justify-stretch gap-4 pb-4 ml-6 pt-4 mr-6">
       <button 
-        class="flex gap-1 py-1 pr-3 pl-2 items-center justify-self-start bg-[#37587e] col-span-2 rounded-full text-xs font-semibold text-gray-100 hover:bg-green-800"
+        class="flex gap-1 py-1 pr-3 pl-2 items-center justify-self-start bg-[#37587e]  rounded-full text-xs font-semibold text-gray-100 hover:bg-green-800"
         on:click={onClose}
         in:fade={{duration: TEXT_ANIMATION_DURATION}}
       >
@@ -92,7 +92,7 @@ transition:fly={{duration: ANIMATION_DURATION}}
       </button>
 
       <div class="col-span-2">
-        <h2 class="text-3xl mt-8 pb-4 font-light text-sky-800">
+        <h2 class="text-3xl mt-8 pb-2 font-medium text-sky-800">
           Take Action & Share
         </h2>
       </div>
@@ -182,6 +182,6 @@ transition:fly={{duration: ANIMATION_DURATION}}
     }
   
     .header {
-      border-bottom: .525px solid #377e6b;
+      border-bottom: 1.525px solid #BBB4AE;
     }
   </style>

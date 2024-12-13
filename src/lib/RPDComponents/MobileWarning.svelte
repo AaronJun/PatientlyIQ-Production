@@ -24,12 +24,12 @@
   {#if isMobile}
     <div class="mobile-warning">
       <div class="warning-content">
-        <div class="icon-row">
-            <Tablet size="26"/>
-            <TabletLandscape size="26"/>
-            <Laptop size="26"/>
+        <div class="flex flex-row gap-4 pb-8 align-middle items-center justify-center">
+            <Tablet class="text-[#ff1515]" size="32"/>
+            <TabletLandscape class="text-[#ff1515]" size="32"/>
+            <Laptop class="text-[#ff1515]" size="32"/>
         </div>
-        <h2>Designed for tablets and desktops</h2>
+        <h2 class="text-[#ff1515] font-medium pb-4"> Designed for tablets and desktops</h2>
         <p>At the moment, this application is designed for larger screens.</p>
         <p>Make it easy to remember to come back by clicking below to share the link to your inbox.</p>
         <div class="button-container">
@@ -65,7 +65,6 @@
     }
   
     h2 {
-      color: #C9623F;
       font-size: 1.425rem;
       line-height: 1.5rem;
       text-align: center;

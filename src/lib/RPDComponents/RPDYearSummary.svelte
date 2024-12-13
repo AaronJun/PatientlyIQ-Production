@@ -3,6 +3,7 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import { ArrowRight, Building, Medication, Stethoscope } from 'carbon-icons-svelte';
   import 'carbon-components-svelte/css/all.css';
+	import { ArrowUpRight } from 'lucide-svelte';
   export let constellationData: any[];
   export let currentYear: string;
   export let hoveredPetalData: any = null;
@@ -111,17 +112,17 @@
             >
               <div class="card-content" style="border-top: 4px solid {getColor(entry.name)}">
                 <div class="card-header">
-                  <Building size="12" />
+                  <Building size="14" />
                   <span class="sponsor-name">{entry.Sponsor}</span>
                 </div>
                 <div class="drug-info">
-                  <Medication size="12" />
+                  <Medication size="14" />
                   <span class="drug-name">{entry["Drug Name"]}</span>
                 </div>
                 <div class="card-footer">
-                  <Stethoscope size="12" />
+                  <Stethoscope size="14" />
                   <span class="indication">{entry.id}</span>
-                  <ArrowRight size="10" class="arrow-icon" />
+                  <ArrowUpRight size="14" class="arrow-icon" />
                 </div>
               </div>
             </div>

@@ -155,7 +155,6 @@
                     </div>
                 </div>
                 
-                <SentimentBars data={radialSampleData} />
 
                 {#if currentTopicData.topPositiveTopics?.length > 0}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 mr-2 pl-8">

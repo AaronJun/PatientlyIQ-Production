@@ -8,9 +8,12 @@
   let svg;
   let chartWidth: number;
   let chartHeight: number;
-  const margin = { top: 40, right: 45, bottom: 40, left: 60 };
+  const margin = { top: 40, right: 85, bottom: 40, left: 60 };
   let width: number;
   let height: number;
+  const TRANSITION_DURATION = 300;
+  const FOCUSED_SCALE = 2.5; // How much wider the focused bar becomes
+  const UNFOCUSED_SCALE = 0.5; // How much narrower the unfocused bars become
 
   // Same tooltip state as before...
   let tooltipVisible = false;
@@ -34,7 +37,7 @@
 
   function getColorForTherapeuticArea(ta: string): string {
     const colorMap = {
-    "Gastroenterology": "#4CAE3B",
+      "Gastroenterology": "#4CAE3B",
       "Neurology": "#4D4DFF",
       "Ophthalmology": "#E79028",
       "Immunology": "#EA38A5",
@@ -59,7 +62,6 @@
       if (a.purchaseYear !== b.purchaseYear) {
         return a.purchaseYear - b.purchaseYear;
       }
-      // Put undisclosed prices at the top of each year's stack
       if (a.price === null && b.price !== null) return -1;
       if (a.price !== null && b.price === null) return 1;
       return (b.price || 0) - (a.price || 0);
@@ -77,7 +79,7 @@
         const transaction = {
           ...t,
           y0: cumHeight,
-          y1: t.price === null ? cumHeight + 85 : cumHeight + t.price, // Use fixed height for undisclosed prices
+          y1: t.price === null ? cumHeight + 85 : cumHeight + t.price,
           originalData: constellationData.find(d => 
             d["Drug Name"] === t.drugName && 
             d["Purchase Year"] === year.toString()
@@ -90,7 +92,10 @@
       return {
         year,
         transactions: processedTransactions,
-        totalValue: cumHeight || 0 // Ensure we return 0 for years with no transactions
+        totalValue: cumHeight || 0,
+        totalSales: transactions.length,
+        averageValue: transactions.length > 0 ? 
+          (transactions.reduce((acc, t) => acc + (t.price || 0), 0) / transactions.length) : 0
       };
     });
   }
@@ -105,157 +110,273 @@
   }
 
   function createChart() {
-    if (!width || !height) return;
+  if (!width || !height) return;
 
-    // Process the data - FIXED: Include all purchased entries regardless of price
-    const salesData = constellationData
-      .filter(d => d.Purchased === "Y") // Only filter for purchased entries
-      .map(d => {
-        // Parse the price, but allow for null values
-        let price = null;
-        if (d["Sale  Price (USD, Millions)"]) {
-          const parsedPrice = parseFloat(d["Sale  Price (USD, Millions)"]);
-          if (!isNaN(parsedPrice)) {
-            price = parsedPrice;
-          }
+  const salesData = constellationData
+    .filter(d => d.Purchased === "Y")
+    .map(d => {
+      let price = null;
+      if (d["Sale  Price (USD, Millions)"]) {
+        const parsedPrice = parseFloat(d["Sale  Price (USD, Millions)"]);
+        if (!isNaN(parsedPrice)) {
+          price = parsedPrice;
         }
+      }
 
-        return {
-          purchaseYear: +d["Purchase Year"],
-          price: price, // This will be null for undisclosed prices
-          drugName: d["Drug Name"],
-          buyer: d.Purchaser,
-          seller: d.Sponsor,
-          therapeuticArea: d.name,
-          indication: d.id,
-          purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
-            `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
-        };
-      });
+      return {
+        purchaseYear: +d["Purchase Year"],
+        price: price,
+        drugName: d["Drug Name"],
+        buyer: d.Purchaser,
+        seller: d.Sponsor,
+        therapeuticArea: d.name,
+        indication: d.id,
+        purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
+          `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
+      };
+    });
 
-    // Process into stacked data
-    const stackedData = processTransactionData(salesData);
+  const stackedData = processTransactionData(salesData);
 
-    // Clear previous chart
-    d3.select(svg).selectAll("*").remove();
+  d3.select(svg).selectAll("*").remove();
 
-    // Create scales - now using all years
-    const xScale = d3.scaleBand()
-      .domain(stackedData.map(d => d.year.toString()))
-      .range([0, width])
-      .padding(0.1);
+  const xScale = d3.scaleBand()
+    .domain(stackedData.map(d => d.year.toString()))
+    .range([0, width])
+    .padding(0.1);
 
-    const maxValue = d3.max(stackedData, d => d.totalValue);
-    const yScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([height, 0])
-      .nice();
+  const maxValue = d3.max(stackedData, d => d.totalValue);
+  const yScale = d3.scaleLinear()
+    .domain([0, maxValue])
+    .range([height, 0])
+    .nice();
 
-    // Create SVG and append groups
-    const svgElement = d3.select(svg)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
+  const svgElement = d3.select(svg)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
 
-    const g = svgElement.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+  const g = svgElement.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Add grid lines
-    g.append("g")
-      .attr("class", "grid")
-      .call(d3.axisLeft(yScale)
-        .tickSize(-width)
-        .tickFormat("")
-      )
-      .style("stroke-dasharray", "2,3")
-      .style("stroke-opacity", 0.2);
+  // Create separate groups for layers with specific drawing order
+  const gridGroup = g.append("g").attr("class", "grid-layer");
+  const barsGroup = g.append("g").attr("class", "bars-layer");
+  const bracketsGroup = g.append("g").attr("class", "brackets-layer");
+  const axesGroup = g.append("g").attr("class", "axes-layer");
 
-    // Create the stacked bars
-    const yearGroups = g.selectAll(".year-group")
-      .data(stackedData)
-      .join("g")
-      .attr("class", "year-group")
-      .attr("transform", d => `translate(${xScale(d.year.toString())},0)`);
+  // Add grid lines to grid layer
+  gridGroup.append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(yScale)
+      .tickSize(-width)
+      .tickFormat("")
+    )
+    .style("stroke-dasharray", "2,3")
+    .style("stroke-opacity", 0.2);
 
-    yearGroups.selectAll("rect")
-      .data(d => d.transactions)
-      .join("rect")
-      .attr("x", 0)
-      .attr("y", d => yScale(d.y1))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => yScale(d.y0) - yScale(d.y1))
-      .attr("fill", d => {
-        if (d.price === null) {
-          return "#f5f5f5"; // Light grey fill for undisclosed prices
-        }
+  // Create the stacked bars in bars layer
+  const yearGroups = barsGroup.selectAll(".year-group")
+    .data(stackedData)
+    .join("g")
+    .attr("class", "year-group")
+    .attr("transform", d => `translate(${xScale(d.year.toString())},0)`);
+
+  yearGroups.selectAll("rect")
+    .data(d => d.transactions)
+    .join("rect")
+    .attr("class", "transaction-rect")
+    .attr("x", 0)
+    .attr("y", d => yScale(d.y1))
+    .attr("width", xScale.bandwidth())
+    .attr("height", d => yScale(d.y0) - yScale(d.y1))
+    .attr("fill", d => {
+      if (d.price === null) {
+        return "#f5f5f5";
+      }
+      return getColorForTherapeuticArea(d.therapeuticArea);
+    })
+    .attr("stroke", d => {
+      if (d.price === null) {
         return getColorForTherapeuticArea(d.therapeuticArea);
-      })
-      .attr("stroke", d => {
-        if (d.price === null) {
-          return getColorForTherapeuticArea(d.therapeuticArea);
-        }
-        return "#fff";
-      })
-      .attr("stroke-width", d => d.price === null ? 2 : 1)
-      .attr("stroke-dasharray", d => d.price === null ? "4,4" : "none")
-      .attr("opacity", d => d.price === null ? 0.9 : 0.8)
-      .style("cursor", "pointer")
+      }
+      return "#fff";
+    })
+    .attr("stroke-width", d => d.price === null ? 2 : 1)
+    .attr("stroke-dasharray", d => d.price === null ? "4,4" : "none")
+    .attr("opacity", d => d.price === null ? 0.9 : 0.8)
+    .style("cursor", "pointer")
+    .on("mouseover", (event, d) => handleMouseOver(event, d))
+    .on("mouseout", handleMouseOut)
+    .on("click", (event, d) => {
+      event.stopPropagation();
+      handleClick(d);
+    });
+
+  // Add axes in axes layer
+  axesGroup.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale))
+    .style("font-size", "9px");
+
+  axesGroup.append("g")
+    .call(d3.axisLeft(yScale)
+      .tickFormat(d => `${d}M`))
+    .call(g => {
+      g.selectAll(".tick text")
+        .style("font-size", "8px")
+        .style("font-weight", "medium");
+      g.selectAll(".tick line")
+        .style("stroke", "#666")
+        .style("stroke-width", "0.25");
+      g.select(".domain")
+        .style("stroke", "#666")
+        .style("stroke-width", "0.5");
+    });
+
+  // Add y-axis label
+  g.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left + 10)
+    .attr("x", -height / 2)
+    .attr("text-anchor", "middle")
+    .style("fill", "#3B665D")
+    .style("font-size", "9px")
+    .attr("font-weight", "medium")
+    .text("Transaction Value (USD Millions)");
+
+function handleMouseOver(event, d) {
+  // Show tooltip
+  tooltipContent = {
+    drugName: d.drugName,
+    therapeuticArea: d.therapeuticArea,
+    indication: d.indication,
+    price: d.price === null ? 'Undisclosed' : `$${d.price.toLocaleString()}M`,
+    seller: d.seller,
+    buyer: d.buyer,
+    purchaseDate: d.purchaseDate
+  };
+  tooltipX = event.pageX;
+  tooltipY = event.pageY;
+  tooltipBorderColor = getColorForTherapeuticArea(d.therapeuticArea);
+  tooltipVisible = true;
+
+  // Get the current year group
+  const currentYear = d.purchaseYear;
+  const yearData = stackedData.find(y => y.year === currentYear);
+
+  // Desaturate other years
+  yearGroups.selectAll(".transaction-rect")
+    .style("filter", function(d) {
+      return d.purchaseYear === currentYear ? null : "saturate(0.3)";
+    });
+
+  // Remove any existing brackets
+  bracketsGroup.selectAll("*").remove();
+
+  // Add bracket for the current year
+  const yearX = xScale(currentYear.toString());
+  const bracketWidth = 15;
+  const textOffset = 25;
+
+  // Create bracket
+  bracketsGroup
+    .append("path")
+    .attr("d", `
+      M${yearX + xScale.bandwidth()} ${yScale(yearData.totalValue)}
+      h${bracketWidth}
+      v${height - yScale(yearData.totalValue)}
+      h-${bracketWidth}
+    `)
+    .attr("fill", "none")
+    .attr("stroke", "#666")
+    .attr("stroke-width", 1.5);
+
+  // Add background rectangle for text
+  const textY = yScale(yearData.totalValue / 2);
+  bracketsGroup
+    .append("rect")
+    .attr("x", yearX + xScale.bandwidth() + textOffset - 4)
+    .attr("y", textY - 15)
+    .attr("width", 85)
+    .attr("height", 52)
+    .attr("fill", "white")
+    .attr("stroke", "#e5e7eb")
+    .attr("stroke-width", 1)
+    .attr("rx", 4)
+    .style("z-index", 999);
+
+  // Add text
+  bracketsGroup
+    .append("text")
+    .attr("x", yearX + xScale.bandwidth() + textOffset)
+    .attr("y", textY)
+    .attr("dy", "0.32em")
+    .style("z-index", 1000)
+    .attr("text-anchor", "start")
+    .attr("font-size", "9px")
+    .attr("font-weight", "medium")
+    .attr("fill", "#666")
+    .text(`${yearData.totalSales} sales`)
+    .append("tspan")
+    .attr("x", yearX + xScale.bandwidth() + textOffset)
+    .attr("dy", "1.2em")
+    .text(`$${yearData.totalValue.toFixed(1)}M total`)
+    .append("tspan")
+    .attr("x", yearX + xScale.bandwidth() + textOffset)
+    .attr("dy", "1.2em")
+    .text(`$${yearData.averageValue.toFixed(1)}M avg`);
+
+  // Highlight the hovered rectangle
+  d3.select(event.target)
+    .attr("opacity", d.price === null ? 0.9 : 0.8)
+    .attr("stroke-width", 2)
+    .attr("stroke", "#ff1515")
+    .attr("stroke-dasharray", d.price === null ? "1,2.5" : "none");
+}
+    function handleMouseOut() {
+      tooltipVisible = false;
       
-      .on("mouseover", (event, d) => {
-        tooltipContent = {
-          drugName: d.drugName,
-          therapeuticArea: d.therapeuticArea,
-          indication: d.indication,
-          price: d.price === null ? 'Undisclosed' : `$${d.price.toLocaleString()}M`,
-          seller: d.seller,
-          buyer: d.buyer,
-          purchaseDate: d.purchaseDate
-        };
-        tooltipX = event.pageX;
-        tooltipY = event.pageY;
-        tooltipBorderColor = getColorForTherapeuticArea(d.therapeuticArea);
-        tooltipVisible = true;
+      // Restore saturation to all bars
+      yearGroups.selectAll(".transaction-rect")
+        .style("filter", null);
 
-        d3.select(event.target)
-          .attr("opacity", d.price === null ? 0.9 : 0.8)
-          .attr("stroke-width", 2)
-          .attr("stroke", "#ff1515")
-          .attr("stroke-dasharray", d.price === null ? "1,2.5" : "none");
-      })
+      // Remove brackets
+      bracketsGroup.selectAll("*").remove();
 
-      .on("mouseout", (event, d) => {
-        tooltipVisible = false;
-        d3.select(event.target)
-          .attr("opacity", d.price === null ? 0.9 : 0.8)
-          .attr("stroke-width", d.price === null ? 2 : 1)
-          .attr("stroke", d.price === null ? 
-            getColorForTherapeuticArea(d.therapeuticArea) : "#fff")
-          .attr("stroke-dasharray", d.price === null ? "2,2" : "none");
-      })
-      .on("click", (event, d) => {
-        event.stopPropagation();
-        handleClick(d);
-      });
+      // Restore original rectangle styles
+      d3.selectAll(".transaction-rect")
+        .attr("opacity", d => d.price === null ? 0.9 : 0.8)
+        .attr("stroke-width", d => d.price === null ? 2 : 1)
+        .attr("stroke", d => d.price === null ? 
+          getColorForTherapeuticArea(d.therapeuticArea) : "#fff")
+        .attr("stroke-dasharray", d => d.price === null ? "2,2" : "none");
+    }
 
     // Add axes
     g.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(xScale))
-      .style("font-size", "8px");
+      g.selectAll(".tick text")
+          .style("font-size", "8px")
+          .style("font-weight", "medium");
+      g.selectAll(".tick line")
+          .style("stroke", "#666")
+          .style("stroke-width", "0.5");
 
-      g.append("g")
-  .call(d3.axisLeft(yScale)
-    .tickFormat(d => `${d}M`))
-  .call(g => {
-    g.selectAll(".tick text") // Select all tick text elements
-      .style("font-size", "8px")
-      .style("font-weight", "medium");
-    g.selectAll(".tick line") // Optional: style the tick lines if needed
-      .style("stroke", "#666")
-      .style("stroke-width", "0.5");
-    g.select(".domain") // Optional: style the axis line if needed
-      .style("stroke", "#666")
-      .style("stroke-width", "0.5");
-  });
+    g.append("g")
+      .call(d3.axisLeft(yScale)
+        .tickFormat(d => `${d}M`))
+      .call(g => {
+        g.selectAll(".tick text")
+          .style("font-size", "8px")
+          .style("font-weight", "medium");
+        g.selectAll(".tick line")
+          .style("stroke", "#666")
+          .style("stroke-width", "0.5");
+        g.select(".domain")
+          .style("stroke", "#666")
+
+      });
 
     // Add labels
     g.append("text")
@@ -264,8 +385,10 @@
       .attr("x", -height / 2)
       .attr("text-anchor", "middle")
       .style("fill", "#3B665D")
-      .style("font-size", "9px")
+      .style("font-size", "9.25px")
+      .attr("z-index", 100)
       .attr("font-weight", "medium")
+      .attr("background-color", "#3B665D")
       .text("Transaction Value (USD Millions)");
   }
 
