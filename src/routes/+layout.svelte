@@ -1,6 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+  import { dev } from '$app/environment';
+
+  import { injectAnalytics } from '@vercel/analytics/sveltekit'
   
   const defaultMetadata = {
     title: "PatientlyIQ",
@@ -15,7 +18,7 @@
   $: routeID = $page.url.pathname.split("/");
 
   import { resetMode, setMode } from "mode-watcher";
-    import Header from '$lib/layouts/Header.svelte';
+  import Header from '$lib/layouts/Header.svelte';
   import Footer from "$lib/layouts/Footer.svelte";
     setMode("light");
   let pageWidth = 0;
@@ -24,6 +27,8 @@
     ...defaultMetadata,
     ...$page.data.metadata
   };
+
+  injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
 <svelte:head>
