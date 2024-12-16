@@ -79,7 +79,7 @@
 
 <div class="grid grid-cols-5">
     <!-- Sidebar -->
-    <div class="min-w-fit min-h-screen border-r border-gray-200 dark:border-gray-800 col-span-1">
+    <div class="min-w-fit min-h-screen border-r border-gray-200 dark:border-gray-800 col-spaconstn-1">
         <DashboardSidebar 
         {currentDiseaseData}
         on:filter={handleFilter}

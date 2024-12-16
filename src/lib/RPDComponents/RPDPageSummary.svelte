@@ -54,6 +54,24 @@ $: {
     }
   }
 }
+$: overviewStats = {
+      totalVouchers: constellationData.length,
+      uniqueAreas: new Set(constellationData.map(d => d.name)).size,
+      totalValue: constellationData
+        .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+        .reduce((sum, d) => {
+          const price = parseFloat(d["Sale  Price (USD, Millions)"]) || 0;
+          return sum + price;
+        }, 0),
+      purchasedCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
+      uniqueIndications: new Set(constellationData.map(d => d.id)).size,
+      uniqueTreatmentTypes: new Set(constellationData.map(d => d["Treatment Type"]).filter(Boolean)).size,
+      noApprovedTreatments: new Set(
+        constellationData
+          .filter(d => d["Approved Drug"]?.toLowerCase() === 'n')
+          .map(d => d.id)
+      ).size
+    };
 
   function formatNumber(num: number): string {
     return num.toLocaleString();
@@ -68,13 +86,16 @@ $: {
   </div>
 
   <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">      
-    The FDA's rare pediatric disease priority review voucher program produced An estimated 
+    The FDA's rare pediatric disease priority review voucher program produced an estimated 
       <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022. These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
-      <br><br>
-      Through 2024,
-      <span class="highlight">{formatNumber(54)}</span> priority review vouchers have been awarded. With each voucher representing 4 months of expedited review, the program has saved An estimated
-      <span class="highlight">{formatNumber(216)}</span> months of regulatory review.
-
+      <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
+        The program has awarded <span class="highlight">{formatNumber(overviewStats.totalVouchers)}</span> vouchers across 
+        <span class="highlight">{formatNumber(overviewStats.uniqueAreas)}</span> therapeutic areas. 
+        <br><br>
+        New treatments have been developed for <span class="highlight">{formatNumber(overviewStats.uniqueIndications)}</span> indications, 
+        including <span class="highlight">{formatNumber(overviewStats.noApprovedTreatments)}</span> that previously had no FDA-approved options.
+        These span <span class="highlight">{formatNumber(overviewStats.uniqueTreatmentTypes)}</span> distinct treatment modalities.
+        <br><br>
       <br><br>
       Hover over and tap on the flower petals, the sidebar cards, or individual years to explore the ways this programmed nurtured key milestones in rare disease treatment.
     </p>
