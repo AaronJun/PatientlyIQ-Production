@@ -13,8 +13,10 @@
     import SearchVolumeChart from '$lib/search/SearchVolumeChart.svelte';
     import searchData from '$lib/data/searchData.json';
     import SentimentBars from './SentimentBars.svelte';
+    import "carbon-components-svelte/css/all.css";
     import radialSampleData from '$lib/data/radialSampleData.json';
     import SearchTrends from '$lib/search/SearchTrends.svelte';
+    import DashboardSidebar from '$lib/sentimentComponents/DashboardSidebar.svelte';
 
     
     import TopNegativeTopicsChart from './TopNegativeTopicsChart.svelte';
@@ -75,68 +77,59 @@
     }
 </script>
 
-<div class="flex">
+<div class="grid grid-cols-5">
     <!-- Sidebar -->
-    <div class="w-16 min-h-screen bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col items-center py-64 gap-4">
-        <button
-            class="w-12 h-12 p-2 rounded-lg text-[7.25px] transition-all duration-200 flex flex-col items-center justify-center {activeTab === 'sentiment' ? 'bg-[#ff5151] text-white scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
-            on:click={() => setActiveTab('sentiment')}
-        >
-            <SentimentPictogram 
-                class="w-6 h-6 mb-1"
-                fill={activeTab === 'sentiment' ? 'white' : 'currentColor'}
-            />
-            <span class="text-center font-bold">Sentiment</span>
-        </button>
-        <button
-            class="w-12 h-12 p-2 rounded-lg text-[7.25px] transition-all duration-200 flex flex-col items-center justify-center {activeTab === 'awareness' ? 'bg-[#ff5151] text-white scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
-            on:click={() => setActiveTab('awareness')}
-        >
-            <AwarenessPictogram 
-                class="w-6 h-6 mb-1"
-                fill={activeTab === 'awareness' ? 'white' : 'currentColor'}
-            />
-            <span class="text-center font-bold">Trial</span>
-        </button>
-        <button
-            class="w-12 h-12 p-2 rounded-lg text-[7.25px] transition-all duration-200 flex flex-col items-center justify-center {activeTab === 'journeys' ? 'bg-[#ff5151] text-white scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
-            on:click={() => setActiveTab('journeys')}
-        >
-            <JourneysPictogram 
-                class="w-6 h-6 mb-1"
-                fill={activeTab === 'journeys' ? 'white' : 'currentColor'}
-            />
-            <span class="text-center font-bold">Journeys</span>
-        </button>
-        <button
-            class="w-12 h-12 p-2 rounded-lg text-[7.25px] transition-all duration-200 flex flex-col items-center justify-center {activeTab === 'network' ? 'bg-[#ff5151] text-white scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
-            on:click={() => setActiveTab('network')}
-        >
-            <NetworkPictogram 
-                class="w-6 h-6 mb-1"
-                fill={activeTab === 'network' ? 'white' : 'currentColor'}
-            />
-            <span class="text-center font-bold">Network</span>
-        </button>
+    <div class="min-w-fit min-h-screen border-r border-gray-200 dark:border-gray-800 col-span-1">
+        <DashboardSidebar 
+        {currentDiseaseData}
+        on:filter={handleFilter}
+    />
     </div>
-
     <!-- Main Content -->
-    <div class="flex-1 px-8 pt-24">
-        <div class="mb-12">
-            <SentimentFilter on:filter={handleFilter} />
+    <div class="flex-1 px-8 pt-8 bg-slate-50 col-span-4">
+        <div class="grid grid-cols-3 items-stretch min-w-full">
+            <button
+                     class="w-16 h-10 p-2 rounded-sm text-xs font-mono font-semibold  transition-all duration-200 grid grid-cols-2 justify-start place-items-stretch items-center gap-1 min-w-full 
+               {activeTab === 'sentiment' ? 'border-b-2 border-[#ff5624] text-[#ff1515] font-bold italic' : 'text-gray-600 hover:border-orange-200 dark:bg-gray-800 dark:text-gray-300'}"
+                on:click={() => setActiveTab('sentiment')}
+            >
+                <SentimentPictogram 
+                    class="w-6 h-6 mb-1"
+                    fill={activeTab === 'sentiment' ? '#ff1515' : 'currentColor'}
+                    />
+                <span class="text-center font-bold">Sentiment</span>
+            </button>
+            
+            <button
+               class="w-16 h-10 border-b border-slate-200 px-2 rounded-sm text-xs font-mono font-semibold transition-all duration-200 grid grid-cols-2 justify-start place-items-around items-center gap-1 min-w-full 
+               {activeTab === 'awareness' ? 'border-b-2 border-[#ff5624] text-[#ff1515] font-bold italic' : 'text-gray-600 hover:border-orange-200 dark:bg-gray-800 dark:text-gray-300'}"
+                on:click={() => setActiveTab('awareness')}
+            >
+            <AwarenessPictogram 
+            class="w-6 h-6"
+            fill={activeTab === 'awareness' ? '#ff1515' : 'currentColor'}
+        />Trial
+            </button>
+            
+         <button
+         class="w-16 h-10 border-b border-slate-200 px-2 rounded-sm text-xs font-mono font-semibold transition-all duration-200 grid grid-cols-2 justify-start place-items-around items-center gap-1 min-w-full 
+         {activeTab === 'journeys' ? 'border-b-2 border-[#ff5624] text-[#ff1515] font-bold italic' : 'text-gray-600 hover:border-orange-200 dark:bg-gray-800 dark:text-gray-300'}"
+          on:click={() => setActiveTab('journeys')}
+        
+            >
+                <JourneysPictogram 
+                    class="w-6 h-6"
+                    fill={activeTab === 'journeys' ? '#ff1515 n m mn ' : 'currentColor'}
+                />
+                <span class="text-center font-bold">Journeys</span>
+            </button>
         </div>
-
-        {#if currentDiseaseData}
-            <div class="text-sm text-gray-600 dark:text-gray-200 mb-8">
-                We've collected <span class="text-orange-600"> {Object.values(currentDiseaseData.sentiments).reduce((sum, val) => sum + val, 0)}</span> entries for <span class="text-orange-600">{currentDiseaseData.name}</span>.
-            </div>
-        {/if}
 
         <div class="relative">
             {#if activeTab === 'sentiment' && currentDiseaseData}
             <div>
                 <div class="mb-4 mt-12 flex items-left gap-5">
-                    <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                    <span class="font-mono text-xs font-semibold text-gray-500 dark:text-gray-400">
                         Sentiment Analysis
                     </span>
                 </div>
@@ -184,14 +177,14 @@
             </div>
             {:else if activeTab === 'journeys'}
                 <div class="mb-4 mt-12 flex items-left gap-5">
-                    <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                    <span class="font-mono text-xs font-semibold text-gray-500 dark:text-gray-400">
                         Patient Journeys
                     </span>
                 </div>
                 <PatientJourneyCards {selectedDisease} />
             {:else if activeTab === 'network'}
                 <div class="mb-4 mt-12 flex min-h-52 items-left gap-5">
-                    <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                    <span class="font-mono text-xs font-semibold text-gray-500 dark:text-gray-400">
                         Term Network
                     </span>
                 </div>
@@ -216,7 +209,7 @@
 
 <style>
     .mb-4 {
-        border-top: .25px solid #ff5151;
+        border-top: .25px solid #FF5624;
         padding-top: .525rem;
     }
 

@@ -3,6 +3,7 @@
     import { circInOut } from 'svelte/easing';
     import insightData from '$lib/data/diseaseInsights.json';
     import wordCloudData from '$lib/data/wordCloudData.json';
+    import PatientStoryCircles from '$lib/RPDPatientStories/PatientStoryCircles.svelte';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;
@@ -41,8 +42,14 @@
     >        
         <button class="close-button" on:click={onClose}>&times;</button>
 
-        <div class="drawer-content">
-            <h2 class="text-xl font-light mb-8">
+        <div class="drawer-content ">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Patient Stories            
+            </h3>
+
+            <PatientStoryCircles {selectedDisease} />
+
+            <h2 class="text-xl font-light mt-12 mb-8">
                 Analysis for <span class="text-[#ff5151] font-normal">{disease}</span>
             </h2>
             
@@ -142,7 +149,7 @@
     }
 
     .drawer {
-        width: 50vw;
+        width: 55vw;
         height: 100%;
         background-color: hsl(var(--background));
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);

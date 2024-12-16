@@ -90,18 +90,19 @@
             // Topic text
             label.append("text")
                 .attr("text-anchor", d.x > chartWidth / 2 ? "start" : "end")
-                .attr("dy", "-0.2em")
+                .attr("dy", "-.625em")
                 .attr("fill", "#666")
                 .attr("class", "dark:fill-gray-300")
-                .style("font-size", "1rem")
+                .style("font-size", ".825rem")
+                .style("font-family", "IBM Plex Mono")
                 .text(d.topic);
 
             // Score text
             label.append("text")
                 .attr("text-anchor", d.x > chartWidth / 2 ? "start" : "end")
-                .attr("dy", "1.25rem")
+                .attr("dy", "-1.45em")
                 .attr("fill", "#4CAF50")
-                .style("font-size", "1rem")
+                .style("font-size", "1.25rem")
                 .style("font-weight", "bold")
                 .text(`${d.score}%`);
         });

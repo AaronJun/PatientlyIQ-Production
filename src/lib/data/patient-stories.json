@@ -1,0 +1,158 @@
+{
+  "diseases": {
+    "pompe": {
+      "patients": [
+        {
+          "id": "sarah-m",
+          "name": "Sarah M.",
+          "age": "34",
+          "disease": "Pompe Disease",
+          "persona": "Parent of Newly Diagnosed Patient",
+          "img": "/profiles/sarahm.jpg",
+          "cards": [
+            {
+              "id": "sarah-1",
+              "type": "quote",
+              "quote": "The hardest part was the uncertainty before diagnosis. Now at least I have a path forward.",
+              "context": "Initial Diagnosis",
+              "treatmentSentiment": "4",
+              "trialSentiment": "3",
+              "medicalLiteracy": "4",
+              "financialStability": "3"
+            },
+            {
+              "id": "sarah-2",
+              "type": "wordcloud",
+              "context": "Common Topics",
+              "words": [
+                { "text": "Diagnosis", "value": 85 },
+                { "text": "Treatment", "value": 75 },
+                { "text": "Family", "value": 70 },
+                { "text": "Support", "value": 65 },
+                { "text": "Uncertainty", "value": 60 },
+                { "text": "Hope", "value": 55 },
+                { "text": "Journey", "value": 50 },
+                { "text": "Symptoms", "value": 45 },
+                { "text": "Strength", "value": 40 },
+                { "text": "Community", "value": 35 }
+              ]
+            },
+            {
+              "id": "sarah-3",
+              "type": "timeline",
+              "context": "Treatment Journey",
+              "timelineData": [
+                { "month": "Jan", "sentiment": 45 },
+                { "month": "Feb", "sentiment": 52 },
+                { "month": "Mar", "sentiment": 48 },
+                { "month": "Apr", "sentiment": 65 },
+                { "month": "May", "sentiment": 72 },
+                { "month": "Jun", "sentiment": 78 }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "michael-r",
+          "name": "Michael R.",
+          "age": "45",
+          "disease": "Pompe Disease",
+          "persona": "Parent of Patient in Clinical Trial",
+          "img": "/profiles/michaelr.jpg",
+          "cards": [
+            {
+              "id": "michael-1",
+              "type": "quote",
+              "quote": "Clinical trials gave me hope when traditional treatments weren't enough.",
+              "context": "Treatment Journey",
+              "treatmentSentiment": "5",
+              "trialSentiment": "5",
+              "medicalLiteracy": "5",
+              "financialStability": "4"
+            },
+            {
+              "id": "michael-2",
+              "type": "wordcloud",
+              "context": "Common Topics",
+              "words": [
+                { "text": "Clinical Trials", "value": 90 },
+                { "text": "Research", "value": 80 },
+                { "text": "Treatment", "value": 75 },
+                { "text": "Progress", "value": 70 },
+                { "text": "Healthcare", "value": 65 },
+                { "text": "Management", "value": 60 },
+                { "text": "Adaptation", "value": 55 },
+                { "text": "Experience", "value": 50 },
+                { "text": "Knowledge", "value": 45 },
+                { "text": "Support", "value": 40 }
+              ]
+            },
+            {
+              "id": "emma-3",
+              "type": "timeline",
+              "context": "Treatment Journey",
+              "timelineData": [
+                { "month": "Jan", "sentiment": 11 },
+                { "month": "Feb", "sentiment": 22 },
+                { "month": "Mar", "sentiment": 48 },
+                { "month": "Apr", "sentiment": 62 },
+                { "month": "May", "sentiment": 72 },
+                { "month": "Jun", "sentiment": 78 }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "emma-l",
+          "name": "Emma L.",
+          "age": "28",
+          "disease": "Pompe Disease",
+          "persona": "Parent Considering Clinical Trial",
+          "img": "/profiles/emmal.jpg",
+          "cards": [
+            {
+              "id": "emma-1",
+              "type": "quote",
+              "quote": "Finding the right support network made all the difference in my journey.",
+              "context": "Support System",
+              "treatmentSentiment": "3",
+              "trialSentiment": "4",
+              "medicalLiteracy": "3",
+              "financialStability": "3"
+            },
+            {
+              "id": "emma-2",
+              "type": "wordcloud",
+              "context": "Common Topics",
+              "words": [
+                { "text": "Support", "value": 85 },
+                { "text": "Network", "value": 80 },
+                { "text": "Community", "value": 75 },
+                { "text": "Journey", "value": 70 },
+                { "text": "Learning", "value": 65 },
+                { "text": "Growth", "value": 60 },
+                { "text": "Understanding", "value": 55 },
+                { "text": "Resources", "value": 50 },
+                { "text": "Hope", "value": 45 },
+                { "text": "Advocacy", "value": 40 }
+              ]
+            },
+            {
+              "id": "emma-3",
+              "type": "timeline",
+              "context": "Treatment Journey",
+              "timelineData": [
+                { "month": "Jan", "sentiment": 11 },
+                { "month": "Feb", "sentiment": 22 },
+                { "month": "Mar", "sentiment": 48 },
+                { "month": "Apr", "sentiment": 62 },
+                { "month": "May", "sentiment": 72 },
+                { "month": "Jun", "sentiment": 78 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

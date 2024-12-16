@@ -4,7 +4,6 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
 	darkMode: ['class'],
 	content: ['./src/**/*.{html,js,svelte,ts}'],
-	safelist: ['dark'],
 	theme: {
 		container: {
 			center: true,
@@ -149,7 +148,7 @@ const config: Config = {
 			}
 		}
 	},
-	plugins:[require('tailwindcss-animate')]
+	plugins:[require('tailwindcss-animate'), require('@tailwindcss/forms')],
 };
 
 export default config;

@@ -83,25 +83,27 @@
                 .attr("stroke-width", 0.5)
                 .attr("class", "dark:stroke-gray-400");
 
-            // Label group
-            const label = bubble.append("g")
+                 // Label group
+                 const label = bubble.append("g")
                 .attr("transform", `translate(${endX + (d.x > chartWidth / 2 ? 5 : -5)},${startY})`);
 
-            // Topic text
-            label.append("text")
+                      // Topic text
+          // Topic text
+          label.append("text")
                 .attr("text-anchor", d.x > chartWidth / 2 ? "start" : "end")
-                .attr("dy", "-0.2em")
+                .attr("dy", "-.625em")
                 .attr("fill", "#666")
                 .attr("class", "dark:fill-gray-300")
-                .style("font-size", "1rem")
+                .style("font-size", ".825rem")
+                .style("font-family", "IBM Plex Mono")
                 .text(d.topic);
 
             // Score text
             label.append("text")
                 .attr("text-anchor", d.x > chartWidth / 2 ? "start" : "end")
-                .attr("dy", "1.25rem")
-                .attr("fill", "#E80000")
-                .style("font-size", "1rem")
+                .attr("dy", "-1.45em")
+                .attr("fill", "#FF2424")
+                .style("font-size", "1.25rem")
                 .style("font-weight", "bold")
                 .text(`${d.score}%`);
         });
