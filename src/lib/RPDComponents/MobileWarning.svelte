@@ -33,7 +33,7 @@
         <p>At the moment, this application is designed for larger screens.</p>
         <p>Make it easy to remember to come back by clicking below to share the link to your inbox.</p>
         <div class="button-container">
-          <Button kind="primary" icon={MailReply} href="mailto:?subject=Check%20out%20this%20app&body=I%20found%20this%20app%20and%20thought%20you%20might%20like%20it.%20Visit%20it%20here:%20https://rpd-prv-flowers-v1.onrender.com/">Share</Button>
+          <Button kind="primary" icon={MailReply} href="mailto:?subject=Check%20out%20this%20app&body=I%20found%20this%20app%20and%20thought%20you%20might%20like%20it.%20Visit%20it%20here:%20www.patientlyiq.com/rpd/">Share</Button>
         </div>
     </div>
 
