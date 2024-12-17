@@ -3,7 +3,7 @@
   import { RadialTimeline, YearlySummary } from '$lib/componentStores';
   import MobileWarning from '$lib/RPDComponents/MobileWarning.svelte';
   import RPDPageSummary from '$lib/RPDComponents/RPDPageSummary.svelte';
-  import TherapeuticAreaGrid from '$lib/RPDComponents/TARadialTimeline.svelte';
+  import TARadialTimeline from '$lib/RPDComponents/TARadialTimeline.svelte';
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
   import TextDrawer from '$lib/RPDComponents/TextContentDrawer.svelte';
   import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
@@ -57,7 +57,7 @@
 
   const siteUrl = 'https://patientlyiq.com';
 const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
-const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
+const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 56 new rare disease treatments, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
 const pageImage = `${siteUrl}/rpd-program-preview.png`; // Make image URL absolute
 const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
 
@@ -349,7 +349,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
             </div>
 
             <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
-              <TherapeuticAreaGrid
+              <TARadialTimeline
                 constellationData={processedConstellationData}
                 selectedArea={hoveredPetalData?.name || null}
                 on:petalHover={handlePetalHover}

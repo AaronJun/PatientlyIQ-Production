@@ -21,14 +21,19 @@
   import Header from '$lib/layouts/Header.svelte';
   import Footer from "$lib/layouts/Footer.svelte";
     setMode("light");
+  import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
+injectSpeedInsights();
   let pageWidth = 0;
 
   $: metadata = {
     ...defaultMetadata,
     ...$page.data.metadata
   };
-
+  
   injectAnalytics({ mode: dev ? 'development' : 'production' });
+  injectSpeedInsights();
+
 </script>
 
 <svelte:head>

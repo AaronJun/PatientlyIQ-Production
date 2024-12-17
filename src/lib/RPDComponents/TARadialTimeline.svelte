@@ -311,6 +311,7 @@ function updatePetalHighlights() {
 }
 
 function updateVisualState() {
+  
   const currentArea = hoveredArea || activeArea;
   
   // Update labels with special handling for Oncology
@@ -505,9 +506,9 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
   }
 
   function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: string) {
-  event.stopPropagation();
-  dispatch('clusterElementClick', { entry, color });
-}
+    event.stopPropagation();
+    dispatch('clusterElementClick', { entry, color });
+  }
 
 function drawVisualization() {
     if (!svg) return;

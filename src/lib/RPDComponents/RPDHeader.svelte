@@ -27,7 +27,9 @@
 <div class="flex flex-col justify-start pl-12 py-8 mt-8">
   <div>
     <h1 class="capitalize font-light text-3xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
-    <p class="font-base">Measuring the impact of the <span class="font-base text-orange-600 font-medium">FDA's Rare Pediatric Disease Priority Review Voucher Program</span></p>
+    
+    <p class="font-base max-w-prose">
+      The FDA's Priority Review Voucher Program has planted the seeds for <span class="font-base text-orange-600 font-medium">56 new rare disease treatments</span>, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.
     
     <div class="flex gap-4 mt-12">
       <!-- Get Details Button -->
@@ -52,7 +54,7 @@
         <div class="absolute inset-0 bg-[#828CF0] -translate-x-full group-hover:translate-x-0 transition-transform duration-600 ease-in-out z-0"></div>
         <span class="relative z-10 flex items-center gap-4">
          Advocate for the Program
-          <Share size={16} />
+          <Share size={16} />injectSpeedInsights
         </span>
       </button>
 
