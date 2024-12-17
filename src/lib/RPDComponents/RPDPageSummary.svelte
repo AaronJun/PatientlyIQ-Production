@@ -105,7 +105,7 @@ $: overviewStats = {
     </p>
 
   {:else if currentYear === "2013"}
-  <h2 class="text-sm mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
+  <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
   
   <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
@@ -113,7 +113,7 @@ $: overviewStats = {
     </p>
 
   {:else if currentYear === "2020"}
-  <h2 class="text-sm mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
+  <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
     <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
       <span class="highlight">{currentYear}</span> saw a significant increase in the number of RPD designations, with <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> granted. This was likely driven by the RPD program's planned sunset, which was to begin in September 2020.
@@ -126,7 +126,7 @@ $: overviewStats = {
     </p>
 
   {:else if currentYear >= "2023"}
-  <h2 class="text-sm mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
+  <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
     <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
       An estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> designations were granted, and
@@ -137,7 +137,7 @@ $: overviewStats = {
     </p>
 
   {:else}
-  <h2 class="text-sm mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
+  <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
     <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
      There were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
