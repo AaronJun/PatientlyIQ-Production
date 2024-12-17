@@ -54,7 +54,7 @@
         <div class="absolute inset-0 bg-[#828CF0] -translate-x-full group-hover:translate-x-0 transition-transform duration-600 ease-in-out z-0"></div>
         <span class="relative z-10 flex items-center gap-4">
          Advocate for the Program
-          <Share size={16} />injectSpeedInsights
+          <Share size={16} />
         </span>
       </button>
 
