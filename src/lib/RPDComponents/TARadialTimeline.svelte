@@ -223,7 +223,7 @@
         petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
         petalPaths[startIdx].setAttribute('fill', '#231F20');
         petalPaths[startIdx].setAttribute('opacity', '0');
-        petalPaths[startIdx].setAttribute('style', `filter: saturate(0.25)`); // Set initial saturation low
+        petalPaths[startIdx].setAttribute('style', `filter: saturate(0.45)`); // Set initial saturation low
       }
 
       // Outer petal
@@ -233,8 +233,8 @@
         petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
         petalPaths[startIdx + 1].setAttribute('fill', color);
         petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
-        petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
-        petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.1)`); // Set initial saturation low
+        petalPaths[startIdx + 1].setAttribute('stroke-width', '2');
+        petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.346)`); // Set initial saturation low
       }
 
       // Inner petal
