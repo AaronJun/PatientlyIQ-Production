@@ -130,6 +130,7 @@
     .padding(0.1);
 
   let hoveredArea: string | null = null;
+
   
   function createColorScale(baseColor: string, count: number): d3.ScaleLinear<string, string> {
     return d3.scaleLinear<string>()
@@ -223,7 +224,7 @@
         petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
         petalPaths[startIdx].setAttribute('fill', '#231F20');
         petalPaths[startIdx].setAttribute('opacity', '0');
-        petalPaths[startIdx].setAttribute('style', `filter: saturate(0.45)`); // Set initial saturation low
+        petalPaths[startIdx].setAttribute('style', `filter: saturate(0.25)`); // Set initial saturation low
       }
 
       // Outer petal
@@ -233,8 +234,8 @@
         petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
         petalPaths[startIdx + 1].setAttribute('fill', color);
         petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
-        petalPaths[startIdx + 1].setAttribute('stroke-width', '2');
-        petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.346)`); // Set initial saturation low
+        petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
+        petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.1)`); // Set initial saturation low
       }
 
       // Inner petal
@@ -309,6 +310,7 @@ function updatePetalHighlights() {
       return hoveredArea ? "#ff1515" : "#231F20";
     });
 }
+
 
 function updateVisualState() {
   
@@ -480,7 +482,7 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
     // Calculate position relative to container
     const containerRect = container.getBoundingClientRect();
     tooltipX = containerRect.left + (containerRect.width / 2.25);
-    tooltipY = containerRect.top + (containerRect.height / 2.25);
+    tooltipY = containerRect.top + (containerRect.height / 1.75);
     tooltipVisible = true;
 
     // Still dispatch the event for other listeners

@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+
   import { dev } from '$app/environment';
 
   import { injectAnalytics } from '@vercel/analytics/sveltekit'
@@ -37,6 +38,14 @@ injectSpeedInsights();
 </script>
 
 <svelte:head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-S4WC261VK3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-S4WC261VK3');
+  </script>  
   <!-- Basic Meta Tags -->
   <title>{metadata.title}</title>
   <meta name="description" content={metadata.description} />
