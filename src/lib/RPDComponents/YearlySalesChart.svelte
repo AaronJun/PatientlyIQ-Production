@@ -423,7 +423,7 @@ function handleMouseOver(event, d) {
 {#if tooltipVisible}
   <div
     class="tooltip p-2 pt-1"
-    style="left: {tooltipX - 290}px; top: {tooltipY - 220}px; border-top: 0.625rem solid {tooltipBorderColor};"
+    style="left: {tooltipX - 100}px; top: {tooltipY - 490}px; border-top: 0.625rem solid {tooltipBorderColor};"
   >
     <div>
         <p class="text-lg font-medium">

@@ -627,7 +627,8 @@
     flex-direction: column;
     flex-grow: 1;
     gap: 2rem;
-    padding: 2rem 2.25rem 0 2.25rem;
+    height: 100%;
+    padding: 1rem 1.25rem 0 1.25rem;
   }
 
   .visualization-tabs {

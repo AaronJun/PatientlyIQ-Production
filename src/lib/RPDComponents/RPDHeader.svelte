@@ -25,6 +25,7 @@
 </script>
 
 <div class="flex flex-col justify-start pl-12 py-8 mt-8">
+
   <div>
     <h1 class="capitalize font-light text-3xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
     

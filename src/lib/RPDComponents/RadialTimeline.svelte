@@ -17,9 +17,9 @@ import { onMount, createEventDispatcher } from 'svelte';
   import TenPetal from '../../assets/10PetalNew.svg?raw';
   import ElevenPetal from '../../assets/11PetalNew.svg?raw';
   import TwelvePetal from '../../assets/12PetalNew.svg?raw';
-  import RpdFlowerInfoPanel from './RPDFlowerInfoPanel.svelte';
   import RpdtaLegend from './RPDTALegend.svelte';
   import Tooltip from './RPDTooltip.svelte';
+  import RPDDrawer from './RPDDrawer.svelte';
   
   interface RPDData {
     Year: string;
@@ -55,10 +55,15 @@ import { onMount, createEventDispatcher } from 'svelte';
   let svg: Selection<SVGGElement, unknown, HTMLElement, any>;
   let containerWidth: number;
   let containerHeight: number;
-  
+
+  let showDrawer = false;
+  let drawerData = null;
+  let drawerColor = '';
+  let initialView = '';
+
   $: width = (containerWidth || 900) * 1.1;
   $: height = (containerHeight || 800);
-  $: radius = Math.min(width, height) / 2.525;
+  $: radius = Math.min(width, height) / 2.25;
   
   $: margin = {
     top: height * 0.15,
@@ -134,64 +139,85 @@ import { onMount, createEventDispatcher } from 'svelte';
   let hoveredTherapeuticArea: string | null = null;
 
   function handleKeydown(event: KeyboardEvent) {
-    if (!document.activeElement?.classList.contains('year-segment')) {
-      return;
-    }
-
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        event.preventDefault();
-        if (activeYearIndex < years.length - 1) {
-          activeYearIndex++;
-          const nextYear = years[activeYearIndex];
-          navigateToYear(nextYear);
-        }
-        break;
-        
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        event.preventDefault();
-        if (activeYearIndex > 0) {
-          activeYearIndex--;
-          const prevYear = years[activeYearIndex];
-          navigateToYear(prevYear);
-        }
-        break;
-        
-      case 'Home':
-        event.preventDefault();
-        activeYearIndex = 0;
-        navigateToYear(years[0]);
-        break;
-        
-      case 'End':
-        event.preventDefault();
-        activeYearIndex = years.length - 1;
-        navigateToYear(years[years.length - 1]);
-        break;
-        
-      case ' ':
-      case 'Enter':
-        event.preventDefault();
-        handleYearClick(event as unknown as MouseEvent, activeYear);
-        break;
-    }
-  }
+  // Allow keyboard navigation when the container or any year-segment is focused
+  const isContainerFocused = document.activeElement === container;
+  const isYearSegmentFocused = document.activeElement?.classList.contains('year-segment');
   
-  function navigateToYear(year: string) {
-    activeYearIndex = years.indexOf(year);
-    activeYear = year;
-    updateVisibility(year);
-    dispatch('yearChange', { year });
-    
-    requestAnimationFrame(() => {
-      const yearSegment = svg.select(`.year-${year}`).node();
-      if (yearSegment instanceof SVGElement) {
-        yearSegment.focus();
-      }
-    });
+  if (!isContainerFocused && !isYearSegmentFocused) {
+    return;
   }
+
+  // Prevent event from bubbling to avoid double handling
+  event.stopPropagation();
+
+  let newIndex = activeYearIndex;
+  
+  switch (event.key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      event.preventDefault();
+      if (newIndex < years.length - 1) {
+        newIndex++;
+      }
+      break;
+      
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      event.preventDefault();
+      if (newIndex > 0) {
+        newIndex--;
+      }
+      break;
+      
+    case 'Home':
+      event.preventDefault();
+      newIndex = 0;
+      break;
+      
+    case 'End':
+      event.preventDefault();
+      newIndex = years.length - 1;
+      break;
+      
+    case ' ':
+    case 'Enter':
+      event.preventDefault();
+      handleYearClick(event as unknown as MouseEvent, activeYear);
+      return;
+  }
+
+  // Only update if the index actually changed
+  if (newIndex !== activeYearIndex) {
+    activeYearIndex = newIndex;
+    navigateToYear(years[newIndex]);
+  }
+}
+
+function handleLegendAreaClick(event: CustomEvent<{ area: string }>) {
+  const area = event.detail.area;
+  const areaData = constellationData.find(d => d.name === area);
+  if (areaData) {
+    drawerData = areaData;
+    drawerColor = therapeuticAreaColors[area];
+    showDrawer = true;
+    // Pass initialView prop
+    initialView = 'ta';
+  }
+}
+
+function navigateToYear(year: string) {
+  activeYearIndex = years.indexOf(year);
+  activeYear = year;
+  updateVisibility(year);
+  dispatch('yearChange', { year });
+  
+  requestAnimationFrame(() => {
+    const yearSegment = svg.select(`.year-${year}`).node();
+    if (yearSegment instanceof SVGElement) {
+      yearSegment.focus();
+    }
+  });
+}
   
   function initializeChart() {
   d3.select(container).selectAll("*").remove();
@@ -237,7 +263,7 @@ function sortEntriesByTherapeuticArea(entries: ConstellationEntry[]): Constellat
 }
 
 function drawGuideCircles() {
-  const logBase = 1.8725;
+  const logBase = 1.725;
   const guideValues = d3.range(Math.floor(Math.log(maxRPD) / Math.log(logBase)) + 1)
     .map(i => Math.pow(logBase, i));
 
@@ -332,7 +358,7 @@ function drawYearArcs() {
     .on("click", handleYearClick);
 }
 
-  function drawDataLines() {
+function drawDataLines() {
   const lines = svg.append("g")
     .attr("class", "data-lines");
 
@@ -348,9 +374,9 @@ function drawYearArcs() {
       .attr("x2", Math.sin(angle) * radius)
       .attr("y2", -Math.cos(angle) * radius)
       .attr("stroke", "#063D37")
-      .attr("stroke-width", radius * 0.003)
-      .attr("stroke-dasharray", (+d.Year >= 2023) ? "4,4" : "none")  // Add dotted line for 2023 and 2024
-      .style("opacity", d.Year === activeYear ? 1 : 0.5);
+      .attr("stroke-width", radius * 0.005)
+      .attr("stroke-dasharray", (+d.Year >= 2023) ? "2,8" : "none")  // Add dotted line for 2023 and 2024
+      .style("opacity", d.Year === activeYear ? 1 : 0.2);
   });
 }
   
@@ -635,16 +661,17 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
   }
 
   function updatePetalHighlights() {
-    svg.selectAll('.petal-part')
+  svg.selectAll('.petal-part')
     .transition()
     .duration(200)
     .style("filter", function() {
       const petalElement = d3.select(this);
       const therapeuticArea = petalElement.attr('data-therapeutic-area');
-      const cluster = ('.cluster');
-      if (!cluster) return "saturate(0.2)";
+      const parentCluster = d3.select(this.closest('.cluster'));
       
-      const year = cluster.classList[1].split('-')[1];
+      if (!parentCluster.node()) return "saturate(0.2)";
+      
+      const year = parentCluster.attr('class').split(' ')[1].split('-')[1];
       
       if (!hoveredTherapeuticArea) {
         return year === activeYear ? "saturate(1)" : "saturate(0.2)";
@@ -660,7 +687,7 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
       const petalElement = d3.select(this);
       const therapeuticArea = petalElement.attr('data-therapeutic-area');
       
-      return therapeuticArea === hoveredTherapeuticArea ? 1 : .2;
+      return therapeuticArea === hoveredTherapeuticArea ? 1 : 0.2;
     });
 
   // Specifically update background petals
@@ -680,13 +707,15 @@ function handlePetalClick(event: MouseEvent, entry: ConstellationEntry, color: s
         : petalElement.attr('data-original-fill');
     });
 }
+
 // Update the updateVisibility function to include label handling
 function updateVisibility(year: string, isHovered: boolean = false) {
   // Existing timeline line updates
   svg.selectAll(".timeline-line")
     .transition()
     .duration(400)
-    .style("opacity", d => d === year ? 1 : 0.5)
+    .style("opacity", d => d === year ? 1 : 0.2)
+    .style("saturate", d => d === year ? 1 : 0.2)
     .attr("stroke-dasharray", function() {
       const lineYear = this.classList[1].split('-')[1];
       return +lineYear >= 2023 ? "4,4" : "none";
@@ -758,8 +787,6 @@ function showRPDLabel(year: string) {
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle");
 
-
-
     // Fade in the label
     labelGroup
       .style("opacity", 0)
@@ -768,7 +795,6 @@ function showRPDLabel(year: string) {
       .style("opacity", 1);
   }
 }
-
 
 function handleLegendAreaHover(event: CustomEvent<{ area: string }>) {
     hoveredTherapeuticArea = event.detail.area;
@@ -810,14 +836,21 @@ onMount(() => {
   };
 });
 </script>
-
 <RpdtaLegend 
   position="bottom-right"
   on:areaHover={handleLegendAreaHover}
   on:areaLeave={handleLegendAreaLeave}
+  on:areaClick={handleLegendAreaClick}
 />
 
-<div class="radial-timeline" bind:this={container}>
+<div 
+  class="radial-timeline" 
+  bind:this={container} 
+  tabindex="0" 
+  role="region"
+  aria-label="Timeline Navigation"
+  on:keydown={handleKeydown}
+>
   {#if tooltipVisible}
     <Tooltip
       x={tooltipX}
@@ -825,6 +858,17 @@ onMount(() => {
       visible={tooltipVisible}
       content={tooltipContent}
       borderColor={tooltipBorderColor}
+    />
+  {/if}
+
+  {#if showDrawer}
+    <RPDDrawer
+      isOpen={showDrawer}
+      onClose={() => showDrawer = false}
+      data={drawerData}
+      {constellationData}
+      color={drawerColor}
+      initialView={initialView} 
     />
   {/if}
 </div>
@@ -914,4 +958,13 @@ onMount(() => {
   :global(.petal-part:hover) {
     cursor: pointer;
   }
+
+  :global(.radial-timeline:focus) {
+  outline: 2px solid #4A7C80;
+  outline-offset: 2px;
+}
+
+:global(.radial-timeline:focus:not(:focus-visible)) {
+  outline: none;
+}
 </style>

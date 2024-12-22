@@ -20,6 +20,11 @@
     "Hepatology": "#8dd3c7",
   };
   export let position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
+  export let initialView: string | null = null;
+
+  // Update currentView initialization
+  let currentView = initialView || 'original';
+  let currentViewTitle = initialView === 'ta' ? data.name : '';
 
   $: positionClass = {
     'top-right': 'top-32 right-8',
@@ -44,18 +49,19 @@
   </h3>
   <div class="grid grid-cols-1 pb-1 sm:grid-cols-1 gap-1 sm:gap-1">
     {#each Object.entries(therapeuticAreaColors) as [area, color]}
+    <div 
+      class="legend flex items-center gap-2 min-w-[140px] cursor-pointer hover:bg-orange-300 dark:hover:bg-gray-700 p-1 px-1 rounded transition-colors duration-150"
+      on:mouseenter={() => handleMouseEnter(area)}
+      on:mouseleave={handleMouseLeave}
+      on:click={() => dispatch('areaClick', { area })}
+    >
       <div 
-        class="legend flex items-center gap-2 min-w-[140px] cursor-pointer hover:bg-orange-300 dark:hover:bg-gray-700 p-1 px-1 rounded transition-colors duration-150"
-        on:mouseenter={() => handleMouseEnter(area)}
-        on:mouseleave={handleMouseLeave}
-      >
-        <div 
-          class="w-2 h-3 ring-[.5px] ring-sky-900 dark:border-gray-200 rounded-full flex-shrink-0"
-          style:background-color={color}
-        />
-        <span class="text-[10.25px] font-mono pr-2 mr-2 text-gray-600 dark:text-gray-300 whitespace-normal break-words">{area}</span>
-      </div>
-    {/each}
+        class="w-2 h-3 ring-[.5px] ring-sky-900 dark:border-gray-200 rounded-full flex-shrink-0"
+        style:background-color={color}
+      />
+      <span class="text-[10.25px] font-mono pr-2 mr-2 text-gray-600 dark:text-gray-300 whitespace-normal break-words">{area}</span>
+    </div>
+  {/each}
   </div>
 </div>
 

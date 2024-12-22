@@ -11,7 +11,7 @@
     
     let svg;
     let width = 800;
-    let height = 800;
+    let height = width;
     let innerRadius = Math.min(width, height) * 0.45 * 0.7;
     let outerRadius = innerRadius + 10;
   

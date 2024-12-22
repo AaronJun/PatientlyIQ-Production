@@ -21,7 +21,7 @@
   import EighteenPetal from '../../assets/18PetalNew.svg?raw';
   import NineteenPetal from '../../assets/19PetalNew.svg?raw';
   import TwentyPetal from '../../assets/20PetalNew.svg?raw';
-  import RPDTooltip from './RPDTooltip.svelte';  // Adjust path as needed
+  import RPDTooltip from './RPDTooltip.svelte';
 
   interface ConstellationEntry {
     Year: string;
@@ -36,8 +36,71 @@
     Purchaser?: string;
   }
 
+  interface RPDData {
+    "Therapeutic area": string;
+    "Number of RPD designations": string;
+  }
+
   export let constellationData: ConstellationEntry[];
   export let selectedArea: string | null = null;
+
+  // Add RPD data to constellation data
+  $: {
+    const rpdData = JSON.parse(`[
+      {
+        "Therapeutic area": "Neurology",
+        "Number of RPD designations": "149"
+      },
+      {
+        "Therapeutic area": "Metabolism",
+        "Number of RPD designations": "131"
+      },
+      {
+        "Therapeutic area": "Oncology",
+        "Number of RPD designations": "105"
+      },
+      {
+        "Therapeutic area": "Hematology",
+        "Number of RPD designations": "32"
+      },
+      {
+        "Therapeutic area": "Immunology",
+        "Number of RPD designations": "25"
+      },
+      {
+        "Therapeutic area": "Ophthalmology",
+        "Number of RPD designations": "22"
+      },
+      {
+        "Therapeutic area": "Dermatology",
+        "Number of RPD designations": "21"
+      },
+      {
+        "Therapeutic area": "Pulmonary",
+        "Number of RPD designations": "15"
+      },
+      {
+        "Therapeutic area": "Orthopedics",
+        "Number of RPD designations": "15"
+      },
+      {
+        "Therapeutic area": "Endocrinology",
+        "Number of RPD designations": "12"
+      },
+      {
+        "Therapeutic area": "Gastroenterology",
+        "Number of RPD designations": "12"
+      },
+      {
+        "Therapeutic area": "Other",
+        "Number of RPD designations": "30"
+      }
+    ]`);
+    
+    if (constellationData.length > 0 && !constellationData[0].RPDdata) {
+      constellationData[0].RPDdata = rpdData;
+    }
+  }
 
   const dispatch = createEventDispatcher();
 
@@ -57,7 +120,6 @@
   };
   let tooltipBorderColor = '';
 
-  // Constants for visualization
   const SATURATION = {
     DEFAULT: 0.025,
     HOVERED: 1.2,
@@ -74,14 +136,12 @@
   const MAX_FONT_SIZE = 18;
   const MAX_PETALS = 20;
 
- // Updated width and height calculations to match RadialTimeline
- $: width = (containerWidth || 900) *.9;
- $: height = (containerHeight || 800);
- $: radius = Math.min(width, height) / 2.125;
+  $: width = (containerWidth || 900) * .9;
+  $: height = (containerHeight || 800);
+  $: radius = Math.min(width, height) / 2.125;
   $: innerRadius = radius * 0.25;
   $: outerRadius = radius * 1.025;
 
-  // Therapeutic area colors
   const therapeuticAreaColors = {
     "Gastroenterology": "#a6cee3",
     "Neurology": "#1f78b4",
@@ -95,7 +155,7 @@
     "Nephrology": "#6a3d9a",
     "Oncology": "#F7CE55",
     "Endocrinology": "#b15928",
-    "Hepatology": "#8dd3c7",
+    "Hepatology": "#8dd3c7"
   };
 
   const petalSVGs = {
@@ -121,7 +181,6 @@
     20: TwentyPetal
   };
 
-  // Process data
   $: groupedData = d3.group(constellationData, d => d.name);
   $: therapeuticAreas = Array.from(groupedData.keys());
   $: angleScale = d3.scaleBand()
@@ -130,8 +189,8 @@
     .padding(0.1);
 
   let hoveredArea: string | null = null;
+  let activeArea: string | null = null;
 
-  
   function createColorScale(baseColor: string, count: number): d3.ScaleLinear<string, string> {
     return d3.scaleLinear<string>()
       .domain([0, count - 1])
@@ -148,7 +207,6 @@
   }
 
   function updatePetalStyles() {
-    // Update regular petals
     svg.selectAll('.petal-part:not(.background-petal)')
       .transition()
       .duration(200)
@@ -173,7 +231,6 @@
         return therapeuticArea === hoveredArea ? OPACITY.HOVERED : OPACITY.DIMMED;
       });
 
-    // Update background petals
     svg.selectAll('.background-petal')
       .transition()
       .duration(200)
@@ -187,218 +244,206 @@
   }
 
   function createPetalCluster(entries: ConstellationEntry[], area: string, angle: number) {
-  const clusters: ConstellationEntry[][] = [];
-  for (let i = 0; i < entries.length; i += MAX_PETALS) {
-    clusters.push(entries.slice(i, i + MAX_PETALS));
-  }
+    const clusters: ConstellationEntry[][] = [];
+    for (let i = 0; i < entries.length; i += MAX_PETALS) {
+      clusters.push(entries.slice(i, i + MAX_PETALS));
+    }
 
-  clusters.forEach((clusterEntries, clusterIndex) => {
-    const clusterRadius = innerRadius + (outerRadius - innerRadius) * 
-      ((clusterIndex + 1) / (clusters.length + 1));
-    
-    const x = Math.cos(angle - Math.PI / 2) * clusterRadius;
-    const y = Math.sin(angle - Math.PI / 2) * clusterRadius;
+    clusters.forEach((clusterEntries, clusterIndex) => {
+      const clusterRadius = innerRadius + (outerRadius - innerRadius) * 
+        ((clusterIndex + 1) / (clusters.length + 1));
+      
+      const x = Math.cos(angle - Math.PI / 2) * clusterRadius;
+      const y = Math.sin(angle - Math.PI / 2) * clusterRadius;
 
-    const petalCount = Math.min(clusterEntries.length, MAX_PETALS);
-    const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
-    const uniqueIds = [...new Set(clusterEntries.map(e => e.id))];
+      const petalCount = Math.min(clusterEntries.length, MAX_PETALS);
+      const svgContent = petalSVGs[petalCount as keyof typeof petalSVGs];
+      const uniqueIds = [...new Set(clusterEntries.map(e => e.id))];
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgContent, 'image/svg+xml');
 
-    clusterEntries.forEach((entry, index) => {
-      const petalPaths = Array.from(doc.querySelectorAll('path')).filter(path => {
-        const d = path.getAttribute('d');
-        return d && d.includes('C');
-      });
+      clusterEntries.forEach((entry, index) => {
+        const petalPaths = Array.from(doc.querySelectorAll('path')).filter(path => {
+          const d = path.getAttribute('d');
+          return d && d.includes('C');
+        });
 
-      const startIdx = index * 3;
-      const color = getColorForId(area, entry.id, uniqueIds);
-      const isApproved = entry["Treatment Type"] && entry["Treatment Type"] !== "N";
-      const isPurchased = entry.Purchased?.toLowerCase() === 'y';
+        const startIdx = index * 3;
+        const color = getColorForId(area, entry.id, uniqueIds);
+        const isApproved = entry["Treatment Type"] && entry["Treatment Type"] !== "N";
+        const isPurchased = entry.Purchased?.toLowerCase() === 'y';
 
-      // Background petal
-      if (petalPaths[startIdx]) {
-        petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
-        petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx].setAttribute('fill', '#231F20');
-        petalPaths[startIdx].setAttribute('opacity', '0');
-        petalPaths[startIdx].setAttribute('style', `filter: saturate(0.25)`); // Set initial saturation low
-      }
+        if (petalPaths[startIdx]) {
+          petalPaths[startIdx].setAttribute('class', 'petal-part background-petal');
+          petalPaths[startIdx].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx].setAttribute('fill', '#231F20');
+          petalPaths[startIdx].setAttribute('opacity', '0');
+          petalPaths[startIdx].setAttribute('style', `filter: saturate(0.25)`);
+        }
 
-      // Outer petal
-      if (petalPaths[startIdx + 1]) {
-        petalPaths[startIdx + 1].setAttribute('class', 'petal-part outer-petal');
-        petalPaths[startIdx + 1].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx + 1].setAttribute('fill', color);
-        petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
-        petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
-        petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.1)`); // Set initial saturation low
-      }
+        if (petalPaths[startIdx + 1]) {
+          petalPaths[startIdx + 1].setAttribute('class', 'petal-part outer-petal');
+          petalPaths[startIdx + 1].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx + 1].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx + 1].setAttribute('fill', color);
+          petalPaths[startIdx + 1].setAttribute('stroke', isApproved ? '#231F20' : '#F2F0E4');
+          petalPaths[startIdx + 1].setAttribute('stroke-width', '4');
+          petalPaths[startIdx + 1].setAttribute('style', `filter: saturate(0.1)`);
+        }
 
-      // Inner petal
-      if (petalPaths[startIdx + 2]) {
-        petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
-        petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);
-        petalPaths[startIdx + 2].setAttribute('data-petal-index', index.toString());
-        petalPaths[startIdx + 2].setAttribute('fill', isPurchased ? '#1e1e1e' : '#FFE7A0');
-        petalPaths[startIdx + 2].setAttribute('style', `filter: saturate(0.1)`); // Set initial saturation low
-      }
-    });
-
-    const cluster = svg.append("g")
-      .attr("class", `cluster area-${area.toLowerCase().replace(/\s+/g, '-')}`)
-      .attr("cursor", "pointer")
-      .on("mouseover", () => handleAreaHover(area))
-      .on("mouseout", handleAreaLeave)
-      .html(doc.documentElement.outerHTML);
-
-    const scale = radius * 0.000725;
-    cluster.attr("transform", `
-      translate(${x},${y})
-      rotate(${(angle * 180 / Math.PI)})
-      scale(${scale})
-      translate(-${parseFloat(doc.documentElement.getAttribute('width') || '0')/2},-${parseFloat(doc.documentElement.getAttribute('height') || '0')/2})
-    `);
-
-    // Update event handlers to include saturation transitions
-    cluster.selectAll("path")
-      .each(function(_, i) {
-        const element = d3.select(this);
-        const entry = clusterEntries[Math.floor(i/3)];
-        if (entry) {
-          const color = getColorForId(area, entry.id, uniqueIds);
-          element
-            .style("filter", "saturate(0.1)") // Set initial saturation low
-            .style("opacity", 1) // Keep opacity at 1
-            .on("mouseover", (event) => handlePetalHover(event, entry, color))
-            .on("mouseout", () => handlePetalLeave(area))
-            .on("click", (event) => handlePetalClick(event, entry, color));
+        if (petalPaths[startIdx + 2]) {
+          petalPaths[startIdx + 2].setAttribute('class', 'petal-part inner-petal');
+          petalPaths[startIdx + 2].setAttribute('data-therapeutic-area', entry.name);
+          petalPaths[startIdx + 2].setAttribute('data-petal-index', index.toString());
+          petalPaths[startIdx + 2].setAttribute('fill', isPurchased ? '#1e1e1e' : '#FFE7A0');
+          petalPaths[startIdx + 2].setAttribute('style', `filter: saturate(0.1)`);
         }
       });
-  });
-}
-function updatePetalHighlights() {
-  svg.selectAll('.petal-part')
-    .transition()
-    .duration(200)
-    .style("filter", function() {
-      const petalElement = d3.select(this);
-      const therapeuticArea = petalElement.attr('data-therapeutic-area');
-      
-      if (!hoveredArea) {
-        return "saturate(0.25)"; // Set default saturation low
-      }
-      
-      return therapeuticArea === hoveredArea
-        ? "saturate(1) brightness(1)"
-        : "saturate(0.1) brightness(0.3)";
-    })
-    .style("opacity", 1); // Keep opacity at 1
 
-  // Update background petals
-  svg.selectAll('.background-petal')
-    .transition()
-    .duration(200)
-    .style("opacity", function() {
-      const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
-      return therapeuticArea === hoveredArea ? 1 : 0;
-    })
-    .style("fill", function() {
-      return hoveredArea ? "#ff1515" : "#231F20";
+      const cluster = svg.append("g")
+        .attr("class", `cluster area-${area.toLowerCase().replace(/\s+/g, '-')}`)
+        .attr("cursor", "pointer")
+        .on("mouseover", () => handleAreaHover(area))
+        .on("mouseout", handleAreaLeave)
+        .html(doc.documentElement.outerHTML);
+
+      const scale = radius * 0.000725;
+      cluster.attr("transform", `
+        translate(${x},${y})
+        rotate(${(angle * 180 / Math.PI)})
+        scale(${scale})
+        translate(-${parseFloat(doc.documentElement.getAttribute('width') || '0')/2},-${parseFloat(doc.documentElement.getAttribute('height') || '0')/2})
+      `);
+
+      cluster.selectAll("path")
+        .each(function(_, i) {
+          const element = d3.select(this);
+          const entry = clusterEntries[Math.floor(i/3)];
+          if (entry) {
+            const color = getColorForId(area, entry.id, uniqueIds);
+            element
+              .style("filter", "saturate(0.1)")
+              .style("opacity", 1)
+              .on("mouseover", (event) => handlePetalHover(event, entry, color))
+              .on("mouseout", () => handlePetalLeave(area))
+              .on("click", (event) => handlePetalClick(event, entry, color));
+          }
+        });
     });
-}
+  }
 
+  function updatePetalHighlights() {
+    svg.selectAll('.petal-part')
+      .transition()
+      .duration(200)
+      .style("filter", function() {
+        const petalElement = d3.select(this);
+        const therapeuticArea = petalElement.attr('data-therapeutic-area');
+        
+        if (!hoveredArea) {
+          return "saturate(0.25)";
+        }
+        
+        return therapeuticArea === hoveredArea
+          ? "saturate(1) brightness(1)"
+          : "saturate(0.1) brightness(0.3)";
+      })
+      .style("opacity", 1);
 
-function updateVisualState() {
-  
-  const currentArea = hoveredArea || activeArea;
-  
-  // Update labels with special handling for Oncology
-  svg.selectAll('.area-label')
-    .transition()
-    .duration(200)
-    .attr('fill', function() {
-      const area = this.textContent;
-      if (!area) return '#666666';
-      return currentArea === area 
-        ? labelColors[area as keyof typeof labelColors]
-        : '#666666';
-    })
-    .attr('font-weight', function() {
-      const area = this.textContent;
-      return currentArea === area ? '800' : '400';
-    })
-    .style('opacity', function() {
-      const area = this.textContent;
-      return currentArea ? (currentArea === area ? 1 : 0.5) : 0.7;
-    });
-
-  // Update clusters
-  svg.selectAll(".cluster")
-    .transition()
-    .duration(300)
-    .style("opacity", function() {
-      if (!currentArea) return 1;
-      return this.classList.contains(`area-${currentArea.toLowerCase().replace(/\s+/g, '-')}`) ? 1 : 0.3;
-    });
-
-
-  // Update petals
-  svg.selectAll('.petal-part:not(.background-petal)')
-    .transition()
-    .duration(200)
-    .style("filter", function() {
-      const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
-      
-      if (!currentArea) {
-        return `saturate(${SATURATION.DEFAULT})`;
-      }
-      
-      return therapeuticArea === currentArea
-        ? `saturate(${SATURATION.HOVERED}) brightness(1.1)`
-        : `saturate(${SATURATION.CLUSTER}) brightness(0.4)`;
-    })
-    .style("opacity", function() {
-      const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
-      
-      if (!currentArea) {
-        return OPACITY.DEFAULT;
-      }
-      
-      return therapeuticArea === currentArea ? OPACITY.HOVERED : OPACITY.DIMMED;
-    });
     svg.selectAll('.background-petal')
-    .transition()
-    .duration(200)
-    .style("opacity", 0)
-    .style("fill", "#231F20");
+      .transition()
+      .duration(200)
+      .style("opacity", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        return therapeuticArea === hoveredArea ? 1 : 0;
+      })
+      .style("fill", function() {
+        return hoveredArea ? "#ff1515" : "#231F20";
+      });
+  }
 
-  updateVisualState();
-  dispatch('petalLeave');
-}
+  function updateVisualState() {
+    const currentArea = hoveredArea || activeArea;
+    
+    svg.selectAll('.area-label')
+      .transition()
+      .duration(200)
+      .attr('fill', function() {
+        const area = this.textContent;
+        if (!area) return '#666666';
+        return currentArea === area 
+          ? therapeuticAreaColors[area as keyof typeof therapeuticAreaColors]
+          : '#666666';
+      })
+      .attr('font-weight', function() {
+        const area = this.textContent;
+        return currentArea === area ? '800' : '400';
+      })
+      .style('opacity', function() {
+        const area = this.textContent;
+        return currentArea ? (currentArea === area ? 1 : 0.5) : 0.7;
+      });
 
-function updateLabels() {
-  svg.selectAll('.area-label')
-    .transition()
-    .duration(200)
-    .attr('fill', function() {
-      const area = this.textContent;
-      return hoveredArea === area 
-        ? therapeuticAreaColors[area as keyof typeof therapeuticAreaColors]
-        : '#666666';
-    })
-    .attr('font-weight', function() {
-      const area = this.textContent;
-      return hoveredArea === area ? '600' : '400';
-    })
-    .style('opacity', function() {
-      const area = this.textContent;
-      return hoveredArea ? (hoveredArea === area ? 1 : 0.5) : 0.7;
-    });
-}
+    svg.selectAll(".cluster")
+      .transition()
+      .duration(300)
+      .style("opacity", function() {
+        if (!currentArea) return 1;
+        return this.classList.contains(`area-${currentArea.toLowerCase().replace(/\s+/g, '-')}`) ? 1 : 0.3;
+      });
+
+    svg.selectAll('.petal-part:not(.background-petal)')
+      .transition()
+      .duration(200)
+      .style("filter", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        
+        if (!currentArea) {
+          return `saturate(${SATURATION.DEFAULT})`;
+        }
+        
+        return therapeuticArea === currentArea
+          ? `saturate(${SATURATION.HOVERED}) brightness(1.1)`
+          : `saturate(${SATURATION.CLUSTER}) brightness(0.4)`;
+      })
+      .style("opacity", function() {
+        const therapeuticArea = d3.select(this).attr('data-therapeutic-area');
+        
+        if (!currentArea) {
+          return OPACITY.DEFAULT;
+        }
+        
+        return therapeuticArea === currentArea ? OPACITY.HOVERED : OPACITY.DIMMED;
+      });
+
+    svg.selectAll('.background-petal')
+      .transition()
+      .duration(200)
+      .style("opacity", 0)
+      .style("fill", "#231F20");
+  }
+
+  function updateLabels() {
+    svg.selectAll('.area-label')
+      .transition()
+      .duration(200)
+      .attr('fill', function() {
+        const area = this.textContent;
+        return hoveredArea === area 
+          ? therapeuticAreaColors[area as keyof typeof therapeuticAreaColors]
+          : '#666666';
+      })
+      .attr('font-weight', function() {
+        const area = this.textContent;
+        return hoveredArea === area ? '600' : '400';
+      })
+      .style('opacity', function() {
+        const area = this.textContent;
+        return hoveredArea ? (hoveredArea === area ? 1 : 0.5) : 0.7;
+      });
+  }
 
   function handleAreaHover(area: string) {
     hoveredArea = area;
@@ -431,23 +476,21 @@ function updateLabels() {
         return this.classList.contains(`area-${area.toLowerCase().replace(/\s+/g, '-')}`) ? 1 : 0.3;
       });
 
-      updateLabels();
-      updatePetalHighlights();
+    updateLabels();
+    updatePetalHighlights();
   }
-  
-function handleAreaLeave() {
-  hoveredArea = null;
-  // Note: We don't reset activeArea here anymore
-  updateVisualState();
-  
-  // Only clear the summary if we're not hovering over any area
-  if (!activeArea) {
-    dispatch('areaSummary', { summaryText: '' });
-    dispatch('areaLeave');
-  }
-}
 
-function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
+  function handleAreaLeave() {
+    hoveredArea = null;
+    updateVisualState();
+    
+    if (!activeArea) {
+      dispatch('areaSummary', { summaryText: '' });
+      dispatch('areaLeave');
+    }
+  }
+
+  function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: string) {
     const currentElement = event.currentTarget as SVGElement;
     const petalIndex = d3.select(currentElement).attr('data-petal-index');
     
@@ -470,7 +513,6 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
       .style("opacity", 1)
       .style("fill", "#ff1515");
 
-    // Update tooltip state
     tooltipContent = {
       sponsor: entry.Sponsor,
       drugName: entry["Drug Name"],
@@ -479,13 +521,11 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
     };
     tooltipBorderColor = color;
     
-    // Calculate position relative to container
     const containerRect = container.getBoundingClientRect();
     tooltipX = containerRect.left + (containerRect.width / 2.25);
     tooltipY = containerRect.top + (containerRect.height / 1.75);
     tooltipVisible = true;
 
-    // Still dispatch the event for other listeners
     dispatch('petalHover', { event, entry, color });
   }
 
@@ -502,7 +542,6 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
       .style("fill", function() {
         return d3.select(this).attr('data-original-fill');
       });
-      
 
     dispatch('petalLeave');
   }
@@ -512,19 +551,17 @@ function handlePetalHover(event: MouseEvent, entry: ConstellationEntry, color: s
     dispatch('clusterElementClick', { entry, color });
   }
 
-function drawVisualization() {
+  function drawVisualization() {
     if (!svg) return;
 
     svg.selectAll("*").remove();
 
-    // Update SVG viewBox and dimensions
     d3.select(container)
       .select("svg")
       .attr("viewBox", [-width / 2, -height / 2, width, height])
       .attr("width", "100%")
       .attr("height", "100%");
 
-    // Draw guide circles
     const guideRadii = [innerRadius, (innerRadius + outerRadius) / 2, outerRadius];
     svg.selectAll(".guide-circle")
       .data(guideRadii)
@@ -533,83 +570,96 @@ function drawVisualization() {
       .attr("cx", 0)
       .attr("cy", 0)
       .attr("r", d => d)
-      .attr("fill","none")
+      .attr("fill", "none")
       .attr("stroke", "#ccc")
       .attr("stroke-width", 0.5)
       .attr("stroke-dasharray", "2,4")
       .style("opacity", 0.3);
 
-    // Draw axis lines and labels for each therapeutic area
     therapeuticAreas.forEach(area => {
-    const angle = angleScale(area)! + angleScale.bandwidth() / 2;
-    const entries = groupedData.get(area) || [];  
+      const angle = angleScale(area)! + angleScale.bandwidth() / 1.2;
+      const entries = groupedData.get(area) || [];
 
-      // Draw axis line
+      // Get RPD designation count for the area
+      const rpdData = constellationData[0]?.RPDdata || [];
+      const areaRPDCount = rpdData.find(d => 
+        d["Therapeutic area"].toLowerCase() === area.toLowerCase() ||
+        (d["Therapeutic area"] === "Other" && !rpdData.some(rd => 
+          rd["Therapeutic area"].toLowerCase() === area.toLowerCase()
+        ))
+      );
+      
+      // Calculate line length based on RPD count
+      let lineLength;
+      if (areaRPDCount) {
+        if (areaRPDCount["Therapeutic area"] === "Other") {
+          const unmatchedAreas = therapeuticAreas.filter(ta => 
+            !rpdData.some(rd => rd["Therapeutic area"].toLowerCase() === ta.toLowerCase())
+          ).length;
+          lineLength = (parseInt(areaRPDCount["Number of RPD designations"]) / unmatchedAreas) / 149;
+        } else {
+          lineLength = parseInt(areaRPDCount["Number of RPD designations"]) / 149;
+        }
+      } else {
+        lineLength = 0.2;
+      }
+
       svg.append("line")
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", Math.cos(angle - Math.PI / 2) * outerRadius/2)
-        .attr("y2", Math.sin(angle - Math.PI / 2) * outerRadius/2)
+        .attr("x2", Math.cos(angle - Math.PI / 2) * outerRadius * lineLength)
+        .attr("y2", Math.sin(angle - Math.PI / 2) * outerRadius * lineLength)
         .attr("stroke", "#ccc")
         .attr("stroke-width", 0.5)
         .attr("stroke-opacity", 0.5);
 
-      // Add label
-    const labelRadius = outerRadius * .825;
-    const labelAngle = angle - Math.PI / 2;
-    const labelX = Math.cos(labelAngle) * labelRadius;
-    const labelY = Math.sin(labelAngle) * labelRadius;
+      const labelRadius = outerRadius * .825;
+      const labelAngle = angle - Math.PI / 2;
+      const labelX = Math.cos(labelAngle) * labelRadius;
+      const labelY = Math.sin(labelAngle) * labelRadius;
 
-    const labelColors = {
-  ...therapeuticAreaColors,
-  "Oncology": "#CCA107" // Special color for Oncology label
-};
+      const textRotation = (angle * 180 / Math.PI);
+      const finalRotation = textRotation > 90 && textRotation < 270 
+        ? textRotation
+        : textRotation;
 
-    
-    const textRotation = (angle * 180 / Math.PI);
-    const finalRotation = textRotation > 90 && textRotation < 270 
-      ? textRotation
-      : textRotation;
+      const labelGroup = svg.append("g")
+        .attr("class", `area-label-group area-${area.toLowerCase().replace(/\s+/g, '-')}`)
+        .style("cursor", "pointer")
+        .on("mouseover", () => handleAreaHover(area))
+        .on("mouseout", handleAreaLeave);
 
-    const labelGroup = svg.append("g")
-      .attr("class", `area-label-group area-${area.toLowerCase().replace(/\s+/g, '-')}`)
-      .style("cursor", "pointer")
-      .on("mouseover", () => handleAreaHover(area))
-      .on("mouseout", handleAreaLeave);
+      labelGroup.append("text")
+        .attr("class", "area-label")
+        .attr("transform", `translate(${labelX},${labelY}) rotate(${finalRotation})`)
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("font-size", `${Math.min(Math.max(radius * 0.025, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
+        .attr("fill", "#666666")
+        .attr("font-weight", "400")
+        .style("opacity", 0.7)
+        .text(area);
 
-    labelGroup.append("text")
-      .attr("class", "area-label")
-      .attr("transform", `translate(${labelX},${labelY}) rotate(${finalRotation})`)
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", "middle")
-      .attr("font-size", `${Math.min(Math.max(radius * 0.025, MIN_FONT_SIZE), MAX_FONT_SIZE)}px`)
-      .attr("fill", "#666666")  // Default dimmed color
-      .attr("font-weight", "400")  // Default regular weight
-      .style("opacity", 0.7)  // Default slightly dimmed
-      .text(area);
-
-    // Create petal clusters
-    if (entries.length > 0) {
-      createPetalCluster(entries, area, angle);
-    }
-  })
-}
+      if (entries.length > 0) {
+        createPetalCluster(entries, area, angle);
+      }
+    });
+  }
 
   function handleResize() {
-  containerWidth = container.clientWidth;
-  containerHeight = container.clientHeight;
-  
-  if (svg) {
-    drawVisualization();
-    updatePetalStyles();
+    containerWidth = container.clientWidth;
+    containerHeight = container.clientHeight;
+    
+    if (svg) {
+      drawVisualization();
+      updatePetalStyles();
+    }
   }
-}
 
-onMount(() => {
+  onMount(() => {
     containerWidth = container.clientWidth;
     containerHeight = container.clientHeight;
 
-    // Create SVG with viewBox for responsiveness
     const svgElement = d3.select(container)
       .append("svg")
       .attr("viewBox", [-width / 2, -height / 2, width, height])
@@ -650,37 +700,37 @@ onMount(() => {
   overflow: hidden;
 }
 
-  :global(.cluster) {
-    transition: all 300ms ease-in-out;
-  }
+:global(.cluster) {
+  transition: all 300ms ease-in-out;
+}
 
-  :global(.background-petal) {
-    transition: opacity 200ms ease-in-out;
-  }
+:global(.background-petal) {
+  transition: opacity 200ms ease-in-out;
+}
 
-  :global(.outer-petal), :global(.inner-petal) {
-    transition: all 200ms ease-in-out;
-  }
+:global(.outer-petal), :global(.inner-petal) {
+  transition: all 200ms ease-in-out;
+}
 
-  :global(.cluster path) {
-    transition: all 300ms ease-in-out;
-    transform-origin: center;
-  }
+:global(.cluster path) {
+  transition: all 300ms ease-in-out;
+  transform-origin: center;
+}
 
-  :global(.cluster path:hover) {
-    filter: saturate(1.1) !important;
-    opacity: 1 !important;
-  }
+:global(.cluster path:hover) {
+  filter: saturate(1.1) !important;
+  opacity: 1 !important;
+}
 
-  :global(.area-label-group) {
-    transition: opacity 0.3s ease;
-  }
+:global(.area-label-group) {
+  transition: opacity 0.3s ease;
+}
 
-  :global(.area-label-group:hover) {
-    opacity: 0.8;
-  }
+:global(.area-label-group:hover) {
+  opacity: 0.8;
+}
 
-  :global(.area-label) {
-    font-family: 'IBM Plex Sans', sans-serif;
-  }
+:global(.area-label) {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
 </style>

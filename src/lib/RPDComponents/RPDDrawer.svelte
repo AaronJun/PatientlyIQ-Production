@@ -19,13 +19,14 @@
   export let data: any;
   export let constellationData: any[];
   export let color: string;
+  export let initialView: string | null = null;
   export let sponsorData: any = null;
 
   const ANIMATION_DURATION = 525;
   const TEXT_ANIMATION_DURATION = 300;
 
-  let currentView = 'original';
-  let currentViewTitle = '';
+  let currentView = initialView || 'original';
+  let currentViewTitle = initialView === 'ta' ? data.name : '';
   let displayData: any = data;
   let isTransitioning = false;
   let searchTerm = "";
@@ -612,7 +613,7 @@
       {:else}
         <!-- Default View (Therapeutic Area/Indication) -->
         <div class="header grid grid-cols-2 justify-stretch gap-4 pb-4 mr-6">
-          <button 
+          <button  
           class="flex gap-1 py-1 pr-3 pl-2 items-center justify-self-start bg-[#37587e] col-span-2 rounded-full text-xs font-semibold text-gray-100 hover:bg-green-800"
             on:click={() => handleClick(closeDrawer)}
             in:fade={{duration: TEXT_ANIMATION_DURATION}}
@@ -647,7 +648,6 @@
               { key: 'drugName', value: 'Drug Name' },
               { key: 'indication', value: 'Indication' },
               { key: 'treatmentType', value: 'Treatment Type' },
-              { key: 'salePrice', value: 'Sale Price' }
             ]}
             rows={filterData((currentView === 'ta' ? 
               showTherapeuticAreaData(displayData.name) :
@@ -839,7 +839,7 @@
     }
 
     td {
-      font-size: .75rem;
+      font-size: .675rem;
     }
 
     .text-4xl {

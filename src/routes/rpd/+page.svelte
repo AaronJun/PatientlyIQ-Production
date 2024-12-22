@@ -385,7 +385,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
                 With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.
               </p>
             </div>
-            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
+            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top min-h-full">
             <SaleBenchmarks 
               constellationData={processedConstellationData} 
               onCompanySelect={(data, color) => {
@@ -484,7 +484,6 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
   }
 
   .tab-content {
-    overflow: auto;
     min-width: 100%;
     align-items: top;
   }
@@ -492,22 +491,23 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
   .flowers-view {
     display: flex;
     flex-direction: row;
-    min-width: 100vw;
-    height: 100%;
+    min-width: 95vw;
+    min-height: 100vh;
+    margin: 1rem;
   }
 
   .timeline-container {
     padding: 1rem 2rem 2rem 1.25rem;
     height: 95vh;
     width: 75vw;
-    overflow: hidden;
+    overflow: auto;
   }
 
 .timeline-container {
     padding: 1rem 2rem 2rem 1.25rem;
-    height: 90vh;
+    height: 100vh;
     width: 75vw;
-    overflow: hidden;
+    overflow: auto;
   }
 
   .info-panel-nav {
