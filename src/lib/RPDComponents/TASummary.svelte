@@ -48,7 +48,7 @@
     </div>
   
     {#if !currentArea}
-    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
+    <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900">
         The program has awarded <span class="highlight">{formatNumber(overviewStats.totalVouchers)}</span> vouchers across 
         <span class="highlight">{formatNumber(overviewStats.uniqueAreas)}</span> therapeutic areas. 
         <br><br>

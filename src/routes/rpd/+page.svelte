@@ -301,7 +301,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
       <div class="tab-content">
         {#if activeTab === 'By Year'}
           <div class="flowers-view content-start">
-            <div class="w-1/6 max-w-[400px] max-w-[400px] lg:w-1/5 md:w-5/6 sm:w-full min-[400px]:w-full flex flex-col pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
+            <div class="w-1/6 max-w-[400px] md:w-2/6 sm:w-2/6 flex flex-col pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <RPDPageSummary 
                 rpdPrvData={processedRpdPrvData}
                 constellationData={processedConstellationData} 
@@ -321,7 +321,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
               {/if}
             </div>
 
-            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top">
+            <div class="w-5/6 max-w-[1520px] md:w-4/6 sm:w-4/6 timeline-container content-start align-top">
               {#if $RadialTimeline && processedRpdPrvData.length > 0 && processedConstellationData.length > 0}
                 <svelte:component 
                   this={$RadialTimeline}
@@ -378,7 +378,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
           <div class="flowers-view">
             <div class="w-1/6 max-w-[400px] lg:w-1/5 sm:w-full min-[400px]:w-full flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
-              <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
+              <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900">
                 Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
               </p>
               <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">

@@ -263,7 +263,7 @@ function sortEntriesByTherapeuticArea(entries: ConstellationEntry[]): Constellat
 }
 
 function drawGuideCircles() {
-  const logBase = 1.725;
+  const logBase = 1.75;
   const guideValues = d3.range(Math.floor(Math.log(maxRPD) / Math.log(logBase)) + 1)
     .map(i => Math.pow(logBase, i));
 

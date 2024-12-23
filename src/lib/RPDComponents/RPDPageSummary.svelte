@@ -86,7 +86,7 @@ $: overviewStats = {
       Nurturing New Treatments</h2>
   </div>
 
-  <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">      
+  <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">      
     The FDA's rare pediatric disease priority review voucher program produced an estimated 
       <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022. These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
       <br><br>
@@ -95,7 +95,7 @@ $: overviewStats = {
       including <span class="highlight">{formatNumber(overviewStats.noApprovedTreatments)}</span> that previously had no FDA-approved options.
       <br><br>
       
-      <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900">
+      <p class="text-base md:text-sm sm:text-xs md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900">
         The program has awarded <span class="highlight">{formatNumber(overviewStats.totalVouchers)}</span> vouchers across 
         <span class="highlight">{formatNumber(overviewStats.uniqueAreas)}</span> therapeutic areas. 
 
@@ -108,14 +108,14 @@ $: overviewStats = {
   <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
   
-  <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+  <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
     The FDA granted <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> rare pediatric disease designations. Though no priority review vouchers were awarded this year, these designations were initial seeds which would grow into the program's success.
     </p>
 
   {:else if currentYear === "2020"}
   <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
-    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+    <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
       <span class="highlight">{currentYear}</span> saw a significant increase in the number of RPD designations, with <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> granted. This was likely driven by the RPD program's planned sunset, which was to begin in September 2020.
       <br><br>
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded, which was also a record high. 
@@ -128,7 +128,7 @@ $: overviewStats = {
   {:else if currentYear >= "2023"}
   <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
-    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+    <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
       An estimated <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> designations were granted, and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers were awarded.
       <br><br>
@@ -139,7 +139,7 @@ $: overviewStats = {
   {:else}
   <h2 class="text-lg font-mono mb-8 font-bold col-span-1 p-8 pl-0 text-[#C9623F] uppercase">        
     {currentYear}</h2>  
-    <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
+    <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
      There were <span class="highlight">{formatNumber(summaryStats.rpdCount)}</span> RPD designations and
       <span class="highlight">{formatNumber(summaryStats.voucherCount)}</span> priority review vouchers awarded.
       <br><br>
