@@ -1,11 +1,20 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import sgMail from '@sendgrid/mail';
-import { SENDGRID_API_KEY } from '$env/static/private';
-
-sgMail.setApiKey(SENDGRID_API_KEY);
+import { env } from '$env/dynamic/private';
 
 export const POST: RequestHandler = async ({ request }) => {
+    const SENDGRID_API_KEY = env.SENDGRID_API_KEY;
+    if (!SENDGRID_API_KEY) {
+        console.error('SendGrid API key not found');
+        return json({ 
+            success: false, 
+            error: 'Email service configuration error. Please contact support.' 
+        }, { status: 500 });
+    }
+
+    sgMail.setApiKey(SENDGRID_API_KEY);
+
     try {
         const formData = await request.json();
         
@@ -35,7 +44,7 @@ ${formData.message}
         await sgMail.send(msg);
         return json({ success: true });
         
-    } catch (error) {
+      } catch (error) {
         console.error('SendGrid error:', error);
         let errorMessage = 'Failed to send message. Please try contacting us directly at aaron@patiently.studio';
         

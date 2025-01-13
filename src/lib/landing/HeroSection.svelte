@@ -32,7 +32,7 @@
                     <span class="font-mono text-xs font-bold text-gray-500">01</span>
                     <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
 						Comprehensive patient insights
-					</span>
+			</span>
                 </div>
             </div>			
 </div>
