@@ -137,7 +137,7 @@
                 >
                     <svelte:component 
                         this={capability.icon}
-                        class="w-12 h-12 mb-4"
+                        class="w-8 h-8 mb-4"
                         fill={activeCapability === key ? 'white' : 'currentColor'}
                     />
                     <span class="text-center font-medium text-xs">{capability.title}</span>
@@ -148,7 +148,8 @@
         <!-- Active Capability Content -->
         <div class="mt-8 animate-fade-in [--animation-delay:200ms]">
             {#if capabilities[activeCapability]}
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="grid grid-cols-2 lg:grid-cols-2 gap-32">
+                    
                     <!-- Left Column -->
                     <div class="space-y-6">
                         <h3 class="text-2xl font-base text-gray-900 dark:text-[#cd4444]">
@@ -172,7 +173,7 @@
                     </div>
 
                     <!-- Right Column -->
-                    <div class= "p-8">
+                    <div class= "px-8 py-14">
                         <h4 class="mb-4 text-xs font-bold text-gray-900 dark:text-[#d94343]">Key Features</h4>
                         <ul class="space-y-4">
                             {#each capabilities[activeCapability].details as detail}

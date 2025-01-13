@@ -106,7 +106,7 @@
 </script>
 
 <div class="text-left mb-16">
-  <section id="contact" class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
+  <section id="contactform" class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
       <div class="text-left mb-16">
           <div class="section-divide mb-4 flex items-left gap-5">
               <span class="font-mono text-xs font-bold text-gray-500">05</span>
@@ -299,7 +299,7 @@
               <button
                   type="submit"
                   disabled={isSubmitting}
-                  class="w-full sm:w-auto lg:min-w-52 px-6 py-4 mt-12 bg-orange-600 text-white rounded-full hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full sm:w-auto lg:min-w-52 px-6 py-4 mb-24 mt-12 bg-[#ff5151] text-white rounded-full hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ringtransition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                   {#if isSubmitting}
                       <span class="flex items-center justify-center">

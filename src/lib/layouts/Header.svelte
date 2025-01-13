@@ -90,12 +90,12 @@
 </script>
 
 <header
-    class="fixed w-full z-40 bg-white/80 backdrop-blur-xl border-b transition-all duration-300 ease-in-out"
+    class="fixed w-full z-40 bg-slate-100/50 backdrop-blur-xl border-b transition-all duration-300 ease-in-out"
     class:py-2={isScrolled}
     class:py-4={!isScrolled}
 >
-    <div class="container mx-auto pl-12 flex items-center justify-between transition-all duration-300">
-        <div class="flex items-center transition-all duration-300" class:scale-90={isScrolled} class:scale-100={!isScrolled}>
+    <div class="container mx-auto pl-12 flex items-center justify-between transition-all ease-linear duration-400" class:scale-y-0={isScrolled} class:scale-100={!isScrolled}>
+        <div class="flex items-center transition-all duration-300">
             <img src={PIQLogo} alt="PIQ Logo" class="h-8 mr-1" />
             <a class="text-xs flex items-center justify-start" href="/">
                 <span class="hidden sm:inline text-orange-500">Patiently IQ</span>

@@ -314,7 +314,7 @@
             on:click={() => updateAudience('clinical-operations')}
         >
             <ClinicalTrial 
-                class="w-8 h-8 mb-2" 
+                class="w-8 h-8 mb-4" 
                 fill={activeAudience === 'clinical-operations' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Clinical Operations</span>
@@ -325,7 +325,7 @@
             on:click={() => updateAudience('medical-affairs')}
         >
             <Research 
-                class="w-8 h-8 mb-2" 
+                class="w-8 h-8 mb-4" 
                 fill={activeAudience === 'medical-affairs' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Medical Affairs</span>
@@ -336,7 +336,7 @@
             on:click={() => updateAudience('patient-advocacy')}
         >
             <CoexistenceSociety 
-                class="w-8 h-8 mb-2" 
+                class="w-8 h-8 mb-4" 
                 fill={activeAudience === 'patient-advocacy' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Patient Advocacy</span>
@@ -347,7 +347,7 @@
             on:click={() => updateAudience('commercial-marketing')}
         >
             <MarketAnalysis 
-                class="w-8 h-8 mb-2" 
+                class="w-8 h-8 mb-4" 
                 fill={activeAudience === 'commercial-marketing' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Commercial & Marketing</span>

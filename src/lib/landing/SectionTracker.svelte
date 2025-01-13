@@ -32,7 +32,7 @@
         label: 'Capabilities'
     },
     {
-        id: 'contact',
+        id: 'contactform',
         number: '05',
         label: 'Contact us'
     }
@@ -64,10 +64,10 @@
 </script>
 
 <div 
-    class="fixed pl-8 w-full bg-white/80 backdrop-blur-xl dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out z-30"
+    class="fixed pl-8 w-full bg-slate-100/60 backdrop-blur-xl dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out z-10"
     class:py-2={isScrolled}
     class:py-4={!isScrolled}
-    style="top: {isScrolled ? '48px' : '64px'}"
+    style="top: {isScrolled ? '42px' : '64px'}"
 >
     <!-- Desktop Navigation -->
     <div class="hidden md:block container">

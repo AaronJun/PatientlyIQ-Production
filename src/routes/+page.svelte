@@ -71,7 +71,7 @@
 		<AnalysisCapabilities />
 	</section>
 
-	<section id="contact">
+	<section id="contactform">
 	<ContactForm />
 	</section>
 	
