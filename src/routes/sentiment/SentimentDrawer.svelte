@@ -1,4 +1,3 @@
-// src/routes/sentiment/SentimentDrawer.svelte
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
     import { circInOut } from 'svelte/easing';

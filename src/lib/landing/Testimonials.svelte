@@ -21,10 +21,10 @@
     
     const testimonials: Testimonial[] = [
         {
-            quote: "PatientlyIQ's insights have transformed how we approach patient engagement. The depth of understanding we now have about patient experiences has enabled us to design more effective support programs.",
-            name: "Dr. Sarah Chen",
-            designation: "Head of Clinical Operations",
-            company: "BioGen Therapeutics",
+            quote: "You've been my secret weapon",
+            name: "",
+            designation: "VP, Commercial",
+            company: "Top 10 CRO",
             src: "" // Empty src to demonstrate fallback
         },
         {

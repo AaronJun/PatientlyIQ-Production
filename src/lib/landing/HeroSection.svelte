@@ -11,6 +11,17 @@
 	const handleChange = ({ detail }: CustomEvent<ObserverEventDetails>) => {
 		inView = detail.inView;
 	};
+
+
+	function scrollToSection(sectionId: string) {
+		const element = document.getElementById(sectionId);
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
+		if (hamburgerMenuIsOpen) {
+			hamburgerMenuIsOpen = false;
+		}
+	}
 </script>
 
 <section id="hero" class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
@@ -44,12 +55,18 @@
 	<br class="hidden md:block" />
 
 	<div class="flex justify-left gap-4">
-		<Button class="-translate-y-4 animate-fade-in gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-orange-100">
-			<span>Request Demo</span>
+		<Button 
+			on:click={() => scrollToSection('contact')}
+			class="-translate-y-4 animate-fade-in gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-orange-100"
+		>
+			<span>Project Inquiries</span>
 			<ArrowRightIcon class="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
-			
 		</Button>
-		<Button variant="outline" class="-translate-y-4 animate-fade-in gap-1 text-xs rounded-full border-[#ff5151] text-[#ff5151] opacity-0 hover:bg-orange-200 [--animation-delay:600ms] dark:border-gray-700 dark:text-gray-300 dark:hover:bg-orange-200 dark:hover:text-black dark:hover:border-orange-100">
+		<Button 
+			on:click={() => scrollToSection('data-sources')}
+			variant="outline" 
+			class="-translate-y-4 animate-fade-in gap-1 text-xs rounded-full border-[#ff5151] text-[#ff5151] opacity-0 hover:bg-orange-200 [--animation-delay:600ms] dark:border-gray-700 dark:text-gray-300 dark:hover:bg-orange-200 dark:hover:text-black dark:hover:border-orange-100"
+		>
 			<span>Learn More</span>
 		</Button>
 	</div>

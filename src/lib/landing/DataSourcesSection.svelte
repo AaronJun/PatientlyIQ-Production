@@ -6,6 +6,7 @@
     import type { ObserverEventDetails } from 'svelte-inview';
     import { MessageSquare, BrainCircuit, FileSearch, Lightbulb } from 'lucide-svelte';
     import {
+        AiGenerate,
         Chat,
         UserFeedback,
         IbmWatsonSpeechToText,
@@ -84,20 +85,19 @@
 
 
 </script>
-<div class="divide-y divide-dashed divide-orange-500"></div>
 
 <section id="data-sources" class="relative mx-auto mt-2 max-w-7xl px-2 md:px-2">
     <div class="text-left mb-16">
         <section class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
             <div class="text-left mb-16">
                 <!-- Replace the AnimatedShinyText section with this new section marker -->
-                <div class="mb-4 flex items-left gap-2">
+                <div class="section-divide mb-4 flex items-left gap-2">
                     <span class="font-mono text-xs text-gray-500">02</span>
                     <span class="font-mono text-xs text-gray-500">Comprehensive, Multi-Channel Data</span>
                 </div>
         
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pb-32"
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pb-12"
         use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
         on:inview_change={handleChange}
     >
@@ -121,7 +121,7 @@
     <div
     bind:this={containerRef}
     class={cn(
-        "relative mx-auto flex w-full max-w-[12000px] items-center justify-left -z-20 first-line:overflow-hidden border border-gray-200 dark:border-gray-900 sdark:bg-background p-10 mb-16 md:shadow-sm dark:shadow-[#090909]",
+        "relative mx-auto flex w-full max-w-[12000px] items-center justify-left -z-20 first-line:overflow-hidden border border-slate-100 dark:border-gray-900 sdark:bg-background p-10 mb-16",
     )}
 >
     <div class="absolute right-5 top-0 h-px w-1/2 bg-gradient-to-l from-transparent via-white/30 via-10% to-transparent" />
@@ -214,7 +214,7 @@
                 </Circle>
             </TooltipTrigger>
             <TooltipContent>
-                <p class="text-sm">AI-Powered Insights</p>
+                <p class="text-sm">Actionable Insights</p>
             </TooltipContent>
         </Tooltip>
     </div>
@@ -245,37 +245,42 @@
         {/each}
     </div>
 
-    <!-- DataBase and Insights cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div class="group">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mr-4 ml-4">
             <CardContainer>
                 <CardBody
                     cardContent={{
                         title: "Proprietary Database",
                         description: "PatientlyIQ discovers and consolidates data from multiple channels, and categorizes and correlates the data to create a rich repository of patient insights."
                     }}
-                class="h-40 flex flex-col justify-start w-96 px-6 py-6"
+                class="h-40 flex flex-col justify-start w-96 py-6"
                 >
                         <div class="p-2 rounded-sm text-[#ff5151]">
                             <DataBase class="w-5 h-5" />
                         </div>
                 </CardBody>
             </CardContainer>
-        </div>
-        
-        <div class="group">
+
             <CardContainer>
                 <CardBody
                     cardContent={{
                         title: "AI-Powered Insights",
-                        description: "Advanced analytics and machine learning transform raw data into actionable insights for healthcare providers and researchers"
+                        description: "Advanced analytics and machine learning transform raw data into actionable insights for healthcare providers and researchers."
                     }}
-                    class="h-40 flex flex-col justify-start w-96 px-6 py-6">
+                    class="h-40 flex flex-col justify-start w-96 py-6">
                         <div class="p-2 rounded-sm text-[#ff5151]">
-                            <Lightbulb class="w-5 h-5" />
+                            <AiGenerate class="w-5 h-5" />
                         </div>
                 </CardBody>
             </CardContainer>
-        </div>
     </div>
+    
 </section>
+
+<style>
+    .section-divide {
+		border-top: .25px solid #ff5151;
+		padding-top: .525rem;
+	}
+    
+</style>

@@ -2,8 +2,9 @@
     import { fade, fly } from 'svelte/transition';
     import { circInOut } from 'svelte/easing';
     import insightData from '$lib/data/diseaseInsights.json';
+    import TopTopicsChart from './TopTopicsChart.svelte';
+    import TopNegativeTopicsChart from './TopNegativeTopicsChart.svelte';
     import wordCloudData from '$lib/data/wordCloudData.json';
-    import PatientStoryCircles from '$lib/RPDPatientStories/PatientStoryCircles.svelte';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;
@@ -42,14 +43,8 @@
     >        
         <button class="close-button" on:click={onClose}>&times;</button>
 
-        <div class="drawer-content ">
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Patient Stories            
-            </h3>
-
-            <PatientStoryCircles {selectedDisease} />
-
-            <h2 class="text-xl font-light mt-12 mb-8">
+        <div class="drawer-content">
+            <h2 class="text-xl font-light mb-8">
                 Analysis for <span class="text-[#ff5151] font-normal">{disease}</span>
             </h2>
             
@@ -93,7 +88,6 @@
                 </div>
             </div>
 
-            <!-- Terms Section with Expansion -->
             <div class="mt-16">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -212,7 +206,6 @@
         color: #ff6d6d;
     }
 
-    /* Add smooth height transition for the terms grid */
     .terms-grid {
         transition: height 0.3s ease;
     }

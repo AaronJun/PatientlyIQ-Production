@@ -3,6 +3,7 @@
     import PatientStoriesCarousel from './PatientStoriesCarousel.svelte';
     import { onMount, onDestroy } from 'svelte';
     import patientStoriesData from '$lib/data/patient-stories.json';
+    import { writable } from 'svelte/store';
     
     // Import images
     import emmaPhoto from '$lib/assets/profiles/emmal.jpg';
@@ -11,9 +12,9 @@
     
     export let selectedDisease: string;
     
-    let isCarouselVisible = false;
+    const isCarouselVisible = writable(false);
+    const current = writable(0);
     let autoPlayInterval: number;
-    let current = 0;
 
     const photoMap = {
         '/profiles/emmal.jpg': emmaPhoto,
@@ -24,7 +25,6 @@
     $: originalPatients = patientStoriesData.diseases[selectedDisease]?.patients || [];
     $: totalCards = originalPatients.reduce((acc, patient) => acc + patient.cards.length, 0);
     
-    // Updated data transformation to include all card data
     $: patients = originalPatients.flatMap(patient => 
         patient.cards.map(card => ({
             name: patient.name,
@@ -35,7 +35,7 @@
             type: card.type,
             quote: card.quote,
             context: card.context,
-            words: card.words, // Include the word cloud data
+            words: card.words,
             "treatment-sentiment": card.treatmentSentiment,
             "trial-sentiment": card.trialSentiment,
             "medical-literacy": card.medicalLiteracy,
@@ -44,27 +44,30 @@
     );
 
     function handleCircleClick(patientIndex: number) {
-        current = originalPatients.slice(0, patientIndex).reduce((acc, p) => acc + p.cards.length, 0);
-        isCarouselVisible = true;
+        stopAutoPlay();
+        current.set(originalPatients.slice(0, patientIndex).reduce((acc, p) => acc + p.cards.length, 0));
+        isCarouselVisible.set(true);
         startAutoPlay();
     }
 
     function startAutoPlay() {
         stopAutoPlay();
-        autoPlayInterval = setInterval(() => {
-            current = (current + 1) % totalCards;
+        autoPlayInterval = window.setInterval(() => {
+            current.update(n => (n + 1) % totalCards);
         }, 5000);
     }
 
     function stopAutoPlay() {
         if (autoPlayInterval) {
             clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
         }
     }
 
     function handleClose() {
-        isCarouselVisible = false;
         stopAutoPlay();
+        isCarouselVisible.set(false);
+        current.set(0);
     }
 
     onDestroy(() => {
@@ -92,14 +95,15 @@
                 <span class="patient-name">{patient.name}</span>
             </div>
         {/each}
+        <slot />
     </div>
 </div>
 
-{#if isCarouselVisible}
+{#if $isCarouselVisible}
     <PatientStoriesCarousel
         {patients}
-        isVisible={isCarouselVisible}
-        current={current}
+        isVisible={$isCarouselVisible}
+        current={$current}
         on:close={handleClose}
     />
 {/if}
@@ -122,7 +126,7 @@
     .patient-circle-container {
         display: flex;
         flex-direction: column;
-        align-items: left;
+        align-items: center;
         gap: 0.5rem;
     }
 
@@ -186,12 +190,5 @@
         font-weight: 500;
         text-align: center;
         white-space: nowrap;
-    }
-
-    .label {
-        font-size: 0.75rem;
-        color: #666;
-        font-weight: 500;
-        margin-top: 0.5rem;
     }
 </style>

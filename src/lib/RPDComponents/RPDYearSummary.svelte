@@ -135,7 +135,6 @@
 
 <style>
 .horizontal-panel {
-    max-width: 25vw;
     padding: 2.25rem 0 0 0;
     margin-top: 5.25vh;
     min-height: 34.25vh;

@@ -99,8 +99,6 @@
 			</span>
 		</div>
 	</div>
-
-	<ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} />
 </footer>
 
 <style>

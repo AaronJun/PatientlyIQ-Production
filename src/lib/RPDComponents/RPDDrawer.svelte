@@ -196,7 +196,7 @@
 
 <svelte:window on:keydown={handleKeydown}/>
 <div 
-  class="fixed inset-0 w-full h-full bg-black/60 z-[1000] flex justify-end cursor-pointer"
+  class="fixed inset-0 w-full min-w-[400px] h-full bg-black/60 z-[1000] flex justify-end cursor-pointer"
   on:click|self={onClose}
   transition:fly={{duration: ANIMATION_DURATION}}
 >

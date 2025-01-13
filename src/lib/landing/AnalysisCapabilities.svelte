@@ -106,7 +106,7 @@
     <div class="text-left mb-16">
         <section class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
             <div class="text-left mb-16">
-                <div class="mb-4 flex items-left gap-2">
+                <div class="section-divide mb-4 flex items-left gap-2">
                     <span class="font-mono text-xs text-gray-500">04</span>
                     <span class="font-mono text-xs text-gray-500">Analysis Capabilities</span>
                 </div>
@@ -119,7 +119,7 @@
             use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
             on:inview_change={handleChange}
         >
-            <h2 class="animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 sm:mr-0 text-5xl font-normal [--animation-delay:200ms] dark:from-white/60 dark:to-white">
+            <h2 class="animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 sm:mr-0 text-5xl font-light [--animation-delay:200ms] dark:from-white/60 dark:to-white">
                 See what others <span class="font-serif pr-2 italic text-[#ff5151]">miss</span>
             </h2>
 
@@ -132,7 +132,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-12">
             {#each Object.entries(capabilities) as [key, capability]}
                 <button
-                    class="p-0 rounded-lg text-sm font-medium flex flex-col items-center justify-center aspect-square transition-all duration-200 {activeCapability === key ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+                    class="p-0 rounded-sm text-sm font-medium flex flex-col items-center justify-center aspect-square transition-all duration-200 {activeCapability === key ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
                     on:click={() => updateCapability(key)}
                 >
                     <svelte:component 
@@ -157,7 +157,7 @@
                         <p class="text-gray-600 dark:text-gray-200 text-base leading-relaxed">
                             {capabilities[activeCapability].longDescription}
                         </p>
-                        <div class="flex gap-8 mt-8">
+                        <!-- <div class="flex gap-8 mt-8">
                             <div class="space-y-2">
                                 <p class="text-lg font-bold text-gray-900 dark:text-white">
                                     {capabilities[activeCapability].stats}
@@ -168,7 +168,7 @@
                                     {capabilities[activeCapability].impact}
                                 </p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Right Column -->
@@ -193,4 +193,9 @@
     :global(button svg) {
         transition: fill 0.2s ease-in-out;
     }
+    
+    .section-divide {
+		border-top: .25px solid #ff5151;
+		padding-top: .525rem;
+	}
 </style>

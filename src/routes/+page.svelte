@@ -7,6 +7,7 @@
 	import AnalysisCapabilities from '$lib/landing/AnalysisCapabilities.svelte';
 	import FeaturesSection from '$lib/landing/FeaturesSection.svelte';
 	import SectionTracker from '$lib/landing/SectionTracker.svelte';
+	import ContactForm from '$lib/layouts/ContactForm.svelte';
 
 	let activeSection = 'hero';
 	let hamburgerMenuIsOpen = false;
@@ -52,16 +53,14 @@
 	onSectionClick={scrollToSection}
 />
 
-<div class="pt-14 pb-32"> <!-- Add padding to account for fixed header -->
+<div class="pt-2"> <!-- Add padding to account for fixed header -->
 	<section id="hero">
 		<HeroSection />
 	</section>
 
-	<div class="pb-16">
 	<section id="data-sources">
 		<DataSourcesSection />
 	</section>
-	</div>
 
 <!-- 	<section id="use-cases">
 		<BentoGridCombo />
@@ -72,4 +71,8 @@
 		<AnalysisCapabilities />
 	</section>
 
+	<section id="contact">
+	<ContactForm />
+	</section>
+	
 </div>

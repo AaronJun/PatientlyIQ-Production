@@ -1,48 +1,6 @@
-<script lang="ts">
-    import { onMount, createEventDispatcher } from 'svelte';
-    import * as d3 from 'd3';
-    
-    const dispatch = createEventDispatcher();
-    export let data: Record<string, number>;
-    
-    let svg: SVGElement;
-    let container: HTMLDivElement;
-    let width: number;
-    const height = 500;
-    const margin = { top: 40, right: 40, bottom: 40, left: 0 };
-    
-    const colors = {
-        entirelyPositive: '#2E7D33',
-        somewhatPositive: '#4CAF50',
-        neutral: '#C1A46E',
-        somewhatNegative: '#ff7171',
-        entirelyNegative: '#ff5151'
-    };
-    
-    onMount(() => {
-        const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                width = entry.contentRect.width;
-                if (width && height) createChart();
-            }
-        });
-        
-        resizeObserver.observe(container);
-        return () => resizeObserver.disconnect();
-    });
-    
-    $: {
-        if (data && width && height) {
-            createChart();
-        }
-    }
-    
-    function createChart() {
-        if (!data) return;
-        
-        d3.select(svg).selectAll("*").remove();
-        
-        const width = 928;
+chart = {
+  // Specify the chart’s dimensions.
+  const width = 928;
   const height = width;
   const radius = width / 6;
 
@@ -163,16 +121,3 @@
 
   return svg.node();
 }
-</script>
-
-<div class="chart-container" bind:this={container}>
-    <svg bind:this={svg}></svg>
-</div>
-
-<style>
-    .chart-container {
-        width: 100%;
-        height: 500px;
-        position: relative;
-    }
-</style>

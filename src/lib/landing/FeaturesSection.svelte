@@ -274,13 +274,11 @@
     };
 </script>
 
-<div class="divide-y divide-dashed divide-orange-500"></div>
-
 <section id="use-cases" class="relative mx-auto mt-2 max-w-7xl px-2 md:px-2">
     <div class="text-left mb-16">
         <section class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
             <div class="text-left mb-16">
-                <div class="mb-4 flex items-left gap-2">
+                <div class="section-divide mb-4 flex items-left gap-2">
                     <span class="font-mono text-xs text-gray-500">03</span>
                     <span class="font-mono text-xs text-gray-500">Use Cases</span>
                 </div>
@@ -292,7 +290,7 @@
             use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
             on:inview_change={handleChange}
         >
-            <h2 class="animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 sm:mr-0 text-5xl font-normal [--animation-delay:200ms] dark:from-white/60 dark:to-white">
+            <h2 class="animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 sm:mr-0 text-5xl font-light [--animation-delay:200ms] dark:from-white/60 dark:to-white">
                 Flexible data for <span class="font-serif pr-2 italic text-[#ff5151]">flexible</span>needs.
             </h2>
 
@@ -302,32 +300,32 @@
         </div>
 
         <div
-            use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
+        use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
             on:inview_change={handleChange}
             class="animate-fade-up opacity-0 [--animation-delay:400ms]"
         >
             <!-- Audience Selection -->
            
 <!-- Updated Audience Selection Buttons -->
-<div class="mb-12 grid">
-    <div class="grid grid-cols-4">
+<div class="mb-12">
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-12">        
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'clinical-operations' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-sm text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'clinical-operations' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('clinical-operations')}
         >
             <ClinicalTrial 
-                class="w-12 h-12 mb-4" 
+                class="w-8 h-8 mb-2" 
                 fill={activeAudience === 'clinical-operations' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Clinical Operations</span>
         </button>
         
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'medical-affairs' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-sm text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'medical-affairs' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('medical-affairs')}
         >
             <Research 
-                class="w-12 h-12 mb-4" 
+                class="w-8 h-8 mb-2" 
                 fill={activeAudience === 'medical-affairs' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Medical Affairs</span>
@@ -338,18 +336,18 @@
             on:click={() => updateAudience('patient-advocacy')}
         >
             <CoexistenceSociety 
-                class="w-12 h-12 mb-4" 
+                class="w-8 h-8 mb-2" 
                 fill={activeAudience === 'patient-advocacy' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Patient Advocacy</span>
         </button>
         
         <button
-            class="p-6 rounded-lg text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'commercial-marketing' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+            class="p-2 rounded-sm text-sm font-medium flex flex-col max-h-60 flex-grow items-center justify-center aspect-square transition-all duration-200 {activeAudience === 'commercial-marketing' ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
             on:click={() => updateAudience('commercial-marketing')}
         >
             <MarketAnalysis 
-                class="w-12 h-12 mb-4" 
+                class="w-8 h-8 mb-2" 
                 fill={activeAudience === 'commercial-marketing' ? 'white' : 'currentColor'}
             />
             <span class="text-center font-medium">Commercial & Marketing</span>
@@ -440,12 +438,7 @@
                                     {feature.description}
                                 </p>
                                 <div class="column gap-8 mt-8">
-                                    <div class="space-y pt-4 pb-4">
-                                        <p class="text-lg font-bold text-gray-900 dark:text-white">{feature.stats}</p>
-                                    </div>
-                                    <div class="space-y pt-4 pb-4">
-                                        <p class="text-lg font-bold text-gray-900 dark:text-white">{feature.impact}</p>
-                                    </div>
+                                
                                 </div>
                             </div>
 
@@ -479,4 +472,8 @@
     :global(button svg) {
         transition: fill 0.2s ease-in-out;
     }
+    .section-divide {
+		border-top: .25px solid #ff5151;
+		padding-top: .525rem;
+	}
 </style>
