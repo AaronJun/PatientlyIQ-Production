@@ -5,7 +5,6 @@
   let formData = {
       firstName: '',
       lastName: '',
-      country: '',
       company: '',
       position: '',
       phone: '',
@@ -48,16 +47,6 @@
       'Other'
   ];
 
-  const countries = [
-      'United States',
-      'United Kingdom',
-      'Canada',
-      'Australia',
-      'Germany',
-      'France',
-      'Japan',
-      'Other'
-  ];
 
   async function handleSubmit() {
       isSubmitting = true;
@@ -176,22 +165,7 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                  <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'country'} class:text-slate-400={focusedField !== 'country'}>* Country</label>
-                  <select
-                      bind:value={formData.country}
-                      required
-                      disabled={isSubmitting}
-                      on:focus={() => handleFocus('country')}
-                      on:blur={handleBlur}
-                      class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
-                  >
-                      <option value="">Select country</option>
-                      {#each countries as country}
-                          <option value={country}>{country}</option>
-                      {/each}
-                  </select>
-              </div>
+            
 
               <div>
                   <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'company'} class:text-slate-400={focusedField !== 'company'}>* Company</label>
@@ -205,40 +179,27 @@
                       class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
                   />
               </div>
+              <div>
+                <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'position'} class:text-slate-400={focusedField !== 'position'}>* Position/Level</label>
+                <select
+                    bind:value={formData.position}
+                    required
+                    disabled={isSubmitting}
+                    on:focus={() => handleFocus('position')}
+                    on:blur={handleBlur}
+                    class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
+                >
+                    <option value="">Select position</option>
+                    {#each positions as position}
+                        <option value={position}>{position}</option>
+                    {/each}
+                </select>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                  <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'position'} class:text-slate-400={focusedField !== 'position'}>* Position/Level</label>
-                  <select
-                      bind:value={formData.position}
-                      required
-                      disabled={isSubmitting}
-                      on:focus={() => handleFocus('position')}
-                      on:blur={handleBlur}
-                      class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
-                  >
-                      <option value="">Select position</option>
-                      {#each positions as position}
-                          <option value={position}>{position}</option>
-                      {/each}
-                  </select>
-              </div>
-
-              <div>
-                  <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'phone'} class:text-slate-400={focusedField !== 'phone'}>Phone Number</label>
-                  <input
-                      type="tel"
-                      bind:value={formData.phone}
-                      disabled={isSubmitting}
-                      on:focus={() => handleFocus('phone')}
-                      on:blur={handleBlur}
-                      class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
-                  />
-              </div>
-          </div>
-
-          <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 pt-12 gap-6">
+            
+            <div>
               <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'email'} class:text-slate-400={focusedField !== 'email'}>* Work Email</label>
               <input
                   type="email"
@@ -250,6 +211,18 @@
                   class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
           </div>
+       
+          <div>
+            <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'phone'} class:text-slate-400={focusedField !== 'phone'}>Phone Number</label>
+            <input
+                type="tel"
+                bind:value={formData.phone}
+                disabled={isSubmitting}
+                on:focus={() => handleFocus('phone')}
+                on:blur={handleBlur}
+                class="w-full px-3 py-2 border-bottom border-slate-400 rounded-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+            />
+        </div>
 
           <div>
               <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'reason'} class:text-slate-400={focusedField !== 'reason'}>* Please select the reason you want to contact us</label>
@@ -272,7 +245,6 @@
               <label class="block text-xs font-mono mb-4" class:text-orange-500={focusedField === 'message'} class:text-slate-400={focusedField !== 'message'}>* Message</label>
               <textarea
                   bind:value={formData.message}
-                  required
                   disabled={isSubmitting}
                   rows="4"
                   on:focus={() => handleFocus('message')}
@@ -281,22 +253,21 @@
               ></textarea>
           </div>
 
-          <div class="flex items-start space-x-2">
+          <div class="flex flex-col justify-end">
+            <div class="flex space-x-4 mt-12 col-span-1">
               <input
                   type="checkbox"
                   bind:checked={formData.consent}
                   id="consent"
-                  required
                   disabled={isSubmitting}
                   class="mt-1 rounded-none border-slate-500 text-orange-600 focus:ring-orange-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
               <label for="consent" class="text-sm text-gray-600">
-                  * I agree to Patiently Studio collecting and processing my personal data to allow me to receive information on services.
+                  I agree to Patiently Studio collecting and processing my personal data to allow me to receive information on services.
               </label>
           </div>
 
-          <div class="flex justify-start">
-              <button
+            <button
                   type="submit"
                   disabled={isSubmitting}
                   class="w-full sm:w-auto lg:min-w-52 px-6 py-4 mb-24 mt-12 bg-[#ff5151] text-white rounded-full hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ringtransition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"

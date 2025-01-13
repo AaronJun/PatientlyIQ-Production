@@ -132,7 +132,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-12">
             {#each Object.entries(capabilities) as [key, capability]}
                 <button
-                    class="p-0 rounded-sm text-sm font-medium flex flex-col items-center justify-center aspect-square transition-all duration-200 {activeCapability === key ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+                    class="rounded-sm text-sm font-medium flex flex-col items-center justify-center aspect-square transition-all duration-200 {activeCapability === key ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
                     on:click={() => updateCapability(key)}
                 >
                     <svelte:component 
