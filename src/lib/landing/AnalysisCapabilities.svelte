@@ -120,7 +120,7 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-5 gap-12 max-w-fit">
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-x-12 gap-y-4 max-w-fit">
             {#each Object.entries(capabilities) as [key, capability]}
                 <button
                     class="max-w-36 text-xs font-medium flex flex-col items-left justify-center h-24 px-2 transition-all duration-200 {activeCapability === key ? 'text-[#ff5151] font-semibold' : ' text-slate-400 hover:test-orange-500 dark:bg-orange-800 dark:text-gray-300'}"
@@ -131,7 +131,7 @@
                         class="w-6 h-6 mb-2"
                         fill={activeCapability === key ? '#ff1551' : 'currentColor'}
                     />
-                    <span class="text-left text-sm max-w-24">{capability.title}</span>
+                    <span class="text-left text-xs sm:text-sm max-w-24">{capability.title}</span>
                 </button>
             {/each}
         </div>

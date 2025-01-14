@@ -254,7 +254,7 @@
         </div>
 
         <!-- Feature Selection Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-12 max-w-fit">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-12 gap-y-4 max-w-fit">
             {#each Object.entries(features) as [key, feature]}
                 <button
                 class="max-w-32 text-xs font-medium flex flex-col items-left justify-center px-2 h-24 transition-all duration-200 {activeFeature === key ? 'text-[#ff5151] font-semibold' : ' text-slate-400 hover:test-orange-500 dark:bg-orange-800 dark:text-gray-300'}"
@@ -265,7 +265,7 @@
                         class="w-6 h-6 mb-2"
                         fill={activeFeature === key ? '#ff1515' : 'currentColor'}
                     />
-                    <span class="text-left text-sm max-w-24">{feature.title}</span>
+                    <span class="text-left text-xs sm:text-sm max-w-24">{feature.title}</span>
                 </button>
             {/each}
         </div>
