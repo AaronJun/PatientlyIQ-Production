@@ -27,7 +27,7 @@
 			});
 		}, options);
 
-		const sections = ['hero', 'data-sources', 'use-cases', 'analysis'];
+		const sections = ['hero', 'data-sources', 'use-cases', 'analysis','contactform'];
 		sections.forEach((sectionId) => {
 			const element = document.getElementById(sectionId);
 			if (element) observer.observe(element);

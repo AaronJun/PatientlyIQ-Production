@@ -34,7 +34,7 @@
     {
         id: 'contactform',
         number: '05',
-        label: 'Contact us'
+        label: 'Contact Us'
     }
 ];
 
