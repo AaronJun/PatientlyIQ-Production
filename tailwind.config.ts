@@ -9,6 +9,8 @@ const config: Config = {
 			center: true,
 			padding: '2rem',
 			screens: {
+				'xs': '320px',
+
 				'sm': '640px',
 				// => @media (min-width: 640px) { ... }
 		  

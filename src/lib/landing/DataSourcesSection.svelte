@@ -97,18 +97,18 @@
                 </div>
         
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pb-12"
+        <div class="grid grid-row md:grid-row gap-12 pb-12"
         use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
         on:inview_change={handleChange}
     >
 
         <h2 class=
-        "animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 text-5xl font-normal text-transparent opacity-0 tracking-wide [--animation-delay:200ms] dark:from-white/60 dark:to-white">
+        "animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 text-5xl font-light text-transparent opacity-0 tracking-medium w-9/12 [--animation-delay:200ms] dark:from-white/60 dark:to-white">
 
         A <span class="font-serif tracking-tight italic text-[#ff5151]">First-of-Its-Kind</span> Dataset
         </h2>
 
-        <p class="mb-8 -translate-y-4 animate-fade-in text-balance tracking-normal max-w-[800px] text-gray-600 opacity-0 [--animation-delay:400ms] dark:text-gray-400 md:text-base">
+        <p class="-translate-y-4 animate-fade-in text-balance tracking-normal max-w-[775px] text-gray-600 opacity-0 [--animation-delay:400ms] dark:text-gray-400 text-lg md:text-lg sm:text-base">
             PatientlyIQ discovers and consolidates data from multiple channels, and categorizes and correlates the data to create a rich repository of patient insights.
         </p>
         </div>

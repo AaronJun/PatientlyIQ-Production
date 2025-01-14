@@ -1,8 +1,6 @@
 <script lang="ts">
     import { inview } from 'svelte-inview';
     import type { ObserverEventDetails } from 'svelte-inview';
-    
-    // Import Carbon pictograms/icons
     import Journey from "carbon-pictograms-svelte/lib/MovementInOverlappingNetworks.svelte";
     import WindowsHosting from "carbon-pictograms-svelte/lib/WindowsHosting.svelte";
     import GlobalAnalytics from "carbon-pictograms-svelte/lib/GlobalAnalytics.svelte";
@@ -11,7 +9,6 @@
 
     let inView = false;
     let activeCapability = 'journey-mapping';
-    let openAccordion = 0;
 
     const handleChange = ({ detail }: CustomEvent<ObserverEventDetails>) => {
         inView = detail.inView;
@@ -87,7 +84,7 @@
                 "Mixed-method approaches",
                 "Rapid insight generation",
                 "Expert panel integration",
-            "Custom analytics dashboards"
+                "Custom analytics dashboards"
             ],
             stats: "92% client satisfaction",
             impact: "4.1x faster delivery",
@@ -97,104 +94,112 @@
 
     const updateCapability = (capability: string) => {
         activeCapability = capability;
-        openAccordion = 0;
     };
 </script>
-
-
-<section class="relative mx-auto mt-2 max-w-7xl px-2 md:px-2">
-    <div class="text-left mb-16">
-        <section class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
-            <div class="text-left mb-16">
-                <div class="section-divide mb-4 flex items-left gap-2">
-                    <span class="font-mono text-xs text-gray-500">04</span>
-                    <span class="font-mono text-xs text-gray-500">Analysis Capabilities</span>
-                </div>
+  
+<section id="analysis" class="section-divide relative mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mb-16">
+        <div class="border-t border-[#ff5151] pt-2">
+            <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-gray-500">04</span>
+                <span class="font-mono text-xs text-gray-500">Analysis Capabilities</span>
             </div>
-        </section>
+        </div>
     </div>
 
-    <section id="analysis" class="relative mx-auto mt-32 max-w-7xl px-6 md:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pb-24"
-            use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
-            on:inview_change={handleChange}
-        >
-            <h2 class="animate-fade-in text-balance bg-gradient-to-br from-gray-800 from-30% to-gray-500 bg-clip-text mr-2 sm:mr-0 text-5xl font-light [--animation-delay:200ms] dark:from-white/60 dark:to-white">
-                See what others <span class="font-serif pr-2 italic text-[#ff5151]">miss</span>
+    <div class="space-y-12"
+        use:inview={{ unobserveOnEnter: true, rootMargin: '-100px' }}
+        on:inview_change={handleChange}
+    >
+        <div class="space-y-6">
+            <h2 class="text-4xl sm:text-5xl font-light bg-gradient-to-br from-gray-800 to-gray-500 bg-clip-text">
+                See what others <span class="font-serif italic text-[#ff5151]">miss.</span>
             </h2>
-
-            <p class="-translate-y-4 animate-fade-in text-balance tracking-normal max-w-[625px] text-gray-600 opacity-0 [--animation-delay:400ms] dark:text-gray-400 md:text-base sm:text-sm">
-                Turn complex patient data into actionable insights with our comprehensive suite of analysis tools. From journey mapping to global trends, uncover the insights that drive better patient outcomes.
+            <p class="max-w-xl text-base sm:text-lg text-gray-600 dark:text-gray-400">
+                Turn complex patient data into actionable insights with our comprehensive suite of analysis tools.
             </p>
         </div>
 
-        <!-- Analysis Capabilities Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-12">
+        <div class="grid grid-cols-5 gap-12 max-w-fit">
             {#each Object.entries(capabilities) as [key, capability]}
                 <button
-                    class="rounded-sm text-sm font-medium flex flex-col items-center justify-center aspect-square transition-all duration-200 {activeCapability === key ? 'bg-[#ff5151] text-white shadow-lg scale-[1.02]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-300'}"
+                    class="max-w-36 text-xs font-medium flex flex-col items-left justify-center h-24 px-2 transition-all duration-200 {activeCapability === key ? 'text-[#ff5151] font-semibold' : ' text-slate-400 hover:test-orange-500 dark:bg-orange-800 dark:text-gray-300'}"
                     on:click={() => updateCapability(key)}
                 >
                     <svelte:component 
                         this={capability.icon}
-                        class="w-8 h-8 mb-4"
-                        fill={activeCapability === key ? 'white' : 'currentColor'}
+                        class="w-6 h-6 mb-2"
+                        fill={activeCapability === key ? '#ff1551' : 'currentColor'}
                     />
-                    <span class="text-center font-medium text-xs">{capability.title}</span>
+                    <span class="text-left text-sm max-w-24">{capability.title}</span>
                 </button>
             {/each}
         </div>
 
-        <!-- Active Capability Content -->
-        <div class="mt-8 animate-fade-in [--animation-delay:200ms]">
-            {#if capabilities[activeCapability]}
-                <div class="grid grid-cols-2 lg:grid-cols-2 gap-32">
-                    
-                    <!-- Left Column -->
-                    <div class="space-y-6">
-                        <h3 class="text-2xl font-base text-gray-900 dark:text-[#cd4444]">
-                            {capabilities[activeCapability].title}
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-200 text-base leading-relaxed">
-                            {capabilities[activeCapability].longDescription}
-                        </p>
-                        <!-- <div class="flex gap-8 mt-8">
-                            <div class="space-y-2">
-                                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                    {capabilities[activeCapability].stats}
-                                </p>
-                            </div>
-                            <div class="space-y-2">
-                                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                    {capabilities[activeCapability].impact}
-                                </p>
-                            </div>
-                        </div> -->
-                    </div>
+        {#if capabilities[activeCapability]}
+            <!-- Mobile Layout -->
+            <div class="sm:hidden space-y-8">
+                <div class="space-y-4">
+                    <h3 class="text-xl text-gray-900 dark:text-[#cd4444]">
+                        {capabilities[activeCapability].title}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-200">
+                        {capabilities[activeCapability].longDescription}
+                    </p>
+                </div>
 
-                    <!-- Right Column -->
-                    <div class= "px-8 py-14">
-                        <h4 class="mb-4 text-xs font-bold text-gray-900 dark:text-[#d94343]">Key Features</h4>
-                        <ul class="space-y-4">
-                            {#each capabilities[activeCapability].details as detail}
-                                <li class="flex items-center gap-3">
-                                    <span class="flex-shrink-0 size-1 rounded-full bg-[#ff5151]"></span>
-                                    <span class="text-sm text-gray-600 dark:text-gray-300">{detail}</span>
-                                </li>
-                            {/each}
-                        </ul>
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-gray-900 dark:text-[#d94343]">Key Features</h4>
+                    <ul class="space-y-2">
+                        {#each capabilities[activeCapability].details as detail}
+                            <li class="flex items-start gap-2">
+                                <span class="w-1 h-1 mt-1.5 rounded-full bg-[#ff5151] flex-shrink-0"></span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300">{detail}</span>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">
+                            {capabilities[activeCapability].impact}
+                        </span>
                     </div>
                 </div>
-            {/if}
-        </div>
-    </section>
+            </div>
+
+            <!-- Desktop Layout -->
+            <div class="hidden sm:grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <h3 class="text-2xl text-slate-700 font-bold dark:text-[#cd4444]">
+                        {capabilities[activeCapability].title}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-200 pr-24">
+                        {capabilities[activeCapability].longDescription}
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <h4 class="text-xs font-bold text-gray-900 dark:text-[#d94343]">Key Features</h4>
+                    <ul class="space-y-3">
+                        {#each capabilities[activeCapability].details as detail}
+                            <li class="flex items-center gap-2">
+                                <span class="w-1 h-1 rounded-full bg-[#ff5151]"></span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300">{detail}</span>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
+            </div>
+        {/if}
+    </div>
 </section>
 
 <style>
     :global(button svg) {
         transition: fill 0.2s ease-in-out;
     }
-    
     .section-divide {
 		border-top: .25px solid #ff5151;
 		padding-top: .525rem;

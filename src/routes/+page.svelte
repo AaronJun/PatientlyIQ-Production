@@ -62,12 +62,13 @@
 		<DataSourcesSection />
 	</section>
 
-<!-- 	<section id="use-cases">
+<!-- 	
 		<BentoGridCombo />
 	</section> -->
+	<section id="use-cases">
 	<FeaturesSection />
 
-	<section id="analysis pb-12">
+	<section id="analysis">
 		<AnalysisCapabilities />
 	</section>
 
