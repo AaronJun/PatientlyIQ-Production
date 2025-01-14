@@ -162,9 +162,7 @@
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">
-                            {capabilities[activeCapability].impact}
-                        </span>
+            
                     </div>
                 </div>
             </div>

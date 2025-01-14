@@ -314,9 +314,7 @@
                     </span>
                 </div>
                 <div class="space-y-1">
-                    <span class="text-sm font-bold text-gray-900 dark:text-white">
-                        {features[activeFeature].subFeatures[activeSubFeature].impact}
-                    </span>
+                    
                 </div>
             </div>
         </div>
