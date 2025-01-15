@@ -136,7 +136,7 @@
             {/each}
         </div>
 
-        {#if capabilities[activeCapability]}
+    {#if capabilities[activeCapability]}
             <!-- Mobile Layout -->
             <div class="sm:hidden space-y-8">
                 <div class="space-y-4">

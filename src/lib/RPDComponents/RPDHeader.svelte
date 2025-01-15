@@ -24,10 +24,10 @@
   }
 </script>
 
-<div class="flex flex-col justify-start pl-12 py-8 mt-8">
+<div class="flex flex-col justify-start pl-12 pt-32">
 
   <div>
-    <h1 class="capitalize font-light text-3xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
+    <h1 class="capitalize font-light max-w-prose text-4xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
     
     <p class="font-base max-w-prose">
       The FDA's Priority Review Voucher Program has planted the seeds for <span class="font-base text-orange-600 font-medium">56 new rare disease treatments</span>, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.
@@ -35,7 +35,7 @@
     <div class="flex gap-4 mt-12">
       <!-- Get Details Button -->
       <button 
-        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-sm text-xs font-semibold text-gray-100 relative overflow-hidden group" 
+        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
         on:click={handleReadMore}
       >
         <div class="absolute inset-0 bg-[#ff1515] z-0"></div>
@@ -48,7 +48,7 @@
 
       <!-- Share Button -->
       <button 
-        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-sm text-xs font-semibold text-gray-100 relative overflow-hidden group" 
+        class="w-fit flex gap-4 pr-3 pl-4 py-3 items-start align-middle justify-start rounded-full text-xs font-semibold text-gray-100 relative overflow-hidden group" 
         on:click={handleShare}
       >
         <div class="absolute inset-0 bg-sky-800 z-0"></div>
