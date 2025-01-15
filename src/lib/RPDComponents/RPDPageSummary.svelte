@@ -81,7 +81,7 @@ $: overviewStats = {
 
 <div class="summary-container">
   {#if currentYear === "2012"}
-  <div class="info-panel row col-span-2 align-center p-8 pl-0 text-[#C9623F] uppercase">
+  <div class="info-panel row col-span-2 align-center pt-8 pl-0 text-[#C9623F] uppercase">
     <h2 class="text-xs mb-8 font-bold col-span-1">        
       Nurturing New Treatments</h2>
   </div>
