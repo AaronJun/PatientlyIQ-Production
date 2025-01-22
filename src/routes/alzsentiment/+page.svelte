@@ -44,9 +44,7 @@
              <!-- Patient Stories Section -->
              <section class="mb-16 pb-24 place-content-center justify-center">
   
-                <PatientStoryCircles {selectedDisease}>
-                    <!-- Patient story circles content -->
-                </PatientStoryCircles>                <PatientJourneyCards />
+               <PatientJourneyCards />
 
                 </div>
           
