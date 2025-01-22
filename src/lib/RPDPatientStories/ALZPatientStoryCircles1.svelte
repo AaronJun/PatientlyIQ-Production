@@ -6,8 +6,9 @@
     import { writable } from 'svelte/store';
     
     // Import images
-    import timothyPhoto from '$lib/assets/profiles/timothyK.jpg';
-    import maggiePhoto from '$lib/assets/profiles/maggieP.jpg';
+    import timothyPhoto from '$lib/assets/profiles/timothyK.jpg?url';
+import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
+
     
     export let selectedDisease: string;
     

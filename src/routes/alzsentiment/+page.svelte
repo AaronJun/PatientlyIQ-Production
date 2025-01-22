@@ -43,10 +43,11 @@
 
              <!-- Patient Stories Section -->
              <section class="mb-16 pb-24 place-content-center justify-center">
-  
-               <PatientJourneyCards />
+                <PatientStoryCircles {selectedDisease} />
+                <PatientJourneyCards />
+            </section>
+            </div>  
 
-                </div>
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
