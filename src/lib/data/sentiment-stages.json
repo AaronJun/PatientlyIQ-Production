@@ -1,0 +1,84 @@
+{
+  "stages": [
+    {
+      "name": "Initial Discovery",
+      "sentiments": {
+        "Entirely Negative": {
+          "count": 3,
+          "quote": {
+            "text": "And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new.",
+            "highlightIndex": 2
+          }
+        },
+        "Somewhat Negative": { "count": 7 },
+        "Neutral": { "count": 14 },
+        "Somewhat Positive": { "count": 16 },
+        "Entirely Positive": { "count": 5 }
+      }
+    },
+    {
+      "name": "Initial Planning",
+      "sentiments": {
+        "Entirely Negative": { "count": 25 },
+        "Somewhat Negative": {
+          "count": 24,
+          "quote": {
+            "text": "My doctor means well but admits she doesn't have enough APOE4 patients to really understand our unique needs. I feel like I'm teaching her sometimes.",
+            "highlightIndex": 15
+          }
+        },
+        "Neutral": { "count": 8 },
+        "Somewhat Positive": { "count": 3 },
+        "Entirely Positive": { "count": 1 }
+      }
+    },
+    {
+      "name": "Day-to-Day Management",
+      "sentiments": {
+        "Entirely Negative": { "count": 9 },
+        "Somewhat Negative": { "count": 16 },
+        "Neutral": {
+          "count": 25,
+          "quote": {
+            "text": "I joined an online support group because nobody in my real life understands. When I try to explain my preventative measures, people tell me I'm being paranoid.",
+            "highlightIndex": 12
+          }
+        },
+        "Somewhat Positive": { "count": 12 },
+        "Entirely Positive": { "count": 5 }
+      }
+    },
+    {
+      "name": "New Treatment",
+      "sentiments": {
+        "Entirely Negative": { "count": 10 },
+        "Somewhat Negative": { "count": 8 },
+        "Neutral": { "count": 21 },
+        "Somewhat Positive": {
+          "count": 11,
+          "quote": {
+            "text": "When I learned about the role of insulin resistance and metabolic health in cognitive decline, it felt like finding a key. Now I have specific markers I can track and improve.",
+            "highlightIndex": 5
+          }
+        },
+        "Entirely Positive": { "count": 3 }
+      }
+    },
+    {
+      "name": "Long-Term Planning",
+      "sentiments": {
+        "Entirely Negative": { "count": 7 },
+        "Somewhat Negative": { "count": 11 },
+        "Neutral": { "count": 4 },
+        "Somewhat Positive": { "count": 12 },
+        "Entirely Positive": {
+          "count": 5,
+          "quote": {
+            "text": "My husband has become my biggest advocate. He learned everything about APOE4, changed his diet with me, and reminds me to stay positive when I get discouraged. Having a partner in this journey makes all the difference.",
+            "highlightIndex": 3
+          }
+        }
+      }
+    }
+  ]
+}
