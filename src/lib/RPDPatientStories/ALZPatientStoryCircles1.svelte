@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import { fade } from 'svelte/transition';
     import PatientStoriesCarousel from './PatientStoriesCarousel.svelte';
     import { onMount, onDestroy } from 'svelte';
@@ -190,4 +190,4 @@ import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
         text-align: center;
         white-space: nowrap;
     }
-</style>
+</style> -->
