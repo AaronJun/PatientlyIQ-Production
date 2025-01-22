@@ -7,13 +7,15 @@
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
     import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
     import ScrollProgress from './ScrollProgress.svelte';
-
-    import PatientStoryCards from '$lib/RPDPatientStories/PatientStoryCards.svelte';
+    import AlzJourneyTabs from '../tabs/AlzJourneyTabs.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
     import AlzIntroductionS1P2 from './ALZIntroductionS1P2.svelte';
     import AlzIntroductionS2P1 from './ALZIntroductionS2P1.svelte';
+    import AlzIntroductionS3P1 from './ALZIntroductionS3P1.svelte';
+    import AlzIntroductionS2P2 from './ALZIntroductionS2P2.svelte';
+    import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
@@ -50,27 +52,41 @@
 
     </div>
 
-             <!-- Patient Stories Section -->
-        <div id="1.1a APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
-                <PatientStoryCircles {selectedDisease} />
-                <PatientJourneyCards />
-        </div>
-        <div id="1.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
-            <AlzIntroductionS1P2 />
-            <NegativeSentimentChart />
-            <NegativeSentimetDriversChart />
-        </div>
-    </div>  
+    
+    <div id="1.2 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+    <AlzJourneyTabs />
+    </div>
+    <div id="1.3 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
+        <AlzIntroductionS1P2 />
+        <NegativeSentimentChart />
+        <NegativeSentimetDriversChart />
+    </div>
 
     <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">
-        <AlzIntroductionS2P1 />
+    <AlzIntroductionS2P1 />
     </div>
-    <div id="2.1a APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="2.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center"> 
+    <NegativeSentimentChart />
+    <NegativeSentimetDriversChart />
+    </div>  
+    <div id="2.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+    <PatientStoryCircles {selectedDisease} />
+    <PatientJourneyCards />
+    </div>
+    
+    <div id="3.1 Clinical Trials" class="mb-16 pb-24 place-content-center justify-center">
+        <AlzIntroductionS3P1 />
+        </div>
+        <div id="3.2 Perception of Alzheon" class="mb-16 pb-24 place-content-center justify-center"> 
+        <NegativeSentimentChart />
+        <NegativeSentimetDriversChart />
+        </div>  
+        <div id="3.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />
         <PatientJourneyCards />
-</div>
+        </div>
 
-    
+</div>
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">

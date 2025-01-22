@@ -1,0 +1,39 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "name": "Sarah M.",
+      "age": "Late-50s",
+      "persona": "APOE4 Carrier",
+      "quote": "Finding out I was APOE4 positive felt like being handed a ticking time bomb. The doctor gave me the results so matter-of-factly, but inside I was screaming. What do I do with this information? How do I plan a future knowing what might be coming?"
+    },
+    {
+      "id": 2,
+      "name": "Robert K.",
+      "age": "Mid-50s",
+      "persona": "APOE4 Carrier",
+      "quote": "The hardest part isn't knowing - it's the helplessness. Every time I forget something small, like where I put my keys, there's this voice in my head wondering 'is this it? Is it starting?' It's exhausting living with that kind of anxiety."
+    },
+    {
+      "id": 3,
+      "name": "Jennifer L.",
+      "age": "Early-60s",
+      "persona": "Caregiver",
+      "quote": "When my sister tested positive, it felt like our whole family got diagnosed. We're all walking on eggshells, trying to balance being vigilant with not letting fear consume our lives. Sometimes I wonder if knowing so early was a blessing or a curse."
+    },
+    {
+      "id": 4,
+      "name": "Michael P.",
+      "age": "Late-40s",
+      "persona": "APOE4 Carrier",
+      "quote": "I spent months in a deep depression after getting my results. It's like mourning a future that might never happen now. My kids were young - should I even tell them? How do you parent knowing you might not be there mentally when they need you most?"
+    },
+    {
+      "id": 5,
+      "name": "Lisa R.",
+      "age": "Mid-60s",
+      "persona": "Caregiver",
+      "quote": "When my husband got his results, our retirement plans changed overnight. We're now racing against an invisible clock, trying to pack a lifetime of memories into whatever time we have before symptoms might start. The uncertainty is almost worse than knowing."
+    }
+  ]
+}
