@@ -10,6 +10,7 @@
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
+    import AlzIntroductionS1P2 from './ALZIntroductionS1P2.svelte';
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
@@ -46,8 +47,12 @@
                 <PatientStoryCircles {selectedDisease} />
                 <PatientJourneyCards />
             </section>
-            </div>  
+            <AlzIntroductionS1P2 />
+            <NegativeSentimentChart />
+            <NegativeSentimetDriversChart />
 
+            </div>  
+    
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
