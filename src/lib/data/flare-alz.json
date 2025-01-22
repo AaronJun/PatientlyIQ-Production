@@ -1,0 +1,249 @@
+{
+  "name": "Alzheimer's",
+  "children": [
+    {
+      "name": "Entirely Negative",
+      "children": [
+        {
+          "name": "Clinical Uncertainty",
+          "children": [
+            {"name": "Side Effects", "value": 14},
+            {"name": "Cost", "value": 17},
+            {"name": "Access", "value": 28},
+            {"name": "Lack of Choice", "value": 17},
+            {"name": "Doubt", "value": 15}
+          ]
+        },
+        {
+          "name": "Side Effects/Symptoms",
+          "children": [
+            {"name": "Emotional", "value": 62},
+            {"name": "Physical", "value": 46}
+          ]
+        },
+        {
+          "name": "Day-to-Day Challenges",
+          "children": [
+            {"name": "Work", "value": 51},
+            {"name": "Finance", "value": 22},
+            {"name": "Logistics", "value": 17},
+            {"name": "Other", "value": 58}
+          ]
+        },
+        {
+          "name": "Clinical Trials",
+          "children": [
+            {"name": "Criteria", "value": 51},
+            {"name": "Logistics", "value": 6},
+            {"name": "Other", "value": 25},
+            {"name": "QoL Concern", "value": 17}
+          ]
+        },
+        {
+          "name": "Care Team/Second Opinions",
+          "children": [
+            {"name": "Work", "value": 0},
+            {"name": "Finance", "value": 42},
+            {"name": "Logistics", "value": 44}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Somewhat Negative",
+      "children": [
+        {
+          "name": "Treatment Options",
+          "children": [
+            {"name": "Side Effects", "value": 20},
+            {"name": "Cost", "value": 22},
+            {"name": "Access", "value": 1},
+            {"name": "Lack of Choice", "value": 10},
+            {"name": "Doubt", "value": 21},
+            {"name": "Other", "value": 8}
+          ]
+        },
+        {
+          "name": "Side Effects/Symptoms",
+          "children": [
+            {"name": "Emotional", "value": 1},
+            {"name": "Physical", "value": 14}
+          ]
+        },
+        {
+          "name": "Day-to-Day Challenges",
+          "children": [
+            {"name": "Work", "value": 14},
+            {"name": "Finance", "value": 1},
+            {"name": "Logistics", "value": 10},
+            {"name": "Other", "value": 15}
+          ]
+        },
+        {
+          "name": "Clinical Trials",
+          "children": [
+            {"name": "Criteria", "value": 22},
+            {"name": "Logistics", "value": 15},
+            {"name": "Other", "value": 18},
+            {"name": "QoL Concern", "value": 11}
+          ]
+        },
+        {
+          "name": "Care Team/Second Opinions",
+          "children": [
+            {"name": "Work", "value": 22},
+            {"name": "Finance", "value": 21},
+            {"name": "Logistics", "value": 14}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Neutral",
+      "children": [
+        {
+          "name": "Treatment Options",
+          "children": [
+            {"name": "Side Effects", "value": 17},
+            {"name": "Cost", "value": 18},
+            {"name": "Access", "value": 1},
+            {"name": "Lack of Choice", "value": 10},
+            {"name": "Doubt", "value": 16},
+            {"name": "Other", "value": 10}
+          ]
+        },
+        {
+          "name": "Side Effects/Symptoms",
+          "children": [
+            {"name": "Emotional", "value": 10},
+            {"name": "Physical", "value": 19}
+          ]
+        },
+        {
+          "name": "Day-to-Day Challenges",
+          "children": [
+            {"name": "Work", "value": 3},
+            {"name": "Finance", "value": 14},
+            {"name": "Logistics", "value": 16},
+            {"name": "Other", "value": 6}
+          ]
+        },
+        {
+          "name": "Clinical Trials",
+          "children": [
+            {"name": "Criteria", "value": 13},
+            {"name": "Logistics", "value": 17},
+            {"name": "Other", "value": 1},
+            {"name": "QoL Concern", "value": 13}
+          ]
+        },
+        {
+          "name": "Care Team/Second Opinions",
+          "children": [
+            {"name": "Work", "value": 13},
+            {"name": "Finance", "value": 9},
+            {"name": "Logistics", "value": 8}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Somewhat Positive",
+      "children": [
+        {
+          "name": "Treatment Options",
+          "children": [
+            {"name": "Side Effects", "value": 2},
+            {"name": "Cost", "value": 4},
+            {"name": "Access", "value": 4},
+            {"name": "Lack of Choice", "value": 4},
+            {"name": "Doubt", "value": 6},
+            {"name": "Other", "value": 4}
+          ]
+        },
+        {
+          "name": "Side Effects/Symptoms",
+          "children": [
+            {"name": "Emotional", "value": 6},
+            {"name": "Physical", "value": 1}
+          ]
+        },
+        {
+          "name": "Day-to-Day Challenges",
+          "children": [
+            {"name": "Work", "value": 1},
+            {"name": "Finance", "value": 5},
+            {"name": "Logistics", "value": 4},
+            {"name": "Other", "value": 1}
+          ]
+        },
+        {
+          "name": "Clinical Trials",
+          "children": [
+            {"name": "Criteria", "value": 1},
+            {"name": "Logistics", "value": 5},
+            {"name": "Other", "value": 1},
+            {"name": "QoL Concern", "value": 1}
+          ]
+        },
+        {
+          "name": "Care Team/Second Opinions",
+          "children": [
+            {"name": "Work", "value": 6},
+            {"name": "Finance", "value": 4},
+            {"name": "Logistics", "value": 2}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Entirely Positive",
+      "children": [
+        {
+          "name": "Treatment Options",
+          "children": [
+            {"name": "Side Effects", "value": 4},
+            {"name": "Cost", "value": 4},
+            {"name": "Access", "value": 2},
+            {"name": "Lack of Choice", "value": 8},
+            {"name": "Doubt", "value": 1},
+            {"name": "Other", "value": 1}
+          ]
+        },
+        {
+          "name": "Side Effects/Symptoms",
+          "children": [
+            {"name": "Emotional", "value": 1},
+            {"name": "Physical", "value": 1}
+          ]
+        },
+        {
+          "name": "Day-to-Day Challenges",
+          "children": [
+            {"name": "Work", "value": 4},
+            {"name": "Finance", "value": 3},
+            {"name": "Logistics", "value": 1},
+            {"name": "Other", "value": 2}
+          ]
+        },
+        {
+          "name": "Clinical Trials",
+          "children": [
+            {"name": "Criteria", "value": 0},
+            {"name": "Logistics", "value": 5},
+            {"name": "Other", "value": 4},
+            {"name": "QoL Concern", "value": 2}
+          ]
+        },
+        {
+          "name": "Care Team/Second Opinions",
+          "children": [
+            {"name": "Work", "value": 2},
+            {"name": "Finance", "value": 3},
+            {"name": "Logistics", "value": 5}
+          ]
+        }
+      ]
+    }
+  ]
+}

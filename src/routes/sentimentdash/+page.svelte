@@ -5,11 +5,18 @@
     import WordNetwork from './WordNetwork.svelte';
     import wordCloudData from '$lib/data/wordCloudData.json';
     import SentimentDistribution from './CategoryComp.svelte';
+    import NegativeSentimentChart from './NegativeSentimentChart.svelte';
+    import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
+    import PositiveSentimentChart from './PositiveSentimentChart.svelte';
+    import PositiveSentimentDriversChart from './PositiveSentimentDriversChart.svelte';
     import SearchVolumeChart from '$lib/search/SearchVolumeChart.svelte';
+    import InteractiveSentimentView from './InteractiveSentimentView.svelte';
+    import PieChartStages from './PieChartStages.svelte';
     
     import SearchTrends from '$lib/search/SearchTrends.svelte';
     import DashboardSidebar from '$lib/sentimentComponents/DashboardSidebar.svelte';
     import ZoomBurst from './ZoomBurst.svelte';
+    import WaffleWrapper from './WaffleWrapper.svelte';
     import PatientStoryCircles from '$lib/RPDPatientStories/PatientStoryCircles.svelte';
 
     import sentimentData from '$lib/data/sentimentData.json';
@@ -22,6 +29,50 @@
     let activeTab = 'sentiment';
     let currentTopicData = getTopicsForDisease(selectedDisease);
     
+    const data = [
+    // Initial Discovery
+        {
+            "Entirely Negative": 32,
+            "Somewhat Negative": 34,
+            "Neutral": 11,
+            "Somewhat Positive": 9,
+            "Entirely Positive": 0
+        },
+        // Pyschological Processing
+
+        {
+            "Entirely Negative": 25,
+            "Somewhat Negative": 22,
+            "Neutral": 7,
+            "Somewhat Positive": 2,
+            "Entirely Positive": 0
+        },
+        // Initial Planning 
+        {
+            "Entirely Negative": 9,
+            "Somewhat Negative": 16,
+            "Neutral": 25,
+            "Somewhat Positive": 12,
+            "Entirely Positive": 5
+        },
+        // Treatment Consideration
+        {
+            "Entirely Negative": 10,
+            "Somewhat Negative": 8,
+            "Neutral": 21,
+            "Somewhat Positive": 9,
+            "Entirely Positive": 3  
+        },
+        // Long-Term Planning
+        {
+            "Entirely Negative": 7,
+            "Somewhat Negative": 11,
+            "Neutral": 4,
+            "Somewhat Positive": 15,
+            "Entirely Positive": 8
+        }
+    ];
+
     $: currentDiseaseData = sentimentData.diseases.find(d => d.id === selectedDisease);
     $: currentTopicData = getTopicsForDisease(selectedDisease);
 
@@ -37,11 +88,13 @@
     function handleDrawerClose() {
         isDrawerOpen = false;
     }
+
+    
 </script>
 
 <div class="grid grid-cols-5">
     <!-- Sidebar -->
-    <div class="min-w-fit min-h-screen border-r border-gray-200 dark:border-gray-800 col-span-1">
+    <div class="min-w-fit max-w-80 min-h-screen border-r border-gray-200 dark:border-gray-800 col-span-1">
         <DashboardSidebar 
             {currentDiseaseData}
             {activeTab}
@@ -49,7 +102,7 @@
         />
     </div>
     <!-- Main Content -->
-    <div class="flex-1 px-8 pt-8 bg-slate-50 col-span-4">
+    <div class="flex-1 px-8 pt-8 bg-white col-span-4">
         <div class="relative">
             {#if activeTab === 'sentiment' && currentDiseaseData}
             <div>
@@ -68,6 +121,32 @@
                     </PatientStoryCircles>
                 </div>
 
+                <div class="grid grid-cols-8 lg:grid-cols-8 gap-2 pl-12 pt-12">
+                    <div class="col-start-1 col-span-8">
+                        
+                        <InteractiveSentimentView />
+                    </div>
+                    <div class="col-start-1 col-span-8">
+                        <PositiveSentimentChart />
+                    </div>
+                    <div class="col-start-1 col-span-8">
+                        <PositiveSentimentDriversChart />
+                    </div>
+                    <div class="col-start-1 col-span-8">   
+                     <NegativeSentimetDriversChart />
+                    </div>
+                    <div class="col-start-1 col-span-8">
+                        <NegativeSentimentChart />  
+                    </div>
+                    <div class="col-start-1 col-span-8">
+
+                        <WaffleWrapper {data} />
+
+                    </div>
+                    <div class="col-start-1 col-span-8">
+                        <PieChartStages {data}/>
+                    </div>
+                </div>
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
                         <ZoomBurst data={flareData} />
@@ -77,6 +156,7 @@
                             selectedDisease={selectedDisease}
                             data={sentimentData}
                         />
+                        
                     </div>
                 </div>
             </div>
@@ -93,6 +173,7 @@
                         Patient Journeys
                     </span>
                 </div>
+                
                 <PatientJourneyCards {selectedDisease} />
             {:else if activeTab === 'network'}
                 <div class="mb-4 mt-12 flex min-h-52 items-left gap-5">

@@ -384,7 +384,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
             <div class="w-1/6 md:w-1/6 sm:w-5/6 flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
               <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
               <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900">
-                Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers inpentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
+                Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
               </p>
               <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
                 With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.

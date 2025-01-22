@@ -52,7 +52,7 @@
     on:click={closeModal}
     transition:fade={{ duration: 200 }}
   >
-    <div class="relative w-[30.9375vh] h-[55vh] max-w-[1080px] max-h-[1920px]">
+    <div class="relative w-[75.9375vh] h-[55vh] max-w-[1080px] max-h-[1920px]">
     
         <div class="w-full h-full relative overflow-hidden rounded-sm bg-white">
             {#each patients as story, idx}
