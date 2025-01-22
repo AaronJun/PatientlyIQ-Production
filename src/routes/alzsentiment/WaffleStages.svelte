@@ -30,7 +30,7 @@
         "Initial Discovery": "The moment of first learning about APOE4 status and beginning to understand its implications. This stage often involves genetic testing results, initial research, and processing the emotional impact of this health information.",
         "Initial Planning": "The early phase of developing a strategy to address APOE4 status. This includes first medical consultations, lifestyle research, and creating initial action plans for health management.",
         "Day-to-Day Management": "The ongoing process of implementing and maintaining lifestyle changes, managing health routines, and balancing APOE4 considerations with daily life.",
-        "New Treatment": "Periods of adapting to or trying new medical treatments, supplements, or health protocols. This includes evaluating effectiveness and adjusting approaches based on new research or medical advice.",
+        "New Treatment Consideration": "Periods of adapting to or trying new medical treatments, supplements, or health protocols. This includes evaluating effectiveness and adjusting approaches based on new research or medical advice.",
         "Long-Term Planning": "Making decisions and preparations for the future, including financial planning, care arrangements, and family discussions about long-term health management strategies."
     };
 
@@ -302,6 +302,7 @@
         if (isHighlighted) {
             square.style("stroke", "#161616")
                 .style("stroke-width", "1.5px")
+                .attr("fill-opacity", 0.4)
                 .style("stroke-dasharray", "3,2");
         }
 

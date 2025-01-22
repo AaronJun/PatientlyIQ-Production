@@ -5,6 +5,7 @@
     import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
     import NegativeSentimentChart from './NegativeSentimentChart.svelte';
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
+    import PatientStoryCards from '$lib/RPDPatientStories/PatientStoryCards.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
@@ -12,7 +13,7 @@
     import sentimentData from './sentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
     import ZoomBurst from './ZoomBurst.svelte';
-    import PatientStoryCircles from '$lib/RPDPatientStories/PatientStoryCircles.svelte';
+    import PatientStoryCircles from '$lib/RPDPatientStories/ALZPatientStoryCircles1.svelte';
 
     import flareData from '$lib/data/flare-alz.json';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
@@ -39,20 +40,16 @@
     </div>
 
              <!-- Patient Stories Section -->
-             <section class="mb-16 place-content-center justify-center">
-                <h3 class="text-sm font-semibold text-gray-700 border-t border-orange-500 pt-2 mb-6">
-                    Patient Stories
-                </h3>
+             <section class="mb-16 pb-24 place-content-center justify-center">
+  
                 <PatientStoryCircles {selectedDisease}>
                     <!-- Patient story circles content -->
                 </PatientStoryCircles>
-            </section>
                 </div>
 
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
-                        <ZoomBurst data={flareData} />
                     </div>
                   
                 </div>

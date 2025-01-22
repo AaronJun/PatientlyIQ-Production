@@ -3,151 +3,242 @@
     "pompe": {
       "patients": [
         {
-          "id": "sarah-m",
-          "name": "Sarah M.",
-          "age": "34",
-          "disease": "Pompe Disease",
-          "persona": "Parent of Newly Diagnosed Patient",
-          "img": "/profiles/sarahm.jpg",
+          "id": "maggie-p",
+          "name": "Maggie P.",
+          "age": "Mid-60s",
+          "disease": "APOE4 MCI",
+          "persona": "Caregiver",
+          "img": "/profiles/maggieP.jpg",
           "cards": [
             {
-              "id": "sarah-1",
-              "type": "quote",
-              "quote": "The hardest part was the uncertainty before diagnosis. Now at least I have a path forward.",
+              "type": "Bio",
+              "quote": "I'm trying not to panic, but I feel overwhelmed and lost. Our retirement plans are going to look very different from what we dreamed of.",
               "context": "Initial Diagnosis",
-              "treatmentSentiment": "4",
-              "trialSentiment": "3",
-              "medicalLiteracy": "4",
-              "financialStability": "3"
-            },
-            {
-              "id": "sarah-2",
-              "type": "wordcloud",
-              "context": "Common Topics",
-              "words": [
-                { "text": "Diagnosis", "value": 85 },
-                { "text": "Treatment", "value": 75 },
-                { "text": "Family", "value": 70 },
-                { "text": "Support", "value": 65 },
-                { "text": "Uncertainty", "value": 60 },
-                { "text": "Hope", "value": 55 },
-                { "text": "Journey", "value": 50 },
-                { "text": "Symptoms", "value": 45 },
-                { "text": "Strength", "value": 40 },
-                { "text": "Community", "value": 35 }
+              "sentiment": 35,
+              "topics": [
+                { "topic": "Treatment Hope", "value": 3 },
+                { "topic": "Support System", "value": 3 },
+                { "topic": "Care Access", "value": 1 },
+                { "topic": "Daily Coping", "value": 0 },
+                { "topic": "Future Outlook", "value": 1 }
               ]
             },
             {
-              "id": "sarah-3",
-              "type": "timeline",
-              "context": "Treatment Journey",
-              "timelineData": [
-                { "month": "Jan", "sentiment": 45 },
-                { "month": "Feb", "sentiment": 52 },
-                { "month": "Mar", "sentiment": 48 },
-                { "month": "Apr", "sentiment": 65 },
-                { "month": "May", "sentiment": 72 },
-                { "month": "Jun", "sentiment": 78 }
+              "type": "Initial Response",
+              "quote": "For me, it's like living under a dark cloud. I’m trying to hang onto hope.",
+              "context": "First Week After Diagnosis",
+              "sentiment": 45,
+              "topics": [
+                { "topic": "Daily Coping", "value": 8 },
+                { "topic": "Support System", "value": 12 },
+                { "topic": "Treatment Plan", "value": 15 },
+                { "topic": "Emotional State", "value": 18 },
+                { "topic": "Care Access", "value": 7 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Emotional Coping",
+                  "x": 45,
+                  "y": 75
+                }
+              ]
+            },
+            {
+              "type": "First Steps",
+              "quote": "“We’re torn about starting lecanemab treatment. The statistics show high risks for little benefit, but he’s relatively young and fit. Even as an MD, I find the decision hard to make.",
+              "context": "One Month In",
+              "sentiment": 55,
+              "topics": [
+                { "topic": "Treatment Options", "value": 20 },
+                { "topic": "Care Network", "value": 15 },
+                { "topic": "Daily Management", "value": 12 },
+                { "topic": "Support Groups", "value": 8 },
+                { "topic": "Research Progress", "value": 5 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Treatment Plan",
+                  "x": 75,
+                  "y": 45
+                },
+                {
+                  "label": "Daily Management",
+                  "x": 70,
+                  "y": 50
+                },
+                {
+                  "label": "Care Network",
+                  "x": 85,
+                  "y": 35
+                },
+                {
+                  "label": "Future Planning",
+                  "x": 65,
+                  "y": 55
+                }
+              ]
+            },
+            {
+              "type": "Clinical Trial",
+              "quote": "The trial has given us hope and a clear path forward.",
+              "context": "Three Months After Stopping Treatment",
+              "sentiment": 35,
+              "topics": [
+                { "topic": "Clinical Progress", "value": 25 },
+                { "topic": "Quality of Life", "value": 18 },
+                { "topic": "Future Hope", "value": 15 },
+                { "topic": "Research Impact", "value": 12 },
+                { "topic": "Trial Support", "value": 10 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Trial Response",
+                  "x": 85,
+                  "y": 35
+                },
+                {
+                  "label": "Quality of Life",
+                  "x": 80,
+                  "y": 40
+                },
+                {
+                  "label": "Adherence",
+                  "x": 90,
+                  "y": 25
+                },
+                {
+                  "label": "Side Effects",
+                  "x": 75,
+                  "y": 45
+                }
               ]
             }
           ]
         },
         {
-          "id": "michael-r",
-          "name": "Michael R.",
-          "age": "45",
-          "disease": "Pompe Disease",
-          "persona": "Parent of Patient in Clinical Trial",
-          "img": "/profiles/michaelr.jpg",
+          "id": "timothy-K",
+          "name": "Timothy K.",
+          "age": "Late-50s",
+          "disease": "APOE4/4",
+          "persona": "Patient",
+          "img": "/profiles/timothyK.jpg",
           "cards": [
             {
-              "id": "michael-1",
-              "type": "quote",
-              "quote": "Clinical trials gave me hope when traditional treatments weren't enough.",
-              "context": "Treatment Journey",
-              "treatmentSentiment": "5",
-              "trialSentiment": "5",
-              "medicalLiteracy": "5",
-              "financialStability": "4"
-            },
-            {
-              "id": "michael-2",
-              "type": "wordcloud",
-              "context": "Common Topics",
-              "words": [
-                { "text": "Clinical Trials", "value": 90 },
-                { "text": "Research", "value": 80 },
-                { "text": "Treatment", "value": 75 },
-                { "text": "Progress", "value": 70 },
-                { "text": "Healthcare", "value": 65 },
-                { "text": "Management", "value": 60 },
-                { "text": "Adaptation", "value": 55 },
-                { "text": "Experience", "value": 50 },
-                { "text": "Knowledge", "value": 45 },
-                { "text": "Support", "value": 40 }
+              "type": "Bio",
+              "quote": "I'm trying to stay positive, but I'm scared. I don't want to be a burden on my family.",
+              "context": "Initial Diagnosis",
+              "sentiment": 40,
+              "topics": [
+                { "topic": "Family Impact", "value": 15 },
+                { "topic": "Future Concerns", "value": 12 },
+                { "topic": "Treatment Options", "value": 8 },
+                { "topic": "Emotional Coping", "value": 10 },
+                { "topic": "Daily Life", "value": 5 }
               ]
             },
             {
-              "id": "emma-3",
-              "type": "timeline",
-              "context": "Treatment Journey",
-              "timelineData": [
-                { "month": "Jan", "sentiment": 11 },
-                { "month": "Feb", "sentiment": 22 },
-                { "month": "Mar", "sentiment": 48 },
-                { "month": "Apr", "sentiment": 62 },
-                { "month": "May", "sentiment": 72 },
-                { "month": "Jun", "sentiment": 78 }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "emma-l",
-          "name": "Emma L.",
-          "age": "28",
-          "disease": "Pompe Disease",
-          "persona": "Parent Considering Clinical Trial",
-          "img": "/profiles/emmal.jpg",
-          "cards": [
-            {
-              "id": "emma-1",
-              "type": "quote",
-              "quote": "Finding the right support network made all the difference in my journey.",
-              "context": "Support System",
-              "treatmentSentiment": "3",
-              "trialSentiment": "4",
-              "medicalLiteracy": "3",
-              "financialStability": "3"
-            },
-            {
-              "id": "emma-2",
-              "type": "wordcloud",
-              "context": "Common Topics",
-              "words": [
-                { "text": "Support", "value": 85 },
-                { "text": "Network", "value": 80 },
-                { "text": "Community", "value": 75 },
-                { "text": "Journey", "value": 70 },
-                { "text": "Learning", "value": 65 },
-                { "text": "Growth", "value": 60 },
-                { "text": "Understanding", "value": 55 },
-                { "text": "Resources", "value": 50 },
-                { "text": "Hope", "value": 45 },
-                { "text": "Advocacy", "value": 40 }
+              "type": "Initial Response",
+              "quote": "I'm scared, but I'm not giving up. I'm going to fight this.",
+              "context": "First Week After Diagnosis",
+              "sentiment": 50,
+              "topics": [
+                { "topic": "Treatment Plan", "value": 20 },
+                { "topic": "Emotional State", "value": 18 },
+                { "topic": "Support System", "value": 15 },
+                { "topic": "Daily Coping", "value": 12 },
+                { "topic": "Research Options", "value": 8 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Emotional Coping",
+                  "x": 50,
+                  "y": 75
+                },
+                {
+                  "label": "Support System",
+                  "x": 70,
+                  "y": 55
+                },
+                {
+                  "label": "Understanding",
+                  "x": 45,
+                  "y": 80
+                },
+                {
+                  "label": "Resources",
+                  "x": 60,
+                  "y": 65
+                }
               ]
             },
             {
-              "id": "emma-3",
-              "type": "timeline",
-              "context": "Treatment Journey",
-              "timelineData": [
-                { "month": "Jan", "sentiment": 11 },
-                { "month": "Feb", "sentiment": 22 },
-                { "month": "Mar", "sentiment": 48 },
-                { "month": "Apr", "sentiment": 62 },
-                { "month": "May", "sentiment": 72 },
-                { "month": "Jun", "sentiment": 78 }
+              "type": "First Steps",
+              "quote": "I'm learning about treatment options and building my support network.",
+              "context": "One Month In",
+              "sentiment": 70,
+              "topics": [
+                { "topic": "Treatment Progress", "value": 22 },
+                { "topic": "Support Network", "value": 18 },
+                { "topic": "Lifestyle Changes", "value": 15 },
+                { "topic": "Daily Management", "value": 12 },
+                { "topic": "Future Planning", "value": 10 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Treatment Progress",
+                  "x": 75,
+                  "y": 45
+                },
+                {
+                  "label": "Support Network",
+                  "x": 80,
+                  "y": 40
+                },
+                {
+                  "label": "Daily Management",
+                  "x": 70,
+                  "y": 50
+                },
+                {
+                  "label": "Adaptation",
+                  "x": 75,
+                  "y": 45
+                }
+              ]
+            },
+            {
+              "type": "Clinical Trial",
+              "quote": "Being part of the trial gives me purpose. I feel like I'm contributing to something bigger.",
+              "context": "Three Months Into Trial",
+              "sentiment": 80,
+              "topics": [
+                { "topic": "Trial Progress", "value": 25 },
+                { "topic": "Personal Impact", "value": 20 },
+                { "topic": "Research Contribution", "value": 18 },
+                { "topic": "Hope", "value": 15 },
+                { "topic": "Future Outlook", "value": 12 }
+              ],
+              "quadrantData": [
+                {
+                  "label": "Trial Engagement",
+                  "x": 85,
+                  "y": 30
+                },
+                {
+                  "label": "Quality of Life",
+                  "x": 80,
+                  "y": 35
+                },
+                {
+                  "label": "Treatment Response",
+                  "x": 75,
+                  "y": 40
+                },
+                {
+                  "label": "Overall Progress",
+                  "x": 82,
+                  "y": 32
+                }
               ]
             }
           ]

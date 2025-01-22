@@ -6,9 +6,8 @@
     import { writable } from 'svelte/store';
     
     // Import images
-    import emmaPhoto from '$lib/assets/profiles/emmal.jpg';
+    import timothyPhoto from '$lib/assets/profiles/timothyK.jpg';
     import sarahPhoto from '$lib/assets/profiles/sarahm.jpg';
-    import michaelPhoto from '$lib/assets/profiles/michaelr.jpg';
     
     export let selectedDisease: string;
     
@@ -17,9 +16,8 @@
     let autoPlayInterval: number;
 
     const photoMap = {
-        '/profiles/emmal.jpg': emmaPhoto,
+        '/profiles/timothyK.jpg': timothyPhoto,
         '/profiles/sarahm.jpg': sarahPhoto,
-        '/profiles/michaelr.jpg': michaelPhoto
     };
     
     $: originalPatients = patientStoriesData.diseases[selectedDisease]?.patients || [];
@@ -131,8 +129,8 @@
     }
 
     .story-circle {
-        width: 4.5rem;
-        height: 4.5rem;
+        width: 10rem;
+        height: 10rem;
         border-radius: 100%;
         background: rgba(255, 81, 81, 0.1);
         border: 2.5px solid #ff5151;

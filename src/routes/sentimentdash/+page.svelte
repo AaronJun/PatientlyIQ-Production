@@ -17,7 +17,7 @@
     import DashboardSidebar from '$lib/sentimentComponents/DashboardSidebar.svelte';
     import ZoomBurst from './ZoomBurst.svelte';
     import WaffleWrapper from './WaffleWrapper.svelte';
-    import PatientStoryCircles from '$lib/RPDPatientStories/PatientStoryCircles.svelte';
+    import PatientStoryCircles from '$lib/RPDPatientStories/ALZPatientStoryCircles1.svelte';
 
     import sentimentData from '$lib/data/sentimentData.json';
     import searchData from '$lib/data/searchData.json';
