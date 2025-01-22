@@ -14,7 +14,7 @@
 
         <div class="text-center py-16">
             
-            <h1 class="text-6xl font-serif text-slate-700 mb-6">A Deep Dive <span class="italic">into the</span> <br>APOE4 Experience</h1>
+            <h1 class="text-6xl font-serif text-slate-700 mb-6">A Deep Dive <span class="italic">into</span> <br>the APOE4 Experience</h1>
             <h2 class="text-2xl font-semibold text-gray-500 max-w-2xl mx-auto">
                 What an analysis of more than 350 online posts, conversations, and comments reveal about the needs and hopes of this population.
             </h2>

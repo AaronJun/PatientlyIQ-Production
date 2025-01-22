@@ -5,7 +5,7 @@
     import { inview } from 'svelte-inview';
     import type { ObserverEventDetails } from 'svelte-inview';
     import patientData from '$lib/data/patientCardData.json';
-    import PatientDrawer from './PatientJourneyDrawer.svelte';
+    import PatientDrawer from './ALZPatientJourneyDrawer.svelte';
     
     let inView = false;
     let active = 0;

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import SimpleSentimentDrawer from './SimpleSentimentDrawer.svelte';
-    import PatientJourneyCards from '$lib/patientcards/PatientJourneyCards.svelte';
+    import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
     import WordNetwork from './WordNetwork.svelte';
     import wordCloudData from '$lib/data/wordCloudData.json';
     import SentimentDistribution from './CategoryComp.svelte';

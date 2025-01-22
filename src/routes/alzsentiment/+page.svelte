@@ -5,6 +5,7 @@
     import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
     import NegativeSentimentChart from './NegativeSentimentChart.svelte';
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
+    import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
     import PatientStoryCards from '$lib/RPDPatientStories/PatientStoryCards.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
@@ -17,6 +18,7 @@
 
     import flareData from '$lib/data/flare-alz.json';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
+	import PatientJourneyDrawer from '$lib/patientcards/ALZPatientJourneyDrawer.svelte';
     
     let selectedDisease = "pompe";
     let isDrawerOpen = false;
@@ -44,9 +46,9 @@
   
                 <PatientStoryCircles {selectedDisease}>
                     <!-- Patient story circles content -->
-                </PatientStoryCircles>
-                </div>
+                </PatientStoryCircles>                <PatientJourneyCards />
 
+                </div>
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
@@ -54,8 +56,6 @@
                   
                 </div>
                 <ALZMethology />
-
-
 
 
 <style>

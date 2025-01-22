@@ -102,7 +102,7 @@
             <!-- Quote -->
             <div class="quote">
                 <svg class="quote-icon" viewBox="0 0 24 24" width="18" height="18">
-                    <path 
+                <path 
                         fill="currentColor" 
                         d="M10 11v6H6v-6h4zm8 0v6h-4v-6h4zm-8-8v6H6V3h4zm8 0v6h-4V3h4z"
                     />

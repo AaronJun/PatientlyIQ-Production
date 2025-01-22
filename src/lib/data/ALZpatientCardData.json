@@ -2,16 +2,16 @@
     {
       "id": "001-001",
       "name": "Timothy K.",
-      "disease": "APOE4/4",
+      "disease": "APOE4/profiles/4",
       "persona": "Carrier",
       "age": "mid-50s",
-      "summary": "After his mother died from Alzheimer's-related illness, Timothy took a 23andMe genetic test to learn whether he carries the APOE4/4 gene.",
+      "summary": "After his mother died from Alzheimer's-related illness, Timothy took a 23andMe genetic test to learn whether he carries the APOE4/profiles/4 gene.",
       "quote": "I'm a father of three. I'm feeling guilty about what this is doing to our family. The cancer is the problem, but knowing that doesn't make my heart any lighter. I feel good, but I can't think very well, and my eyesight gets worse every day.",
       "trial-sentiment": "2",
       "treatment-sentiment": "4",
       "medical-literacy": "5",
       "financial-stability": "2",
-      "photoUrl": "/profiles/timothyK.jpg",
+      "photoUrl": "/profiles/TimothyK.jpg",
       "sentiments": {
         "treatment_options": 6,
         "care_team": 8,
@@ -37,7 +37,7 @@
           "sentiment": "entirely_negative",
           "actions": [
             "Multiple specialist consultations",
-            "Underwent extensive testing",
+        "Underwent extensive testing",
             "Informed family and employer"
           ],
           "hopes": "Finding effective treatment quickly",
@@ -101,7 +101,7 @@
       "treatment-sentiment": "5",
       "medical-literacy": "2",
       "financial-stability": "2",
-      "photoUrl": "/belle.jpg",
+      "photoUrl": "/profiles/belle.jpg",
       "sentiments": {
         "treatment_options": 8,
         "care_team": 7,
@@ -191,7 +191,7 @@
       "treatment-sentiment": "1",
       "medical-literacy": "3",
       "financial-stability": "4",
-      "photoUrl": "/chelsea.jpg",
+      "photoUrl": "/profiles/chelsea.jpg",
       "sentiments": {
         "treatment_options": 2,
         "care_team": 5,
@@ -281,7 +281,7 @@
       "treatment-sentiment": "2",
       "medical-literacy": "5",
       "financial-stability": "4",
-      "photoUrl": "/diana.jpg",
+      "photoUrl": "/profiles/diana.jpg",
       "sentiments": {
         "treatment_options": 4,
         "care_team": 6,
@@ -371,7 +371,7 @@
       "treatment-sentiment": "2",
       "medical-literacy": "2",
       "financial-stability": "3",
-      "photoUrl": "/ella.jpg",
+      "photoUrl": "/profiles/ella.jpg",
       "sentiments": {
         "treatment_options": 3,
         "care_team": 4,
@@ -461,7 +461,7 @@
       "treatment-sentiment": "3",
       "medical-literacy": "2",
       "financial-stability": "4",
-      "photoUrl": "/paul.jpg",
+      "photoUrl": "/profiles/paul.jpg",
       "sentiments": {
         "treatment_options": 5,
         "care_team": 7,
