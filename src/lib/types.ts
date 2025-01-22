@@ -4,6 +4,18 @@ export interface RPDData {
     RPD: string;
     "RPD PRV": string;
   }
+  export interface Section {
+    id: string;
+    name: string;
+    years: string | null;
+  }
+  
+  export interface ScrollState {
+    progress: number;
+    activeSection: string;
+    isHovered: boolean;
+    isMobileMenuOpen: boolean;
+  }
   
   export interface ConstellationEntry {
     Year: string;

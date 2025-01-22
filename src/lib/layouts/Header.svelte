@@ -106,10 +106,10 @@
             <!-- Mobile Menu Button -->
 			<Button 
 			on:click={() => scrollToSection('contactform')}
-			class="-translate-y-4 animate-fade-in gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-orange-100"
+			class="-translate-y-2 animate-fade-in gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white opacity-0 hover:bg-[#ff6b6b] [--animation-delay:600ms] dark:text-orange-100"
 		>
 			<span>Project Inquiries</span>
-			<ArrowRightIcon class="ml-2 size-4 transition-transform duration-500 ease-in-out group-hover:translate-x-2" />
+			<ArrowRightIcon class="ml-1 size-4 transition-transform duration-500 ease-in-out group-hover:translate-x-2" />
 		</Button>
         </div>
 

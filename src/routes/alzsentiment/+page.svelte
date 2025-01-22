@@ -6,11 +6,14 @@
     import NegativeSentimentChart from './NegativeSentimentChart.svelte';
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
     import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
+    import ScrollProgress from './ScrollProgress.svelte';
+
     import PatientStoryCards from '$lib/RPDPatientStories/PatientStoryCards.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
     import AlzIntroductionS1P2 from './ALZIntroductionS1P2.svelte';
+    import AlzIntroductionS2P1 from './ALZIntroductionS2P1.svelte';
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
@@ -27,15 +30,20 @@
     
 </script>
 
+
 <div class="flex-1 place-content-center  bg-slate-100 pt-12 bg-b">
     <!-- Sidebar -->
     <!-- Main Content -->
+
+<ScrollProgress />
+
+
     <div class="relative max-w-full mx-auto px-4 place-content-center">
 
-    <div class="flex-1 place-content-center pt-8 col-span-4">
+    <div id="1. Introduction" class="flex-1 place-content-center pt-8 col-span-4">
         <ALZIntroduction />
     </div>
-    <div class="flex-1 place-content-center pt-8 col-span-8">
+    <div id="1.1 APOE4 Journey" class="flex-1 place-content-center pt-8 col-span-8">
     <AlzIntroductionS1P1 />
     <WaffleStages data={ sentimentData } />
 </div>
@@ -43,15 +51,25 @@
     </div>
 
              <!-- Patient Stories Section -->
-             <section class="mb-16 pb-24 place-content-center justify-center">
+        <div id="1.1a APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
                 <PatientStoryCircles {selectedDisease} />
                 <PatientJourneyCards />
-            </section>
+        </div>
+        <div id="1.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
             <AlzIntroductionS1P2 />
             <NegativeSentimentChart />
             <NegativeSentimetDriversChart />
+        </div>
+    </div>  
 
-            </div>  
+    <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">
+        <AlzIntroductionS2P1 />
+    </div>
+    <div id="2.1a APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+        <PatientStoryCircles {selectedDisease} />
+        <PatientJourneyCards />
+</div>
+
     
           
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
