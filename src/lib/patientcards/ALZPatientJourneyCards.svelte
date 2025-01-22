@@ -7,14 +7,10 @@
     import patientData from '$lib/data/ALZpatientCardData.json';
     import PatientDrawer from './ALZPatientJourneyDrawer.svelte';
 
-    // Import images
-    import timothyPhoto from '$lib/assets/profiles/timothyK.jpg';
-    import maggiePhoto from '$lib/assets/profiles/maggieP.jpg';
-
-    // Create photo mapping
+    // Updated to use static assets
     const photoMap = {
-        '/profiles/TimothyK.jpg': timothyPhoto,
-        '/profiles/MaggieP.jpg': maggiePhoto,
+        '/profiles/timothyK.jpg': '/profiles/timothyK.jpg',
+        '/profiles/maggieP.jpg': '/profiles/maggieP.jpg',
     };
     
     let inView = false;

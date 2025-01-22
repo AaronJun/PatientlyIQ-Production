@@ -1,14 +1,9 @@
-<!-- <script lang="ts">
+<script lang="ts">
     import { fade } from 'svelte/transition';
     import PatientStoriesCarousel from './PatientStoriesCarousel.svelte';
     import { onMount, onDestroy } from 'svelte';
     import patientStoriesData from '$lib/data/patient-stories.json';
     import { writable } from 'svelte/store';
-    
-    // Import images
-    import timothyPhoto from '$lib/assets/profiles/timothyK.jpg?url';
-import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
-
     
     export let selectedDisease: string;
     
@@ -16,29 +11,31 @@ import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
     const current = writable(0);
     let autoPlayInterval: number;
 
+    // Updated to use static assets
     const photoMap = {
-        '/profiles/timothyK.jpg': timothyPhoto,
-        '/profiles/maggieP.jpg': maggiePhoto,
+        '/profiles/timothyK.jpg': '/profiles/timothyK.jpg',
+        '/profiles/maggieP.jpg': '/profiles/maggieP.jpg',
     };
     
     $: originalPatients = patientStoriesData.diseases[selectedDisease]?.patients || [];
     $: totalCards = originalPatients.reduce((acc, patient) => acc + patient.cards.length, 0);
     
     $: patients = originalPatients.flatMap(patient => 
-    patient.cards.map(card => ({
-        name: patient.name,
-        age: patient.age,
-        disease: patient.disease,
-        persona: patient.persona,
-        photoUrl: photoMap[patient.img],
-        type: card.type,
-        quote: card.quote,
-        context: card.context,
-        quadrantData: card.quadrantData,
-        sentiment: card.sentiment,
-        topics: card.topics
-    }))
-);
+        patient.cards.map(card => ({
+            name: patient.name,
+            age: patient.age,
+            disease: patient.disease,
+            persona: patient.persona,
+            photoUrl: photoMap[patient.img],
+            type: card.type,
+            quote: card.quote,
+            context: card.context,
+            quadrantData: card.quadrantData,
+            sentiment: card.sentiment,
+            topics: card.topics
+        }))
+    );
+
     function handleCircleClick(patientIndex: number) {
         stopAutoPlay();
         current.set(originalPatients.slice(0, patientIndex).reduce((acc, p) => acc + p.cards.length, 0));
@@ -73,8 +70,8 @@ import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
 
 <div class="patient-circles">
     <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
-            APOE4 Stories    
-</h3>
+        APOE4 Stories    
+    </h3>
     <div class="circles-container">
         {#each originalPatients as patient, i}
             <div class="place-content-center patient-circle-container">
@@ -190,4 +187,4 @@ import maggiePhoto from '$lib/assets/profiles/maggieP.jpg?url';
         text-align: center;
         white-space: nowrap;
     }
-</style> -->
+</style>
