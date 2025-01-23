@@ -240,7 +240,7 @@ const legendY = chartHeight - 20;
     </h3>
     <div 
         id="negative-sentiment-tooltip" 
-        class="fixed text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
+        class="fixed text-white bg-gray-800 px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
         style="visibility: hidden; z-index: 1000;">
     </div>
     <div class="chart-container flex items-center justify-center">

@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import Quotes from "carbon-icons-svelte/lib/Quotes.svelte";
+
     
     export let name: string = "Timothy K.";
     export let age: string = "Mid-50s";
@@ -92,6 +94,8 @@
         <!-- Patient Information -->
         <div class="info-container">
             <div class="header">
+                <Quotes size={24} />
+
                 <h3>{name}</h3>
                 <p class="subtitle">Age {age} • {disease}</p>
             </div>
@@ -100,29 +104,21 @@
 
             <!-- Quote -->
             <div class="quote">
-                <svg class="quote-icon" viewBox="0 0 24 24" width="18" height="18">
-                <path 
-                        fill="currentColor" 
-                        d="M10 11v6H6v-6h4zm8 0v6h-4v-6h4zm-8-8v6H6V3h4zm8 0v6h-4V3h4z"
-                    />
-                </svg>
                 <p>{quote}</p>
             </div>
 
-            <!-- D3 Metrics Visualization -->
-            <div bind:this={metricsContainer} class="metrics-container"></div>
         </div>
     </div>
 </div>
 
 <style>
     .card {
-        background: white;
-        border-radius: 0.75rem;
+        background: rgb(238, 238, 238);
+        border-radius: 0.25rem;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         transition: all 0.3s ease;
         cursor: pointer;
-        max-width: 32rem;
+        max-width: 59rem;
         width: 100%;
         overflow: hidden;
     }

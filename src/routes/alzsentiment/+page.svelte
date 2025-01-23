@@ -34,14 +34,14 @@
 </script>
 
 
-<div class="flex-1 place-content-center  bg-slate-100 pt-12 bg-b">
+<div class="flex-1 place-content-center bg-slate-100 pt-12">
     <!-- Sidebar -->
     <!-- Main Content -->
 
 <ScrollProgress />
 
 
-    <div class="relative max-w-full mx-auto px-4 place-content-center">
+    <div class="relative max-w-full mx-auto place-content-center">
 
     <div id="1. Introduction" class="flex-1 place-content-center pt-8 col-span-4">
         <ALZIntroduction />

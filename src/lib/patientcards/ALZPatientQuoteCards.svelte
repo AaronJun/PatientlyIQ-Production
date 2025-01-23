@@ -1,7 +1,9 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
+    import "carbon-components-svelte/css/all.css";
     import patientData from '$lib/data/ALZpatientQuoteData.json';
+    import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
     let active = 0;
@@ -48,16 +50,15 @@
             .attr('class', 'card absolute inset-0 rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
             .style('z-index', (d, i) => i === active ? 999 : patientData.patients.length + 2 - i)
             .transition()
-            .duration(400)
+            .duration(800)
             .ease(d3.easeQuadInOut)
             .style('transform', (d, i) => {
-                const translateY = i === active ? 0 : '20px';
-                const translateZ = i === active ? 0 : '-100px';
+                const translateY = i === active ? 0 : '12.25px';
+                const translateZ = i === active ? 0 : '-10px';
                 const scale = i === active ? 1 : 0.95;
                 const rotate = i === active ? 0 : Math.floor(Math.random() * 21) - 10;
                 return `translate3d(0, ${translateY}, ${translateZ}) scale(${scale}) rotate(${rotate}deg)`;
             })
-            .style('opacity', (d, i) => i === active ? 1 : 0.7);
     };
 
     const initializeCards = () => {
@@ -70,10 +71,10 @@
             .html(d => `
                 <div class="h-full w-full p-8 flex flex-col">
                     <div class="mb-6">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                        <h3 class="text-xl font-bold text-slate-700 dark:text-white">
                             ${d.name}
                         </h3>
-                        <p class="text-sm text-orange-500">
+                        <p class="text-xs font-bold text-orange-400">
                             ${d.persona} • ${d.age}
                         </p>
                     </div>
@@ -105,7 +106,10 @@
     });
 </script>
 
-<div class="max-w-6xl mx-auto px-4 py-10">
+<div class="max-w-6xl mx-auto px-4">
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
+        Quotes from APOE4 Carriers & Caregivers
+        </h3>
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
@@ -122,7 +126,7 @@
     <div class="flex justify-center gap-4 mt-8">
         <button
             on:click={handlePrev}
-            class="h-10 w-10 rounded-full bg-gray-100 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
+            class="h-10 w-10 rounded-full bg-orange-200 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +146,7 @@
         </button>
         <button
             on:click={handleNext}
-            class="h-10 w-10 rounded-full bg-gray-100 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
+            class="h-10 w-10 rounded-full bg-orange-200  dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
