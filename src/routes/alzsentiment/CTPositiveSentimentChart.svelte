@@ -1,5 +1,5 @@
 <script lang="ts">
-      import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { positiveSentimentData } from './ctpositiveSentimentData';
     import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
@@ -15,7 +15,7 @@
     let cellPadding = 2;
     let stageSpacing = 0;
     let labelHeight = 40;
-    let legendHeight = 100;
+    let legendHeight = 0;
     
     const gridWidth = 5;
     let hoveredCategory: string | null = null;
@@ -23,10 +23,8 @@
     let selectedStage: string | null = null;
     let selectedCategory: string | null = null;
 
-    // Create color scale using d3's interpolateGreens
     const categoryColors = {};
     categories.forEach((category, index) => {
-        // Use interpolateGreens from 0.3 to 0.8 to avoid too light or too dark colors
         categoryColors[category] = d3.interpolateGreens(0.1825 + (index * 0.925 / (categories.length - 1)));
     });
 
@@ -53,9 +51,8 @@
         d3.select(svg).selectAll("*").remove();
 
         const svgElement = d3.select(svg)
-            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
+            .attr("viewBox", [0, 0, width, height]);
             
-        // Process data by stage
         const stageData = stages.map((stage, stageIndex) => {
             const categoryValues = categories.map(category => ({
                 category,
@@ -70,13 +67,12 @@
 
         const maxSquaresPerStage = getMaxSquaresPerStage();
         const stageWidth = gridWidth * (cellSize + cellPadding);
+        const chartWidth = width * 0.5;
         const chartHeight = height - legendHeight;
 
-        // Calculate total width needed for all stages
         const totalWidth = stages.length * (stageWidth + stageSpacing) - stageSpacing;
-        const startX = (width - totalWidth) / 2;
+        const startX = (chartWidth - totalWidth) / 2;
 
-        // Create stage groups
         stageData.forEach((stageInfo, stageIndex) => {
             const xOffset = startX + stageIndex * (stageWidth + stageSpacing);
             
@@ -84,7 +80,6 @@
                 .attr("class", `stage-${stageIndex}`)
                 .attr("transform", `translate(${xOffset}, ${labelHeight})`);
 
-            // Add stage label
             const labelGroup = stageGroup.append("g")
                 .style("cursor", "pointer");
 
@@ -110,7 +105,6 @@
                     selectedStage = stageInfo.stage;
                 });
 
-            // Add squares for each category
             let squareCount = 0;
             stageInfo.categories.forEach(({ category, value }) => {
                 for (let i = 0; i < value; i++) {
@@ -164,7 +158,6 @@
                 }
             });
 
-            // Add total count label
             stageGroup.append("text")
                 .attr("x", stageWidth / 2)
                 .attr("y", Math.ceil(maxSquaresPerStage / gridWidth) * (cellSize + cellPadding) + 15)
@@ -174,62 +167,42 @@
                 .text(stageInfo.total);
         });
 
-       // Create horizontal legend at the bottom
-        const legendY = chartHeight - 20;
-        const maxLegendWidth = Math.min(width * 2, totalWidth); // Limit legend width
-        const legendItemWidth = maxLegendWidth / categories.length;
-        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
+        const legendX = chartWidth + 20;
+        const legendItemHeight = 10;
+        const legendY = height / 2 - (categories.length * legendItemHeight) / 2;
 
         const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${legendStartX}, ${legendY})`);
+            .attr("transform", `translate(${legendX}, ${legendY})`);
 
         categories.forEach((category, i) => {
             const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`)
+                .attr("transform", `translate(0, ${i * legendItemHeight})`)
                 .style("cursor", "pointer");
 
             legendItem.append("rect")
-                .attr("width", 10)
-                .attr("height", 10)
-                .attr("rx", 2)
-                .attr("x", -5) // Center the rectangle
+                .attr("width", 5)
+                .attr("height", 5)
+                .attr("rx", 0)
                 .attr("fill", categoryColors[category]);
 
-            // Add text with ellipsis if too long
-            const text = legendItem.append("text")
-                .attr("y", 24)
+            const legendFontSize = Math.min(11, width / 30);
+            legendItem.append("text")
+                .attr("x", 10)
+                .attr("y", 4)
                 .attr("fill", "#6D635B")
-                .attr("font-size", "8.25px")
-                .attr("text-anchor", "middle") // Center the text
+                .attr("font-size", `${legendFontSize/2}px`)
                 .text(category);
-
-            // Truncate text if too long
-            const maxTextWidth = legendItemWidth - 20;
-            const textElement = text.node();
-            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
-                let textContent = category;
-                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
-                    textContent = textContent.slice(0, -1);
-                }
-                text.text(textContent + '...');
-            }
 
             legendItem
                 .on("mouseenter", () => {
                     hoveredCategory = category;
                     updateHighlights();
-                    // Show full category name in tooltip if truncated
-                    if (text.text().endsWith('...')) {
-                        showTooltip(event, category);
-                    }
                 })
                 .on("mouseleave", () => {
                     hoveredCategory = null;
                     updateHighlights();
-                    hideTooltip();
                 });
         });
-
     }
 
     function updateHighlights() {
@@ -251,7 +224,6 @@
             });
     }
 
-    // Generate insights for the selected combination
     $: insight = generateInsight(selectedStage, selectedCategory);
 
     function generateInsight(stage: string | null, category: string | null) {
@@ -329,7 +301,7 @@
             </div>
         {/if}
 
-        <p class="prose text-left text-base text-slate-600 font-serif mt-8 mb-12 w-4/6 mx-auto">
+        <p class="caption prose text-left text-base text-slate-600 font-serif mt-8 mb-12 max-w-3xl mx-auto">
             Alzheon's focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
         </p>
     </div>
