@@ -3,6 +3,7 @@
     import { onMount } from 'svelte';
     import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
     import "carbon-components-svelte/css/all.css";
+    import GeneticWaffleStages from './GeneticWaffleStages.svelte';
 
 </script>
 
@@ -10,11 +11,13 @@
     <div class="max-w-4xl mx-auto px-4 place-content-center">
 
             <div class="w-10/12 mx-auto mt-16">
-            <h3 class="subsection-header text-lg font-semibold  text-slate-500 mb-6">2.1<br>Genetic Testing</h3>    
+            <h3 class="subsection-header text-lg font-semibold  text-slate-500 mb-6">2.2<br>A Disorienting Emotional Burden</h3>    
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
-                What's fascinating here is the systemic disconnect between medicine's clinical progression and human experience. We see peak negative sentiment during the initial discovery stage, while financial anxiety builds steadily toward long-term care - a perfect microcosm of American healthcare's core tension between medical capability and actual accessibility.               </p>
+            Some find out about their genetic risk by happenstance, through tests conducted for purposes other than ascertaining one's APOE genotype. Others actively seek out this information, driven by a desire to understand their risk and take preventive measures.<br> <br> Regardless of how they learn about their APOE status, many individuals experience a range of emotions, including fear, anxiety, and uncertainty. Many of them express an unexpectedly disorienting aftermath, even if they had believed themselves to be prepared for the results. This emotional burden can be overwhelming, especially when coupled with the lack of clear guidance on what to do next.
+             </p>
             </div>
         </div>
+        <GeneticWaffleStages   />
         </div>
 
 <style>

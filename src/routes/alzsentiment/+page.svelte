@@ -64,38 +64,33 @@
         <NegativeSentimentDriversChart />
     </div>
     
-    <div id="1.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="1.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />
     </div>
 
-    <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="2.1 Genetic Testing" class="mb-8 pb-12 place-content-center justify-center">
     <AlzIntroductionS2P1 />
-    <GeneticPatientQuoteCards />
     </div>
-    <div id="2.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center"> 
-
+    <div id="2.2 Sentiment Drivers" class="mb-8 pb-12 place-content-center justify-center"> 
+        <AlzIntroductionS2P2 />
     </div>  
-    <div id="2.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="2.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
     <PatientStoryCircles {selectedDisease} />
     </div>
     
-    <div id="3.1 Clinical Trials" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="3.1 Clinical Trials" class="place-content-center justify-center">
         <AlzIntroductionS3P1 />
         <CtPatientQuoteCards />
         <CtWaffleStages data={ ctsentimentData } />
-  
         </div>
-        <div id="3.2 Perception of Alzheon" class="mb-16 pb-24 place-content-center justify-center"> 
+        <div id="3.2 Perception of Alzheon" class="place-content-center justify-center px-32"> 
             <CtPositiveSentimentChart />
-            <AlzheonQuoteCards />
         </div>  
-        <div id="3.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+        <div id="3.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />
         <PatientJourneyCards />
         </div>
-
-</div>
-          
+        </div>    
                 <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
                     <div class="col-start-1 col-span-6">
                     </div>

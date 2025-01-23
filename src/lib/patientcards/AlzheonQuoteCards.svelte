@@ -67,18 +67,18 @@
         container.selectAll('.card')
             .data(patientData.patients, d => d.id)
             .join('div')
-            .attr('class', 'card absolute inset-0 rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
+            .attr('class', 'card absolute inset-0 rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
             .html(d => `
-                <div class="h-full w-full p-8 flex flex-col">
+                <div class="h-full w-full px-8 pt-8 flex flex-col">
                     <div class="mb-6">
-                        <h3 class="text-xl font-bold text-slate-700 dark:text-white">
+                        <h3 class="text-lg font-bold text-slate-700 dark:text-white">
                             ${d.name}
                         </h3>
                         <p class="text-xs font-bold text-orange-400">
                             ${d.persona} • ${d.age}
                         </p>
                     </div>
-                    <div class="space-y-4 flex-grow">
+                    <div class="space-y-2 flex-grow">
                         <p class="text-sm text-gray-600 dark:text-gray-300">
                             ${d.quote}
                         </p>

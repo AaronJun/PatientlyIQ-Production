@@ -1,0 +1,28 @@
+{
+  "patients": [
+  {
+  "id": 14,
+  "name": "Mark S.",
+  "age": "late-50s",
+  "persona": "APOE4 Carrier",
+  "sentiment": "Somewhat negative",
+  "quote": "I’ve not done genetic counseling before, but my initial thought is that a counselor would have to stick to the script—there’s no cure, no effective treatment, you know the drill."
+  },
+    {
+    "id": 15,
+    "name": "Kelly R.",
+    "age": "Mid-60s",
+    "persona": "APOE4 Caregiver",
+    "sentiment": "Entirely Negative",
+    "quote": "I don’t trust that my data would not get into the hands of insurers and be the reason I am denied for certain types of health insurance in the near or far future."
+    },
+    {
+    "id": 16,
+    "name": "Rick N.",
+    "age": "Late-50s",
+    "persona": "APOE4 Carrier",
+    "sentiment": "Entirely Positive",
+    "quote": "I would talk to your doctor not only about your concern regarding AD, but also your anxiety and depression. A genetic counselor can help you with the pros and cons of genetic testing."
+    }
+    ]
+    }

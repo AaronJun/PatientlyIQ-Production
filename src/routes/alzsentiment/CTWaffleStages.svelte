@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import "carbon-components-svelte/css/all.css";
     import * as d3 from 'd3';
 
     export let data = {
@@ -9,14 +10,14 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 925;
-    let height;
+    const width = 600;
+    let height: number;
     const cellSize = 16;
     const cellPadding = 2;
-    const stageSpacing = 80;
-    const labelHeight = 40;
+    const stageSpacing = 40;
+    const labelHeight = 10;
     const gridWidth = 5;
-    const legendHeight = 50;
+    const legendHeight = 0;
     const animationDuration = 800;
 
     const colors = {
@@ -171,7 +172,8 @@
 
         if (isHighlighted) {
             square.style("stroke", "#161616")
-                .style("stroke-width", "1.5px")
+                .style("stroke-width", "1px")
+                .attr("filter", "brightness(1.5)")
                 .style("stroke-dasharray", "3,2")
                 .style("filter","brightness(1.5)")
         }
@@ -215,74 +217,54 @@
         return countBySentiment[sentiment]++;
     }
 
-    function createVisualization(animate = false) {
-        d3.select(svg).selectAll("*").remove();
+   
+function createVisualization(animate = false) {
+    d3.select(svg).selectAll("*").remove();
 
-        const svgElement = d3.select(svg)
-            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
+    const svgElement = d3.select(svg)
+        .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
 
-        const stageWidth = gridWidth * (cellSize + cellPadding);
-        const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
-        const startX = (width - totalWidth) / 2;
+    const stageWidth = gridWidth * (cellSize + cellPadding);
+    const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
+    const startX = (width - totalWidth) / 2;
 
-    
-        const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
-        const legendItemWidth = maxLegendWidth / Object.keys(colors).length;
-        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
+    // Modified legend positioning
+    const legendWidth = 120; // Fixed width for right-side legend
+    const legendItemHeight = 15; // Height for each legend item
+    const legendStartY = labelHeight + 20; // Align with the chart start
+    const legendStartX = startX + totalWidth + 30; // Position to the right of the chart
 
-        const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${legendStartX}, ${height - legendHeight})`)
-            .style("opacity", animate ? 0 : 1);
+    const legendGroup = svgElement.append("g")
+        .attr("transform", `translate(${legendStartX}, ${legendStartY})`)
+        .style("opacity", animate ? 0 : 1);
 
-        if (animate) {
-            legendGroup.transition()
-                .duration(animationDuration / 2)
-                .style("opacity", 1);
-        }
+    if (animate) {
+        legendGroup.transition()
+            .duration(animationDuration / 2)
+            .style("opacity", 1);
+    }
 
-        Object.entries(colors).forEach(([sentiment, color], i) => {
-            const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`);
+    Object.entries(colors).forEach(([sentiment, color], i) => {
+        const legendItem = legendGroup.append("g")
+            .attr("transform", `translate(0, ${i * legendItemHeight})`);
 
-            legendItem.append("rect")
-                .attr("width", 7.25)
-                .attr("height", 7.25)
-                .attr("rx", 0.5)
-                .attr("x", -3.625) // Center the rectangle
-                .attr("y", -12)
-                .attr("fill", color);
+        legendItem.append("rect")
+            .attr("width", 7.25)
+            .attr("height", 7.25)
+            .attr("rx", 1)
+            .attr("y", -5)
+            .attr("fill", color);
 
-            // Add text with ellipsis if too long
-            const text = legendItem.append("text")
-                .attr("y",8)
-                .attr("fill", "#6D635B")
-                .attr("font-size", "8px")
-                .attr("font-family", "IBM Plex Sans Condensed")
-                .attr("text-anchor", "middle") // Center the text
-                .text(sentiment);
+        legendItem.append("text")
+            .attr("x", 12)
+            .attr("y", 0)
+            .attr("fill", "#6D635B")
+            .attr("font-size", "5px")
+            .attr("font-family", "IBM Plex Mono")
+            .attr("alignment-baseline", "middle")
+            .text(sentiment);
+    });
 
-            // Truncate text if too long
-            const maxTextWidth = legendItemWidth;
-            const textElement = text.node();
-            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
-                let textContent = sentiment;
-                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
-                    textContent = textContent.slice(0, -1);
-                }
-                text.text(textContent + '...');
-            }
-
-            // Add tooltip for truncated text
-            if (text.text().endsWith('...')) {
-                legendItem
-                    .on("mouseenter", (event) => {
-                        showTooltip(event, sentiment);
-                    })
-                    .on("mouseleave", () => {
-                        hideTooltip();
-                    });
-            }
-        });
 
         data.stages.forEach((stage, stageIndex) => {
             const xOffset = startX + stageIndex * (stageWidth + stageSpacing);

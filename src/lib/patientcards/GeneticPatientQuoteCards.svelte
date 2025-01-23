@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import patientData from '$lib/data/alzheonQuotes.json';
+    import patientData from '$lib/data/geneticQuotes.json';
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
@@ -106,10 +106,7 @@
     });
 </script>
 
-<div class="max-w-6xl mx-auto px-4">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
-        Quotes from APOE4 Carriers & Caregivers
-        </h3>
+<div class="max-w-6xl  bg-blue-50 text-slate-800 px-8 pt-12 outline-dashed outline-1  place-content-center items-center mx-auto px-4">
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
@@ -123,7 +120,7 @@
     </div>
 
     <!-- Navigation controls -->
-    <div class="flex justify-center gap-4 mt-8">
+    <div class="flex justify-center gap-4 mt-10 mb-12">
         <button
             on:click={handlePrev}
             class="h-10 w-10 rounded-full bg-orange-200 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
@@ -165,6 +162,8 @@
             </svg>
         </button>
     </div>
+    <p class="caption text-xs max-w-96 font-mono text-left mb-12">
+        Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
 </div>
 
 <style>

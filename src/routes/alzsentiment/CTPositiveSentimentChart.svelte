@@ -37,7 +37,7 @@
     function calculateHeight() {
         const maxSquares = getMaxSquaresPerStage();
         const rows = Math.ceil(maxSquares / gridWidth);
-        return rows * (cellSize + cellPadding) + labelHeight + legendHeight + 60;
+        return rows * (cellSize + cellPadding) + labelHeight + legendHeight + 0;
     }
 
     onMount(() => {
@@ -191,6 +191,7 @@
                 .attr("y", 4)
                 .attr("fill", "#6D635B")
                 .attr("font-size", `${legendFontSize/2}px`)
+                .attr("font-family", "IBM Plex Mono")
                 .text(category);
 
             legendItem
@@ -283,13 +284,13 @@
 
     <div class="w-full max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8">
+            <div class="lg:col-span-7">
                 <div class="chart-container">
                     <svg bind:this={svg}></svg>
                 </div>
             </div>
             
-            <div class="lg:col-span-4">
+            <div class="lg:col-span-3">
                 <AlzheonQuoteCards />
             </div>
         </div>
