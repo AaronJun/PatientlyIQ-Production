@@ -7,7 +7,6 @@
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
     import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
     import ScrollProgress from './ScrollProgress.svelte';
-    import AlzJourneyTabs from '../tabs/AlzJourneyTabs.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
@@ -25,6 +24,8 @@
     import flareData from '$lib/data/flare-alz.json';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
 	import PatientJourneyDrawer from '$lib/patientcards/ALZPatientJourneyDrawer.svelte';
+	import PositiveSentimentDriversChart from './PositiveSentimentDriversChart.svelte';
+	import NegativeSentimentDriversChart from './NegativeSentimentDriversChart.svelte';
     
     let selectedDisease = "pompe";
     let isDrawerOpen = false;
@@ -49,17 +50,16 @@
     <AlzIntroductionS1P1 />
     <WaffleStages data={ sentimentData } />
 </div>
-
-    </div>
-
-    
-    <div id="1.2 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
-    <AlzJourneyTabs />
-    </div>
-    <div id="1.3 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
+</div>
+    <div id="1.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
         <AlzIntroductionS1P2 />
-        <NegativeSentimentChart />
-        <NegativeSentimetDriversChart />
+        <PositiveSentimentDriversChart />
+        <NegativeSentimentDriversChart />
+    </div>
+    
+    <div id="1.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
+        <PatientStoryCircles {selectedDisease} />
+        <PatientJourneyCards />
     </div>
 
     <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">

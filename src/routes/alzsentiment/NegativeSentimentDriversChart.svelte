@@ -8,30 +8,41 @@
     export let categories = negativeSentimentData.categories;
     
     let svg;
-    let width = 1250;  // Match WaffleStages width
-    let height = 800;  // Match WaffleStages height
-    let cellSize = 24; // Match WaffleStages cell size
+    let width = 1000;
+    let height: number;
+    let cellSize = 16;
     let cellPadding = 2;
-    let categorySpacing = 90;
+    let stageSpacing = 60;
     let labelHeight = 40;
+    let legendHeight = 50;
     
     const gridWidth = 5;
-    let hoveredCategory = null;
-    let hoveredStage = null;
-    let selectedStage = null;
-    let selectedCategory = null;
+    let hoveredCategory: string | null = null;
+    let hoveredStage: string | null = null;
 
-    // Enhanced color scheme for negative sentiment visualization
-    const categoryColors = {
-        "Treatment Burden": "#C62828",    // Deep red
-        "Financial Stress": "#D32F2F",    // Red
-        "Care Barriers": "#E53935",       // Lighter red
-        "Daily Struggles": "#F44336",     // Even lighter red
-        "Future Worries": "#EF5350"       // Lightest red
-    };
+ // Enhanced color scheme for negative sentiment visualization
+ const categoryColors = {};
+    categories.forEach((category, index) => {
+        // Use interpolateGreens from 0.3 to 0.8 to avoid too light or too dark colors
+        categoryColors[category] = d3.interpolateReds(0.3 + (index * 0.5 / (categories.length - 1)));
+    });
+
+
+    function getMaxSquaresPerStage() {
+        return Math.max(...data.map(stageData => 
+            Object.values(stageData).reduce((sum: number, value: number) => sum + value, 0)
+        ));
+    }
+
+    function calculateHeight() {
+        const maxSquares = getMaxSquaresPerStage();
+        const rows = Math.ceil(maxSquares / gridWidth);
+        return rows * (cellSize + cellPadding) + labelHeight + legendHeight + 60;
+    }
 
     onMount(() => {
         if (data.length > 0) {
+            height = calculateHeight();
             createVisualization();
         }
     });
@@ -40,140 +51,198 @@
         d3.select(svg).selectAll("*").remove();
 
         const svgElement = d3.select(svg)
-            .attr("viewBox", [-120, 0, width, height]);
+            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
             
-        // Calculate total N across all stages and categories
-        const totalN = data.reduce((sum, stageData) => {
-            return sum + Object.values(stageData).reduce((a, b) => a + b, 0);
-        }, 0);
-
-        // Add total N label at the top
-        svgElement.append("text")
-            .attr("x", width / 1.625)
-            .attr("y", 20)
-            .attr("text-anchor", "middle")
-            .attr("fill", "#6D635B")
-            .attr("font-family", "IBM Plex mono")
-            .attr("font-size", "8px")
-            .attr("font-weight", "600")
-            .text(`Total = ${totalN}`);
-
-        // Create legend with consistent styling
-        const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${width - 100}, 10)`);
-
-        Object.entries(categoryColors).forEach(([category, color], i) => {
-            const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(0, ${i * 20})`)
-                .style("cursor", "pointer")
-                .on("mouseenter", () => {
-                    hoveredCategory = category;
-                    updateHighlights();
-                })
-                .on("mouseleave", () => {
-                    hoveredCategory = null;
-                    updateHighlights();
-                });
-
-            legendItem.append("rect")
-                .attr("width", 8)
-                .attr("height", 8)
-                .attr("rx", 2)
-                .attr("fill", color);
-
-            legendItem.append("text")
-                .attr("x", 12)
-                .attr("y", 14)
-                .attr("fill", "#6D635B")
-                .attr("font-size", "12px")
-                .text(category);
+        // Process data by stage
+        const stageData = stages.map((stage, stageIndex) => {
+            const categoryValues = categories.map(category => ({
+                category,
+                value: data[stageIndex][category] || 0
+            }));
+            return {
+                stage,
+                categories: categoryValues,
+                total: categoryValues.reduce((sum, { value }) => sum + value, 0)
+            };
         });
 
-        // Create visualization groups for each stage
-        stages.forEach((stage, stageIndex) => {
-            const stageData = data[stageIndex];
-            const xOffset = stageIndex * (cellSize * gridWidth + categorySpacing);
+        const maxSquaresPerStage = getMaxSquaresPerStage();
+        const stageWidth = gridWidth * (cellSize + cellPadding);
+        const chartHeight = height - legendHeight;
+
+        // Calculate total width needed for all stages
+        const totalWidth = stages.length * (stageWidth + stageSpacing) - stageSpacing;
+        const startX = (width - totalWidth) / 2;
+
+        // Create stage groups
+        stageData.forEach((stageInfo, stageIndex) => {
+            const xOffset = startX + stageIndex * (stageWidth + stageSpacing);
             
             const stageGroup = svgElement.append("g")
                 .attr("class", `stage-${stageIndex}`)
                 .attr("transform", `translate(${xOffset}, ${labelHeight})`);
 
             // Add stage label
-            stageGroup.append("text")
-                .attr("x", (cellSize * gridWidth) / 2)
-                .attr("y", height - 60)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#828487")
-                .attr("font-size", "12px")
-                .attr("font-weight", "800")
-                .text(stage);
+            const labelGroup = stageGroup.append("g")
+                .style("cursor", "pointer");
 
-            // Calculate and display squares for each category
-            let yOffset = 0;
-            categories.forEach(category => {
-                const value = stageData[category] || 0;
-                const squaresNeeded = Math.ceil(value);
-                
-                for (let i = 0; i < squaresNeeded; i++) {
-                    const row = Math.floor(i / gridWidth);
-                    const col = i % gridWidth;
+            labelGroup.append("text")
+                .attr("x", stageWidth / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#6D635B")
+                .attr("font-size", "8px")
+                .attr("font-weight", "800")
+                .text(stageInfo.stage);
+
+            // Add squares for each category
+            let squareCount = 0;
+            stageInfo.categories.forEach(({ category, value }) => {
+                for (let i = 0; i < value; i++) {
+                    const col = squareCount % gridWidth;
+                    const row = Math.floor(squareCount / gridWidth);
+                    const yPosition = (Math.ceil(maxSquaresPerStage / gridWidth) - 1 - row) * (cellSize + cellPadding);
                     
-                    stageGroup.append("rect")
+                    const square = stageGroup.append("rect")
                         .attr("class", `category-${category.replace(/\s+/g, '-')}`)
                         .attr("x", col * (cellSize + cellPadding))
-                        .attr("y", yOffset + row * (cellSize + cellPadding))
+                        .attr("y", yPosition)
                         .attr("width", cellSize)
                         .attr("height", cellSize)
                         .attr("fill", categoryColors[category])
                         .attr("rx", 2)
                         .attr("ry", 2)
-                        .style("opacity", 0.9)
-                        .on("mouseenter", () => {
-                            const tooltip = d3.select("#tooltip");
+                        .style("opacity", 0.8);
+
+                    square
+                        .on("mouseenter", (event) => {
+                            const tooltip = d3.select("#negative-sentiment-tooltip");
+                            const tooltipWidth = 200;
+                            const windowWidth = window.innerWidth;
+                            
+                            let leftPos = event.clientX + 20;
+                            if (leftPos + tooltipWidth > windowWidth) {
+                                leftPos = event.clientX - tooltipWidth - 20;
+                            }
+                            
                             tooltip
                                 .style("visibility", "visible")
-                                .style("top", (d3.event.pageY - 10) + "px")
-                                .style("left", (d3.event.pageX + 10) + "px")
-                                .text(`${stage}: ${category} (${value})`);
+                                .style("left", `${leftPos}px`)
+                                .style("top", `${event.clientY}px`)
+                                .text(`${stageInfo.stage}: ${category} (${value})`);
+
+                            hoveredCategory = category;
+                            updateHighlights();
                         })
                         .on("mouseleave", () => {
-                            d3.select("#tooltip").style("visibility", "hidden");
+                            d3.select("#negative-sentiment-tooltip")
+                                .style("visibility", "hidden");
+                            hoveredCategory = null;
+                            updateHighlights();
                         });
+                    
+                    squareCount++;
                 }
-                yOffset += Math.ceil(squaresNeeded / gridWidth) * (cellSize + cellPadding) + 10;
             });
 
-            // Add total count for stage
-            const totalStageCount = Object.values(stageData).reduce((a, b) => a + b, 0);
+            // Add total count label
             stageGroup.append("text")
-                .attr("x", (cellSize * gridWidth) / 2)
-                .attr("y", height - 40)
+                .attr("x", stageWidth / 2)
+                .attr("y", Math.ceil(maxSquaresPerStage / gridWidth) * (cellSize + cellPadding) + 15)
                 .attr("text-anchor", "middle")
                 .attr("fill", "#6D635B")
-                .attr("font-size", "12px")
-                .text(totalStageCount);
+                .attr("font-size", "8.25px")
+                .text(stageInfo.total);
         });
+// Create horizontal legend at the bottom
+const legendY = chartHeight - 20;
+        const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
+        const legendItemWidth = maxLegendWidth / categories.length;
+        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
+
+        const legendGroup = svgElement.append("g")
+            .attr("transform", `translate(${legendStartX}, ${legendY})`);
+
+        categories.forEach((category, i) => {
+            const legendItem = legendGroup.append("g")
+                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`)
+                .style("cursor", "pointer");
+
+            legendItem.append("rect")
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("rx", 2)
+                .attr("x", -5) // Center the rectangle
+                .attr("fill", categoryColors[category]);
+
+            // Add text with ellipsis if too long
+            const text = legendItem.append("text")
+                .attr("y", 24)
+                .attr("fill", "#6D635B")
+                .attr("font-size", "8.25px")
+                .attr("text-anchor", "middle") // Center the text
+                .text(category);
+
+            // Truncate text if too long
+            const maxTextWidth = legendItemWidth - 20;
+            const textElement = text.node();
+            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
+                let textContent = category;
+                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
+                    textContent = textContent.slice(0, -1);
+                }
+                text.text(textContent + '...');
+            }
+
+            legendItem
+                .on("mouseenter", () => {
+                    hoveredCategory = category;
+                    updateHighlights();
+                    // Show full category name in tooltip if truncated
+                    if (text.text().endsWith('...')) {
+                        showTooltip(event, category);
+                    }
+                })
+                .on("mouseleave", () => {
+                    hoveredCategory = null;
+                    updateHighlights();
+                    hideTooltip();
+                });
+        });
+
     }
+
 
     function updateHighlights() {
         const svgElement = d3.select(svg);
+        
         svgElement.selectAll("rect")
             .style("opacity", function() {
-                if (!hoveredCategory && !hoveredStage) return 0.9;
                 const element = d3.select(this);
-                if (hoveredCategory && element.classed(`category-${hoveredCategory.replace(/\s+/g, '-')}`)) return 1;
-                if (hoveredStage && element.closest(`.stage-${stages.indexOf(hoveredStage)}`).size() > 0) return 1;
-                return 0.2;
+                if (!hoveredCategory && !hoveredStage) {
+                    return 0.8;
+                }
+                
+                const isMatchingCategory = hoveredCategory && 
+                    element.classed(`category-${hoveredCategory.replace(/\s+/g, '-')}`);
+                const isMatchingStage = hoveredStage && 
+                    element.closest(`.stage-${stages.indexOf(hoveredStage)}`).size() > 0;
+                
+                return (isMatchingCategory || isMatchingStage) ? 1 : 0.2;
             });
     }
 </script>
 
-<div class="relative">
-    <div id="tooltip" 
-         class="absolute bg-gray-800 text-white px-2 py-1 rounded text-sm pointer-events-none" 
-         style="visibility: hidden; z-index: 1000;">
+<div class="relative flex flex-col items-center justify-center w-full">
+    <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
+        Main Drivers of Negative Sentiment, by Stage
+    </h3>
+    <div 
+        id="negative-sentiment-tooltip" 
+        class="fixed bg-gray-800 text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
+        style="visibility: hidden; z-index: 1000;">
     </div>
-    <div class="chart-container">
+    <div class="chart-container flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
 </div>
@@ -182,11 +251,22 @@
     .chart-container {
         width: 100%;
         height: 100%;
-        min-height: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     svg {
         width: 100%;
         height: 100%;
+        margin: 0 auto;
+    }
+
+    :global(.highlighted) {
+        opacity: 1 !important;
+    }
+
+    :global(.dimmed) {
+        opacity: 0.2;
     }
 </style>

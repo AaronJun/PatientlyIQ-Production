@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
 
@@ -10,12 +10,13 @@
     let containerRef;
     let hasAnimated = false;
     const width = 925;
-    const height = 400;
-    const cellSize = 12;
-    const cellPadding = 1;
+    let height;
+    const cellSize = 16;
+    const cellPadding = 2;
     const stageSpacing = 80;
-    const labelHeight = 50;
+    const labelHeight = 40;
     const gridWidth = 5;
+    const legendHeight = 50;
     const animationDuration = 800;
 
     const colors = {
@@ -33,7 +34,6 @@
         "New Treatment Consideration": "Periods of adapting to or trying new medical treatments, supplements, or health protocols. This includes evaluating effectiveness and adjusting approaches based on new research or medical advice.",
         "Long-Term Planning": "Making decisions and preparations for the future, including financial planning, care arrangements, and family discussions about long-term health management strategies."
     };
-
 
     const quotes = {
         "Initial Discovery": {
@@ -68,13 +68,26 @@
         }
     };
 
+    function getMaxSquaresPerStage() {
+        return Math.max(...data.stages.map(stage => 
+            Object.values(stage.sentiments).reduce((sum, value) => sum + value, 0)
+        ));
+    }
+
+    function calculateHeight() {
+        const maxSquares = getMaxSquaresPerStage();
+        const rows = Math.ceil(maxSquares / gridWidth);
+        return rows * (cellSize + cellPadding) + labelHeight + legendHeight + 60;
+    }
+
     onMount(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && !hasAnimated) {
                         hasAnimated = true;
-                        createVisualization();
+                        height = calculateHeight();
+                        createVisualization(true);
                     }
                 });
             },
@@ -90,7 +103,8 @@
         }
 
         if (data.stages.length > 0) {
-            createStaticVisualization();
+            height = calculateHeight();
+            createVisualization(false);
         }
 
         return () => {
@@ -100,145 +114,26 @@
         };
     });
 
-    function createStaticVisualization() {
-        d3.select(svg).selectAll("*").remove();
-
-        const svgElement = d3.select(svg)
-            .attr("viewBox", [-120, 0, width, height]);
-
-        const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(0, ${height - 40})`);
-
-        Object.entries(colors).forEach(([sentiment, color], i) => {
-            createLegendItem(legendGroup, sentiment, color, i * 120);
-        });
-
-        data.stages.forEach((stage, stageIndex) => {
-            const stageGroup = svgElement.append("g")
-                .attr("class", `stage-${stageIndex}`)
-                .attr("transform", `translate(${stageIndex * (gridWidth * (cellSize + cellPadding) + stageSpacing)}, ${labelHeight})`);
-            
-            createStageContent(stageGroup, stage, stageIndex, false);
-        });
-    }
-
-    function createVisualization() {
-        d3.select(svg).selectAll("*").remove();
-
-        const svgElement = d3.select(svg)
-            .attr("viewBox", [-120, 0, width, height]);
-
-        const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(0, ${height - 40})`)
-            .style("opacity", 0);
-
-        legendGroup.transition()
-            .duration(animationDuration / 2)
-            .style("opacity", 1);
-
-        Object.entries(colors).forEach(([sentiment, color], i) => {
-            createLegendItem(legendGroup, sentiment, color, i * 120);
-        });
-
-        data.stages.forEach((stage, stageIndex) => {
-            const stageGroup = svgElement.append("g")
-                .attr("class", `stage-${stageIndex}`)
-                .attr("transform", `translate(${stageIndex * (gridWidth * (cellSize + cellPadding) + stageSpacing)}, ${labelHeight})`);
-            
-            createStageContent(stageGroup, stage, stageIndex, true);
-        });
-    }
-
-    function createStageContent(stageGroup, stage, stageIndex, animate) {
-        let squareCount = 0;
-        let countBySentiment = {};
-        
-        Object.keys(stage.sentiments).forEach(sentiment => {
-            countBySentiment[sentiment] = 0;
-        });
-
-        const totalSquares = Object.values(stage.sentiments).reduce((a, b) => a + b, 0);
-        const totalRows = Math.ceil(totalSquares / gridWidth);
-        
-        addStageLabels(stageGroup, stage, gridWidth * (cellSize + cellPadding), animate);
-        
-        Object.entries(stage.sentiments).forEach(([sentiment, count]) => {
-            for (let i = 0; i < count; i++) {
-                const col = squareCount % gridWidth;
-                const row = totalRows - 1 - Math.floor(squareCount / gridWidth);
-                
-                const stageQuote = quotes[stage.name];
-                const isHighlighted = stageQuote && 
-                                    sentiment === stageQuote.sentiment && 
-                                    countBySentiment[sentiment] === stageQuote.index;
-                
-                if (animate) {
-                    createAnimatedSquare(
-                        stageGroup,
-                        col,
-                        row,
-                        sentiment,
-                        stage.name,
-                        isHighlighted,
-                        isHighlighted ? stageQuote.text : null,
-                        totalRows,
-                        stageIndex
-                    );
-                } else {
-                    createStaticSquare(
-                        stageGroup,
-                        col,
-                        row,
-                        sentiment,
-                        stage.name,
-                        isHighlighted,
-                        isHighlighted ? stageQuote.text : null
-                    );
-                }
-                
-                countBySentiment[sentiment]++;
-                squareCount++;
-            }
-        });
-    }
-
-    function createLegendItem(legendGroup, sentiment, color, position) {
-        const item = legendGroup.append("g")
-            .attr("transform", `translate(${position}, 0)`);
-
-        item.append("rect")
-            .attr("width", 7.25)
-            .attr("height", 7.25)
-            .attr("rx", 0.5)
-            .attr("fill", color);
-
-        item.append("text")
-            .attr("x", 14)
-            .attr("y", 8)
-            .attr("fill", "#6D635B")
-            .attr("font-size", "8px")
-            .attr("font-family", "IBM Plex Sans Condensed")
-            .text(sentiment);
-    }
-
-    function createAnimatedSquare(
+    function createSquare(
         stageGroup,
         col,
         row,
         sentiment,
         stageName,
-        isHighlighted,
-        quote,
-        totalRows,
-        stageIndex
+        countBySentiment,
+        yPosition,
+        animate = false,
+        totalRows
     ) {
-        const startY = -50;
-        const finalY = row * (cellSize + cellPadding);
         const finalX = col * (cellSize + cellPadding);
-        const baseDelay = (stageIndex * 100) + (col * 50) + (totalRows - row) * 50;
-        
+        const startY = animate ? -50 : yPosition;
+        const stageQuote = quotes[stageName];
+        const isHighlighted = stageQuote && 
+                            sentiment === stageQuote.sentiment && 
+                            countBySentiment[sentiment] === stageQuote.index;
+
         if (isHighlighted) {
-            const filterId = `glow-${stageIndex}-${col}-${row}`;
+            const filterId = `glow-${stageName}-${col}-${row}`.replace(/\s+/g, '-');
             const defs = d3.select(svg).select("defs");
             
             if (defs.empty()) {
@@ -274,20 +169,15 @@
                 .attr("in2", "shadow")
                 .attr("operator", "over");
 
-            stageGroup.append("rect")
-                .attr("x", finalX - 2)
-                .attr("y", startY - 2)
-                .attr("width", cellSize + 4)
-                .attr("height", cellSize + 4)
-                .attr("rx", 3)
-                .attr("fill", "#FFFFFF")
-                .attr("opacity", 0.2)
-                .style("filter", `url(#${filterId})`)
-                .transition()
-                .delay(baseDelay)
-                .duration(animationDuration)
-                .ease(d3.easeBounceOut)
-                .attr("y", finalY - 2);
+
+            if (animate) {
+                stageGroup.select(`rect[filter="url(#${filterId})"]`)
+                    .transition()
+                    .delay((col * 50) + ((totalRows - row) * 50))
+                    .duration(animationDuration)
+                    .ease(d3.easeBounceOut)
+                    .attr("y", yPosition - 2);
+            }
         }
 
         const square = stageGroup.append("rect")
@@ -297,38 +187,36 @@
             .attr("height", cellSize)
             .attr("fill", colors[sentiment])
             .attr("rx", 2)
-            .style("opacity", 0);
+            .style("opacity", animate ? 0 : 1);
 
         if (isHighlighted) {
             square.style("stroke", "#161616")
                 .style("stroke-width", "1.5px")
-                .attr("fill-opacity", 0.4)
                 .style("stroke-dasharray", "3,2");
         }
 
-        square.transition()
-            .delay(baseDelay)
-            .duration(animationDuration)
-            .ease(d3.easeBounceOut)
-            .attr("y", finalY)
-            .style("opacity", 1);
+        if (animate) {
+            square.transition()
+                .delay((col * 50) + ((totalRows - row) * 50))
+                .duration(animationDuration)
+                .ease(d3.easeBounceOut)
+                .attr("y", yPosition)
+                .style("opacity", 1);
+        }
 
         square
             .style("cursor", isHighlighted ? "pointer" : "default")
             .on("mouseenter", (event) => {
                 if (isHighlighted) {
-                    showTooltip(event, `<div class="font-medium mb-2">${stageName} - ${sentiment}</div><div>${quote}</div>${persona}`);
+                    showTooltip(event, `
+                        <div class="font-medium mb-2">${stageName} - ${sentiment}</div>
+                        <div>${stageQuote.text}</div>
+                        <div class="mt-2 text-gray-300">${stageQuote.persona}</div>
+                    `);
                     square.transition()
                         .duration(200)
                         .style("stroke-width", "2px")
                         .style("filter", "brightness(1.2)");
-                } else {
-                    showTooltip(event, `${stageName}: ${sentiment}`);
-                }
-            })
-            .on("mousemove", (event) => {
-                if (isHighlighted) {
-                    showTooltip(event, `<div class="font-medium mb-2">${stageName} - ${sentiment}</div><div>${quote}</div>`);
                 } else {
                     showTooltip(event, `${stageName}: ${sentiment}`);
                 }
@@ -342,113 +230,161 @@
                         .style("filter", "none");
                 }
             });
+
+        return countBySentiment[sentiment]++;
     }
 
-    function createStaticSquare(
-        stageGroup,
-        col,
-        row,
-        sentiment,
-        stageName,
-        isHighlighted,
-        quote
-    ) {
-        const finalY = row * (cellSize + cellPadding);
-        const finalX = col * (cellSize + cellPadding);
+    function createVisualization(animate = false) {
+        d3.select(svg).selectAll("*").remove();
 
-        if (isHighlighted) {
-            const filterId = `glow-static-${col}-${row}`;
-            const defs = d3.select(svg).select("defs");
-            
-            if (defs.empty()) {
-                d3.select(svg).append("defs");
+        const svgElement = d3.select(svg)
+            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
+
+        const stageWidth = gridWidth * (cellSize + cellPadding);
+        const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
+        const startX = (width - totalWidth) / 2;
+
+    
+        const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
+        const legendItemWidth = maxLegendWidth / Object.keys(colors).length;
+        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
+
+        const legendGroup = svgElement.append("g")
+            .attr("transform", `translate(${legendStartX}, ${height - legendHeight})`)
+            .style("opacity", animate ? 0 : 1);
+
+        if (animate) {
+            legendGroup.transition()
+                .duration(animationDuration / 2)
+                .style("opacity", 1);
+        }
+
+        Object.entries(colors).forEach(([sentiment, color], i) => {
+            const legendItem = legendGroup.append("g")
+                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`);
+
+            legendItem.append("rect")
+                .attr("width", 7.25)
+                .attr("height", 7.25)
+                .attr("rx", 0.5)
+                .attr("x", -3.625) // Center the rectangle
+                .attr("y", -12)
+                .attr("fill", color);
+
+            // Add text with ellipsis if too long
+            const text = legendItem.append("text")
+                .attr("y", 8)
+                .attr("fill", "#6D635B")
+                .attr("font-size", "8px")
+                .attr("font-family", "IBM Plex Sans Condensed")
+                .attr("text-anchor", "middle") // Center the text
+                .text(sentiment);
+
+            // Truncate text if too long
+            const maxTextWidth = legendItemWidth - 20;
+            const textElement = text.node();
+            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
+                let textContent = sentiment;
+                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
+                    textContent = textContent.slice(0, -1);
+                }
+                text.text(textContent + '...');
             }
 
-            const filter = d3.select(svg).select("defs")
-                .append("filter")
-                .attr("id", filterId)
-                .attr("x", "-50%")
-                .attr("y", "-50%")
-                .attr("width", "200%")
-                .attr("height", "200%");
+            // Add tooltip for truncated text
+            if (text.text().endsWith('...')) {
+                legendItem
+                    .on("mouseenter", (event) => {
+                        showTooltip(event, sentiment);
+                    })
+                    .on("mouseleave", () => {
+                        hideTooltip();
+                    });
+            }
+        });
 
-            filter.append("feGaussianBlur")
-                .attr("in", "SourceAlpha")
-                .attr("stdDeviation", "2")
-                .attr("result", "blur");
+        data.stages.forEach((stage, stageIndex) => {
+            const xOffset = startX + stageIndex * (stageWidth + stageSpacing);
+            
+            const stageGroup = svgElement.append("g")
+                .attr("class", `stage-${stageIndex}`)
+                .attr("transform", `translate(${xOffset}, ${labelHeight})`);
 
-            filter.append("feFlood")
-                .attr("flood-color", "#FFF")
-                .attr("flood-opacity", "0.6")
-                .attr("result", "color");
+            // Add stage label
+            const labelGroup = stageGroup.append("g")
+                .style("cursor", "help");
 
-            filter.append("feComposite")
-                .attr("in", "color")
-                .attr("in2", "blur")
-                .attr("operator", "in")
-                .attr("result", "shadow");
+            labelGroup.append("text")
+                .attr("x", stageWidth / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#828487")
+                .attr("font-size", "7.25px")
+                .attr("font-weight", "800")
+                .attr("font-family", "IBM Plex Sans Condensed")
+                .text(stage.name)
+                .style("opacity", animate ? 0 : 1);
 
-            filter.append("feComposite")
-                .attr("in", "SourceGraphic")
-                .attr("in2", "shadow")
-                .attr("operator", "over");
+            // Track sentiment counts for quote identification
+            let countBySentiment = {};
+            Object.keys(stage.sentiments).forEach(sentiment => {
+                countBySentiment[sentiment] = 0;
+            });
 
-            stageGroup.append("rect")
-                .attr("x", finalX - 2)
-                .attr("y", finalY - 2)
-                .attr("width", cellSize + 4)
-                .attr("height", cellSize + 4)
-                .attr("rx", 3)
-                .attr("fill", "#FFFFFF")
-                .attr("opacity", 0.2)
-                .style("filter", `url(#${filterId})`);
-        }
+            let squareCount = 0;
+            const maxSquares = getMaxSquaresPerStage();
+            const totalRows = Math.ceil(maxSquares / gridWidth);
 
-        const square = stageGroup.append("rect")
-            .attr("x", finalX)
-            .attr("y", finalY)
-            .attr("width", cellSize)
-            .attr("height", cellSize)
-            .attr("fill", colors[sentiment])
-            .attr("rx", 2);
+            Object.entries(stage.sentiments).forEach(([sentiment, count]) => {
+                for (let i = 0; i < count; i++) {
+                    const col = squareCount % gridWidth;
+                    const row = Math.floor(squareCount / gridWidth);
+                    const yPosition = (totalRows - 1 - row) * (cellSize + cellPadding);
 
-        if (isHighlighted) {
-            square.style("stroke", "#161616")
-                .style("stroke-width", "1.5px")
-                .style("stroke-dasharray", "3,2")
-                .style("filter", "saturate(2)");
-        }
+            createSquare(
+                        stageGroup,
+                        col,
+                        row,
+                        sentiment,
+                        stage.name,
+                        countBySentiment,
+                        yPosition,
+                        animate,
+                        totalRows
+                    );
 
-        square
-            .style("cursor", isHighlighted ? "pointer" : "default")
-            .on("mouseenter", (event) => {
-                if (isHighlighted) {
-                    showTooltip(event, `<div class="font-medium mb-2">${stageName} - ${sentiment}</div><div>${quote}</div>`);
-                    square.transition()
-                        .duration(200)
-                        .style("stroke-width", "2px")
-                        .style("filter", "saturate(2)")
-                        .style("filter", "brightness(1.2)");
-                } else {
-                    showTooltip(event, `${stageName}: ${sentiment}`);
-                }
-            })
-            .on("mousemove", (event) => {
-                if (isHighlighted) {
-                    showTooltip(event, `<div class="font-medium mb-2">${stageName} - ${sentiment}</div><div>${quote}</div>`);
-                } else {
-                    showTooltip(event, `${stageName}: ${sentiment}`);
-                }
-            })
-            .on("mouseleave", () => {
-                hideTooltip();
-                if (isHighlighted) {
-                    square.transition()
-                        .duration(200)
-                        .style("stroke-width", "1.5px")
-                        .style("filter", "saturate(2)");
+                    squareCount++;
                 }
             });
+
+            const total = Object.values(stage.sentiments).reduce((a, b) => a + b, 0);
+            stageGroup.append("text")
+                .attr("x", stageWidth / 2)
+                .attr("y", totalRows * (cellSize + cellPadding) + 15)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#6D635B")
+                .attr("font-size", "10px")
+                .text(total)
+                .style("opacity", animate ? 0 : 1);
+
+            if (animate) {
+                stageGroup.selectAll("text")
+                    .transition()
+                    .duration(animationDuration / 2)
+                    .style("opacity", 1);
+            }
+
+            labelGroup
+                .on("mouseenter", (event) => {
+                    showStageDescription(event, stage.name);
+                })
+                .on("mousemove", (event) => {
+                    showStageDescription(event, stage.name);
+                })
+                .on("mouseleave", () => {
+                    hideTooltip();
+                });
+        });
     }
 
     function showTooltip(event, content) {
@@ -472,106 +408,37 @@
         d3.select("#tooltip").style("visibility", "hidden");
     }
 
-    function addStageLabels(stageGroup, stage, width, animate) {
-        const total = Object.values(stage.sentiments).reduce((a, b) => a + b, 0);
-        
-        const labelGroup = stageGroup.append("g")
-            .style("cursor", "help");
-        
-        const titleText = labelGroup.append("text")
-            .attr("x", width / 2)
-            .attr("y", -30)
-            .attr("text-anchor", "middle")
-            .attr("fill", "#828487")
-            .attr("font-size", "7.25px")
-            .attr("font-weight", "800")
-            .attr("font-family", "IBM Plex Sans Condensed")
-            .text(stage.name)
-            .style("opacity", animate ? 0 : 1);
-
-        const countText = labelGroup.append("text")
-            .attr("x", width / 2)
-            .attr("y", -15)
-            .attr("text-anchor", "middle")
-            .attr("fill", "#6D635B")
-            .attr("font-size", "8.25px")
-            .attr("font-family", "IBM Plex Sans Condensed")
-            .text(total)
-            .style("opacity", animate ? 0 : 1);
-
-        // Add hover effects for the entire label group
-        labelGroup
-            .on("mouseenter", (event) => {
-                showStageDescription(event, stage.name);
-                titleText.transition()
-                    .duration(200)
-                    .attr("fill", "#4A5568");
-            })
-            .on("mousemove", (event) => {
-                showStageDescription(event, stage.name);
-            })
-            .on("mouseleave", () => {
-                hideTooltip();
-                titleText.transition()
-                    .duration(200)
-                    .attr("fill", "#828487");
-            });
-
-        if (animate) {
-            titleText.transition()
-                .duration(animationDuration / 2)
-                .style("opacity", 1);
-
-            countText.transition()
-                .duration(animationDuration / 2)
-                .style("opacity", 1);
-        }
-    }
-
     function showStageDescription(event, stageName) {
         const description = stageDescriptions[stageName];
         if (!description) return;
 
-        const tooltip = d3.select("#tooltip");
-        const tooltipWidth = 300;
-        const windowWidth = window.innerWidth;
-        
-        let leftPos = event.clientX + 20;
-        if (leftPos + tooltipWidth > windowWidth) {
-            leftPos = event.clientX - tooltipWidth - 20;
-        }
-
-        tooltip
-            .style("visibility", "visible")
-            .style("left", leftPos + "px")
-            .style("top", event.clientY + "px")
-            .html(`
-                <div class="font-medium mb-2 text-base">${stageName}</div>
-                <div class="text-gray-200 leading-relaxed">${description}</div>
-            `);
+        showTooltip(event, `
+            <div class="font-medium mb-2 text-base">${stageName}</div>
+            <div class="text-gray-200 leading-relaxed">${description}</div>
+        `);
     }
 </script>
 
-
-<div class="relative place-content-center mt-12 justify-center" bind:this={containerRef}>
+<div class="relative flex flex-col items-center justify-center w-full mt-12" bind:this={containerRef}>
     <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
         Expressed Sentiment, Major Journey Stages
     </h3>
 
-    <div id="tooltip" class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
+    <div id="tooltip" 
+         class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="chart-container">
+    <div class="chart-container flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
 </div>
-
 
 <style>
     .chart-container {
         width: 100%;
         height: 100%;
         min-height: 400px;
+        display: flex;
         align-items: center;
         justify-content: center;
     }
@@ -579,6 +446,7 @@
     svg {
         width: 100%;
         height: 100%;
+        margin: 0 auto;
     }
 
     :global(.tooltip-title) {
