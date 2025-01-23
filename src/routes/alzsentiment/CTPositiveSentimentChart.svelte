@@ -1,20 +1,21 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+      import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { positiveSentimentData } from './ctpositiveSentimentData';
+    import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
 
     export let data = positiveSentimentData.data;
     export let stages = positiveSentimentData.stages;
     export let categories = positiveSentimentData.categories;
     
     let svg;
-    let width = 900;
+    let width = 300;
     let height: number;
     let cellSize = 20;
     let cellPadding = 2;
-    let stageSpacing = 60;
+    let stageSpacing = 0;
     let labelHeight = 40;
-    let legendHeight = 50;
+    let legendHeight = 100;
     
     const gridWidth = 5;
     let hoveredCategory: string | null = null;
@@ -175,7 +176,7 @@
 
        // Create horizontal legend at the bottom
         const legendY = chartHeight - 20;
-        const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
+        const maxLegendWidth = Math.min(width * 2, totalWidth); // Limit legend width
         const legendItemWidth = maxLegendWidth / categories.length;
         const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
 
@@ -298,24 +299,40 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-        2.1B: Main Drivers of Positive Sentiment, Alzheon Studies
+<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50 py-12">
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-8 lg:mb-12 uppercase">
+        3.1B: Main Drivers of Positive Sentiment, Alzheon Studies
     </h3>
-    <div 
-        id="positive-sentiment-tooltip" 
+    
+    <div id="positive-sentiment-tooltip" 
         class="fixed bg-gray-800 text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
         style="visibility: hidden; z-index: 1000;">
     </div>
-    <div class="chart-container flex items-center justify-center">
-        <svg bind:this={svg}></svg>
-    </div>
-    {#if insight}
-        <div class="mt-4 p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl w-full">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Key Insight</h3>
-            <p class="text-gray-600">{insight}</p>
+
+    <div class="w-full max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-8">
+                <div class="chart-container">
+                    <svg bind:this={svg}></svg>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-4">
+                <AlzheonQuoteCards />
+            </div>
         </div>
-    {/if}
+
+        {#if insight}
+            <div class="mt-8 p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl mx-auto">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Key Insight</h3>
+                <p class="text-gray-600">{insight}</p>
+            </div>
+        {/if}
+
+        <p class="prose text-left text-base text-slate-600 font-serif mt-8 mb-12 w-4/6 mx-auto">
+            Alzheon's focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
+        </p>
+    </div>
 </div>
 
 <style>

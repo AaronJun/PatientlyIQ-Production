@@ -138,7 +138,7 @@
              class:opacity-0={!isHovered}>
           {#each sections as section}
             <div 
-              class="absolute text-right text-[10px] cursor-pointer transition-colors duration-200 transform -translate-y-1/2"
+              class="absolute text-right text-[10px] cursor-pointer transition-colors duration-200 transform -translate-y-1/2 my-2"
               class:text-orange-500={activeSection === section.id}
               class:font-bold={activeSection === section.id}
               class:text-gray-500={activeSection !== section.id}

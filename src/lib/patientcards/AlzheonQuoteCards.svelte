@@ -106,14 +106,11 @@
     });
 </script>
 
-<div class="max-w-6xl mx-auto px-4">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
-        Quotes from APOE4 Carriers & Caregivers
-        </h3>
+<div class="w-full">
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
-            class="relative h-72 w-96 cursor-grab active:cursor-grabbing"
+            class="relative h-72 w-full max-w-sm cursor-grab active:cursor-grabbing"
             on:touchstart={handleTouchStart}
             on:touchmove={handleTouchMove}
             on:touchend={handleTouchEnd}
@@ -123,22 +120,22 @@
     </div>
 
     <!-- Navigation controls -->
-    <div class="flex justify-center gap-4 mt-8">
+    <div class="flex justify-center gap-4 mt-4">
         <button
             on:click={handlePrev}
-            class="h-10 w-10 rounded-full bg-orange-200 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
+            class="h-8 w-8 lg:h-10 lg:w-10 rounded-full bg-orange-200 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-5 w-5 group-hover:rotate-12 transition-transform duration-300"
+                class="h-4 w-4 lg:h-5 lg:w-5 group-hover:rotate-12 transition-transform duration-300"
             >
                 <path d="m12 19-7-7 7-7" />
                 <path d="M19 12H5" />
@@ -146,19 +143,19 @@
         </button>
         <button
             on:click={handleNext}
-            class="h-10 w-10 rounded-full bg-orange-200  dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
+            class="h-8 w-8 lg:h-10 lg:w-10 rounded-full bg-orange-200 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="h-5 w-5 group-hover:-rotate-12 transition-transform duration-300"
+                class="h-4 w-4 lg:h-5 lg:w-5 group-hover:-rotate-12 transition-transform duration-300"
             >
                 <path d="M5 12h14" />
                 <path d="m12 5 7 7-7 7" />

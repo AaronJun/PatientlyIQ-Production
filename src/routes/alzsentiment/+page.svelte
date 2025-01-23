@@ -18,6 +18,7 @@
     import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
     import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
     import CtPatientQuoteCards from '$lib/patientcards/CtPatientQuoteCards.svelte';
+    import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
 
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
@@ -82,10 +83,11 @@
         <AlzIntroductionS3P1 />
         <CtPatientQuoteCards />
         <CtWaffleStages data={ ctsentimentData } />
-        <CtPositiveSentimentChart />
+  
         </div>
         <div id="3.2 Perception of Alzheon" class="mb-16 pb-24 place-content-center justify-center"> 
-
+            <CtPositiveSentimentChart />
+            <AlzheonQuoteCards />
         </div>  
         <div id="3.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />

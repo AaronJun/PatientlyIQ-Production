@@ -1,0 +1,28 @@
+{
+  "patients": [
+  {
+  "id": 14,
+  "name": "Helen M.",
+  "age": "late-60s",
+  "persona": "APOE4 Carrier",
+  "sentiment": "Entirely Positive",
+  "quote": "If this trial really is going to benefit those of us living with APOE4/4, I have no problem saying that I’d wouldn’t mind being a lab mouse in their tests!"
+  },
+  {
+  "id": 15,
+  "name": "William P.",
+  "age": "Mid-60s",
+  "persona": "APOE4 Caregiver",
+  "sentiment": "Mostly Positive",
+  "quote": "While my husband had to stop taking lecanemab during his MCI stage because of side effects, reading the data from Alzheon’s research is giving me hope for our future."
+  },
+  {
+  "id": 16,
+  "name": "Katherine R.",
+  "age": "Mid-50s",
+  "persona": "APOE4 Carrier",
+  "sentiment": "Entirely Positive",
+  "quote": "After all the failures of different studies in the past few years for our Alzheimer’s community, honestly, I’m thrilled to read about anything that’s moving forward to a next phase."
+  }
+  ]
+  }

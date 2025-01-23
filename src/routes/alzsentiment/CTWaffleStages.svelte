@@ -28,8 +28,8 @@
     };
 
     const stageDescriptions = {
-        "Clinical Trials": "The moment of first learning about APOE4 status and beginning to understand its implications. This stage often involves genetic testing results, initial research, and processing the emotional impact of this health information.",
-        "Alzheon Clinical Trials": "The early phase of developing a strategy to address APOE4 status. This includes first medical consultations, lifestyle research, and creating initial action plans for health management."
+        "Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers about clinical trials, excluding specific mentions of Alzheon's programs.",
+        "Alzheon Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers specifically about Alzheon's research and clinical trials."
     };
 
     const quotes = {
@@ -39,6 +39,7 @@
             index: 5,
             text: "And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new."
         },
+        
         "Alzheon Clinical Trials": {
             sentiment: "Somewhat Negative",
             persona: "Carrier, APOE4/4",
@@ -399,9 +400,9 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
+<div class="relative flex flex-col bg-slate-50 items-center justify-center w-full mt-12" bind:this={containerRef}>
     <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-        2.1a: Expressed Sentiment, Clinical Trials
+        3.1a: Expressed Sentiment, Clinical Trials
     </h3>
 
     <div id="tooltip" 
@@ -411,6 +412,10 @@
     <div class="chart-container flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
+    <p class="caption prose w-2/5 text-left place-content-center text-base text-slate-600 font-serif mt-8 mb-12">
+    The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. Alzheon's clinical trials, by comparison, provoke a more positive community response.
+     </p>
+    
 </div>
 
 <style>
@@ -432,5 +437,11 @@
     :global(.tooltip-title) {
         font-weight: 500;
         margin-bottom: 0.5rem;
+    }
+
+    :global(.caption) {
+        border-top: 1px solid #E5E7EB;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
     }
 </style>

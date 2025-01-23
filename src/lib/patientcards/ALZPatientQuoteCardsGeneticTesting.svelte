@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import patientData from '$lib/data/ALZpatientQuoteData.json';
+    import patientData from '$lib/data/alzheonQuotes.json';
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;

@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import patientData from '$lib/data/ALZpatientQuoteData.json';
+    import patientData from '$lib/data/alzheonQuotes.json';
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
@@ -106,21 +106,17 @@
     });
 </script>
 
-<div class="max-w-6xl mx-auto place-content-center content-center px-4">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
-        Quotes from APOE4 Carriers & Caregivers
-        </h3>
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
-            class="relative h-72 w-96 cursor-grab active:cursor-grabbing"
+            class="relative cursor-grab active:cursor-grabbing"
             on:touchstart={handleTouchStart}
             on:touchmove={handleTouchMove}
             on:touchend={handleTouchEnd}
         >
             <!-- Cards will be inserted here by D3 -->
         </div>
-    </div>
+
 
     <!-- Navigation controls -->
     <div class="flex justify-center gap-4 mt-8">
