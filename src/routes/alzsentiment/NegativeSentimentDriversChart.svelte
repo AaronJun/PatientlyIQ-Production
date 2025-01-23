@@ -24,7 +24,7 @@
  const categoryColors = {};
     categories.forEach((category, index) => {
         // Use interpolateGreens from 0.3 to 0.8 to avoid too light or too dark colors
-        categoryColors[category] = d3.interpolateReds(0.3 + (index * 0.5 / (categories.length - 1)));
+        categoryColors[category] = d3.interpolateReds(0.625 + (index * 0.85 / (categories.length - 1)));
     });
 
 
@@ -233,13 +233,14 @@ const legendY = chartHeight - 20;
     }
 </script>
 
-<div class="relative flex flex-col items-center justify-center w-full">
-    <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
-        Main Drivers of Negative Sentiment, by Stage
+<div class="relative flex flex-col items-center justify-left w-full">
+    
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+    1.2b: Main Drivers of Negative Sentiment, by Stage
     </h3>
     <div 
         id="negative-sentiment-tooltip" 
-        class="fixed bg-gray-800 text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
+        class="fixed text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
         style="visibility: hidden; z-index: 1000;">
     </div>
     <div class="chart-container flex items-center justify-center">

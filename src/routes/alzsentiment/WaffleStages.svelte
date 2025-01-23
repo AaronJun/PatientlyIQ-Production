@@ -192,7 +192,8 @@
         if (isHighlighted) {
             square.style("stroke", "#161616")
                 .style("stroke-width", "1.5px")
-                .style("stroke-dasharray", "3,2");
+                .style("stroke-dasharray", "3,2")
+                .style("filter","brightness(1.5)")
         }
 
         if (animate) {
@@ -216,7 +217,7 @@
                     square.transition()
                         .duration(200)
                         .style("stroke-width", "2px")
-                        .style("filter", "brightness(1.2)");
+                        .style("filter", "brightness(2)");
                 } else {
                     showTooltip(event, `${stageName}: ${sentiment}`);
                 }
@@ -227,8 +228,8 @@
                     square.transition()
                         .duration(200)
                         .style("stroke-width", "1.5px")
-                        .style("filter", "none");
-                }
+                        .style("filter","brightness(1.5)")
+                    }
             });
 
         return countBySentiment[sentiment]++;
@@ -395,7 +396,7 @@
         let leftPos = event.clientX + 20;
         if (leftPos + tooltipWidth > windowWidth) {
             leftPos = event.clientX - tooltipWidth - 20;
-        }
+}
 
         tooltip
             .style("visibility", "visible")
@@ -420,8 +421,8 @@
 </script>
 
 <div class="relative flex flex-col items-center justify-center w-full mt-12" bind:this={containerRef}>
-    <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
-        Expressed Sentiment, Major Journey Stages
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+        1.1a: Expressed Sentiment, Major Journey Stages
     </h3>
 
     <div id="tooltip" 

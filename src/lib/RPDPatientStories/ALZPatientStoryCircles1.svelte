@@ -69,8 +69,8 @@
 </script>
 
 <div class="patient-circles">
-    <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
-        APOE4 Stories    
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+        Stories from the Community
     </h3>
     <div class="circles-container">
         {#each originalPatients as patient, i}

@@ -12,7 +12,7 @@
             <div class="w-10/12 mx-auto mt-16">
             <h3 class="subsection-header text-lg font-semibold  text-slate-500 mb-6">1.1 <br>APOE4 Journey Mapping</h3>    
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
-                What's fascinating here is the systemic disconnect between medicine's clinical progression and human experience. We see peak negative sentiment during the initial discovery stage, while financial anxiety builds steadily toward long-term care - a perfect microcosm of American healthcare's core tension between medical capability and actual accessibility.               </p>
+                Sentiment analysis of social media and online posts reveals the extent of the disconnect between the worldview of industry and those in the APOE4 community. We see peak negative sentiment during the initial discovery stage, while financial anxiety builds steadily toward long-term care - a perfect microcosm of American healthcare's core tension between medical capability and actual accessibility.               </p>
             </div>
         </div>
         </div>

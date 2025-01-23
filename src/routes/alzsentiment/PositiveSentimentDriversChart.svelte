@@ -299,8 +299,8 @@
 </script>
 
 <div class="relative flex flex-col items-center justify-center w-full mb-24 mt-12">
-    <h3 class="text-sm text-slate-500 text-center font-bold underline underline-offset-4 mb-12 uppercase">
-        Main Drivers of Positive Sentiment, by Stage
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+        1.2a: Main Drivers of Positive Sentiment, by Stage
     </h3>
     <div 
         id="positive-sentiment-tooltip" 
