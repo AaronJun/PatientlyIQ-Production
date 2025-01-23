@@ -62,7 +62,7 @@
         }, 525);
   
         // Update active section
-        const scrollPosition = window.scrollY + windowHeight * 0.3;
+        const scrollPosition = window.scrollY + windowHeight * 0.5;
         for (const section of sections) {
           const element = document.getElementById(section.id);
           if (element) {

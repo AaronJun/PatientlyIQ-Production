@@ -16,6 +16,9 @@
     import AlzIntroductionS3P1 from './ALZIntroductionS3P1.svelte';
     import AlzIntroductionS2P2 from './ALZIntroductionS2P2.svelte';
     import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
+    import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
+    import CtPatientQuoteCards from '$lib/patientcards/CtPatientQuoteCards.svelte';
+
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
     import ctsentimentData from './ctsentimentData.json';
@@ -37,7 +40,7 @@
 </script>
 
 
-<div class="flex-1 place-content-center bg-slate-100 pt-12">
+<div class="flex-1 place-content-center bg-slate-50 pt-12">
     <!-- Sidebar -->
     <!-- Main Content -->
 
@@ -66,6 +69,7 @@
 
     <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">
     <AlzIntroductionS2P1 />
+    <GeneticPatientQuoteCards />
     </div>
     <div id="2.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center"> 
 
@@ -76,6 +80,7 @@
     
     <div id="3.1 Clinical Trials" class="mb-16 pb-24 place-content-center justify-center">
         <AlzIntroductionS3P1 />
+        <CtPatientQuoteCards />
         <CtWaffleStages data={ ctsentimentData } />
         <CtPositiveSentimentChart />
         </div>

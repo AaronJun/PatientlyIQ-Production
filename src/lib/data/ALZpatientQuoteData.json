@@ -34,6 +34,70 @@
       "age": "Mid-60s",
       "persona": "Caregiver",
       "quote": "When my husband got his results, our retirement plans changed overnight. We're now racing against an invisible clock, trying to pack a lifetime of memories into whatever time we have before symptoms might start. The uncertainty is almost worse than knowing."
-    }
-  ]
+    },
+    {
+          "id": 6,
+          "name": "Margaret H.",
+          "age": "76",
+          "persona": "APOE4 Carrier - Clinical Trial Participant",
+          "sentiment": "Entirely Positive",
+          "quote": "Participating in clinical trials has given me purpose. Yes, I carry APOE4, but I'm not sitting around waiting for something to happen - I'm actively contributing to finding solutions. Every time I complete a trial visit, I feel like I'm helping write a better future for my grandchildren. The research team has become like family, and I've met so many inspiring people on the same journey."
+        },
+        {
+          "id": 7,
+          "name": "David S.",
+          "age": "58",
+          "persona": "APOE4 Carrier",
+          "sentiment": "Entirely Negative",
+          "quote": "Getting tested was the worst decision of my life. I used to be carefree, now every forgotten name or misplaced item sends me into a panic spiral. My insurance premiums went up, and I had to change my entire retirement plan. Sometimes I wish I could go back to not knowing. The burden of this knowledge is almost unbearable."
+        },
+        {
+          "id": 8,
+          "name": "Patricia W.",
+          "age": "63",
+          "persona": "APOE4 Carrier - Support Group Leader",
+          "sentiment": "Somewhat Positive",
+          "quote": "While learning about my APOE4 status was initially frightening, it's pushed me to make positive changes. I've improved my diet, started exercising regularly, and connected with an incredible community of people who understand exactly what I'm going through. Yes, there are hard days, but I choose to see this knowledge as a tool for proactive living rather than a sentence."
+        },
+        {
+          "id": 9,
+          "name": "Thomas R.",
+          "age": "52",
+          "persona": "APOE4 Carrier",
+          "sentiment": "Somewhat Negative",
+          "quote": "I'm grateful for the information, I suppose, but the timing feels cruel. I'm too young to have symptoms but old enough to worry constantly. I've started documenting everything, writing letters to my kids they might need later, planning for a future I hope never comes. The knowledge is both a blessing and a burden, though lately it feels more like the latter."
+        },
+        {
+          "id": 10,
+          "name": "Carol M.",
+          "age": "69",
+          "persona": "APOE4 Carrier - Research Advocate",
+          "sentiment": "Entirely Positive",
+          "quote": "Finding out I was APOE4 positive became my call to action. I've joined three clinical trials, started a local support group, and advocate for increased research funding. Instead of fear, I chose hope. Every clinical trial brings us closer to understanding this disease, and I'm proud to be part of that journey. Knowledge truly is power when you choose to use it constructively."
+        },
+        {
+          "id": 11,
+          "name": "James B.",
+          "age": "55",
+          "persona": "APOE4 Carrier",
+          "sentiment": "Neutral",
+          "quote": "I view my APOE4 status as just another piece of health information, like knowing my blood pressure or cholesterol levels. It's not good news, certainly, but it's not the end of the world either. I take the recommended precautions, participate in research when I can, and try to maintain a balanced perspective. Some days are harder than others, but mostly I just live my life."
+        },
+        {
+          "id": 12,
+          "name": "Susan K.",
+          "age": "71",
+          "persona": "APOE4 Carrier - Clinical Trial Participant",
+          "sentiment": "Somewhat Positive",
+          "quote": "Participating in trials has given me back a sense of control. Sure, there are moments of doubt and fear, but being actively involved in research helps me feel like I'm doing something meaningful. The regular cognitive assessments provide reassurance, and knowing I'm contributing to scientific understanding gives me hope. It's not always easy, but it's worth it."
+        },
+        {
+          "id": 13,
+          "name": "Richard L.",
+          "age": "59",
+          "persona": "APOE4 Carrier",
+          "sentiment": "Somewhat Negative",
+          "quote": "The genetic testing opened a Pandora's box of emotions I wasn't prepared for. While I appreciate knowing so I can plan ahead, the weight of this knowledge affects every major life decision. Should I change careers? Move closer to family? Start setting aside money for future care? It's like living with a shadow over your shoulder, always there, always reminding you of what might come."
+        }
+      ]
 }

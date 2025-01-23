@@ -10,6 +10,16 @@
     export let persona: string = "Working professional";
     export let photoUrl: string =  '$lib/assets/profiles/timothyK.jpg';
     export let quote: string = "Managing my condition while balancing work and family life has been challenging.";
+    
+    export let displayIds: number[] = [1,2,3,4,5]; // Array of IDs to show
+    export let patientData: any[] = []; // Array of patient data from JSON
+
+    // Filter patients based on displayIds
+    $: displayedPatients = patientData.filter(patient => 
+        displayIds.includes(patient.id)
+    );
+
+
     export let metrics = {
         treatmentAdherence: 85,
         qualityOfLife: 75,
@@ -73,43 +83,39 @@
     }
 </script>
 
-<div 
-    class="card"
-    on:click={handleClick}
-    transition:fade
->
-    <div class="card-content">
-        <!-- Photo Circle -->
-        <div class="photo-container">
-            <div class="photo-circle">
-                <img
-                    src={photoUrl}
-                    alt={name}
-                    class="profile-image"
-                />
-                <div class="hover-overlay"></div>
-            </div>
-        </div>
-
-        <!-- Patient Information -->
-        <div class="info-container">
-            <div class="header">
-                <Quotes size={24} />
-
-                <h3>{name}</h3>
-                <p class="subtitle">Age {age} • {disease}</p>
-            </div>
-            
-            <p class="persona">{persona}</p>
-
-            <!-- Quote -->
-            <div class="quote">
-                <p>{quote}</p>
+{#each displayedPatients as patient}
+    <div 
+        class="card"
+        on:click={handleClick}
+        transition:fade
+    >
+        <div class="card-content">
+            <div class="photo-container">
+                <div class="photo-circle">
+                    <img
+                        src="/api/placeholder/72/72"
+                        alt={patient.name}
+                        class="profile-image"
+                    />
+                    <div class="hover-overlay"></div>
+                </div>
             </div>
 
+            <div class="info-container">
+                <div class="header">
+                    <Quotes size={24} />
+                    <h3>{patient.name}</h3>
+                    <p class="subtitle">Age {patient.age} • {patient.persona}</p>
+                </div>
+
+                <div class="quote">
+                    <p>{patient.quote}</p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+{/each}
+
 
 <style>
     .card {
