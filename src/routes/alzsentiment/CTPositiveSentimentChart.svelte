@@ -1,16 +1,16 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import { negativeSentimentData } from './negativeSentimentData';
+    import { positiveSentimentData } from './ctpositiveSentimentData';
 
-    export let data = negativeSentimentData.data;
-    export let stages = negativeSentimentData.stages;
-    export let categories = negativeSentimentData.categories;
+    export let data = positiveSentimentData.data;
+    export let stages = positiveSentimentData.stages;
+    export let categories = positiveSentimentData.categories;
     
     let svg;
-    let width = 1000;
+    let width = 900;
     let height: number;
-    let cellSize = 16;
+    let cellSize = 20;
     let cellPadding = 2;
     let stageSpacing = 60;
     let labelHeight = 40;
@@ -19,14 +19,15 @@
     const gridWidth = 5;
     let hoveredCategory: string | null = null;
     let hoveredStage: string | null = null;
+    let selectedStage: string | null = null;
+    let selectedCategory: string | null = null;
 
- // Enhanced color scheme for negative sentiment visualization
- const categoryColors = {};
+    // Create color scale using d3's interpolateGreens
+    const categoryColors = {};
     categories.forEach((category, index) => {
         // Use interpolateGreens from 0.3 to 0.8 to avoid too light or too dark colors
-        categoryColors[category] = d3.interpolateReds(0.125 + (index * 0.925 / (categories.length - 1)));
+        categoryColors[category] = d3.interpolateGreens(0.1825 + (index * 0.925 / (categories.length - 1)));
     });
-
 
     function getMaxSquaresPerStage() {
         return Math.max(...data.map(stageData => 
@@ -95,6 +96,19 @@
                 .attr("font-weight", "800")
                 .text(stageInfo.stage);
 
+            labelGroup
+                .on("mouseenter", () => {
+                    hoveredStage = stageInfo.stage;
+                    updateHighlights();
+                })
+                .on("mouseleave", () => {
+                    hoveredStage = null;
+                    updateHighlights();
+                })
+                .on("click", () => {
+                    selectedStage = stageInfo.stage;
+                });
+
             // Add squares for each category
             let squareCount = 0;
             stageInfo.categories.forEach(({ category, value }) => {
@@ -116,7 +130,7 @@
 
                     square
                         .on("mouseenter", (event) => {
-                            const tooltip = d3.select("#negative-sentiment-tooltip");
+                            const tooltip = d3.select("#positive-sentiment-tooltip");
                             const tooltipWidth = 200;
                             const windowWidth = window.innerWidth;
                             
@@ -135,10 +149,14 @@
                             updateHighlights();
                         })
                         .on("mouseleave", () => {
-                            d3.select("#negative-sentiment-tooltip")
+                            d3.select("#positive-sentiment-tooltip")
                                 .style("visibility", "hidden");
                             hoveredCategory = null;
                             updateHighlights();
+                        })
+                        .on("click", () => {
+                            selectedStage = stageInfo.stage;
+                            selectedCategory = category;
                         });
                     
                     squareCount++;
@@ -154,8 +172,9 @@
                 .attr("font-size", "8.25px")
                 .text(stageInfo.total);
         });
-// Create horizontal legend at the bottom
-const legendY = chartHeight - 20;
+
+       // Create horizontal legend at the bottom
+        const legendY = chartHeight - 20;
         const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
         const legendItemWidth = maxLegendWidth / categories.length;
         const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
@@ -212,7 +231,6 @@ const legendY = chartHeight - 20;
 
     }
 
-
     function updateHighlights() {
         const svgElement = d3.select(svg);
         
@@ -231,21 +249,73 @@ const legendY = chartHeight - 20;
                 return (isMatchingCategory || isMatchingStage) ? 1 : 0.2;
             });
     }
+
+    // Generate insights for the selected combination
+    $: insight = generateInsight(selectedStage, selectedCategory);
+
+    function generateInsight(stage: string | null, category: string | null) {
+        if (!stage || !category) return null;
+        
+        const insights = {
+            "Initial Discovery": {
+                "Treatment Hope": "Early research reveals promising treatment options and clinical trials.",
+                "Support System": "Family and friends rally to provide emotional and practical support.",
+                "Care Access": "Successfully connecting with knowledgeable specialists and care teams.",
+                "Daily Coping": "Finding effective initial coping strategies and routines.",
+                "Future Outlook": "Discovering encouraging long-term outcomes and success stories."
+            },
+            "Psychological Processing": {
+                "Treatment Hope": "Growing understanding of available treatment options brings comfort.",
+                "Support System": "Developing stronger bonds with family through shared experiences.",
+                "Care Access": "Building positive relationships with healthcare providers.",
+                "Daily Coping": "Learning and implementing effective stress management techniques.",
+                "Future Outlook": "Finding peace and acceptance while maintaining optimism."
+            },
+            "Initial Planning": {
+                "Treatment Hope": "Developing clear and promising treatment strategies.",
+                "Support System": "Creating strong support networks with family, friends, and community.",
+                "Care Access": "Establishing reliable access to necessary care services.",
+                "Daily Coping": "Successfully adapting daily routines and activities.",
+                "Future Outlook": "Setting achievable goals and milestones for the future."
+            },
+            "Treatment Consideration": {
+                "Treatment Hope": "Positive response to treatment options and approaches.",
+                "Support System": "Strong backing from care team and support network.",
+                "Care Access": "Good coordination between various healthcare providers.",
+                "Daily Coping": "Maintaining quality of life through effective management strategies.",
+                "Future Outlook": "Confidence in treatment path and future outcomes."
+            },
+            "Long-Term Planning": {
+                "Treatment Hope": "Sustained treatment success and management.",
+                "Support System": "Well-established and reliable support network.",
+                "Care Access": "Smooth, ongoing access to necessary care services.",
+                "Daily Coping": "Mastery of daily management and coping strategies.",
+                "Future Outlook": "Positive long-term outlook with clear plans and goals."
+            }
+        };
+
+        return insights[stage]?.[category] || null;
+    }
 </script>
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full">
-    
     <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-    1.2b: Main Drivers of Negative Sentiment, by Stage
+        2.1B: Main Drivers of Positive Sentiment, Alzheon Studies
     </h3>
     <div 
-        id="negative-sentiment-tooltip" 
-        class="fixed text-white bg-gray-800 px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
+        id="positive-sentiment-tooltip" 
+        class="fixed bg-gray-800 text-white px-2 py-1 rounded text-sm pointer-events-none transform -translate-x-1/2"
         style="visibility: hidden; z-index: 1000;">
     </div>
     <div class="chart-container flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
+    {#if insight}
+        <div class="mt-4 p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl w-full">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Key Insight</h3>
+            <p class="text-gray-600">{insight}</p>
+        </div>
+    {/if}
 </div>
 
 <style>

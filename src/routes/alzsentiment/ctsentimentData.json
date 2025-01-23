@@ -1,0 +1,24 @@
+{
+    "stages": [
+      {
+        "name": "Clinical Trials",
+        "sentiments": {
+          "Entirely Negative": 12,
+          "Somewhat Negative": 3,
+          "Neutral": 1,
+          "Somewhat Positive": 9,
+          "Entirely Positive": 2
+        }
+      },
+      {
+        "name": "Alzheon Clinical Trials",
+        "sentiments": {
+          "Entirely Negative": 3,
+          "Somewhat Negative": 7,
+          "Neutral": 15,
+          "Somewhat Positive": 16,
+          "Entirely Positive": 5
+        }
+      }
+    ]
+  }

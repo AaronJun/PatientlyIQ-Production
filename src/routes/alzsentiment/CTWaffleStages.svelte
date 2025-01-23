@@ -28,45 +28,24 @@
     };
 
     const stageDescriptions = {
-        "Initial Discovery": "The moment of first learning about APOE4 status and beginning to understand its implications. This stage often involves genetic testing results, initial research, and processing the emotional impact of this health information.",
-        "Initial Planning": "The early phase of developing a strategy to address APOE4 status. This includes first medical consultations, lifestyle research, and creating initial action plans for health management.",
-        "Day-to-Day Management": "The ongoing process of implementing and maintaining lifestyle changes, managing health routines, and balancing APOE4 considerations with daily life.",
-        "New Treatment Consideration": "Periods of adapting to or trying new medical treatments, supplements, or health protocols. This includes evaluating effectiveness and adjusting approaches based on new research or medical advice.",
-        "Long-Term Planning": "Making decisions and preparations for the future, including financial planning, care arrangements, and family discussions about long-term health management strategies."
+        "Clinical Trials": "The moment of first learning about APOE4 status and beginning to understand its implications. This stage often involves genetic testing results, initial research, and processing the emotional impact of this health information.",
+        "Alzheon Clinical Trials": "The early phase of developing a strategy to address APOE4 status. This includes first medical consultations, lifestyle research, and creating initial action plans for health management."
     };
 
     const quotes = {
-        "Initial Discovery": {
+        "Clinical Trials": {
             sentiment: "Entirely Negative",
             persona: "Carrier, APOE4/4",
-            index: 2,
+            index: 5,
             text: "And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new."
         },
-        "Initial Planning": {
+        "Alzheon Clinical Trials": {
             sentiment: "Somewhat Negative",
             persona: "Carrier, APOE4/4",
             index: 15,
             text: "My doctor means well but admits she doesn't have enough APOE4 patients to really understand our unique needs. I feel like I'm teaching her sometimes."
         },
-        "Day-to-Day Management": {
-            sentiment: "Neutral",
-            index: 12,
-            persona: "Carrier, APOE4",
-            text: "I joined an online support group because nobody in my real life understands. When I try to explain my preventative measures, people tell me I'm being paranoid."
-        },
-        "New Treatment Consideration": {
-            sentiment: "Somewhat Positive",
-            index: 5,
-            persona: "Carrier, APOE4/4",
-            text: "When I learned about the role of insulin resistance and metabolic health in cognitive decline, it felt like finding a key. Now I have specific markers I can track and improve."
-        },
-        "Long-Term Planning": {
-            sentiment: "Entirely Positive",
-            index: 3,
-            persona: "Carrier, APOE4/4",
-            text: "My husband has become my biggest advocate. He learned everything about APOE4, changed his diet with me, and reminds me to stay positive when I get discouraged. Having a partner in this journey makes all the difference."
-        }
-    };
+        };
 
     function getMaxSquaresPerStage() {
         return Math.max(...data.stages.map(stage => 
@@ -274,7 +253,7 @@
 
             // Add text with ellipsis if too long
             const text = legendItem.append("text")
-                .attr("y", 8)
+                .attr("y",8)
                 .attr("fill", "#6D635B")
                 .attr("font-size", "8px")
                 .attr("font-family", "IBM Plex Sans Condensed")
@@ -282,7 +261,7 @@
                 .text(sentiment);
 
             // Truncate text if too long
-            const maxTextWidth = legendItemWidth - 20;
+            const maxTextWidth = legendItemWidth;
             const textElement = text.node();
             if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
                 let textContent = sentiment;
@@ -422,7 +401,7 @@
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
     <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-        1.1a: Expressed Sentiment, Major Journey Stages
+        2.1a: Expressed Sentiment, Clinical Trials
     </h3>
 
     <div id="tooltip" 

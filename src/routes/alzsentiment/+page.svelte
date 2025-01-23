@@ -11,15 +11,18 @@
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
     import AlzIntroductionS1P2 from './ALZIntroductionS1P2.svelte';
+    import AlzIntroductionS1P3 from './ALZIntroductionS1P3.svelte';
     import AlzIntroductionS2P1 from './ALZIntroductionS2P1.svelte';
     import AlzIntroductionS3P1 from './ALZIntroductionS3P1.svelte';
     import AlzIntroductionS2P2 from './ALZIntroductionS2P2.svelte';
     import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
+    import ctsentimentData from './ctsentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
-    import ZoomBurst from './ZoomBurst.svelte';
+    import CtWaffleStages from './CTWaffleStages.svelte';
     import PatientStoryCircles from '$lib/RPDPatientStories/ALZPatientStoryCircles1.svelte';
+    import CtPositiveSentimentChart from './CTPositiveSentimentChart.svelte';
 
     import flareData from '$lib/data/flare-alz.json';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
@@ -51,7 +54,7 @@
     <WaffleStages data={ sentimentData } />
 </div>
 </div>
-    <div id="1.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center">
+    <div id="1.2 Sentiment Drivers" class="mb-16 pb-12 place-content-center justify-center">
         <AlzIntroductionS1P2 />
         <PositiveSentimentDriversChart />
         <NegativeSentimentDriversChart />
@@ -59,27 +62,25 @@
     
     <div id="1.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />
-        <PatientJourneyCards />
     </div>
 
     <div id="2.1 Genetic Testing" class="mb-16 pb-24 place-content-center justify-center">
     <AlzIntroductionS2P1 />
     </div>
     <div id="2.2 Sentiment Drivers" class="mb-16 pb-24 place-content-center justify-center"> 
-    <NegativeSentimentChart />
-    <NegativeSentimetDriversChart />
+
     </div>  
     <div id="2.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
     <PatientStoryCircles {selectedDisease} />
-    <PatientJourneyCards />
     </div>
     
     <div id="3.1 Clinical Trials" class="mb-16 pb-24 place-content-center justify-center">
         <AlzIntroductionS3P1 />
+        <CtWaffleStages data={ ctsentimentData } />
+        <CtPositiveSentimentChart />
         </div>
         <div id="3.2 Perception of Alzheon" class="mb-16 pb-24 place-content-center justify-center"> 
-        <NegativeSentimentChart />
-        <NegativeSentimetDriversChart />
+
         </div>  
         <div id="3.3 APOE4 Stories" class="mb-16 pb-24 place-content-center justify-center">
         <PatientStoryCircles {selectedDisease} />
