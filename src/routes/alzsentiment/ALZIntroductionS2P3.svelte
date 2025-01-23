@@ -18,9 +18,8 @@
             Some find out about their genetic risk by happenstance, through tests conducted for purposes other than ascertaining one's APOE genotype. Others actively seek out this information, driven by a desire to understand their risk and take preventive measures.<br> <br> Regardless of how they learn about their APOE status, many individuals experience a range of emotions, including fear, anxiety, and uncertainty. Many of them express an unexpectedly disorienting aftermath, even if they had believed themselves to be prepared for the results. This emotional burden can be overwhelming, especially when coupled with the lack of clear guidance on what to do next.<br><br>
             The story below, from a member of the APOE4 community, illustrates the emotional turmoil that can accompany the discovery of one's genetic risk.
              </p>
-            </div>        
+            </div>
         </div>
-        <AlzPatientStoryCircles1 />
         </div>  
 
 <style>

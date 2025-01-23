@@ -9,8 +9,6 @@
           "disease": "APOE4/4 MCI",
           "persona": "Caregiver",
           "img": "/profiles/maggieP.jpg",
-          "bio": "Maggie is a retired physician navigating her husband’s APOE4/4 status and early-stage Alzheimer's treatment and arranging care. While their retirement home is close to a major hospital, they now live five hours from their closest relatives.",
-
           "cards": [
             {
               "type": "Bio",
@@ -29,7 +27,7 @@
               "type": "Initial Response",
               "quote": "For me, it's like living under a dark cloud. I’m trying to hang onto hope.",
               "context": "First Week After Diagnosis",
-              "sentiment": 15,
+              "sentiment": 45,
               "topics": [
                 { "topic": "Daily Coping", "value": 8 },
                 { "topic": "Support System", "value": 12 },
@@ -40,8 +38,8 @@
               "quadrantData": [
                 {
                   "label": "Emotional Coping",
-                  "x": 0,
-                  "y": 55
+                  "x": 45,
+                  "y": 75
                 }
               ]
             },
@@ -60,14 +58,29 @@
               "quadrantData": [
                 {
                   "label": "Treatment Plan",
-                  "x": 20,
-                  "y": 65
+                  "x": 75,
+                  "y": 45
+                },
+                {
+                  "label": "Daily Management",
+                  "x": 70,
+                  "y": 50
+                },
+                {
+                  "label": "Care Network",
+                  "x": 85,
+                  "y": 35
+                },
+                {
+                  "label": "Future Planning",
+                  "x": 65,
+                  "y": 55
                 }
               ]
             },
             {
               "type": "Clinical Trial",
-              "quote": "We needed to pause treatment after four infusions. Thankfully, he’s not showing behavioral changes…still, it’s back to the drawing board.",
+              "quote": "The trial has given us hope and a clear path forward.",
               "context": "Three Months After Stopping Treatment",
               "sentiment": 35,
               "topics": [
@@ -80,8 +93,23 @@
               "quadrantData": [
                 {
                   "label": "Trial Response",
-                  "x": 15,
-                  "y": 55
+                  "x": 85,
+                  "y": 35
+                },
+                {
+                  "label": "Quality of Life",
+                  "x": 80,
+                  "y": 40
+                },
+                {
+                  "label": "Adherence",
+                  "x": 90,
+                  "y": 25
+                },
+                {
+                  "label": "Side Effects",
+                  "x": 75,
+                  "y": 45
                 }
               ]
             }
@@ -91,18 +119,17 @@
           "id": "timothy-K",
           "name": "Timothy K.",
           "age": "Late-50s",
-          "disease": "APOE4/4",
+          "disease": "apoe4-genetictesting",
           "persona": "Patient",
           "img": "/profiles/timothyK.jpg",
-          "bio": "Timothy is APOE4/4 carrier who lost his mother to Alzheimer's. After learning of his genotype, he's beginning to take his first steps toward confronting his new reality."
-,
           "cards": [
             {
               "type": "Bio",
               "quote": "I'm trying to stay positive, but I'm scared. I don't want to be a burden on my family.",
               "context": "Initial Diagnosis",
-              "sentiment": 36,
+              "sentiment": 40,
               "topics": [
+                { "topic": "Family Impact", "value": 15 },
                 { "topic": "Future Concerns", "value": 12 },
                 { "topic": "Treatment Options", "value": 8 },
                 { "topic": "Emotional Coping", "value": 10 },
@@ -110,55 +137,107 @@
               ]
             },
             {
-              "type": "Pre-Screening",
-              "quote": "After mom died of Alzheimer’s I used a 23andme DNA kit to see if I’m a APOE4 carrier. I thought it would be helpful to know.",
-              "context": "Motivations to take a genetic test",
+              "type": "Initial Response",
+              "quote": "I'm scared, but I'm not giving up. I'm going to fight this.",
+              "context": "First Week After Diagnosis",
               "sentiment": 50,
               "topics": [
-                { "topic": "Future Concerns", "value": 12 },
+                { "topic": "Treatment Plan", "value": 20 },
+                { "topic": "Emotional State", "value": 18 },
+                { "topic": "Support System", "value": 15 },
+                { "topic": "Daily Coping", "value": 12 },
                 { "topic": "Research Options", "value": 8 }
               ],
               "quadrantData": [
                 {
                   "label": "Emotional Coping",
-                  "x": 35,
+                  "x": 50,
                   "y": 75
+                },
+                {
+                  "label": "Support System",
+                  "x": 70,
+                  "y": 55
+                },
+                {
+                  "label": "Understanding",
+                  "x": 45,
+                  "y": 80
+                },
+                {
+                  "label": "Resources",
+                  "x": 60,
+                  "y": 65
                 }
               ]
             },
             {
               "type": "First Steps",
-              "quote": "Knowing about my APOE4/4 status has had the opposite effect from what I’d hoped – I feel like I’ve lost all my interest in the things I used to enjoy.",
-              "context": "5-7 weeks after taking test",
-              "sentiment": 20,
+              "quote": "I'm learning about treatment options and building my support network.",
+              "context": "One Month In",
+              "sentiment": 70,
               "topics": [
-                { "topic": "Emotional Coping", "value": 15 },
-                { "topic": "Daily Management", "value": 4 },
-                { "topic": "Future Planning", "value": 5 }
+                { "topic": "Treatment Progress", "value": 22 },
+                { "topic": "Support Network", "value": 18 },
+                { "topic": "Lifestyle Changes", "value": 15 },
+                { "topic": "Daily Management", "value": 12 },
+                { "topic": "Future Planning", "value": 10 }
               ],
               "quadrantData": [
                 {
                   "label": "Treatment Progress",
-                  "x": 5,
-                  "y": 15
+                  "x": 75,
+                  "y": 45
+                },
+                {
+                  "label": "Support Network",
+                  "x": 80,
+                  "y": 40
+                },
+                {
+                  "label": "Daily Management",
+                  "x": 70,
+                  "y": 50
+                },
+                {
+                  "label": "Adaptation",
+                  "x": 75,
+                  "y": 45
                 }
               ]
             },
             {
-              "type": "Moving Forward",
-              "quote": "Now it’s been over a year since I’ve learned that I’m APOE4/4, I finally feel like I’m ready to confront it with more than a healthy lifestyle.",
+              "type": "Clinical Trial",
+              "quote": "Being part of the trial gives me purpose. I feel like I'm contributing to something bigger.",
               "context": "Three Months Into Trial",
-              "sentiment": 65,
+              "sentiment": 80,
               "topics": [
-                { "topic": "Treatment Hope", "value": 15 },
-                { "topic": "Support System", "value": 9 },
-                { "topic": "Future Outlook", "value": 13 }
+                { "topic": "Trial Progress", "value": 25 },
+                { "topic": "Personal Impact", "value": 20 },
+                { "topic": "Research Contribution", "value": 18 },
+                { "topic": "Hope", "value": 15 },
+                { "topic": "Future Outlook", "value": 12 }
               ],
               "quadrantData": [
                 {
                   "label": "Trial Engagement",
-                  "x": 35,
-                  "y": 70
+                  "x": 85,
+                  "y": 30
+                },
+                {
+                  "label": "Quality of Life",
+                  "x": 80,
+                  "y": 35
+                },
+                {
+                  "label": "Treatment Response",
+                  "x": 75,
+                  "y": 40
+                },
+                {
+                  "label": "Overall Progress",
+                  "x": 82,
+                  "y": 32
                 }
               ]
             }

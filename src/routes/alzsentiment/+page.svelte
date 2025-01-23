@@ -7,6 +7,7 @@
     import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
     import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
     import ScrollProgress from './ScrollProgress.svelte';
+    import AlzStoryCardXlContainer from './ALZStoryCardXLContainer.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
@@ -37,6 +38,7 @@
 	import NegativeSentimentDriversChart from './NegativeSentimentDriversChart.svelte';
     
     let selectedDisease = "pompe";
+    
     let isDrawerOpen = false;
    
     
@@ -52,58 +54,64 @@
 
     <div class="relative max-w-full mx-auto place-content-center">
 
-    <div id="1. Introduction" class="flex-1 place-content-center pt-8 col-span-4">
+    <div id="1. Introduction" class="flex-1 place-content-center pt-4 col-span-4">
         <ALZIntroduction />
     </div>
-    <div id="1.1 APOE4 Journey" class="flex-1 place-content-center pt-8 col-span-8">
+    <div id="1.1 APOE4 Journey" class="flex-1 place-content-center pt-4 col-span-8">        
     <AlzIntroductionS1P1 />
     <WaffleStages data={ sentimentData } />
 </div>
 </div>
-    <div id="1.2 Sentiment Drivers" class="mb-16 pb-12 place-content-center justify-center">
+    <div class="mb-2 place-content-center justify-center">
         <AlzIntroductionS1P2 />
         <PositiveSentimentDriversChart />
         <NegativeSentimentDriversChart />
     </div>
     
-    <div id="1.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
-        <PatientStoryCircles {selectedDisease} />
-    </div>
+    <div class="max-w-4xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center mx-auto">
+        <PatientStoryCircles selectedDisease={selectedDisease} selectedId="timothy-K" />
+        <p class="caption text-xs font-mono text-left mt-12">
+Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected.    </p>
+   </div>
 
-    <div id="2.1 Genetic Testing" class="mb-8 pb-12 place-content-center justify-center">
+
+    <div id="2.1 Genetic Testing" class="mb-2 place-content-center justify-center">
     <AlzIntroductionS2P1 />
     </div>
-    <div class="mb-8 pb-12 place-content-center justify-center"> 
+    <div class="mb-2 place-content-center justify-center"> 
         <AlzIntroductionS2P2 />
     </div>  
-    <div class="mb-4 pb-4 place-content-center justify-center"> 
-        <AlzIntroductionS2P3 />
+    <div class="mb-2 place-content-center justify-center"> 
+        <AlzIntroductionS2P3 />       
+        <div class="max-w-4xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center mx-auto">
+         <PatientStoryCircles selectedDisease={selectedDisease} selectedId="maggie-p" />
+         <p class="caption text-xs font-mono text-left mt-12">
+Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving. </p>
+    </div>
+
     </div>  
     
     <div id="3.1 Clinical Trials" class="place-content-center justify-center">
         <AlzIntroductionS3P1 />
         <CtWaffleStages data={ ctsentimentData } />
-        </div>
-        <div class="place-content-center justify-center px-32"> 
             <CtPositiveSentimentChart />
         </div>  
-        <div id="3.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
+        <div class="mb-2 place-content-center justify-center">
             <AlzIntroductionS3P2 />
         </div>
-        <div id="3.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
+        <div class="mb-2 place-content-center justify-center">
         <AlzConclusion />
         </div>
         </div>    
         <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
 
-                  
                 </div>
                 <ALZMethology />
 
 
 <style>
-    .mb-4 {
-        border-top: .25px solid #FF5624;
+    .mb-2 {
+        
         padding-top: .525rem;
     }
 

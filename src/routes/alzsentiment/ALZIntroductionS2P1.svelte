@@ -27,4 +27,8 @@
         padding-top: 4rem;
         margin-top: 2rem;
     }
+    :global(.mb-2) {
+        margin-bottom: 2rem;
+        border-top: 0px;
+    }
 </style>

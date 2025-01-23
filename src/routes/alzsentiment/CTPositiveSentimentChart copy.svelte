@@ -272,8 +272,8 @@
     }
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-2 py-2 mb-2 rounded-sm outline-dashed text-center uppercase">
+<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50 py-12">
+    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-8 lg:mb-12 uppercase">
         3.1B: Main Drivers of Positive Sentiment, Alzheon Studies
     </h3>
     
@@ -283,26 +283,26 @@
     </div>
 
     <div class="w-full max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div class="lg:col-span-7">
                 <div class="chart-container">
                     <svg bind:this={svg}></svg>
                 </div>
             </div>
             
-            <div class="mt-8 lg:col-span-3">
+            <div class="lg:col-span-3">
                 <AlzheonQuoteCards />
             </div>
         </div>
 
         {#if insight}
-            <div class="p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl mx-auto">
+            <div class="mt-8 p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl mx-auto">
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">Key Insight</h3>
                 <p class="text-gray-600">{insight}</p>
             </div>
         {/if}
 
-        <p class="caption prose text-left text-base text-slate-600 font-serif mt-12 max-w-3xl mx-auto">
+        <p class="caption prose text-left text-base text-slate-600 font-serif mt-8 mb-12 max-w-3xl mx-auto">
             Alzheon's focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
         </p>
     </div>

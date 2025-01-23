@@ -5,19 +5,22 @@
     import patientStoriesData from '$lib/data/patient-stories.json';
     import { writable } from 'svelte/store';
     
+    export let selectedId: string;
     export let selectedDisease: string;
     
     const isCarouselVisible = writable(false);
     const current = writable(0);
     let autoPlayInterval: number;
 
-    // Updated to use static assets
     const photoMap = {
         '/profiles/timothyK.jpg': '/profiles/timothyK.jpg',
         '/profiles/maggieP.jpg': '/profiles/maggieP.jpg',
     };
     
-    $: originalPatients = patientStoriesData.diseases[selectedDisease]?.patients || [];
+    $: originalPatients = patientStoriesData.diseases[selectedDisease]?.patients.filter(patient => 
+        selectedId ? patient.id === selectedId : true
+    ) || [];
+    
     $: totalCards = originalPatients.reduce((acc, patient) => acc + patient.cards.length, 0);
     
     $: patients = originalPatients.flatMap(patient => 
@@ -25,6 +28,7 @@
             name: patient.name,
             age: patient.age,
             disease: patient.disease,
+            bio: patient.bio,
             persona: patient.persona,
             photoUrl: photoMap[patient.img],
             type: card.type,
@@ -69,9 +73,6 @@
 </script>
 
 <div class="patient-circles">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-        Stories from the Community
-    </h3>
     <div class="circles-container">
         {#each originalPatients as patient, i}
             <div class="place-content-center patient-circle-container">
@@ -88,7 +89,12 @@
                     </div>
                     <div class="hover-circle"></div>
                 </button>
-                <span class="patient-name">{patient.name}</span>
+                <div class="flex">
+                <span class="patient-name text-lg text-slate-600">{patient.name}</span>
+                
+            </div>
+            <span class="text-sm text-slate-600"> {patient.persona}                            
+            </span>
             </div>
         {/each}
         <slot />
@@ -181,8 +187,6 @@
     }
 
     .patient-name {
-        font-size: 0.75rem;
-        color: #666;
         font-weight: 500;
         text-align: center;
         white-space: nowrap;
