@@ -1,0 +1,14 @@
+{
+    "stages": [
+      {
+        "name": "Genetic Counseling",
+        "sentiments": {
+          "Entirely Negative": 4,
+          "Somewhat Negative": 12,
+          "Neutral": 16,
+          "Somewhat Positive": 4,
+          "Entirely Positive": 2
+      }
+    }
+    ]
+  }

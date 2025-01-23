@@ -15,9 +15,8 @@
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
                 The development of more accessible and affordable genetic testing methods has made it easier for individuals to obtain information about their APOE genotype. Direct-to-consumer genetic testing companies now offer APOE genotyping, allowing people to learn about their genetic risk for AD without necessarily going through a healthcare provider.<br><br>
                 However, the lack of genetic counseling and the potential for misinterpretation of results can lead to unnecessary anxiety and confusion. There are many expressed concerns about genotyping and a resultant impact on insurance, disability benefits, and other financial considerations. Some believe that genetic counseling has little to offer.<br><br> 
-                The clash between limited community knowledge, low conversation volume about the topic, and the rise in genetic testing suggest a significant need for education and outreach.</p>
+                There is a clash between limited community knowledge about genetic counseling, low conversation volume about counseling, and the continued rise of genetic testing that lead to more frequent and more intensely negative reactions to test results. This suggests that there is a significant role for genetic counselors within this new paradigm, and an associated need for an increase in the educational materials and outreach provided to the APOE4 and overall Alzheimer's community.</p>
             </div>
-        <GeneticPatientQuoteCards   />
         </div>
         </div>
 

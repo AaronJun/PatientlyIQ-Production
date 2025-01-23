@@ -1,0 +1,49 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "name": "Sarah M.",
+      "age": "Mid-40s",
+      "persona": "APOE4 Carrier",
+      "photoUrl": "/profiles/sarahM.jpg",
+      "quote": "Finding out I was APOE4 positive felt like being handed a ticking time bomb.",
+      "background": "Marketing executive, learned status through genetic testing"
+    },
+    {
+      "id": 2,
+      "name": "Robert K.",
+      "age": "Mid-40s",
+      "persona": "APOE4 Carrier",
+      "photoUrl": "/profiles/robertK.jpg",
+      "quote": "The hardest part isn't knowing - it's the helplessness. It's exhausting living with that kind of anxiety.",
+      "background": "Software engineer, family history of early-onset Alzheimer's"
+    },
+    {
+      "id": 3,
+      "name": "Jennifer L.",
+      "age": "Mid-50s",
+      "persona": "Caregiver",
+      "photoUrl": "/profiles/jenniferL.jpg",
+      "quote": "Sometimes I wonder if knowing so early was a blessing or a curse.",
+      "background": "Sister carries APOE4 gene"
+    },
+    {
+      "id": 4,
+      "name": "Michael P.",
+      "age": "Late-40s",
+      "persona": "APOE4 Carrier",
+      "photoUrl": "/profiles/michaelP.jpg",
+      "quote": "I spent months in a deep depression after getting my results. It's like mourning a future that might never happen now.",
+      "background": "Teacher, discovered status through research study participation"
+    },
+    {
+      "id": 5,
+      "name": "Lisa R.",
+      "age": "Mid-50s",
+      "persona": "Caregiver",
+      "photoUrl": "/profiles/lisaR.jpg",
+      "quote": "When my husband got his results, our retirement plans changed overnight.",
+      "background": "Spouse of APOE4 carrier"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import patientData from '$lib/data/alzheonQuotes.json';
+    import patientData from '$lib/data/apoe4Quotes.json';
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
@@ -74,12 +74,12 @@
                         <h3 class="text-xl font-bold text-slate-700 dark:text-white">
                             ${d.name}
                         </h3>
-                        <p class="text-xs font-bold text-orange-400">
+                        <p class="text-sm font-bold text-orange-400">
                             ${d.persona} • ${d.age}
                         </p>
                     </div>
                     <div class="space-y-4 flex-grow">
-                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                        <p class="text-lg text-gray-600 dark:text-gray-300">
                             ${d.quote}
                         </p>
                     </div>
@@ -106,10 +106,7 @@
     });
 </script>
 
-<div class="max-w-6xl mx-auto px-4">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
-        Quotes from APOE4 Carriers & Caregivers
-        </h3>
+<div class="max-w-6xl  bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center items-center mx-auto">
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
@@ -120,6 +117,7 @@
         >
             <!-- Cards will be inserted here by D3 -->
         </div>
+        
     </div>
 
     <!-- Navigation controls -->
@@ -165,6 +163,9 @@
             </svg>
         </button>
     </div>
+    <p class="caption text-xs max-w-96 font-mono text-left mt-12">
+        Posts on social media and online communities provide a look into the wide range of experiences and perspectives of individuals living with the APOE4 genotype. 
+    </p>
 </div>
 
 <style>

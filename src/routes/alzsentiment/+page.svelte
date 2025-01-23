@@ -15,7 +15,9 @@
     import AlzIntroductionS2P1 from './ALZIntroductionS2P1.svelte';
     import AlzIntroductionS3P1 from './ALZIntroductionS3P1.svelte';
     import AlzIntroductionS2P2 from './ALZIntroductionS2P2.svelte';
+    import AlzIntroductionS2P3 from './ALZIntroductionS2P3.svelte';
     import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
+    import AlzConclusion from './ALZConclusion.svelte';
     import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
     import CtPatientQuoteCards from '$lib/patientcards/CtPatientQuoteCards.svelte';
     import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
@@ -71,29 +73,29 @@
     <div id="2.1 Genetic Testing" class="mb-8 pb-12 place-content-center justify-center">
     <AlzIntroductionS2P1 />
     </div>
-    <div id="2.2 Sentiment Drivers" class="mb-8 pb-12 place-content-center justify-center"> 
+    <div class="mb-8 pb-12 place-content-center justify-center"> 
         <AlzIntroductionS2P2 />
     </div>  
-    <div id="2.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
-    <PatientStoryCircles {selectedDisease} />
-    </div>
+    <div class="mb-4 pb-4 place-content-center justify-center"> 
+        <AlzIntroductionS2P3 />
+    </div>  
     
     <div id="3.1 Clinical Trials" class="place-content-center justify-center">
         <AlzIntroductionS3P1 />
-        <CtPatientQuoteCards />
         <CtWaffleStages data={ ctsentimentData } />
         </div>
-        <div id="3.2 Perception of Alzheon" class="place-content-center justify-center px-32"> 
+        <div class="place-content-center justify-center px-32"> 
             <CtPositiveSentimentChart />
         </div>  
         <div id="3.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
-        <PatientStoryCircles {selectedDisease} />
-        <PatientJourneyCards />
+            <AlzIntroductionS3P2 />
+        </div>
+        <div id="3.3 APOE4 Stories" class="mb-8 pb-12 place-content-center justify-center">
+        <AlzConclusion />
         </div>
         </div>    
-                <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
-                    <div class="col-start-1 col-span-6">
-                    </div>
+        <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
+
                   
                 </div>
                 <ALZMethology />
