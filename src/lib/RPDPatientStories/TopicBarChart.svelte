@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import "carbon-components-svelte/css/all.css";
   
     export let data = [];
     export let width = 300;
@@ -8,7 +9,7 @@
     export let title = "Top Topics";
   
     let chartContainer;
-    const margin = { top: 30, right: 20, bottom: 10, left: 120 };
+    const margin = { top: 10, right: 20, bottom: 10, left: 120 };
   
     $: innerWidth = width - margin.left - margin.right;
     $: innerHeight = height - margin.top - margin.bottom;
@@ -36,7 +37,7 @@
         .attr("x", width / 2)
         .attr("y", 20)
         .attr("text-anchor", "middle")
-        .attr("font-size", "14px")
+        .attr("font-size", "10px")
         .attr("font-weight", "600")
         .attr("fill", "#1f2937")
         .text(title);
@@ -57,9 +58,9 @@
         .join("rect")
         .attr("class", "bar")
         .attr("y", d => y(d.topic))
-        .attr("height", y.bandwidth())
-        .attr("fill", "#4f46e5")
-        .attr("rx", 4)
+        .attr("height", y.bandwidth()/2.5)
+        .attr("fill", "#ff1515")
+        .attr("rx", 1)
         .attr("opacity", 0.8);
   
       // Animate bars
@@ -72,11 +73,11 @@
         .data(sortedData)
         .join("text")
         .attr("class", "topic-label")
-        .attr("x", -10)
-        .attr("y", d => y(d.topic) + y.bandwidth() / 2)
+        .attr("x",-10)
+        .attr("y", d => y(d.topic) + y.bandwidth()/5)
         .attr("dy", "0.35em")
         .attr("text-anchor", "end")
-        .attr("font-size", "12px")
+        .attr("font-size", "10px")
         .attr("fill", "#4b5563")
         .text(d => d.topic);
   
@@ -88,7 +89,7 @@
         .attr("x", d => x(d.value) + 5)
         .attr("y", d => y(d.topic) + y.bandwidth() / 2)
         .attr("dy", "0.35em")
-        .attr("font-size", "12px")
+        .attr("font-size", "10px")
         .attr("fill", "#6b7280")
         .text(d => d.value);
   
