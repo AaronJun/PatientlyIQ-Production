@@ -6,7 +6,7 @@
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
-    let active = 0;
+    let act19 = 0;
     let startX;
 
     const handleNext = () => {
@@ -48,7 +48,7 @@
             .data(patientData.patients, d => d.id)
             .join('div')
             .attr('class', 'card absolute inset-0 rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
-            .style('z-index', (d, i) => i === active ? 999 : patientData.patients.length + 2 - i)
+            .style('z-index', (d, i) => i === active ? 19 : patientData.patients.length + 2 - i)
             .transition()
             .duration(800)
             .ease(d3.easeQuadInOut)
