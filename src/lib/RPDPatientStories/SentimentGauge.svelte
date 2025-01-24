@@ -2,121 +2,109 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
 
-  export let value = 0; // 0 to 100
-  export let width = 120;
-  export let height = 120;
-  export let label = "Sentiment";
+  export let value = 0;
+  export let label = '';
+  export let size = 120;
 
-  let gaugeContainer;
+  let scale;
   
-  $: innerRadius = Math.min(width, height) * 0.35;
-  $: outerRadius = innerRadius * 1.1;
+  const sentimentRanges = [
+    { min: 0, max: 10, label: "Entirely Negative" },
+    { min: 11, max: 31, label: "Mostly Negative" },
+    { min: 32, max: 43, label: "Somewhat Negative" },
+    { min: 44, max: 60, label: "Neutral" },
+    { min: 61, max: 71, label: "Somewhat Positive" },
+    { min: 72, max: 85, label: "Mostly Positive" },
+    { min: 86, max: 100, label: "Entirely Positive" }
+  ];
 
-  function createGauge() {
-    if (!gaugeContainer) return;
+  $: currentSentiment = sentimentRanges.find(range => 
+    value >= range.min && value <= range.max
+  ) || sentimentRanges[0];
 
-    d3.select(gaugeContainer).selectAll("*").remove();
+  $: boxWidth = size / 5;
+  $: boxHeight = boxWidth;
+  $: totalWidth = boxWidth * 7;
+  $: activeIndex = sentimentRanges.indexOf(currentSentiment);
+  
+  onMount(() => {
+    drawScale();
+  });
 
-    const svg = d3.select(gaugeContainer)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", `0 0 ${width} ${height}`)
-      .attr("preserveAspectRatio", "xMidYMid meet");
-
-    const g = svg.append("g")
-      .attr("transform", `translate(${width/2},${height/2})`);
-
-    const scale = d3.scaleLinear()
-      .domain([0, 100])
-      .range([0, 360]);
-
-    const arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(outerRadius)
-      .startAngle(d => d.startAngle * Math.PI / 180)
-      .endAngle(d => d.endAngle * Math.PI / 180);
-
-    // Background arc
-    g.append("path")
-      .datum({
-        startAngle: 0,
-        endAngle: 360
-      })
-      .attr("class", "gauge-background")
-      .attr("fill", "#e2e8f0")
-      .attr("d", arc);
-
-    // Foreground arc (value)
-    const foregroundArc = g.append("path")
-      .datum({
-        startAngle: 0,
-        endAngle: 0
-      })
-      .attr("class", "gauge-foreground")
-      .attr("fill", d3.interpolateRdYlGn(value/100))
-      .attr("d", arc);
-
-    // Animate the foreground arc
-    foregroundArc.transition()
-      .duration(750)
-      .attrTween("d", function(d) {
-        const interpolate = d3.interpolate(
-          d.endAngle,
-          scale(value)
-        );
-        return function(t) {
-          d.endAngle = interpolate(t);
-          return arc(d);
-        };
-      });
-
-    // Value text
-    g.append("text")
-      .attr("class", "gauge-value")
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .attr("font-weight", "bold")
-      .attr("fill", "#1a2238")
-      .text(Math.round(value));
-
-    // Label text
-    g.append("text")
-      .attr("class", "gauge-label")
-      .attr("transform", "translate(0,15)")
-      .attr("text-anchor", "middle")
-      .attr("font-size", "8px")
-      .attr("fill", "#64748b")
-      .text(label);
-
-    // Add tick marks
-    const tickData = d3.range(0, 360, 36);
-    const tickArc = d3.arc()
-      .innerRadius(outerRadius + 2)
-      .outerRadius(outerRadius + 7)
-      .startAngle(d => d * Math.PI / 180)
-      .endAngle(d => d * Math.PI / 180);
-
-    g.selectAll(".tick")
-      .data(tickData)
-      .join("path")
-      .attr("class", "tick")
-      .attr("fill", "#94a3b8")
-      .attr("d", tickArc);
+  $: if (scale && value !== undefined) {
+    updateScale();
   }
 
-  $: if (gaugeContainer && typeof value === 'number') {
-    createGauge();
+  function getBoxColor(index: number) {
+    // Create a color scale from red to yellow to green
+    const colorScale = d3.scaleLinear<string>()
+      .domain([0, 3, 6])
+      .range(['#ef4444', '#eab308', '#22c55e'])
+      .interpolate(d3.interpolateRgb.gamma(2.2));
+    
+    return colorScale(index);
+  }
+
+  function drawScale() {
+    const svg = d3.select(scale)
+      .append('svg')
+      .attr('width', totalWidth)
+      .attr('height', boxHeight * 2.5)  // Extra space for label
+      .append('g')
+      .attr('transform', `translate(0,0)`);
+
+    // Add squares
+    svg.selectAll('rect')
+      .data(sentimentRanges)
+      .enter()
+      .append('rect')
+      .attr('class', 'sentiment-box')
+      .attr('x', (d, i) => i * boxWidth)
+      .attr('y', 0)
+      .attr('width', boxWidth - 2)  // -2 for gap
+      .attr('height', boxHeight)
+      .attr('rx', 2)  // Rounded corners
+      .style('fill', (d, i) => getBoxColor(i))
+      .style('opacity', 0.3);
+
+    // Add active box highlight
+    svg.append('rect')
+      .attr('class', 'active-box')
+      .attr('width', boxWidth - 2)
+      .attr('height', boxHeight)
+      .attr('rx', 2)
+      .style('fill', getBoxColor(activeIndex));
+
+    // Add sentiment label
+    svg.append('text')
+      .attr('class', 'sentiment-label')
+      .attr('text-anchor', 'middle')
+      .attr('y', boxHeight * 2)
+      .style('font-size', `${boxWidth * 0.45}px`)
+      .style('fill', '#1f2937')
+      .style('font-family', 'IBM Plex Mono')
+      .style('font-weight', '600');
+  }
+
+  function updateScale() {
+    // Update active box position and color
+    d3.select(scale)
+      .select('.active-box')
+      .transition()
+      .duration(300)
+      .attr('x', activeIndex * boxWidth)
+      .style('fill', getBoxColor(activeIndex));
+
+    // Update label
+    d3.select(scale)
+      .select('.sentiment-label')
+      .attr('x', totalWidth / 2)
+      .text(currentSentiment.label);
   }
 </script>
 
-<div 
-bind:this={gaugeContainer}
-class="w-full h-full"
-/>
+<div bind:this={scale} class="flex items-center justify-center"></div>
 
 <style>
-:global(.gauge-background) {
-  opacity: 0.2;
-}
+  /* Add any additional styles here if needed */
 </style>

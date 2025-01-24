@@ -78,7 +78,7 @@
    </div>
 
 
-    <div id="2.1 Genetic Testing" class="mb-2 place-content-center justify-center">
+    <div id="2. Genetic Testing" class="mb-2 place-content-center justify-center">
     <AlzIntroductionS2P1 />
     </div>
     <div class="mb-2 place-content-center justify-center"> 
@@ -98,7 +98,7 @@
 
     </div>  
     
-    <div id="3.1 Clinical Trials" class="place-content-center justify-center">
+    <div id="3. Clinical Trials" class="place-content-center justify-center">
         <AlzIntroductionS3P1 />
         <CtWaffleStages data={ ctsentimentData } />
             <CtPositiveSentimentChart />
@@ -117,7 +117,7 @@
         
            </div>
         </div>
-        <div id="4. Moving Forward" class="mb-2 place-content-center justify-center">
+        <div id="4. Looking Forward" class="mb-2 place-content-center justify-center">
         <AlzConclusion />
         </div>
         </div>    

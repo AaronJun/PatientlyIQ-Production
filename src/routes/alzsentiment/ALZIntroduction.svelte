@@ -15,13 +15,13 @@
 
         <div class="text-center py-16">
             
-            <h1 class="text-6xl font-serif text-slate-700 mb-6">A Deep Dive <span class="italic">into</span> <br>the APOE4 Experience</h1>
-            <h2 class="text-2xl font-semibold text-gray-500 max-w-2xl mx-auto">
+            <h1 class="text-5xl font-serif text-slate-700 px-8 mb-6">A Deep Dive <span class="italic">into</span> <br>the APOE4 Experience</h1>
+            <h2 class="text-xl font-semibold text-gray-500 max-w-2xl mx-auto px-16">
                 What an analysis of more than 350 online posts, conversations, and comments reveal about the needs and hopes of this population.
             </h2>
 
             <div class="w-10/12 mx-auto mt-16">
-            <h3 class="section-header text-lg font-semibold  text-slate-500 mb-6">1<br> The Paradox of Knowledge</h3>    
+            <h3 class="section-header text-lg font-semibold place-content-center mx-auto px-4 text-slate-500 mb-6">1<br> The Paradox of Knowledge</h3>    
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
                 We often talk about medical breakthroughs and genetic testing as unalloyed goods – more knowledge means better outcomes. <br><br> Or so we assume. <br> <br></p>
                 <ALZPatientQuoteCards />
