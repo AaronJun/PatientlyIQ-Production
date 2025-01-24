@@ -52,9 +52,7 @@
           </div>
         {/if}
         <div class="hover-circle"></div>
-        <div class="click-circle">
-            <Cursor_1 size="1.5rem" />
-        </div>
+
       </button>
       <span class="patient-name text-sm font-semibold text-slate-700">{selectedPatient?.name || ''}</span>
     </div>
@@ -107,7 +105,7 @@
       right: 0.5rem;
       width: 2rem;
       height: 2rem;
-      background: #ff5151;
+      background: #ff5151;;
       border-radius: 50%;
       display: flex;
       align-items: center;

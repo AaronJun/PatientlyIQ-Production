@@ -25,9 +25,9 @@
   $: isQuoteCard = current % 2 === 0;
   $: isDesktop = windowWidth >= 768; // Changed breakpoint to be more mobile-friendly
   $: chartWidth = isDesktop ? Math.min((containerWidth / 2) - 40, 600) : Math.min(containerWidth - 32, 600);
-  
+
   function closeModal(e) {
-    if (e.type === 'keydown' && e.key === 'Escape' || e.target === e.currentTarget) {
+    if (e.type === 'keydown' && e.key === 'Escape' || e.target === e.currentTarget || e.target.closest('button[data-close]')) {
       dispatch('close');
       setTimeout(() => {
         current = 0;
@@ -70,13 +70,14 @@
       <div class="w-full h-full bg-white rounded-lg sm:rounded-xl shadow-xl flex flex-col">
         <!-- Close button -->
         <button
-          on:click={closeModal}
-          class="absolute top-1 right-1 p-1 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-        >
-          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        data-close
+        on:click={closeModal}
+        class="absolute top-1 right-1 p-1 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
+      >
+        <svg class="w-5 h-5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
 
         <!-- Header -->
         {#if currentBaseIndex !== 0}
