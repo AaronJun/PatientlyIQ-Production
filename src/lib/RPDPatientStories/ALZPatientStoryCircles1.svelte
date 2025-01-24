@@ -10,10 +10,10 @@
     
     const isCarouselVisible = writable(false);
     const current = writable(0);
-    let autoPlayInterval: number;
 
     const photoMap = {
         '/profiles/timothyK.jpg': '/profiles/timothyK.jpg',
+        '/profiles/nancyA.jpg': '/profiles/nancyA.jpg',
         '/profiles/maggieP.jpg': '/profiles/maggieP.jpg',
     };
     
@@ -41,35 +41,14 @@
     );
 
     function handleCircleClick(patientIndex: number) {
-        stopAutoPlay();
         current.set(originalPatients.slice(0, patientIndex).reduce((acc, p) => acc + p.cards.length, 0));
         isCarouselVisible.set(true);
-        startAutoPlay();
-    }
-
-    function startAutoPlay() {
-        stopAutoPlay();
-        autoPlayInterval = window.setInterval(() => {
-            current.update(n => (n + 1) % totalCards);
-        }, 5000);
-    }
-
-    function stopAutoPlay() {
-        if (autoPlayInterval) {
-            clearInterval(autoPlayInterval);
-            autoPlayInterval = null;
-        }
     }
 
     function handleClose() {
-        stopAutoPlay();
         isCarouselVisible.set(false);
         current.set(0);
     }
-
-    onDestroy(() => {
-        stopAutoPlay();
-    });
 </script>
 
 <div class="patient-circles">
@@ -94,7 +73,7 @@
                 
             </div>
             <span class="text-sm text-slate-600"> {patient.persona}                            
-            </span>
+            </span> 
             </div>
         {/each}
         <slot />

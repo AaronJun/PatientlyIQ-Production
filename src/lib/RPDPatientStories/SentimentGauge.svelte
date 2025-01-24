@@ -3,8 +3,8 @@
   import * as d3 from 'd3';
 
   export let value = 0; // 0 to 100
-  export let width = 200;
-  export let height = 200;
+  export let width = 150;
+  export let height = 150;
   export let label = "Sentiment";
 
   let gaugeContainer;
@@ -75,7 +75,7 @@
     g.append("text")
       .attr("class", "gauge-value")
       .attr("text-anchor", "middle")
-      .attr("font-size", "24px")
+      .attr("font-size", "12px")
       .attr("font-weight", "bold")
       .attr("fill", "#1a2238")
       .text(Math.round(value));
@@ -83,9 +83,9 @@
     // Label text
     g.append("text")
       .attr("class", "gauge-label")
-      .attr("transform", "translate(0,25)")
+      .attr("transform", "translate(0,15)")
       .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
+      .attr("font-size", "8px")
       .attr("fill", "#64748b")
       .text(label);
 
