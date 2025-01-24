@@ -110,14 +110,14 @@
                 <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
                     Click to learn more 
                </p>
-                <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-a" />
+                <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-a"/>
                 <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
                     Nancy, who lost her father to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. Click the circle to learn more about her story.
            </p>
         
            </div>
         </div>
-        <div class="mb-2 place-content-center justify-center">
+        <div id="4. Moving Forward" class="mb-2 place-content-center justify-center">
         <AlzConclusion />
         </div>
         </div>    
