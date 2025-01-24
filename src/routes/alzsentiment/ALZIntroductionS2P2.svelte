@@ -21,7 +21,6 @@
              </p>
             </div>
         </div>
-        <GeneticPatientQuoteCards />
         <GeneticWaffleCounseling {geneticCounselingData} />
         </div>
 

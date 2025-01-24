@@ -68,7 +68,10 @@
         <NegativeSentimentDriversChart />
     </div>
     
-    <div class="max-w-4xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center mx-auto">
+    <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+        <p class="text-xs max-w-fit rounded-full font-mono px-4 py-2 bg-blue-100 text-left">
+            Click to learn more 
+       </p>
         <PatientStoryCircles selectedDisease={selectedDisease} selectedId="maggie-p" />
         <p class="caption text-xs font-mono text-left mt-12">
             Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving.  </p>
@@ -83,9 +86,9 @@
     </div>  
     <div class="mb-2 place-content-center justify-center"> 
         <AlzIntroductionS2P3 />       
-        <div class="max-w-4xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center mx-auto">
+        <div class="max-w-3xl bg-blue-50 text-slate-800 px-12 pt-10 pb-4 place-content-center mx-auto">
          <PatientStoryCircles selectedDisease={selectedDisease} selectedId="timothy-k" />
-         <p class="caption text-xs font-mono text-left mt-12">
+         <p class="caption text-xs w-8/12 font-mono text-left mt-12">
             Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected.   
         </p>
     </div>
@@ -99,11 +102,16 @@
         </div>  
         <div class="mb-2 place-content-center justify-center">
             <AlzIntroductionS3P2 />
-            <div class="max-w-4xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center mx-auto">
-            <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-a" />
+            
+            <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+                <p class="text-xs max-w-fit rounded-full font-mono px-4 py-2 bg-blue-100 text-left">
+                    Click to learn more 
+               </p>
+                <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-a" />
             <p class="caption text-xs font-mono text-left mt-12">
                 Nancy, who lost her father to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. 
            </p>
+        
            </div>
         </div>
         <div class="mb-2 place-content-center justify-center">
@@ -112,8 +120,8 @@
         </div>    
         <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
 
-                </div>
-                <ALZMethology />
+        </div>
+        <ALZMethology />
 
 
 <style>

@@ -106,7 +106,7 @@
     });
 </script>
 
-<div class="max-w-4xl bg-blue-50 text-slate-800 px-8 pt-12 outline-dashed outline-1  place-content-center items-center mx-auto px-4">
+<div>
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
@@ -162,8 +162,6 @@
             </svg>
         </button>
     </div>
-    <p class="caption text-xs max-w-96 font-mono text-left mb-12">
-        Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
 </div>
 
 <style>

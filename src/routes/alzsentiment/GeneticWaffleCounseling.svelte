@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import "carbon-components-svelte/css/all.css";
+    import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
 
     // Use the provided data structure
     export let data = {
@@ -19,14 +21,14 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 700;
-    let height;
-    const cellSize = 14;
+    const width = 300;
+    let height: number;
+    const cellSize = 20;
     const cellPadding = 2;
-    const stageSpacing = 80;
+    const stageSpacing = 0;
     const labelHeight = 40;
     const gridWidth = 5;
-    const legendHeight = 50;
+    const legendHeight = 40;
     const animationDuration = 800;
 
     const colors = {
@@ -395,8 +397,22 @@
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="chart-container flex items-center justify-center">
-        <svg bind:this={svg}></svg>
+    <div class="w-full max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <div class="lg:col-span-7">
+                <div class="chart-container">
+                    <svg bind:this={svg}></svg>
+                </div>
+            </div>
+            
+            <div class="mt-8 lg:col-span-3">
+                <GeneticPatientQuoteCards />
+            </div>
+        </div>
+        <p class="caption prose text-left text-base text-slate-600 font-serif mt-12 max-w-3xl mx-auto">
+        Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
+        </p>
+
     </div>
 </div>
 
@@ -404,7 +420,6 @@
     .chart-container {
         width: 100%;
         height: 100%;
-        min-height: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
