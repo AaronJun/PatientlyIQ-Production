@@ -99,13 +99,13 @@
   };
 </script>
 
-<div class="fixed top-20 right-10 z-50">
+<div class="fixed top- right-10 z-50">
   <!-- Mobile Toggle -->
   <button 
     on:click={() => isMobileMenuOpen = !isMobileMenuOpen}
-    class="lg:hidden bg-white px-4 py-2 rounded-md shadow-md text-gray-600 font-medium text-sm"
+    class="mob-button font-serif italic lg:hidden bg-slate-100 px-4 py-2 text-orange-600 font-medium text-sm"
   >
-    {activeSection}
+    {activeSection} <span class="ml-2 text-[8px]">▼</span>
   </button>
 
   <!-- Desktop Navigation -->
@@ -154,13 +154,13 @@
   <!-- Mobile Menu -->
   {#if isMobileMenuOpen}
     <div 
-      class="lg:hidden fixed right-0 top-32 bg-white shadow-lg rounded-l-lg p-4 transition-transform duration-300 z-50"
+      class="mob-menu lg:hidden fixed right-10 top-26 bg-slate-50 px-4 pt-6 pb-12 transition-transform duration-300 z-50"
       class:translate-x-0={isMobileMenuOpen}
       class:translate-x-full={!isMobileMenuOpen}
     >
       {#each sections as section}
         <div
-          class="py-2 px-4 cursor-pointer hover:bg-orange-50 rounded transition-colors duration-200"
+          class="py-2 px-4 font-serif cursor-pointer hover:bg-orange-50 rounded transition-colors duration-200"
           class:text-orange-500={activeSection === section.id}
           class:text-gray-600={activeSection !== section.id}
           on:click={() => scrollToSection(section.id)}
@@ -179,5 +179,10 @@
   
   :global(.translate-x-full) {
     transform: translateX(100%);
+  }
+
+  .mob-button {
+    border: .5px solid #ff5151;
+    
   }
 </style>

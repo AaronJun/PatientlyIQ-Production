@@ -10,12 +10,12 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 600;
+    const width = 500;
     let height: number;
-    const cellSize = 16;
+    const cellSize = 18;
     const cellPadding = 2;
-    const stageSpacing = 40;
-    const labelHeight = 30;
+    const stageSpacing = 20;
+    const labelHeight = 40;
     const gridWidth = 5;
     const legendHeight = 0;
     const animationDuration = 800;
@@ -383,7 +383,7 @@ function createVisualization(animate = false) {
 </script>
 
 <div class="relative flex flex-col bg-slate-50 items-center justify-center w-full mt-12" bind:this={containerRef}>
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
         3.1a: Expressed Sentiment, Clinical Trials
     </h3>
 
@@ -391,11 +391,11 @@ function createVisualization(animate = false) {
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="chart-container flex items-center justify-center">
+    <div class="chart-container max-w-4xl flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
-    <p class="caption prose w-2/5 text-left place-content-center text-base text-slate-600 font-serif mt-8 mb-12">
-    The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. Alzheon's clinical trials, by comparison, provoke a more positive community response.
+    <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
+        The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. Alzheon's clinical trials, by comparison, provoke a more positive community response.
      </p>
     
 </div>

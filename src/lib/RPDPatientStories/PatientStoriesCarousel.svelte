@@ -66,7 +66,7 @@
     on:click={closeModal}
     transition:fade={{ duration: 400 }}
   >
-    <div class="relative w-[95vw] sm:w-[85vw] z-50 max-w-5xl h-[90vh] sm:h-[80vh]" on:click|stopPropagation>
+    <div class="relative w-[75vw] sm:w-[80vw] z-50 max-w-5xl h-[90vh] sm:h-[80vh]" on:click|stopPropagation>
       <div class="w-full h-full bg-white rounded-lg sm:rounded-xl shadow-xl flex flex-col">
         <!-- Close button -->
         <button

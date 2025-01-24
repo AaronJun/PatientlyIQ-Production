@@ -21,7 +21,7 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 300;
+    const width = 250;
     let height: number;
     const cellSize = 20;
     const cellPadding = 2;
@@ -45,10 +45,10 @@
 
     const quotes = {
         "Genetic Counseling": {
-            sentiment: "Somewhat Negative",
-            persona: "Patient",
-            index: 5,
-            text: "The counseling session was overwhelming. There was so much information to process about genetic risks and implications."
+            sentiment: "Entirely Positive",
+            persona: "Carrier",
+            index: 0,
+            text: "I'd recommend seeing a genetic counselor. I met with one after my mom was diagnosed with Alzheimer’s. They explained that in my case (no other family history of AD) genetic testing wouldn’t likely provide any definitive answers."
         }
     };
 
@@ -167,7 +167,9 @@
             square.style("stroke", "#161616")
                 .style("stroke-width", "1.5px")
                 .style("stroke-dasharray", "3,2")
-                .style("filter", "brightness(1.5)");
+                .style("filter", "brightness(1.5)")
+                .style("filter","saturation(2)")
+                ;
         }
 
         if (animate) {
@@ -389,15 +391,15 @@
 </script>
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
-        Genetic Counseling Sentiment Analysis
+    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
+        2.2A: Genetic Counseling Sentiment Analysis
     </h3>
 
     <div id="tooltip" 
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="w-full max-w-7xl mx-auto px-4">
+    <div class="w-full max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
             <div class="lg:col-span-7">
                 <div class="chart-container">
@@ -409,8 +411,8 @@
                 <GeneticPatientQuoteCards />
             </div>
         </div>
-        <p class="caption prose text-left text-base text-slate-600 font-serif mt-12 max-w-3xl mx-auto">
-        Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
+        <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
+            Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
         </p>
 
     </div>

@@ -115,7 +115,7 @@
     }
 </script>
 
-<div class="chart-containe bg-slate-100">
+<div class="chart-container bg-slate-100">
     <svg bind:this={svg}></svg>
 </div>
 

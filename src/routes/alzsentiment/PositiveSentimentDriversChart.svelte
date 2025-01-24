@@ -8,7 +8,7 @@
     export let categories = positiveSentimentData.categories;
     
     let svg;
-    let width = 1000;
+    let width = 900;
     let height: number;
     let cellSize = 16;
     let cellPadding = 2;
@@ -299,7 +299,7 @@
 </script>
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 rounded-sm outline-dashed text-center mb-12 uppercase">
+    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
         1.2a: Main Drivers of Positive Sentiment, by Stage
     </h3>
     <div 

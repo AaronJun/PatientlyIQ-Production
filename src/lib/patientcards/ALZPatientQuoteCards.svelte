@@ -151,7 +151,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="currentColor    "
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -162,7 +162,7 @@
             </svg>
         </button>
     </div>
-    <p class="caption text-xs max-w-96 font-mono text-left mx-auto mt-12">
+    <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
         Posts on social media and online communities provide a look into the wide range of experiences and perspectives of individuals living with the APOE4 genotype. 
     </p>
 </div>

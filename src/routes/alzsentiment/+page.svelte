@@ -57,7 +57,7 @@
     <div id="1. Introduction" class="flex-1 place-content-center pt-4 col-span-4">
         <ALZIntroduction />
     </div>
-    <div id="1.1 APOE4 Journey" class="flex-1 place-content-center pt-4 col-span-8">        
+    <div class="flex-1 place-content-center pt-4 col-span-8">        
     <AlzIntroductionS1P1 />
     <WaffleStages data={ sentimentData } />
 </div>
@@ -73,7 +73,7 @@
             Click to learn more 
        </p>
         <PatientStoryCircles selectedDisease={selectedDisease} selectedId="maggie-p" />
-        <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+        <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
             Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving. Click to learn more about her story. </p>
    </div>
 
@@ -91,7 +91,7 @@
                 Click to learn more 
            </p>
          <PatientStoryCircles selectedDisease={selectedDisease} selectedId="timothy-k" />
-         <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+         <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
             Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected. Click the circle to learn more about his story.
         </p>
     </div>
@@ -111,7 +111,7 @@
                     Click to learn more 
                </p>
                 <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-A"/>
-                <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+                <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
                     Nancy, who lost her mother to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. Click the circle to learn more about her story.
            </p>
         
@@ -128,10 +128,6 @@
 
 
 <style>
-    .mb-2 {
-        
-        padding-top: .525rem;
-    }
 
     .story-circle {
         width: 4.5rem;

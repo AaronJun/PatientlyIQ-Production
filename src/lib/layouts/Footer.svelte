@@ -7,7 +7,7 @@
 
 	const footerSocials = [
 		{
-			href: '',
+			href: '/',
 			name: 'PIQ',
 			icon: PIQLogo
 		},
@@ -23,8 +23,8 @@
 </script>
 
 <footer>
-	<div class="flex flex-col gap-2 border-neutral-700/20 px-8 pt-12 sm:flex sm:flex-row sm:items-center sm:justify-between flex-grow">
-		<div class="grid ml-24">
+	<div class="flex flex-col border-neutral-700/20 px-8 pt-24 place-items-center flex-grow">
+
 			{#each footerSocials as social}
 				<a
 					href={social.href}
@@ -34,8 +34,8 @@
 					<span class="sr-only">{social.name}</span>
 				</a>
 			{/each}
-		</div>
-		<div class="flex items-center space-x-4 mr-20">
+
+		<div class="flex items-center space-x-4">
 			<!-- <Button variant="outline" on:click={openContactForm}>Contact Us</Button> -->
 			<span class="text-xs text-gray-500 dark:text-gray-400 sm:text-left">
 				© {new Date().getFullYear()}
@@ -56,6 +56,5 @@
 		display: flex;
 		min-height: 65vh;
 		background-color: #13131b;
-		border-top: .25px dotted #ff1a1a;
 	}
 </style>
