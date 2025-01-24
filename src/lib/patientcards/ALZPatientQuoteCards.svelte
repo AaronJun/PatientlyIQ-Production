@@ -69,7 +69,7 @@
             .join('div')
             .attr('class', 'card absolute inset-0 rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
             .html(d => `
-                <div class="h-full w-full p-8 flex flex-col">
+                <div class="h-full w-full p-8 flex flex-col items-center text-center">
                     <div class="mb-6">
                         <h3 class="text-xl font-bold text-slate-700 dark:text-white">
                             ${d.name}
@@ -106,7 +106,7 @@
     });
 </script>
 
-<div class="max-w-6xl  bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center items-center mx-auto">
+<div class="max-w-6xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center items-center mx-auto">
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
@@ -117,7 +117,6 @@
         >
             <!-- Cards will be inserted here by D3 -->
         </div>
-        
     </div>
 
     <!-- Navigation controls -->
@@ -163,7 +162,7 @@
             </svg>
         </button>
     </div>
-    <p class="caption text-xs max-w-96 font-mono text-left mt-12">
+    <p class="caption text-xs max-w-96 font-mono text-left mx-auto mt-12">
         Posts on social media and online communities provide a look into the wide range of experiences and perspectives of individuals living with the APOE4 genotype. 
     </p>
 </div>

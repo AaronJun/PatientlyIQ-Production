@@ -3,8 +3,8 @@
   import * as d3 from 'd3';
 
   export let value = 0; // 0 to 100
-  export let width = 150;
-  export let height = 150;
+  export let width = 120;
+  export let height = 120;
   export let label = "Sentiment";
 
   let gaugeContainer;

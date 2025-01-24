@@ -69,12 +69,12 @@
     </div>
     
     <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
-        <p class="text-xs max-w-fit rounded-full font-mono px-4 py-2 bg-blue-100 text-left">
+        <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
             Click to learn more 
        </p>
         <PatientStoryCircles selectedDisease={selectedDisease} selectedId="maggie-p" />
-        <p class="caption text-xs font-mono text-left mt-12">
-            Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving.  </p>
+        <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+            Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving. Click to learn more about her story. </p>
    </div>
 
 
@@ -87,9 +87,12 @@
     <div class="mb-2 place-content-center justify-center"> 
         <AlzIntroductionS2P3 />       
         <div class="max-w-3xl bg-blue-50 text-slate-800 px-12 pt-10 pb-4 place-content-center mx-auto">
+            <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
+                Click to learn more 
+           </p>
          <PatientStoryCircles selectedDisease={selectedDisease} selectedId="timothy-k" />
-         <p class="caption text-xs w-8/12 font-mono text-left mt-12">
-            Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected.   
+         <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+            Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected. Click the circle to learn more about his story.
         </p>
     </div>
 
@@ -104,12 +107,12 @@
             <AlzIntroductionS3P2 />
             
             <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
-                <p class="text-xs max-w-fit rounded-full font-mono px-4 py-2 bg-blue-100 text-left">
+                <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
                     Click to learn more 
                </p>
                 <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-a" />
-            <p class="caption text-xs font-mono text-left mt-12">
-                Nancy, who lost her father to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. 
+                <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
+                    Nancy, who lost her father to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. Click the circle to learn more about her story.
            </p>
         
            </div>

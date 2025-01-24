@@ -45,7 +45,7 @@
 
     // Add background quadrants with subtle colors
     const quadrants = [
-      { x: 0, y: 0, width: innerWidth / 2, height: innerHeight / 2, color: "#f7f8fa" },
+      { x: 0, y: 0, width: innerWidth / 2, height: innerHeight / 2, color: "#fff" },
       { x: innerWidth / 2, y: 0, width: innerWidth / 2, height: innerHeight / 2, color: "#f7f8fa" },
       { x: 0, y: innerHeight / 2, width: innerWidth / 2, height: innerHeight / 2, color: "#f7f8fa" },
       { x: innerWidth / 2, y: innerHeight / 2, width: innerWidth / 2, height: innerHeight / 2, color: "#f7f8fa" }
@@ -88,7 +88,7 @@
       .attr("y", d => d.y)
       .attr("text-anchor", "middle")
       .attr("fill", "#475569")
-      .attr("font-size", "12px")
+      .attr("font-size", "9.275px")
       .attr("font-weight", "500")
       .each(function(d) {
         const lines = d.text.split('\n');
@@ -106,7 +106,7 @@
       .attr("y", innerHeight + 25)
       .attr("text-anchor", "middle")
       .attr("fill", "#475569")
-      .attr("font-size", "14px")
+      .attr("font-size", "12px")
       .attr("font-weight", "500")
       .text("Emotional State");
 
@@ -116,7 +116,7 @@
       .attr("y", -25)
       .attr("text-anchor", "middle")
       .attr("fill", "#475569")
-      .attr("font-size", "14px")
+      .attr("font-size", "12px")
       .attr("font-weight", "500")
       .text("Motivation Level");
 
@@ -130,7 +130,7 @@
       .style("border", "1px solid #ddd")
       .style("border-radius", "4px")
       .style("padding", "8px")
-      .style("font-size", "12px")
+      .style("font-size", "9.275px")
       .style("pointer-events", "none")
       .style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
 
@@ -180,6 +180,6 @@
 
 <style>
   :global(.quadrant-label) {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'IBM Plex Mono', monospace;
   }
 </style>
