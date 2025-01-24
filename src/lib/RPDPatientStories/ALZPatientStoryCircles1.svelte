@@ -2,8 +2,7 @@
     import { onMount } from 'svelte';
     import PatientStoriesCarousel from './PatientStoriesCarousel.svelte';
     import patientData from '$lib/data/patient-stories.json';
-    
-  
+    import {Cursor_1} from 'carbon-icons-svelte';
     export let selectedDisease;
     export let selectedId;
     
@@ -30,9 +29,9 @@
     function handleImageError() {
       imageError = true;
     }
-  </script>
+</script>
   
-  <div class="flex justify-center items-center gap-4">
+<div class="flex justify-center items-center gap-4">
     <div class="patient-circle-container">
       <button 
         class="story-circle"
@@ -53,18 +52,21 @@
           </div>
         {/if}
         <div class="hover-circle"></div>
+        <div class="click-circle">
+            <Cursor_1 size="1.5rem" />
+        </div>
       </button>
       <span class="patient-name text-sm font-semibold text-slate-700">{selectedPatient?.name || ''}</span>
     </div>
-  </div>
+</div>
   
-  <PatientStoriesCarousel
+<PatientStoriesCarousel
     selectedPatient={selectedPatient}
     isVisible={isCarouselVisible}
     on:close={handleCarouselClose}
-  />
+/>
   
-  <style>
+<style>
     .story-circle {
       width: 10rem;
       height: 10rem;
@@ -98,6 +100,22 @@
       background: rgba(255, 81, 81, 0);
       transition: background-color 0.2s ease;
     }
+
+    .click-circle {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+      background: #ff5151;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
   
     .story-circle:hover {
       transform: scale(1.1);
@@ -106,6 +124,10 @@
     .story-circle:hover .hover-circle {
       background: rgba(255, 81, 81, 0.3);
     }
+
+    .story-circle:hover .click-circle {
+      transform: scale(1.1);
+    }
   
     .patient-circle-container {
       display: flex;
@@ -113,5 +135,4 @@
       align-items: center;
       gap: 0.5rem;
     }
-  
-  </style>
+</style>

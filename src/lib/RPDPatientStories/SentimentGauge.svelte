@@ -24,7 +24,7 @@
 
   $: boxWidth = size / 5;
   $: boxHeight = boxWidth;
-  $: totalWidth = boxWidth * 7;
+  $: totalWidth = boxWidth * 10;
   $: activeIndex = sentimentRanges.indexOf(currentSentiment);
   
   onMount(() => {
@@ -75,11 +75,12 @@
       .attr('rx', 2)
       .style('fill', getBoxColor(activeIndex));
 
-    // Add sentiment label
+    // Add sentiment label with left alignment
     svg.append('text')
       .attr('class', 'sentiment-label')
-      .attr('text-anchor', 'middle')
-      .attr('y', boxHeight * 2)
+      .attr('text-anchor', 'start')  // Changed to start for left alignment
+      .attr('x', 0)  // Set x to 0 for left alignment
+      .attr('y', boxHeight * 1.725)
       .style('font-size', `${boxWidth * 0.45}px`)
       .style('fill', '#1f2937')
       .style('font-family', 'IBM Plex Mono')
@@ -98,12 +99,12 @@
     // Update label
     d3.select(scale)
       .select('.sentiment-label')
-      .attr('x', totalWidth / 2)
       .text(currentSentiment.label);
   }
 </script>
 
-<div bind:this={scale} class="flex items-center justify-center"></div>
+<div bind:this={scale} class="flex items-start">
+</div>
 
 <style>
   /* Add any additional styles here if needed */

@@ -9,7 +9,7 @@
   export let title = "Top Topics";
 
   let chartContainer;
-  const margin = { top: 20, right: 20, bottom: 20, left: 0 };
+  const margin = { top: 0, right: 20, bottom: 20, left: 0 };
 
   $: innerWidth = width - margin.left - margin.right;
   $: innerHeight = height - margin.top - margin.bottom;

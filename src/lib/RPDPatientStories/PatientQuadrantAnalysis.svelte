@@ -123,7 +123,7 @@
       .attr('text-anchor', 'middle')
       .style('font-size', fontSize)
       .style('font-weight', 800)
-      .style('fill', '#091C2D')
+      .style('fill', '#7C7C7C')
       .style('font-family', 'IBM Plex Mono')
       .text('Avoidant');
 
@@ -134,7 +134,7 @@
       .attr('text-anchor', 'middle')
       .style('font-size', fontSize)
       .style('font-weight', 800)
-      .style('fill', '#091C2D')
+      .style('fill', '#7C7C7C')
       .style('font-family', 'IBM Plex Mono')
       .text('Proactive');
 
@@ -145,7 +145,7 @@
       .attr('text-anchor', 'middle')
       .style('font-size', fontSize)
       .style('font-weight', 800)
-      .style('fill', '#091C2D')
+      .style('fill', '#7C7C7C')
       .style('font-family', 'IBM Plex Mono')
       .text('Motivated');
 
@@ -156,7 +156,7 @@
       .attr('text-anchor', 'middle')
       .style('font-size', fontSize)
       .style('font-weight', 800)
-      .style('fill', '#091C2D')
+      .style('fill', '#7C7C7C')
       .style('font-family', 'IBM Plex Mono')
       .text('Anxious');
   }
