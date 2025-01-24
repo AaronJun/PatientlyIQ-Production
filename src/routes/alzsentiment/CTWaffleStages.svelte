@@ -15,7 +15,7 @@
     const cellSize = 16;
     const cellPadding = 2;
     const stageSpacing = 40;
-    const labelHeight = 10;
+    const labelHeight = 30;
     const gridWidth = 5;
     const legendHeight = 0;
     const animationDuration = 800;
@@ -38,14 +38,13 @@
             sentiment: "Entirely Negative",
             persona: "Carrier, APOE4/4",
             index: 5,
-            text: "And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new."
-        },
-        
+            text: "My reaction is no way am I going to be a guinea pig for this snake oil. There is no cure, only the ability to possibly prolong the misery."
+        }, 
         "Alzheon Clinical Trials": {
-            sentiment: "Somewhat Negative",
+            sentiment: "Somewhat Positive",
             persona: "Carrier, APOE4/4",
-            index: 15,
-            text: "My doctor means well but admits she doesn't have enough APOE4 patients to really understand our unique needs. I feel like I'm teaching her sometimes."
+            index: 10,
+            text: "I'm a 4/4 and I feel that the risks are too high. I'm afraid of dementia but Im also afraid of having a stroke or worse. I'm hopeful that ALZ-801 proves to be a safe and effective treatment for us."
         },
         };
 
@@ -173,9 +172,9 @@
         if (isHighlighted) {
             square.style("stroke", "#161616")
                 .style("stroke-width", "1px")
-                .attr("filter", "brightness(1.5)")
                 .style("stroke-dasharray", "3,2")
                 .style("filter","brightness(1.5)")
+                .style("filter","saturate(2)")
         }
 
         if (animate) {
@@ -211,6 +210,7 @@
                         .duration(200)
                         .style("stroke-width", "1.5px")
                         .style("filter","brightness(1.5)")
+                        .style("filter","saturate(2)")
                     }
             });
 
@@ -279,7 +279,7 @@ function createVisualization(animate = false) {
 
             labelGroup.append("text")
                 .attr("x", stageWidth / 2)
-                .attr("y", -20)
+                .attr("y", -15) // Changed from 10 to -15 to move it up
                 .attr("text-anchor", "middle")
                 .attr("fill", "#828487")
                 .attr("font-size", "7.25px")
@@ -323,7 +323,7 @@ function createVisualization(animate = false) {
             const total = Object.values(stage.sentiments).reduce((a, b) => a + b, 0);
             stageGroup.append("text")
                 .attr("x", stageWidth / 2)
-                .attr("y", totalRows * (cellSize + cellPadding) + 15)
+                .attr("y", totalRows * (cellSize + cellPadding)+20)
                 .attr("text-anchor", "middle")
                 .attr("fill", "#6D635B")
                 .attr("font-size", "10px")
