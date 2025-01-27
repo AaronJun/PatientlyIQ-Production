@@ -355,7 +355,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-between gap-4 mt-16 sm:mt-24 px-4 md:px-0">
+            <div class="flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-16 sm:mt-24 px-4 md:px-0">
                 <button
                     on:click={handlePrev}
                     class="h-10 w-10 rounded-full bg-orange-600 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300">
@@ -409,7 +409,7 @@
             <!-- Grid View -->
             <div 
                 in:fade={{ duration: 800 }}
-                class="grid grid-cols-2 md:grid-cols-3 gap-2 py-2"
+                class="grid grid-cols-2 md:grid-cols-4 gap-2 py-2 px-8"
             >
                 {#each expandedCards as card, i}
                     <button
@@ -438,11 +438,11 @@
                                     <p class="text-[11px] text-slate-800 text-center line-clamp-2">{card.bio}</p>
                                 </div>
                             {:else if card.isQuote}
-                                <div class="h-full w-full flex flex-col items-center justify-center bg-blue-50 p-4">
+                                <div class="h-full w-full flex flex-col items-center justify-center bg-[#FF4A4A] p-4">
                                     <div>
-                                        <p class="text-xl font-serif"> " </p>
+                                        <p class="text-xl text-orange-50 font-serif"> " </p>
                                     </div>
-                                    <p class="text-xs font-serif text-slate-800 text-center line-clamp-3">
+                                    <p class="text-xs font-serif text-orange-50 text-center line-clamp-3">
                                         {card.quote}
                                     </p>
                                 </div>
