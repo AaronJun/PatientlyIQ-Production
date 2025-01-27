@@ -11,6 +11,7 @@
     const photoMap = {
         '/profiles/timothyK.jpg': '/profiles/timothyK.jpg',
         '/profiles/maggieP.jpg': '/profiles/maggieP.jpg',
+        '/profiles/nancyA.jpg': '/profiles/nancyA.jpg',
     };
     
     let inView = false;
