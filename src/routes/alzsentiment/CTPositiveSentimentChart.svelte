@@ -291,7 +291,7 @@
             </div>
             
             <div class="mt-8 lg:col-span-3">
-                <AlzheonQuoteCards />``
+                <AlzheonQuoteCards />
             </div>
         </div>
 

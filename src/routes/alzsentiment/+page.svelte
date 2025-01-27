@@ -22,6 +22,7 @@
     import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
     import CtPatientQuoteCards from '$lib/patientcards/CtPatientQuoteCards.svelte';
     import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
+    import SwipeableJourneyCards from '$lib/patientcards/SwipeableJourneyCards.svelte';
 
     import ALZMethology from './ALZMethology.svelte';
     import sentimentData from './sentimentData.json';
@@ -30,6 +31,7 @@
     import CtWaffleStages from './CTWaffleStages.svelte';
     import PatientStoryCircles from '$lib/RPDPatientStories/ALZPatientStoryCircles1.svelte';
     import CtPositiveSentimentChart from './CTPositiveSentimentChart.svelte';
+
 
     import flareData from '$lib/data/flare-alz.json';
     import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
@@ -68,13 +70,11 @@
         <NegativeSentimentDriversChart />
     </div>
     
-    <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+    <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
         <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
-            Click to learn more 
+           Community Vignette
        </p>
-        <PatientStoryCircles selectedDisease={selectedDisease} selectedId="maggie-p" />
-        <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
-            Maggie P. is a retired physician who recently helps manage her husband's APOE4/4 status, and readily admits that her medical background did not fullyprepare her for the demands of caregiving. Click to learn more about her story. </p>
+       <SwipeableJourneyCards selectedDisease="pompe" selectedId="maggie-p" />
    </div>
 
 
@@ -86,14 +86,13 @@
     </div>  
     <div class="mb-2 place-content-center justify-center"> 
         <AlzIntroductionS2P3 />       
-        <div class="max-w-3xl bg-blue-50 text-slate-800 px-12 pt-10 pb-4 place-content-center mx-auto">
+        <div class="max-w-3xl text-slate-800 px-12 pt-10 pb-4 place-content-center mx-auto">
+           <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
             <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
-                Click to learn more 
-           </p>
-         <PatientStoryCircles selectedDisease={selectedDisease} selectedId="timothy-k" />
-         <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
-            Timothy K. took a 23andMe genetic test after his mother passed away from Alzheimer's-related complications, and found that learning his genotype was more fraught than he expected. Click the circle to learn more about his story.
-        </p>
+               Community Vignette
+              </p>
+              <SwipeableJourneyCards selectedDisease="pompe" selectedId="timothy-k" />
+    </div>
     </div>
 
     </div>  
@@ -106,14 +105,11 @@
         <div class="mb-2 place-content-center justify-center">
             <AlzIntroductionS3P2 />
             
-            <div class="max-w-3xl bg-blue-50 text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+            <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
                 <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
-                    Click to learn more 
+                   Community Vignette
                </p>
-                <PatientStoryCircles selectedDisease={selectedDisease} selectedId="nancy-A"/>
-                <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12 text-pretty">
-                    Nancy, who lost her mother to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options. Click the circle to learn more about her story.
-           </p>
+               <SwipeableJourneyCards selectedDisease="pompe" selectedId="nancy-a" />
         
            </div>
         </div>

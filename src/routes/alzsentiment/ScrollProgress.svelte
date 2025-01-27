@@ -99,7 +99,7 @@
   };
 </script>
 
-<div class="fixed top- right-10 z-50">
+<div class="fixed top-20 right-10 z-50">
   <!-- Mobile Toggle -->
   <button 
     on:click={() => isMobileMenuOpen = !isMobileMenuOpen}

@@ -15,16 +15,15 @@
             {
               "type": "Bio",
               "quote": "I'm trying not to panic, but I feel overwhelmed and lost. Our retirement plans are going to look very different from what we dreamed of.",
-              "context": "Initial Diagnosis",
-              "contextDescription": "Upon receiving the test results, Maggie faced more anxiety than she'd anticipated.",
-              "sentiment": 35,
-              "topics": [
-                { "topic": "Treatment Hope", "value": 3 },
-                { "topic": "Support System", "value": 3 },
-                { "topic": "Care Access", "value": 1 },
-                { "topic": "Daily Coping", "value": 0 },
-                { "topic": "Future Outlook", "value": 1 }
-              ]
+              "context": "First Week After Diagnosis",
+              "contextDescription": "After the initial shock, Maggie is trying to find a way to cope with the diagnosis.",
+              "goals": "Improve husband’s quality of life by exploring treatments options while balancing risks and benefits",
+              "strengths": "A medical background, proximity to large hospitals, and financial stability",
+              "anxieties": "Lack of treatment options, limited support network, and treatment risks",
+              "medicalLiteracy": "9",
+              "financialStability": "8",
+              "medicalAccess": "8",
+              "supportNetwork": "4"
             },
             {
               "type": "Initial Response",
@@ -92,7 +91,7 @@
           ]
         },
         {
-          "id": "nancy-A",
+          "id": "nancy-a",
           "name": "Nancy A.",
           "age": "Late-50s",
           "disease": "APOE4/4",
@@ -103,16 +102,16 @@
           "cards": [
             {
               "type": "Bio",
-              "quote": "Healthy eating and exercise are recommended but my mom followed those too. But I saw that clinical trials now focus on patients earlier on in their journey, and being a carrier qualifies you for some of them.",
-              "context": "Initial Diagnosis",
-              "contextDescription": "Nancy's mother's Alzheimer's diagnosis has made her more aware of her own risk.",
-              "sentiment": 36,
-              "topics": [
-                { "topic": "Future Concerns", "value": 12 },
-                { "topic": "Treatment Options", "value": 8 },
-                { "topic": "Emotional Coping", "value": 10 },
-                { "topic": "Daily Life", "value": 5 }
-              ]
+              "quote": "Learning that I was APOE4/4 rocked my world. I don’t think I was as prepared as I thought.",
+              "context": "Genetic Test Motivation",
+              "contextDescription": "Nancy's mother's Alzheimer's diagnosis made her more aware of her own risk, and motivated to take a genetic test.",
+              "goals": "Preserve quality of life, take preventative health actions, and actively pursue new treatment opportunities",
+              "strengths": "Research background, proactive attitude, and strong support system",
+              "anxieties": "Concerned about children's genetic risks, and limited treatment options",
+              "medicalLiteracy": "8",
+              "financialStability": "6",
+              "medicalAccess": "8",
+              "supportNetwork": "9"
             },
             {
               "type": "Initial Response",
@@ -188,13 +187,13 @@
               "quote": "I'm scared. And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new.",
               "context": "Initial Diagnosis",
               "contextDescription": "Timothy expected to find out he was an APOE4 carrier, but the reality of the diagnosis hit him harder than he anticipated.",
-              "sentiment": 36,
-              "topics": [
-                { "topic": "Future Concerns", "value": 12 },
-                { "topic": "Treatment Options", "value": 8 },
-                { "topic": "Emotional Coping", "value": 10 },
-                { "topic": "Daily Life", "value": 5 }
-              ]
+              "goals": "Manage emotional well-being whilst making proactive changes and finding HCPs who understand APOE4-specific needs",
+              "strengths": "Strong financial stability, high level of physical fitness, and high metabolic health",
+              "anxieties": "Anxiety about potential cognitive decline, inadequate medical support, and the emotional weight of witnessing mother's life with AD",
+              "medicalLiteracy": "5",
+              "financialStability": "8",
+              "medicalAccess": "5",
+              "supportNetwork": "7"
             },
             {
               "type": "Pre-Screening",
