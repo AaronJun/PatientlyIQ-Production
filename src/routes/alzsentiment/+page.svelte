@@ -70,7 +70,7 @@
         <NegativeSentimentDriversChart />
     </div>
     
-    <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+    <div class="max-w-5xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
         <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
            Community Vignette
        </p>
@@ -87,7 +87,7 @@
     <div class="mb-2 place-content-center justify-center"> 
         <AlzIntroductionS2P3 />       
         <div class="max-w-3xl text-slate-800 px-12 pt-10 pb-4 place-content-center mx-auto">
-           <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+           <div class="max-w-5xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
             <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
                Community Vignette
               </p>
@@ -105,7 +105,7 @@
         <div class="mb-2 place-content-center justify-center">
             <AlzIntroductionS3P2 />
             
-            <div class="max-w-3xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
+            <div class="max-w-5xl text-slate-800 px-10 pt-6 pb-4  place-content-center mx-auto">
                 <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
                    Community Vignette
                </p>
