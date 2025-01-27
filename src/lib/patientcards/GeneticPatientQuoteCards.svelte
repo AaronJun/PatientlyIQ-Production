@@ -2,7 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import patientData from '$lib/data/alzheonQuotes.json';
+    import patientData from '$lib/data/geneticQuotes.json';
     import { Quotes } from 'carbon-icons-svelte';   
 
     let containerRef;
@@ -69,7 +69,7 @@
             .join('div')
             .attr('class', 'card absolute inset-0 rounded-3xl shadow-xl overflow-hidden bg-white dark:bg-neutral-800')
             .html(d => `
-                <div class="h-full w-full p-8 flex flex-col">
+                <div class="h-full w-full px-6 pt-6 pb-8 flex flex-col">
                     <div class="mb-6">
                         <h3 class="text-xl font-bold text-slate-700 dark:text-white">
                             ${d.name}
@@ -107,9 +107,7 @@
 </script>
 
 <div class="max-w-6xl mx-auto px-4">
-    <h3 class="text-xs font-mono bg-orange-50 text-slate-800 px-4 py-2 outline-dashed outline-1 text-center mb-12 uppercase">
-        Quotes from APOE4 Carriers & Caregivers
-        </h3>
+
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}
