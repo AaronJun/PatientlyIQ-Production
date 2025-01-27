@@ -21,14 +21,15 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 250;
+    const width = 300;
+    const legendWidth = 90;
     let height: number;
-    const cellSize = 20;
+    const cellSize = 26;
     const cellPadding = 2;
     const stageSpacing = 0;
-    const labelHeight = 40;
+    const labelHeight = 50;
     const gridWidth = 5;
-    const legendHeight = 40;
+    const legendHeight = 0;
     const animationDuration = 800;
 
     const colors = {
@@ -48,7 +49,7 @@
             sentiment: "Entirely Positive",
             persona: "Carrier",
             index: 0,
-            text: "I'd recommend seeing a genetic counselor. I met with one after my mom was diagnosed with Alzheimer’s. They explained that in my case (no other family history of AD) genetic testing wouldn’t likely provide any definitive answers."
+            text: "I'd recommend seeing a genetic counselor. I met with one after my mom was diagnosed with Alzheimer's. They explained that in my case (no other family history of AD) genetic testing wouldn't likely provide any definitive answers."
         }
     };
 
@@ -168,8 +169,7 @@
                 .style("stroke-width", "1.5px")
                 .style("stroke-dasharray", "3,2")
                 .style("filter", "brightness(1.5)")
-                .style("filter","saturation(2)")
-                ;
+                .style("filter", "saturate(2)");
         }
 
         if (animate) {
@@ -215,18 +215,19 @@
         d3.select(svg).selectAll("*").remove();
 
         const svgElement = d3.select(svg)
-            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
+            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1 + legendWidth, height]);
 
         const stageWidth = gridWidth * (cellSize + cellPadding);
         const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
         const startX = (width - totalWidth) / 2;
 
-        const maxLegendWidth = Math.min(width * 0.8, totalWidth);
-        const legendItemWidth = maxLegendWidth / Object.keys(colors).length;
-        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2;
+        // Modified legend positioning
+        const legendItemHeight = 15;
+        const legendStartY = labelHeight + 20;
+        const legendStartX = startX + totalWidth + 30;
 
         const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${legendStartX}, ${height - legendHeight})`)
+            .attr("transform", `translate(${legendStartX}, ${legendStartY})`)
             .style("opacity", animate ? 0 : 1);
 
         if (animate) {
@@ -237,43 +238,34 @@
 
         Object.entries(colors).forEach(([sentiment, color], i) => {
             const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`);
+                .attr("transform", `translate(0, ${i * legendItemHeight})`);
 
             legendItem.append("rect")
                 .attr("width", 7.25)
                 .attr("height", 7.25)
-                .attr("rx", 0.5)
-                .attr("x", -3.625)
-                .attr("y", -12)
+                .attr("rx", 1)
+                .attr("y", -5)
                 .attr("fill", color);
 
-            const text = legendItem.append("text")
-                .attr("y", 8)
+            legendItem.append("text")
+                .attr("x", 12)
+                .attr("y", 0)
                 .attr("fill", "#6D635B")
-                .attr("font-size", "8px")
-                .attr("font-family", "IBM Plex Sans Condensed")
-                .attr("text-anchor", "middle")
+                .attr("font-size", "5px")
+                .attr("font-family", "IBM Plex Mono")
+                .attr("alignment-baseline", "middle")
                 .text(sentiment);
 
-            const maxTextWidth = legendItemWidth;
-            const textElement = text.node();
-            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
-                let textContent = sentiment;
-                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
-                    textContent = textContent.slice(0, -1);
-                }
-                text.text(textContent + '...');
-            }
-
-            if (text.text().endsWith('...')) {
-                legendItem
-                    .on("mouseenter", (event) => {
-                        showTooltip(event, sentiment);
-                    })
-                    .on("mouseleave", () => {
-                        hideTooltip();
-                    });
-            }
+            legendItem
+                .style("cursor", "pointer")
+                .on("mouseenter", () => {
+                    hoveredCategory = sentiment;
+                    updateHighlights();
+                })
+                .on("mouseleave", () => {
+                    hoveredCategory = null;
+                    updateHighlights();
+                });
         });
 
         data.stages.forEach((stage, stageIndex) => {
@@ -358,6 +350,28 @@
         });
     }
 
+    let hoveredCategory: string | null = null;
+    let hoveredStage: string | null = null;
+
+    function updateHighlights() {
+        const svgElement = d3.select(svg);
+        
+        svgElement.selectAll("rect")
+            .style("opacity", function() {
+                const element = d3.select(this);
+                if (!hoveredCategory && !hoveredStage) {
+                    return 0.8;
+                }
+                
+                const isMatchingCategory = hoveredCategory && 
+                    element.attr("fill") === colors[hoveredCategory];
+                const isMatchingStage = hoveredStage && 
+                    element.closest(`.stage-${stages.indexOf(hoveredStage)}`).size() > 0;
+                
+                return (isMatchingCategory || isMatchingStage) ? 1 : 0.2;
+            });
+    }
+
     function showTooltip(event, content) {
         const tooltip = d3.select("#tooltip");
         const tooltipWidth = 300;
@@ -391,7 +405,6 @@
 </script>
 
 <div class="relative flex flex-col bg-slate-50 py-8 place-content-center items-center mx-auto justify-center w-full mt-12" bind:this={containerRef}>
-    
     <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
         2.2A: Genetic Counseling Sentiment Analysis
     </h3>
