@@ -99,7 +99,7 @@
   };
 </script>
 
-<div class="fixed top-20 right-10 z-50">
+<div class="progress fixed top-12 right-8">
   <!-- Mobile Toggle -->
   <button 
     on:click={() => isMobileMenuOpen = !isMobileMenuOpen}
@@ -154,7 +154,7 @@
   <!-- Mobile Menu -->
   {#if isMobileMenuOpen}
     <div 
-      class="mob-menu lg:hidden fixed right-10 top-26 bg-slate-50 px-4 pt-6 pb-12 transition-transform duration-300 z-50"
+      class="mob-menu lg:hidden fixed right-10 top-26 bg-slate-50 px-4 pt-6 pb-12 transition-transform duration-300"
       class:translate-x-0={isMobileMenuOpen}
       class:translate-x-full={!isMobileMenuOpen}
     >
@@ -183,6 +183,10 @@
 
   .mob-button {
     border: .5px solid #ff5151;
-    
+    z-index: 999  ;
+  }
+
+  .progress {
+    z-index: 999;
   }
 </style>

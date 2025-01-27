@@ -8,7 +8,7 @@
 
 </script>
 
-<div class="grid text-center h-[90vh] items-center place-content-center pt-8">
+<div class="grid text-center h-[90vh] items-center place-content-center pt-8 pb-32">
     <div class="max-w-4xl mx-auto px-4 place-content-center">
 
             <div class="w-10/12 mx-auto mt-16">

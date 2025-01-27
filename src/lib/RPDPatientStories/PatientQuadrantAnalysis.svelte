@@ -3,7 +3,7 @@
   import * as d3 from 'd3';
 
   export let data = [];
-  export let width = 300;
+  export let width = 250;
   export let height = 250;
 
   let chart;
@@ -30,7 +30,7 @@
   function drawChart() {
     // Create SVG
     svg = d3.select(chart)
-      .append('svg')
+    .append('svg')
       .attr('width', width)
       .attr('height', height)
       .append('g')
