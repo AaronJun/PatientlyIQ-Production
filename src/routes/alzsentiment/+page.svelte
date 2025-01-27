@@ -128,23 +128,6 @@
 
 
 <style>
-
-    .story-circle {
-        width: 4.5rem;
-        height: 4.5rem;
-        border-radius: 100%;
-        background: rgba(255, 81, 81, 0.1);
-        border: 2.5px solid #ff5151;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        position: relative;
-        overflow: hidden;
-    }
-
     .more-circle {
         background: rgba(255, 81, 81, 0.1);
     }
@@ -166,37 +149,10 @@
         transition: background-color 0.2s ease;
     }
 
-    .story-circle:hover {
-        transform: scale(1.1);
-    }
-
-    .story-circle:hover .hover-circle {
-        background: rgba(255, 81, 81, 0.3);
-    }
-
     .patient-circle-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
-    }
-
-    .patient-name {
-        font-size: 0.75rem;
-        color: #666;
-        font-weight: 500;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .section-header {
-        font-size: 1rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        margin-bottom: 1.5rem;
-        text-align: center;
-        letter-spacing: 0.025em;
-        border-top: 1px solid #661126;
-        padding-top: 2rem;
     }
 </style>

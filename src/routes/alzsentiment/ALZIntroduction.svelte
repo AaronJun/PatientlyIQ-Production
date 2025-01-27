@@ -21,7 +21,7 @@
             </h2>
 
             <div class="w-10/12 mx-auto mt-16">
-            <h3 class="section-header text-lg font-semibold place-content-center mx-auto px-4 text-slate-500 mb-6">1<br> The Paradox of Knowledge</h3>    
+            <h3 class="section-header text-lg font-semibold place-content-center mx-auto px-4 text-slate-500 mb-6">The Paradox of Knowledge</h3>    
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
                 We often talk about medical breakthroughs and genetic testing as unalloyed goods – more knowledge means better outcomes. <br><br> Or so we assume. <br> <br></p>
                 <ALZPatientQuoteCards />

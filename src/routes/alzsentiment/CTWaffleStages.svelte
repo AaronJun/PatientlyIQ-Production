@@ -284,7 +284,6 @@ function createVisualization(animate = false) {
                 .attr("fill", "#828487")
                 .attr("font-size", "7.25px")
                 .attr("font-weight", "800")
-                .attr("font-family", "IBM Plex Sans Condensed")
                 .text(stage.name)
                 .style("opacity", animate ? 0 : 1);
 

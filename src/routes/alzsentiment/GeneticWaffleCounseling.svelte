@@ -390,7 +390,8 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
+<div class="relative flex flex-col bg-slate-50 py-8 place-content-center items-center mx-auto justify-center w-full mt-12" bind:this={containerRef}>
+    
     <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
         2.2A: Genetic Counseling Sentiment Analysis
     </h3>
@@ -408,7 +409,7 @@
             </div>
             
             <div class="mt-8 lg:col-span-3">
-                <GeneticPatientQuoteCards />
+                <GeneticPatientQuoteCards />    
             </div>
         </div>
         <p class="caption text-sm max-w-96 font-serif text-left mx-auto">

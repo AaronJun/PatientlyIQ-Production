@@ -23,6 +23,7 @@
         </div>
         <GeneticWaffleCounseling {geneticCounselingData} />
         </div>
+        
 
 <style>
     .subsection-header {
