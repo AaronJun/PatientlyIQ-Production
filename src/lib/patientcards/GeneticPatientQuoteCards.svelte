@@ -60,7 +60,7 @@
             >
                 <div class="flex flex-row items-center align-middle gap-3 mb-3">
                     <div 
-                        class="h-3 w-3 rounded-full shrink-0"
+                        class="h-2 w-2 rounded-full shrink-0"
                         style:background-color={colorScale(quote.sentiment)}
                     >
                     </div>
@@ -72,7 +72,7 @@
                 </div>
                     <div class="flex flex-col gap-2 items-baseline">
                    
-       <h3 class="text-sm font-semibold text-slate-800 shrink-0">{quote.name}</h3>
+       <h3 class="text-sm font-medium text-slate-800 shrink-0">{quote.name}</h3>
                 </div>
                 
                 <div class="mt-2">
