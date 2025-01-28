@@ -413,9 +413,9 @@
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="w-full max-w-6xl mx-auto px-4">
+    <div class="w-full max-w-4xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-            <div class="lg:col-span-7">
+            <div class="col-span-9 lg:col-span-9">
                 <div class="chart-container">
                     <svg bind:this={svg}></svg>
                 </div>

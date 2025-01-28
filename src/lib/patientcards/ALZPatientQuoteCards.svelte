@@ -106,7 +106,7 @@
     });
 </script>
 
-<div class="max-w-6xl bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center items-center mx-auto">
+<div class="w-full bg-blue-50 text-slate-800 px-12 pt-12 pb-4 outline-dashed outline-1 place-content-center items-center mx-auto">
     <div class="flex justify-center">
         <div 
             bind:this={containerRef}

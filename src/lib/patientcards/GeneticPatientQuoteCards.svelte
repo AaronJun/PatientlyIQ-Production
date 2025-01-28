@@ -47,7 +47,7 @@
     }
 </script>
 
-<div class="forum-container w-96 max-w-3xl p-2">
+<div class="forum-container w-96 min-h-fit max-w-3xl p-2">
     {#each patientData.patients.slice(0, visibleQuotes) as quote, index (quote.id)}
         <div class="relative mb-2">
             {#if index > 0}
@@ -55,8 +55,8 @@
             {/if}
             <div 
                 transition:fade={{ duration: 500 }}
-                class="forum-post bg-white rounded-lg shadow-sm p-4 {index > 0 ? 'ml-6' : ''}"
-                style:border="1px solid {colorScale(quote.sentiment)}"
+                class="forum-post bg-white rounded-lg shadow-md px-4 pt-4 pb-6 {index > 0 ? 'ml-6' : ''}"
+                style:border=".625px solid {colorScale(quote.sentiment)}"
             >
                 <div class="flex flex-row items-center align-middle gap-3 mb-3">
                     <div 
@@ -96,4 +96,5 @@
     .forum-post:hover {
         transform: translateY(-2px);
     }
+
 </style>

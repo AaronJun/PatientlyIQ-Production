@@ -163,4 +163,12 @@
         padding-top: 4.25rem;
         padding-top: 4.25rem;
     }
+
+
+    :global(.section-header) {
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 400;
+        color: #FF4A4A
+    }
 </style>
