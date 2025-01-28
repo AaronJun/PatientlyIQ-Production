@@ -21,10 +21,10 @@
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 275;
-    const legendWidth = 30;
+    const width = 300;
+    const legendWidth = 90;
     let height: number;
-    const cellSize = 20;
+    const cellSize = 26;
     const cellPadding = 2;
     const stageSpacing = 0;
     const labelHeight = 50;

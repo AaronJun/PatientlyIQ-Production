@@ -12,9 +12,9 @@
 </script>
 
 <div class="flex-row text-center items-center place-content-center pt-8">
-    <div class="max-w-5xl mx-auto place-content-center">
+    <div class="max-w-4xl mx-auto px-4 place-content-center">
 
-            <div class="mt-16">
+            <div class="w-10/12 mx-auto mt-16">
             <h3 class="subsection-header text-lg font-semibold  text-slate-500 mb-6">2.2<br>Infrequent Mentions of Genetic Counseling</h3>    
             <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
             The APOE4 community's online conversations do not often mention genetic counseling. When the topic does come up, the sentiment is mixed, with negative sentiments driven by a lack of clarity or firsthand knowledge about what genetic counseling entails. 
@@ -28,7 +28,7 @@
 <style>
     .subsection-header {
         font-family: 'IBM Plex Sans', sans-serif;
-        border-top: .5px solid #116661;
+        border-top: 1px solid #116661;
         padding-top: 4rem;
         margin-top: 2rem;
     }

@@ -1,33 +1,21 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";
-    import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
+    import * as d3 from 'd3';
 
-    // Use the provided data structure
     export let data = {
-        stages: [{
-            name: "Genetic Counseling",
-            sentiments: {
-                "Entirely Negative": 4,
-                "Somewhat Negative": 12,
-                "Neutral": 16,
-                "Somewhat Positive": 4,
-                "Entirely Positive": 2
-            }
-        }]
+        stages: []
     };
 
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 275;
-    const legendWidth = 30;
+    const width = 500;
     let height: number;
-    const cellSize = 20;
+    const cellSize = 18;
     const cellPadding = 2;
-    const stageSpacing = 0;
-    const labelHeight = 50;
+    const stageSpacing = 20;
+    const labelHeight = 40;
     const gridWidth = 5;
     const legendHeight = 0;
     const animationDuration = 800;
@@ -41,17 +29,24 @@
     };
 
     const stageDescriptions = {
-        "Genetic Counseling": "Conversation sentiments from discussions surrounding or mentioning genetic counseling."
+        "Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers about clinical trials, excluding specific mentions of Alzheon's programs.",
+        "Alzheon Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers specifically about Alzheon's research and clinical trials."
     };
 
     const quotes = {
-        "Genetic Counseling": {
-            sentiment: "Entirely Positive",
-            persona: "Carrier",
-            index: 0,
-            text: "I'd recommend seeing a genetic counselor. I met with one after my mom was diagnosed with Alzheimer's. They explained that in my case (no other family history of AD) genetic testing wouldn't likely provide any definitive answers."
-        }
-    };
+        "Clinical Trials": {
+            sentiment: "Entirely Negative",
+            persona: "Carrier, APOE4/4",
+            index: 5,
+            text: "My reaction is no way am I going to be a guinea pig for this snake oil. There is no cure, only the ability to possibly prolong the misery."
+        }, 
+        "Alzheon Clinical Trials": {
+            sentiment: "Somewhat Positive",
+            persona: "Carrier, APOE4/4",
+            index: 10,
+            text: "I'm a 4/4 and I feel that the risks are too high. I'm afraid of dementia but Im also afraid of having a stroke or worse. I'm hopeful that ALZ-801 proves to be a safe and effective treatment for us."
+        },
+        };
 
     function getMaxSquaresPerStage() {
         return Math.max(...data.stages.map(stage => 
@@ -153,6 +148,16 @@
                 .attr("in", "SourceGraphic")
                 .attr("in2", "shadow")
                 .attr("operator", "over");
+
+
+            if (animate) {
+                stageGroup.select(`rect[filter="url(#${filterId})"]`)
+                    .transition()
+                    .delay((col * 50) + ((totalRows - row) * 50))
+                    .duration(animationDuration)
+                    .ease(d3.easeBounceOut)
+                    .attr("y", yPosition - 2);
+            }
         }
 
         const square = stageGroup.append("rect")
@@ -166,10 +171,10 @@
 
         if (isHighlighted) {
             square.style("stroke", "#161616")
-                .style("stroke-width", "1.5px")
+                .style("stroke-width", "1px")
                 .style("stroke-dasharray", "3,2")
-                .style("filter", "brightness(1.5)")
-                .style("filter", "saturate(2)");
+                .style("filter","brightness(1.5)")
+                .style("filter","saturate(2)")
         }
 
         if (animate) {
@@ -204,69 +209,62 @@
                     square.transition()
                         .duration(200)
                         .style("stroke-width", "1.5px")
-                        .style("filter", "brightness(1.5)");
-                }
+                        .style("filter","brightness(1.5)")
+                        .style("filter","saturate(2)")
+                    }
             });
 
         return countBySentiment[sentiment]++;
     }
 
-    function createVisualization(animate = false) {
-        d3.select(svg).selectAll("*").remove();
+   
+function createVisualization(animate = false) {
+    d3.select(svg).selectAll("*").remove();
 
-        const svgElement = d3.select(svg)
-            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1 + legendWidth, height]);
+    const svgElement = d3.select(svg)
+        .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
 
-        const stageWidth = gridWidth * (cellSize + cellPadding);
-        const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
-        const startX = (width - totalWidth) / 2;
+    const stageWidth = gridWidth * (cellSize + cellPadding);
+    const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
+    const startX = (width - totalWidth) / 2;
 
-        // Modified legend positioning
-        const legendItemHeight = 15;
-        const legendStartY = labelHeight + 20;
-        const legendStartX = startX + totalWidth + 30;
+    // Modified legend positioning
+    const legendWidth = 120; // Fixed width for right-side legend
+    const legendItemHeight = 15; // Height for each legend item
+    const legendStartY = labelHeight + 20; // Align with the chart start
+    const legendStartX = startX + totalWidth + 30; // Position to the right of the chart
 
-        const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${legendStartX}, ${legendStartY})`)
-            .style("opacity", animate ? 0 : 1);
+    const legendGroup = svgElement.append("g")
+        .attr("transform", `translate(${legendStartX}, ${legendStartY})`)
+        .style("opacity", animate ? 0 : 1);
 
-        if (animate) {
-            legendGroup.transition()
-                .duration(animationDuration / 2)
-                .style("opacity", 1);
-        }
+    if (animate) {
+        legendGroup.transition()
+            .duration(animationDuration / 2)
+            .style("opacity", 1);
+    }
 
-        Object.entries(colors).forEach(([sentiment, color], i) => {
-            const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(0, ${i * legendItemHeight})`);
+    Object.entries(colors).forEach(([sentiment, color], i) => {
+        const legendItem = legendGroup.append("g")
+            .attr("transform", `translate(0, ${i * legendItemHeight})`);
 
-            legendItem.append("rect")
-                .attr("width", 7.25)
-                .attr("height", 7.25)
-                .attr("rx", 1)
-                .attr("y", -5)
-                .attr("fill", color);
+        legendItem.append("rect")
+            .attr("width", 7.25)
+            .attr("height", 7.25)
+            .attr("rx", 1)
+            .attr("y", -5)
+            .attr("fill", color);
 
-            legendItem.append("text")
-                .attr("x", 12)
-                .attr("y", 0)
-                .attr("fill", "#6D635B")
-                .attr("font-size", "5px")
-                .attr("font-family", "IBM Plex Mono")
-                .attr("alignment-baseline", "middle")
-                .text(sentiment);
+        legendItem.append("text")
+            .attr("x", 12)
+            .attr("y", 0)
+            .attr("fill", "#6D635B")
+            .attr("font-size", "5px")
+            .attr("font-family", "IBM Plex Mono")
+            .attr("alignment-baseline", "middle")
+            .text(sentiment);
+    });
 
-            legendItem
-                .style("cursor", "pointer")
-                .on("mouseenter", () => {
-                    hoveredCategory = sentiment;
-                    updateHighlights();
-                })
-                .on("mouseleave", () => {
-                    hoveredCategory = null;
-                    updateHighlights();
-                });
-        });
 
         data.stages.forEach((stage, stageIndex) => {
             const xOffset = startX + stageIndex * (stageWidth + stageSpacing);
@@ -275,20 +273,21 @@
                 .attr("class", `stage-${stageIndex}`)
                 .attr("transform", `translate(${xOffset}, ${labelHeight})`);
 
+            // Add stage label
             const labelGroup = stageGroup.append("g")
                 .style("cursor", "help");
 
             labelGroup.append("text")
                 .attr("x", stageWidth / 2)
-                .attr("y", -20)
+                .attr("y", -15) // Changed from 10 to -15 to move it up
                 .attr("text-anchor", "middle")
                 .attr("fill", "#828487")
                 .attr("font-size", "7.25px")
                 .attr("font-weight", "800")
-                .attr("font-family", "IBM Plex Sans Condensed")
                 .text(stage.name)
                 .style("opacity", animate ? 0 : 1);
 
+            // Track sentiment counts for quote identification
             let countBySentiment = {};
             Object.keys(stage.sentiments).forEach(sentiment => {
                 countBySentiment[sentiment] = 0;
@@ -304,7 +303,7 @@
                     const row = Math.floor(squareCount / gridWidth);
                     const yPosition = (totalRows - 1 - row) * (cellSize + cellPadding);
 
-                    createSquare(
+            createSquare(
                         stageGroup,
                         col,
                         row,
@@ -323,7 +322,7 @@
             const total = Object.values(stage.sentiments).reduce((a, b) => a + b, 0);
             stageGroup.append("text")
                 .attr("x", stageWidth / 2)
-                .attr("y", totalRows * (cellSize + cellPadding) + 15)
+                .attr("y", totalRows * (cellSize + cellPadding)+20)
                 .attr("text-anchor", "middle")
                 .attr("fill", "#6D635B")
                 .attr("font-size", "10px")
@@ -350,28 +349,6 @@
         });
     }
 
-    let hoveredCategory: string | null = null;
-    let hoveredStage: string | null = null;
-
-    function updateHighlights() {
-        const svgElement = d3.select(svg);
-        
-        svgElement.selectAll("rect")
-            .style("opacity", function() {
-                const element = d3.select(this);
-                if (!hoveredCategory && !hoveredStage) {
-                    return 0.8;
-                }
-                
-                const isMatchingCategory = hoveredCategory && 
-                    element.attr("fill") === colors[hoveredCategory];
-                const isMatchingStage = hoveredStage && 
-                    element.closest(`.stage-${stages.indexOf(hoveredStage)}`).size() > 0;
-                
-                return (isMatchingCategory || isMatchingStage) ? 1 : 0.2;
-            });
-    }
-
     function showTooltip(event, content) {
         const tooltip = d3.select("#tooltip");
         const tooltipWidth = 300;
@@ -380,7 +357,7 @@
         let leftPos = event.clientX + 20;
         if (leftPos + tooltipWidth > windowWidth) {
             leftPos = event.clientX - tooltipWidth - 20;
-        }
+}
 
         tooltip
             .style("visibility", "visible")
@@ -404,38 +381,29 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 place-content-center items-center mx-auto justify-center w-full mt-12" bind:this={containerRef}>
+<div class="relative flex flex-col bg-slate-50 items-center justify-center w-full mt-12" bind:this={containerRef}>
     <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
-        2.2A: Genetic Counseling Sentiment Analysis
+        3.1a: Expressed Sentiment, Clinical Trials
     </h3>
 
     <div id="tooltip" 
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="w-full max-w-6xl mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-            <div class="lg:col-span-7">
-                <div class="chart-container">
-                    <svg bind:this={svg}></svg>
-                </div>
-            </div>
-            
-            <div class="mt-8 lg:col-span-3">
-                <GeneticPatientQuoteCards />    
-            </div>
-        </div>
-        <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
-            Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
-        </p>
-
+    <div class="chart-container max-w-4xl flex items-center justify-center">
+        <svg bind:this={svg}></svg>
     </div>
+    <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
+        The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. Alzheon's clinical trials, by comparison, provoke a more positive community response.
+     </p>
+    
 </div>
 
 <style>
     .chart-container {
         width: 100%;
         height: 100%;
+        min-height: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -450,5 +418,11 @@
     :global(.tooltip-title) {
         font-weight: 500;
         margin-bottom: 0.5rem;
+    }
+
+    :global(.caption) {
+        border-top: 1px solid #E5E7EB;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
     }
 </style>

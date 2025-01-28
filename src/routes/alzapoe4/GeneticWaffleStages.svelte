@@ -1,35 +1,22 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import "carbon-components-svelte/css/all.css";
-    import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
 
-    // Use the provided data structure
     export let data = {
-        stages: [{
-            name: "Genetic Counseling",
-            sentiments: {
-                "Entirely Negative": 4,
-                "Somewhat Negative": 12,
-                "Neutral": 16,
-                "Somewhat Positive": 4,
-                "Entirely Positive": 2
-            }
-        }]
+        stages: []
     };
 
     let svg;
     let containerRef;
     let hasAnimated = false;
-    const width = 275;
-    const legendWidth = 30;
-    let height: number;
-    const cellSize = 20;
+    const width = 925;
+    let height;
+    const cellSize = 16;
     const cellPadding = 2;
-    const stageSpacing = 0;
-    const labelHeight = 50;
+    const stageSpacing = 80;
+    const labelHeight = 40;
     const gridWidth = 5;
-    const legendHeight = 0;
+    const legendHeight = 50;
     const animationDuration = 800;
 
     const colors = {
@@ -41,17 +28,24 @@
     };
 
     const stageDescriptions = {
-        "Genetic Counseling": "Conversation sentiments from discussions surrounding or mentioning genetic counseling."
+        "Clinical Trials": "The moment of first learning about APOE4 status and beginning to understand its implications. This stage often involves genetic testing results, initial research, and processing the emotional impact of this health information.",
+        "Alzheon Clinical Trials": "The early phase of developing a strategy to address APOE4 status. This includes first medical consultations, lifestyle research, and creating initial action plans for health management."
     };
 
     const quotes = {
-        "Genetic Counseling": {
-            sentiment: "Entirely Positive",
-            persona: "Carrier",
-            index: 0,
-            text: "I'd recommend seeing a genetic counselor. I met with one after my mom was diagnosed with Alzheimer's. They explained that in my case (no other family history of AD) genetic testing wouldn't likely provide any definitive answers."
-        }
-    };
+        "Clinical Trials": {
+            sentiment: "Entirely Negative",
+            persona: "Carrier, APOE4/4",
+            index: 5,
+            text: "And I know that I can't let my stress about this get me sick. But right now, I'm in a pretty bad mental place about it. This is all very new."
+        },
+        "Alzheon Clinical Trials": {
+            sentiment: "Somewhat Negative",
+            persona: "Carrier, APOE4/4",
+            index: 15,
+            text: "My doctor means well but admits she doesn't have enough APOE4 patients to really understand our unique needs. I feel like I'm teaching her sometimes."
+        },
+        };
 
     function getMaxSquaresPerStage() {
         return Math.max(...data.stages.map(stage => 
@@ -153,6 +147,16 @@
                 .attr("in", "SourceGraphic")
                 .attr("in2", "shadow")
                 .attr("operator", "over");
+
+
+            if (animate) {
+                stageGroup.select(`rect[filter="url(#${filterId})"]`)
+                    .transition()
+                    .delay((col * 50) + ((totalRows - row) * 50))
+                    .duration(animationDuration)
+                    .ease(d3.easeBounceOut)
+                    .attr("y", yPosition - 2);
+            }
         }
 
         const square = stageGroup.append("rect")
@@ -168,8 +172,7 @@
             square.style("stroke", "#161616")
                 .style("stroke-width", "1.5px")
                 .style("stroke-dasharray", "3,2")
-                .style("filter", "brightness(1.5)")
-                .style("filter", "saturate(2)");
+                .style("filter","brightness(1.5)")
         }
 
         if (animate) {
@@ -204,8 +207,8 @@
                     square.transition()
                         .duration(200)
                         .style("stroke-width", "1.5px")
-                        .style("filter", "brightness(1.5)");
-                }
+                        .style("filter","brightness(1.5)")
+                    }
             });
 
         return countBySentiment[sentiment]++;
@@ -215,19 +218,19 @@
         d3.select(svg).selectAll("*").remove();
 
         const svgElement = d3.select(svg)
-            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1 + legendWidth, height]);
+            .attr("viewBox", [-(width * 0.1)/2, 0, width * 1.1, height]);
 
         const stageWidth = gridWidth * (cellSize + cellPadding);
         const totalWidth = data.stages.length * (stageWidth + stageSpacing) - stageSpacing;
         const startX = (width - totalWidth) / 2;
 
-        // Modified legend positioning
-        const legendItemHeight = 15;
-        const legendStartY = labelHeight + 20;
-        const legendStartX = startX + totalWidth + 30;
+    
+        const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
+        const legendItemWidth = maxLegendWidth / Object.keys(colors).length;
+        const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
 
         const legendGroup = svgElement.append("g")
-            .attr("transform", `translate(${legendStartX}, ${legendStartY})`)
+            .attr("transform", `translate(${legendStartX}, ${height - legendHeight})`)
             .style("opacity", animate ? 0 : 1);
 
         if (animate) {
@@ -238,34 +241,46 @@
 
         Object.entries(colors).forEach(([sentiment, color], i) => {
             const legendItem = legendGroup.append("g")
-                .attr("transform", `translate(0, ${i * legendItemHeight})`);
+                .attr("transform", `translate(${i * legendItemWidth + legendItemWidth/2}, 0)`);
 
             legendItem.append("rect")
                 .attr("width", 7.25)
                 .attr("height", 7.25)
-                .attr("rx", 1)
-                .attr("y", -5)
+                .attr("rx", 0.5)
+                .attr("x", -3.625) // Center the rectangle
+                .attr("y", -12)
                 .attr("fill", color);
 
-            legendItem.append("text")
-                .attr("x", 12)
-                .attr("y", 0)
+            // Add text with ellipsis if too long
+            const text = legendItem.append("text")
+                .attr("y",8)
                 .attr("fill", "#6D635B")
-                .attr("font-size", "5px")
-                .attr("font-family", "IBM Plex Mono")
-                .attr("alignment-baseline", "middle")
+                .attr("font-size", "8px")
+                .attr("font-family", "IBM Plex Sans Condensed")
+                .attr("text-anchor", "middle") // Center the text
                 .text(sentiment);
 
-            legendItem
-                .style("cursor", "pointer")
-                .on("mouseenter", () => {
-                    hoveredCategory = sentiment;
-                    updateHighlights();
-                })
-                .on("mouseleave", () => {
-                    hoveredCategory = null;
-                    updateHighlights();
-                });
+            // Truncate text if too long
+            const maxTextWidth = legendItemWidth;
+            const textElement = text.node();
+            if (textElement && textElement.getComputedTextLength() > maxTextWidth) {
+                let textContent = sentiment;
+                while (textElement.getComputedTextLength() > maxTextWidth && textContent.length > 0) {
+                    textContent = textContent.slice(0, -1);
+                }
+                text.text(textContent + '...');
+            }
+
+            // Add tooltip for truncated text
+            if (text.text().endsWith('...')) {
+                legendItem
+                    .on("mouseenter", (event) => {
+                        showTooltip(event, sentiment);
+                    })
+                    .on("mouseleave", () => {
+                        hideTooltip();
+                    });
+            }
         });
 
         data.stages.forEach((stage, stageIndex) => {
@@ -275,6 +290,7 @@
                 .attr("class", `stage-${stageIndex}`)
                 .attr("transform", `translate(${xOffset}, ${labelHeight})`);
 
+            // Add stage label
             const labelGroup = stageGroup.append("g")
                 .style("cursor", "help");
 
@@ -289,6 +305,7 @@
                 .text(stage.name)
                 .style("opacity", animate ? 0 : 1);
 
+            // Track sentiment counts for quote identification
             let countBySentiment = {};
             Object.keys(stage.sentiments).forEach(sentiment => {
                 countBySentiment[sentiment] = 0;
@@ -304,7 +321,7 @@
                     const row = Math.floor(squareCount / gridWidth);
                     const yPosition = (totalRows - 1 - row) * (cellSize + cellPadding);
 
-                    createSquare(
+            createSquare(
                         stageGroup,
                         col,
                         row,
@@ -350,28 +367,6 @@
         });
     }
 
-    let hoveredCategory: string | null = null;
-    let hoveredStage: string | null = null;
-
-    function updateHighlights() {
-        const svgElement = d3.select(svg);
-        
-        svgElement.selectAll("rect")
-            .style("opacity", function() {
-                const element = d3.select(this);
-                if (!hoveredCategory && !hoveredStage) {
-                    return 0.8;
-                }
-                
-                const isMatchingCategory = hoveredCategory && 
-                    element.attr("fill") === colors[hoveredCategory];
-                const isMatchingStage = hoveredStage && 
-                    element.closest(`.stage-${stages.indexOf(hoveredStage)}`).size() > 0;
-                
-                return (isMatchingCategory || isMatchingStage) ? 1 : 0.2;
-            });
-    }
-
     function showTooltip(event, content) {
         const tooltip = d3.select("#tooltip");
         const tooltipWidth = 300;
@@ -380,7 +375,7 @@
         let leftPos = event.clientX + 20;
         if (leftPos + tooltipWidth > windowWidth) {
             leftPos = event.clientX - tooltipWidth - 20;
-        }
+}
 
         tooltip
             .style("visibility", "visible")
@@ -404,31 +399,17 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 place-content-center items-center mx-auto justify-center w-full mt-12" bind:this={containerRef}>
-    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
-        2.2A: Genetic Counseling Sentiment Analysis
+<div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
+    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">        
+        2.1a: Expressed Sentiment, Clinical Trials
     </h3>
 
     <div id="tooltip" 
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="w-full max-w-6xl mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-            <div class="lg:col-span-7">
-                <div class="chart-container">
-                    <svg bind:this={svg}></svg>
-                </div>
-            </div>
-            
-            <div class="mt-8 lg:col-span-3">
-                <GeneticPatientQuoteCards />    
-            </div>
-        </div>
-        <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
-            Community conversations suggest a lack of clarity around the beneficial role genetic counseling plays in genetic testing and follow-on support.
-        </p>
-
+    <div class="chart-container flex items-center justify-center">
+        <svg bind:this={svg}></svg>
     </div>
 </div>
 
@@ -436,6 +417,7 @@
     .chart-container {
         width: 100%;
         height: 100%;
+        min-height: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
