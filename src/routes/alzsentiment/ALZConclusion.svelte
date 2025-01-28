@@ -28,7 +28,7 @@
 <style>
     .subsection-header {
         font-family: 'IBM Plex Sans', sans-serif;
-        border-top: 1px solid #116661;
+        border-top: .45px solid #111666;
         padding-top: 4rem;
         margin-top: 2rem;
     }

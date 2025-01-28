@@ -150,4 +150,9 @@
         align-items: center;
         gap: 0.5rem;
     }
+
+    .vignette {
+        border-top: .5px dotted #116661;
+        border-bottom: .5px dotted #116661;
+    }
 </style>

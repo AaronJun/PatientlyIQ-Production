@@ -161,7 +161,7 @@
     function createCardContent(d) {
         if (d.isIntro) {
             return `
-                <div class="h-full w-full flex flex-col items-center justify-top bg-gradient-to-b from-orange-50 to-white px-4 sm:px-8 pt-16 sm:pt-12 pb-8">
+                <div class="h-full w-full flex flex-col items-center justify-top bg-gradient-to-b from-orange-50 to-white pt-12 px-8 pb-6">
                     <div class="cardcircle flex flex-col items-center gap-8">
                         <img 
                             src="${getImagePath(d.img)}"
@@ -180,9 +180,9 @@
                                 ${d.bio}
                             </p>
                         </div>
-                        <div class="flex flex-wrap gap-2 items-end mb-6 sm:mb-8">
+                        <div class="flex flex-wrap gap-2 mb-6 sm:mb-8">
                             ${[d.age, d.disease, d.persona].map(tag => `
-                                <span class="px-3 py-1.5 bg-orange-100 rounded-full text-xs font-medium text-orange-900">
+                                <span class="px-3 py-1.5 bg-orange-200 rounded-full text-xs font-semibold text-slate-900">
                                     ${tag}
                                 </span>
                             `).join('')}
@@ -196,7 +196,7 @@
             return `
                 <div class="h-full mx-auto px-8 sm:px-24 pt-8 sm:pt-12 pb-8 sm:pb-10 flex flex-col items-center justify-center">
                     <div class="mb-6 sm:mb-8">
-                        <p class="text-3xl sm:text-4xl text-orange-50">"</p>
+                        <p class="text-3xl sm:text-4xl font-serif text-orange-50">"</p>
                     </div>
                     <p class="text-xl sm:text-2xl font-serif text-orange-50 text-center leading-normal">
                         ${d.quote}
@@ -213,26 +213,30 @@
             container.innerHTML = `
                 <div class="w-full flex-col">
                     <div class="w-full sm:w-5/6">
-                        <h3 class="text-base font-semibold text-orange-400 mb-2">
+                        <h3 class="text-base font-semibold text-[#FF4A4A] mb-2">
                             ${d.context}
                         </h3>
-                        <p class="text-base sm:text-sm prose text-pretty font-serif text-slate-700 mb-12">
+                        <p class="text-lg sm:text-lg prose text-pretty font-serif text-slate-800 mb-12">
                             ${d.contextDescription}
                         </p>
                     </div>
                     
-                    <div class="flex flex-col w-full sm:w-5/6 space-evenly gap-6 sm:gap-8 mt-4 sm:mt-6 pb-2 border-b border-slate-200">
-                        <div class="bio-item basis-1/3 flex flex-col gap-4">
-                            <h3 class="text-xs font-bold text-orange-400">Goals</h3>
-                            <p class="text-sm text-slate-800 font-serif">${d.goals || 'Not specified'}</p>
+                    <div class="flex flex-col space-evenly gap-6 sm:gap-8 mt-4 sm:mt-6 pb-2">
+                        <div class="flex flex-col gap-4">
+                            <h3 class="px-2 py-1.5 max-w-fit bg-green-200 rounded-full text-xs font-semibold text-slate-900">
+                            Goals</h3>
+                            <p class="text-sm text-slate-800">${d.goals || 'Not specified'}</p>
                         </div>
                         <div class="bio-item basis-1/3 flex flex-col gap-4">
-                            <h3 class="text-xs font-bold text-orange-400">Strengths</h3>
-                            <p class="text-sm text-slate-800 font-serif">${d.strengths || 'Not specified'}</p>
+                            <h3 class="px-3 py-1.5 max-w-fit bg-red-200 rounded-full text-xs font-semibold text-slate-900">
+                            Strengths
+                            </h3>
+                            <p class="text-sm text-slate-800">${d.strengths || 'Not specified'}</p>
                         </div>
                         <div class="bio-item basis-1/3 flex flex-col gap-4">
-                            <h3 class="text-xs font-bold text-orange-400">Anxieties</h3>
-                            <p class="text-sm text-slate-800 font-serif">${d.anxieties || 'Not specified'}</p>
+                       <h3 class="px-3 py-1.5 max-w-fit bg-yellow-200 rounded-full text-xs font-semibold text-slate-900">
+                       Anxieties</h3>
+                            <p class="text-sm text-slate-800">${d.anxieties || 'Not specified'}</p>
                         </div>
                     </div>
                 </div>
@@ -240,7 +244,7 @@
         } else {
             container.innerHTML = `
                 <div class="w-full sm:w-5/6 mb-4">
-                    <h3 class="text-xs font-bold text-orange-400 mb-2">
+                    <h3 class="text-base capitalize font-bold text-[#FF4A4A] mb-2">
                         ${d.context}
                     </h3>
                     <p class="text-base sm:text-base prose text-pretty font-serif text-slate-700 mb-4">
@@ -289,10 +293,10 @@
             .duration(600)
             .ease(d3.easeQuadInOut)
             .style('transform', (d, i) => {
-                const translateY = i === active ? 0 : '8.25px';
-                const translateZ = i === active ? 0 : '-12px';
+                const translateY = i === active ? 0 : '12.25px';
+                const translateZ = i === active ? 0 : '-10px';
                 const scale = i === active ? 1 : 0.95;
-                const rotate = i === active ? 0 : Math.floor(Math.random() * 12) - 10;
+                const rotate = i === active ? 0 : Math.floor(Math.random() * 21) - 10;
                 return `translate3d(0, ${translateY}, ${translateZ}) scale(${scale}) rotate(${rotate}deg)`;
             });
     }
@@ -305,7 +309,7 @@
         container.selectAll('.journey-card')
             .data(expandedCards, (d, i) => `${d.type}-${d.isQuote}-${i}`)
             .join('div')
-            .attr('class', 'journey-card absolute inset-0 rounded-3xl shadow-xl overflow-hidden')
+            .attr('class', 'journey-card pt-12 absolute inset-0 rounded-2xl shadow-xl overflow-hidden')
             .style('background-color', d => d.isQuote ? '#EEF2FF' : 'white')
             .each(function(d) {
                 const content = createCardContent(d);
@@ -340,13 +344,13 @@
     }
 </script>
 
-<div class="w-full px-8 mx-auto">
+<div class="w-full max-w-[900px] mx-auto px-4">
     {#if selectedPatient}
         {#if !showGrid}
             <div class="flex justify-center">
                 <div 
                     bind:this={containerRef}
-                    class="relative h-[40rem] sm:h-[42.25rem] w-full sm:w-[] md:w-[56rem] lg:w-[64rem] cursor-grab active:cursor-grabbing"
+                    class="relative h-[40rem] sm:h-[42.25rem] w-full cursor-grab active:cursor-grabbing"
                     on:touchstart={handleTouchStart}
                     on:touchmove={handleTouchMove}
                     on:touchend={handleTouchEnd}
@@ -355,7 +359,7 @@
                 </div>
             </div>
 
-            <div class="flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-16 sm:mt-24 px-4 md:px-0">
+            <div class="flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-28 sm:mt-24 px-4 md:px-0">
                 <button
                     on:click={handlePrev}
                     class="h-10 w-10 rounded-full bg-orange-600 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300">
@@ -440,7 +444,7 @@
                             {:else if card.isQuote}
                                 <div class="h-full w-full flex flex-col items-center justify-center bg-[#FF4A4A] p-4">
                                     <div>
-                                        <p class="text-xl text-orange-50 font-serif"> " </p>
+                                        <p class="text-xl text-orange-100 font-serif"> " </p>
                                     </div>
                                     <p class="text-xs font-serif text-orange-50 text-center line-clamp-3">
                                         {card.quote}
@@ -448,7 +452,7 @@
                                 </div>
                             {:else}
                                 <div class="h-full w-full flex flex-col p-6">
-                                    <h3 class="text-[9.25px] capitalize font-bold text-orange-400 mb-2">
+                                    <h3 class="text-[9.25px] capitalize font-bold text-[#FF4A4A] mb-2">
                                         {card.context}
                                     </h3>
                                     <p class="text-[11px] text-slate-800 line-clamp-2">
