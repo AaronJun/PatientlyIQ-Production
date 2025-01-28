@@ -8,13 +8,13 @@
     export let categories = positiveSentimentData.categories;
     
     let svg;
-    let width = 900;
+    let width = 800;
     let height: number;
-    let cellSize = 16;
+    let cellSize = 14;
     let cellPadding = 2;
     let stageSpacing = 60;
     let labelHeight = 40;
-    let legendHeight = 50;
+    let legendHeight = 20;
     
     const gridWidth = 5;
     let hoveredCategory: string | null = null;
@@ -174,7 +174,7 @@
         });
 
        // Create horizontal legend at the bottom
-        const legendY = chartHeight - 20;
+        const legendY = chartHeight - 10;
         const maxLegendWidth = Math.min(width * 0.8, totalWidth); // Limit legend width
         const legendItemWidth = maxLegendWidth / categories.length;
         const legendStartX = startX + (totalWidth - maxLegendWidth) / 2; // Center legend
@@ -190,7 +190,7 @@
             legendItem.append("rect")
                 .attr("width", 10)
                 .attr("height", 10)
-                .attr("rx", 2)
+                .attr("rx", 1)
                 .attr("x", -5) // Center the rectangle
                 .attr("fill", categoryColors[category]);
 
@@ -199,6 +199,7 @@
                 .attr("y", 24)
                 .attr("fill", "#6D635B")
                 .attr("font-size", "8.25px")
+                .attr("font-family", "IBM Plex Sans Condensed")
                 .attr("text-anchor", "middle") // Center the text
                 .text(category);
 
@@ -299,7 +300,7 @@
 </script>
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12">
-    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
+    <h3 class="text-sm font-mono text-slate-800 px-4 py-2 text-left mb-12 uppercase underline underline-offset-4">
         1.2a: Main Drivers of Positive Sentiment, by Stage
     </h3>
     <div 
@@ -310,12 +311,7 @@
     <div class="chart-container flex items-center justify-center">
         <svg bind:this={svg}></svg>
     </div>
-    {#if insight}
-        <div class="mt-4 p-4 bg-white rounded-lg shadow-md border border-gray-200 max-w-3xl w-full">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Key Insight</h3>
-            <p class="text-gray-600">{insight}</p>
-        </div>
-    {/if}
+
 </div>
 
 <style>

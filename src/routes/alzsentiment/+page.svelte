@@ -71,7 +71,7 @@
     </div>
     
     <div class="vignette text-slate-800 pt-6 pb-8 place-content-center">        
-        <p class="text-sm max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-blue-100 text-left">
+        <p class="text-sm max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2  underline underline-offset-4 text-left">
            Community Vignette
        </p>
        <SwipeableJourneyCards selectedDisease="pompe" selectedId="maggie-p" />
@@ -154,5 +154,8 @@
     .vignette {
         border-top: .5px dotted #116661;
         border-bottom: .5px dotted #116661;
+        background-color: #f7f7f7;
+        padding-top: 4.25rem;
+        padding-top: 4.25rem;
     }
 </style>

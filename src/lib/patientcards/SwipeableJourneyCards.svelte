@@ -107,7 +107,7 @@
 
     function createVisualizationCard(card) {
         const chartContainer = document.createElement('div');
-        chartContainer.className = 'flex flex-col gap-6 mt-6';
+        chartContainer.className = 'flex flex-row gap-6 mt-6';
 
         const chartsWrapper = document.createElement('div');
         chartsWrapper.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6';
@@ -213,7 +213,7 @@
             container.innerHTML = `
                 <div class="w-full flex-col">
                     <div class="w-full sm:w-5/6">
-                        <h3 class="text-base font-semibold text-[#FF4A4A] mb-2">
+                        <h3 class="text-2xl sm:text-xl font-medium text-[#FF4A4A] mb-2">
                             ${d.context}
                         </h3>
                         <p class="text-lg sm:text-lg prose text-pretty font-serif text-slate-800 mb-12">
@@ -243,11 +243,11 @@
             `;
         } else {
             container.innerHTML = `
-                <div class="w-full sm:w-5/6 mb-4">
-                    <h3 class="text-base capitalize font-bold text-[#FF4A4A] mb-2">
+                <div class="w-full mb-4">
+                    <h3 class="text-2xl sm:text-xl font-medium capitalize font-bold text-[#FF4A4A] mb-2">
                         ${d.context}
                     </h3>
-                    <p class="text-base sm:text-base prose text-pretty font-serif text-slate-700 mb-4">
+                    <p class="text-base sm:text-base prose text-pretty font-serif text-slate-700 mb-2">
                         ${d.contextDescription}
                     </p>
                 </div>

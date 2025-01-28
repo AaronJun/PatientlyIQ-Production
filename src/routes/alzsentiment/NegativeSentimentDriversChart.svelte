@@ -8,13 +8,13 @@
     export let categories = negativeSentimentData.categories;
     
     let svg;
-    let width = 900;
+    let width = 800;
     let height: number;
-    let cellSize = 16;
+    let cellSize = 14;
     let cellPadding = 2;
     let stageSpacing = 60;
     let labelHeight = 40;
-    let legendHeight = 50;
+    let legendHeight = 20;
     
     const gridWidth = 5;
     let hoveredCategory: string | null = null;
@@ -235,7 +235,7 @@ const legendY = chartHeight - 20;
 
 <div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full">
     
-    <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">    
+    <h3 class="text-sm font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">    
         1.2b: Main Drivers of Negative Sentiment, by Stage
     </h3>
     <div 
