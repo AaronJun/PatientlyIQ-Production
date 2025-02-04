@@ -37,7 +37,7 @@
 
 	// Create a store for the selected metric
 	const selectedMetricStore = writable('compositeScore');
-	let selectedMetric: string;
+	$: allData = countryDataJson || [];
 
 	const metrics = [
 		{ value: 'compositeScore', label: 'Total Composite Score', higherIsBetter: true },
@@ -149,60 +149,62 @@ function handleCalculatorOpen() {
 	}
 </script>
 
-
-<div class="flex flex-col h-screen">
-    <!-- Map Container -->
-    <div class="flex-1 pt-16"> <!-- Add padding-top to account for header height -->
-        <BubbleMapper
-            bind:this={bubbleMapperComponent}
-            countryData={allData}
-            selectedMetric={$selectedMetricStore}
-            {rankedData}
-            {colorGradient}
-            higherIsBetter={selectedMetricInfo?.higherIsBetter}
-            onCountryClick={handleCountryClick}
-            onCountryHover={handleCountryHover}
-            on:dataLoaded={handleDataLoaded}
-        />
-    </div>
-
-    <!-- Bottom Sidebar -->
-	
-    <div class="fixed bottom-0 w-full  border-t border-gray-200">
-		<div class="header-filter-container">
-          
-        </div>
-		{#if allData.length > 0}
+<div class="flex flex-col h-full">
+	<div class="flex-1 pt-16 place-content-center">
+	  <div class="heading-container">
+		<h1 class="heading text-2xl align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-800">
+		  Feasibility Mapper<span class="tag text-[9.25px] w-fit h-fit ml-2">Beta</span>
+		</h1>	
+	  </div>	
+	  <div class="header-filter-container w-4/5">	
+	  {#if allData.length > 0}
 		<HeaderFilter 
-		bind:selectedMetric={$selectedMetricStore}
-		{metrics}
-		on:change={handleMetricChange}    
-	/>
-	<MapSidebar 
-	on:openCalculator={handleCalculatorOpen}
-	on:countryHover={(event) => {
-	  hoveredData = event.detail;
-	  if (bubbleMapperComponent) {
-		bubbleMapperComponent.highlightCountry(event.detail?.id);
-	  }
-	}}
-	on:countryClick={(event) => {
-	  selectedData = event.detail;
-	  isDrawerOpen = true;
-	  if (bubbleMapperComponent) {
-		bubbleMapperComponent.zoomToCountry(event.detail.id);
-	  }
-	}}
-	{hoveredData}
-	{allData}
-	selectedMetric={$selectedMetricStore}
-	{rankedData}
-	{colorGradient}
-	{getColorForRank}
-  />
-			
-        {/if}
-    </div>
+		  bind:selectedMetric={$selectedMetricStore}
+		  {metrics}
+		  on:change={handleMetricChange}    
+		/>
+	  {/if}
+	  </div>
+	  
+	  <div class="flex flex-row min-h-[85vh] w-full">
+		<div class="outline-wrapper flex-1 bg-[#E9EEFB]/30 w-4/5 px-8 pt-24 min-h-full">
+		  <BubbleMapper
+			width={1200}
+			height={950}
+			{rankedData}
+			{colorGradient}
+			onCountryClick={(country) => handleCountryClick(country)}
+			onCountryHover={(country) => handleCountryHover(country)}
+		  />
+		</div>
+		
+		<div class="outline-wrapper w-1/5">
+		  <MapSidebar 
+			on:openCalculator={handleCalculatorOpen}
+			on:countryHover={(event) => {
+			  hoveredData = event.detail;
+			  if (bubbleMapperComponent) {
+				bubbleMapperComponent.highlightCountry(event.detail?.id);
+			  }
+			}}
+			on:countryClick={(event) => {
+			  selectedData = event.detail;
+			  isDrawerOpen = true;
+			  if (bubbleMapperComponent) {
+				bubbleMapperComponent.zoomToCountry(event.detail.id);
+			  }
+			}}
+			{hoveredData}
+			{allData}
+			selectedMetric={$selectedMetricStore}
+			{rankedData}
+			{colorGradient}
+			{getColorForRank}
+		  />
+		</div>
+	  </div>
+  </div>
+  
 
     <InfoDrawer 
         isOpen={isDrawerOpen}
@@ -235,7 +237,6 @@ function handleCalculatorOpen() {
     }
     .page-container {
         width: 100%;
-		padding-top: 2rem;
         top: 0;
         left: 0;
     }
@@ -249,29 +250,46 @@ function handleCalculatorOpen() {
 
     .header-filter-container {
 		position: relative;
-		background-color: rgba(65, 150, 239, .2);
-		backdrop-filter: blur(10px);
-		z-index: 0;
-        border-bottom: 0.25px solid #e0e0e0;
-		z-index: 100;
     }
 
-    .map-wrapper {
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 10;
-    }
+		.map-wrapper {
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+		height: 100%;
+		}
 
-    .sidebar-wrapper {
-        width: 100%;
-		background-color: white;
-        z-index: 20;
-        pointer-events: auto;
-    }
+		.outline-wrapper {
+		padding: 0;
+		border: .25px solid #B4C7FF;
+		}
 
     :global(.mapContainer) {
         width: 100%;
         height: 100%;
     }
+
+	:global(.heading-container) {
+		backdrop-filter: blur(10px);
+		display: flex;
+		flex-direction: row;
+		min-height: 10vh;
+		border: 1px solid #e0e0e0;
+		border-bottom: 0.25px solid #e0e0e0;
+	}
+
+	:global(.outline-wrapper) {
+		padding: 0;
+		border: .25px solid #AA9AFA;
+		border-bottom: 0px;
+		z-index: 10;
+	}
+
+	.tag {
+		border: 1px solid #ff4a4a;
+		color: #ff4a4a;
+		padding: 0.25rem 0.5rem;
+		border-radius: 150px;
+	}
+
 </style>

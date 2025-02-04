@@ -41,18 +41,17 @@
 
 {#if isOpen}
     <div 
-        class="fixed inset-0 bg-black bg-opacity-60 z-40"
+        class="fixed inset-0 bg-black bg-opacity-80 z-40"
         transition:fly={{ duration: 200, opacity: 0.5 }}
-    >
+    > 
         <div
             bind:this={drawerElement}
-            class="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-1/3 bg-white shadow-xl z-50 overflow-y-auto"
+            class="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-1/3 bg-slate-50 shadow-xl z-50 overflow-y-auto"
             transition:fly={{ x: 400, duration: 300, easing: quintOut }}
         >
-            <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-900">Composite Score Calculator</h2>
+            <div class="sticky top-0 z-10 bg-slate-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
                 <button 
-                    class="rounded-full h-8 w-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                    class="rounded-md h-4 w-4 flex items-center justify-center text-slate-700 hover:bg-gray-100"
                     on:click={onClose}
                 >
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,5 +74,6 @@
     /* Prevent body scroll when drawer is open */
     :global(body.drawer-open) {
         overflow: hidden;
+        z-index: 99;
     }
 </style>

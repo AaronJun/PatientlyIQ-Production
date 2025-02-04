@@ -38,13 +38,13 @@
 	});
   </script>
   
-  <div class="filters-container bg-slate-50 bg-opacity-60">
+  <div class="filters-container flex-col items-center">
+	<p class="filter-label mb-2 pl-2 pt-2">Compare by</p>
 	<div class="filter-row" bind:this={buttonContainer}>
-	  <span class="filter-label">Compare by</span>
-	  <div class="button-group">
+	  <div class="button-group w-full">
 		{#each metrics as metric}
 		  <button
-			class="metric-button"
+			class="metric-button text-xs cursor-point shadow-sm shadow-border bg-slate-200 hover:bg-orange-500 duration-200"
 			class:selected={selectedMetric === metric.value}
 			on:click={() => handleMetricClick(metric)}
 		  >
@@ -56,28 +56,32 @@
   </div>
   
   <style>
-	.filters-container {
-	  @apply py-2 text-gray-900 font-extrabold flex justify-center;
-	}
-  
-	.filter-row {
-	  @apply flex items-center gap-4 flex-wrap justify-center;
-	}
   
 	.filter-label {
-	  @apply text-sm font-normal;
+	  @apply text-xs text-slate-500 font-normal;
 	}
   
 	.button-group {
-	  @apply flex gap-1 flex-wrap justify-center;
+	  @apply flex flex-wrap justify-start w-full;
 	}
   
 	.metric-button {
-	  @apply px-4 py-2 text-xs font-medium rounded-full bg-slate-50 bg-opacity-35 border border-gray-900
-		transition-colors duration-200 hover:bg-gray-200;
+		border-top-right-radius: 7.25px;
+		border-top-left-radius: 7.25px;
+		padding: 0.525rem 1.125rem .625rem 1.125rem;
+		font-size: 0.675rem;
+		font-weight: 400;
+		border: .25px solid #D6D3CF;
+		border-bottom: 0px;
 	}
   
 	.metric-button.selected {
-	  @apply bg-[#ff4a4a] text-white hover:bg-orange-500;
-	}
+		border-top-left-radius: 8.25px;
+		border-top-right-radius: 8.25px;
+		padding: 0.625rem 1.25rem .75rem 1.25rem;
+		background-color: #ff4a4a;
+		color: white;
+		font-size: 0.825rem;
+		font-weight: 600;
+		}
   </style>

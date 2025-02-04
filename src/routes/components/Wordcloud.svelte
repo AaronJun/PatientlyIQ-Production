@@ -6,4 +6,3 @@
     </script>
     
     <WordCloudChart {data} {options} style="padding:1rem;" />
-    

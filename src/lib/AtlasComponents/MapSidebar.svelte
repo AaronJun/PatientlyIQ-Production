@@ -42,25 +42,18 @@
     isExpanded = !isExpanded;
   }
 </script>
-
-<div class="sidebar flex flex-col rounded-sm drop-shadow-sm bg-slate-50">
-  <button 
-    on:click={toggleExpanded}
-    class="flex items-center align-middle justify-between py-4 w-full bg-slate-100 hover:bg-gray-200"
-  >    <svelte:component this={isExpanded ? ChevronUp : ChevronDown} class="w-7 h-7" />
-  </button>
-
+<div class="sidebar flex flex-col rounded-sm drop-shadow-sm bg-slate-50 pt-2 px-4 pb-4">
   {#if isExpanded}
     <div class="content" transition:slide>
-      <div class="grid grid-cols-12 gap-4 p-4">
-        <div class="col-span-7">
-          <div class="overflow-y-auto max-h-[60vh]">
-            <table class="w-full">
-              <thead class="sticky top-0 bg-white">
-                <tr class="text-left uppercase">
-                  <th class="p-2">Rank</th>
+      <div class="grid grid-cols">
+        <div class="align-top">
+          <div class="overflow-y-auto max-h-[90vh]">
+            <table class="w-full border-separate border-spacing-0">
+              <thead class="sticky top-0">
+                <tr class="text-left font-mono uppercase text-xs font-semibold text-slate-500">
+                  <th class="p-2 w-16">Rank</th>
                   <th class="p-2">Country</th>
-                  <th class="p-2">Value</th>
+                  <th class="p-2 text-right">Value</th>
                 </tr>
               </thead>
               <tbody>
@@ -78,27 +71,16 @@
                       </div>
                     </td>
                     <td class="p-2">{country.name}</td>
-                    <td class="p-2">{country[selectedMetric].toFixed(2)}</td>
+                    <td class="p-2 text-right">{country[selectedMetric].toFixed(2)}</td>
                   </tr>
                 {/each}
               </tbody>
             </table>
           </div>
         </div>
-
-        <div class="col-span-5">
-          <div class="bg-gray-50 p-4 rounded-lg h-full">
-			<MetricsPanel 
-			hoveredData={hoveredData} 
-		  />          </div>
-        </div>
-      </div>
-
-      <div class="p-4">
         <button 
           on:click={handleAdjustInputs}
-          class="w-full bg-blue-600 text-white p-3 rounded-md font-semibold 
-                 hover:bg-blue-700 transition-colors"
+          class="w-full bg-[#ff4A4A] text-white p-3 mt-8 rounded-full font-semibold hover:bg-blue-700 transition-colors"
         >
           Adjust Inputs
         </button>
@@ -109,19 +91,19 @@
 
 <style>
   .sidebar {
-    width: 100%;
     border-top: 1px solid #e5e7eb;
+    min-height: 85vh;
   }
 
   .color-indicator {
     @apply inline-flex items-center justify-center;
-    width: 2rem;
-    height: 2rem;
+    width: 1.2rem;
+    height: 1.2rem;
     border-radius: 9999px;
   }
 
   .rank {
-    @apply text-xs font-mono font-medium text-white;
+    @apply text-[9.25px] font-mono font-medium text-white;
   }
 
   .highlighted {
@@ -129,14 +111,13 @@
   }
 
   thead {
-    @apply bg-gray-50 text-gray-700 text-xs font-mono font-bold;
   }
 
   td {
     @apply text-sm;
   }
 
-  .tr {
-	border-top: 1px solid #e5e7eb;
+  th {
+    @apply font-mono uppercase tracking-wider;
   }
 </style>

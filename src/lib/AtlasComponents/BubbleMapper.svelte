@@ -6,7 +6,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export let width: number = 1200;
+  export let width: number = 950;
   export let height: number = 950;
   export const selectedMetric: string = 'compositeScore';
   export let rankedData: {[key: string]: number};
@@ -14,46 +14,36 @@
   export const higherIsBetter: boolean = true;
   export let onCountryClick: (data: CountryData) => void;
   export let onCountryHover: (data: CountryData | null) => void;
-
-export function highlightCountry(countryId: string | null) {
-  if (!g) return;
+  export let rotationSpeed: number = 0.00825; // Speed in degrees per millisecond
+  export let initialScale: number = 1;
+  export let minScale: number = 0.8;
+  export let maxScale: number = 8;
   
-  g.selectAll("path")
-    .style("filter", d => {
-      const feature = d as Feature<Geometry, any>;
-      if (!countryId) return "none";
-      const isTarget = feature.properties.ISO_A3 === countryId;
-      return isTarget ? "none" : "brightness(0.7) saturate(0.5)";
-    });
-}
-
-export function zoomToCountry(countryId: string) {
-  if (!g || !path || !zoom || !svg) return;
-  
-  const feature = worldData.features.find(
-    f => f.properties.ISO_A3 === countryId
-  );
-  
-  if (feature) {
-    const bounds = path.bounds(feature);
-    const dx = bounds[1][0] - bounds[0][0];
-    const dy = bounds[1][1] - bounds[0][1];
-    const x = (bounds[0][0] + bounds[1][0]) / 2;
-    const y = (bounds[0][1] + bounds[1][1]) / 2;
-    const scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height)));
-    const translate = [width / 2 - scale * x, height / 2 - scale * y];
-
-    svg.transition()
-      .duration(750)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
-      );
+  // Expose zoom methods
+  export function zoomIn() {
+    if (!projection) return;
+    const currentScale = projection.scale();
+    const newScale = Math.min(currentScale * 1.3, (height / 2.1) * maxScale);
+    zoomTo(newScale);
   }
-}
+
+  export function zoomOut() {
+    if (!projection) return;
+    const currentScale = Math.max(projection.scale() / 1.3, (height / 2.1) * minScale);
+    zoomTo(currentScale);
+  }
+
+  function zoomTo(scale: number) {
+    if (!projection || !svg) return;
+    
+    projection.scale(scale);
+    updateGlobe();
+  }
 
   let mapContainer: HTMLDivElement;
   let svgElement: SVGSVGElement;
+  let rotation = [0, 0, 0];
+  let dragging = false;
 
   interface CountryData {
     name: string;
@@ -75,32 +65,43 @@ export function zoomToCountry(countryId: string) {
   let g: d3.Selection<SVGGElement, unknown, null, undefined>;
   let projection: d3.GeoProjection;
   let countryData: CountryData[] = countryDataJson;
-  let zoom: d3.ZoomBehavior<SVGSVGElement, unknown>;
   let path: d3.GeoPath<any, d3.GeoPermissibleObjects>;
   let worldData: FeatureCollection;
 
+  // Create water sphere for the globe
+  const graticule = d3.geoGraticule();
+  const sphere = { type: 'Sphere' };
+
+  let visibilityHandler: () => void;
+
   onMount(async () => {
+    // Add visibility change listener
+    visibilityHandler = () => {
+      if (document.visibilityState === 'visible') {
+        lastTime = performance.now();
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
     svg = d3.select(mapContainer)
       .append('svg')
       .attr('width', '100%')
       .attr('height', '100%');
 
     svgElement = svg.node()!;
-
     g = svg.append("g");
 
-    zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 8])
-      .on("zoom", zoomed);
-
-    svg.call(zoom);
-
-    projection = d3.geoNaturalEarth1(); // or another projection of your choice
+    // Set up orthographic projection
+    projection = d3.geoOrthographic()
+      .scale(height / 2.45)
+      .center([0, 0])
+      .rotate(rotation)
+      .translate([width / 2, height / 2]);
 
     path = d3.geoPath().projection(projection);
 
+    // Load world data
     worldData = await d3.json<FeatureCollection>('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson');
-
 
     if (!worldData) {
       throw new Error('Failed to load world data');
@@ -108,109 +109,167 @@ export function zoomToCountry(countryId: string) {
 
     dispatch('dataLoaded', countryData);
 
-g.selectAll<SVGPathElement, Feature<Geometry, any>>("path")
-  .data(worldData.features)
-  .enter()
-  .append("path")
-  .attr("fill", d => getCountryColor(d))
-  .attr("d", path)
-  .style("stroke", "#D6D3CF")
-  .style("stroke-width", "0.325px")
-  .on("mouseover", (event, d) => {
-    const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
-    if (countryInfo) {
-      onCountryHover(countryInfo);
-      d3.select(event.target as Element).style("cursor", "pointer");
-      darkenOtherCountries(d);
+    // Add water sphere
+    g.append("path")
+      .datum(sphere)
+      .attr("class", "sphere")
+      .attr("d", path)
+      .attr("fill", "#CED7EE");
+
+    // Add graticules
+    g.append("path")
+      .datum(graticule)
+      .attr("class", "graticule")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "#B4C799")
+      .attr("stroke-width", "0.425px");
+
+    // Add countries
+    g.selectAll<SVGPathElement, Feature<Geometry, any>>("path.country")
+      .data(worldData.features)
+      .enter()
+      .append("path")
+      .attr("class", "country")
+      .attr("fill", d => getCountryColor(d))
+      .attr("d", path)
+      .style("stroke", "#98A9DA")
+      .style("stroke-width", "0.325px")
+      .on("mouseover", (event, d) => {
+        const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
+        if (countryInfo) {
+          onCountryHover(countryInfo);
+          d3.select(event.target as Element).style("cursor", "pointer");
+          darkenOtherCountries(d);
+        }
+      })
+      .on("mouseout", () => {
+        onCountryHover(null);
+        g.selectAll("path.country")
+          .style("filter", "none")
+          .style("cursor", "default");
+      })
+      .on("click", (event, d) => {
+        const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
+        if (countryInfo) {
+          onCountryClick(countryInfo);
+          rotateToCountry(d);
+        }
+      });
+
+    // Add drag behavior
+    const drag = d3.drag<SVGSVGElement, unknown>()
+      .on("start", () => { dragging = true; })
+      .on("drag", (event) => {
+        const rotate = projection.rotate();
+        projection.rotate([
+          rotate[0] + event.dx * 0.5,
+          rotate[1] - event.dy * 0.5,
+          rotate[2]
+        ]);
+        updateGlobe();
+      })
+      .on("end", () => { dragging = false; });
+
+    svg.call(drag);
+
+    // Add mouse wheel zoom
+    svg.on('wheel', (event) => {
+      event.preventDefault();
+      const delta = event.deltaY;
+      if (delta > 0) {
+        zoomOut();
+      } else {
+        zoomIn();
+      }
+    });
+
+    // Add smooth automatic rotation using requestAnimationFrame
+    let lastTime = performance.now();
+    let animationFrameId: number;
+
+    function animate(currentTime: number) {
+      if (!dragging && document.visibilityState === 'visible') {
+        const delta = Math.min(currentTime - lastTime, 30); // Cap delta time
+        lastTime = currentTime;
+        
+        const rotate = projection.rotate();
+        const newRotation = [
+          rotate[0] + delta * rotationSpeed,
+          rotate[1],
+          rotate[2]
+        ];
+        
+        projection.rotate(newRotation);
+        updateGlobe();
+      }
+      
+      if (document.visibilityState === 'visible') {
+        animationFrameId = requestAnimationFrame(animate);
+      }
     }
-  })
-  .on("mouseout", () => {
-    onCountryHover(null);
-    g.selectAll("path")
-      .style("filter", "none")
-      .style("cursor", "default");
-  })
-  .on("click", (event, d) => {
-    const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
-    if (countryInfo) {
-      onCountryClick(countryInfo);
-      zoomToFeature(d);
-    }
-  });
 
-updateVisualization();
+    animationFrameId = requestAnimationFrame(animate);
 
-const { scale, translate } = fitMapToContainer();
-g.attr("transform", `translate(${translate[0]},${translate[1]}) scale(${scale})`);
-zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
-});
+    // Cleanup animation on component destroy
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (visibilityHandler) {
+        document.removeEventListener('visibilitychange', visibilityHandler);
+      }
+    };
 
-  afterUpdate(() => {
     updateVisualization();
   });
 
-  function getCountryColor(d: Feature<Geometry, any>): string {
-  const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
-  if (!countryInfo) return '#E9E5E0';
-  const rank = rankedData[countryInfo.id];
-  return colorGradient[rank]; 
+  function updateGlobe() {
+    g.selectAll("path")
+      .attr("d", path);
+  }
 
-}
+  function getCountryColor(d: Feature<Geometry, any>): string {
+    const countryInfo = countryData.find(c => c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3);
+    if (!countryInfo) return '#E9E5E0';
+    const rank = rankedData[countryInfo.id];
+    return colorGradient[rank];
+  }
+
   function updateVisualization() {
     if (!g) return;
 
-    g.selectAll<SVGPathElement, Feature<Geometry, any>>("path")
+    g.selectAll<SVGPathElement, Feature<Geometry, any>>("path.country")
       .transition()
       .duration(1000)
       .attr("fill", d => getCountryColor(d));
   }
 
-  function zoomed(event: d3.D3ZoomEvent<SVGSVGElement, unknown>) {
-    const {transform} = event;
-    g.attr("transform", transform.toString());
-  }
+  function rotateToCountry(d: Feature<Geometry, any>) {
+    if (!d.geometry) return;
 
-  function zoomToFeature(d: Feature<Geometry, any>) {
-    const bounds = path.bounds(d);
-    const dx = bounds[1][0] - bounds[0][0];
-    const dy = bounds[1][1] - bounds[0][1];
-    const x = (bounds[0][0] + bounds[1][0]) / 2;
-    const y = (bounds[0][1] + bounds[1][1]) / 2;
-    const scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height)));
-    const translate = [width / 2 - scale * x, height / 2 - scale * y];
+    const centroid = d3.geoCentroid(d);
+    const currentRotation = projection.rotate();
 
-    svg.transition().duration(850).call(
-      zoom.transform,
-      d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
+    // Animate rotation to center the selected country
+    const interpolator = d3.geoInterpolate(
+      [-currentRotation[0], -currentRotation[1]],
+      [-centroid[0], -centroid[1]]
     );
-  }
 
-  function fitMapToContainer() {
-    const bounds = path.bounds({ type: "FeatureCollection", features: worldData.features });
-    const dx = bounds[1][0] - bounds[0][0];
-    const dy = bounds[1][1] - bounds[0][1];
-    const x = (bounds[0][0] + bounds[1][0]) / 3.25;
-    const y = (bounds[0][1] + bounds[1][1]) / 4;
-
-    const scale = 1.3 / Math.max(dx / width, dy / height);
-    const translate = [width / 2 - scale * x, height / 2 - scale * y];
-
-    return { scale, translate };
-  }
-
-  export function resetZoom() {
-    const { scale, translate } = fitMapToContainer();
-    
-    svg.transition()
-      .duration(700)
-      .call(
-        zoom.transform,
-        d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
-      );
+    d3.transition()
+      .duration(1000)
+      .tween("rotate", () => {
+        return (t: number) => {
+          const r = interpolator(t);
+          projection.rotate([-r[0], -r[1]]);
+          updateGlobe();
+        };
+      });
   }
 
   function darkenOtherCountries(hoveredCountry: Feature<Geometry, any>) {
-    g.selectAll<SVGPathElement, Feature<Geometry, any>>("path")
+    g.selectAll<SVGPathElement, Feature<Geometry, any>>("path.country")
       .style("filter", d => {
         const countryInfo = countryData.find(c => c.geoJsonId === d.id || c.id === d.id);
         if (countryInfo && d !== hoveredCountry) {
@@ -232,36 +291,46 @@ zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(
     const serializer = new XMLSerializer();
     return serializer.serializeToString(clonedSvg);
   }
+
+  afterUpdate(() => {
+    updateVisualization();
+  });
 </script>
-<div class="relative w-full h-full">
-<h1 class="heading text-2xl align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-800">Feasibility Mapper</h1>
-<div class="mapContainer bg-[#D6D3C]" bind:this={mapContainer}></div>
+
+
+<div class="relative w-full h-full flex items-center justify-center">
+  <div class="mapContainer" bind:this={mapContainer}></div>
 </div>
+
 <style>
 .mapContainer {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
     overflow: hidden;
     touch-action: none;
     -ms-touch-action: none;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    justify-content: center;
 }
 
 :global(svg) {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
 }
 
-.heading 
-{ 
-  border-bottom: 1px solid #D6D3CF;
+.heading { 
+    border-bottom: 1px solid #D6D3CF;
 }
 
+.sphere {
+    fill-opacity: 1;
+}
+
+.graticule {
+    opacity: 0.3;
+}
 </style>
