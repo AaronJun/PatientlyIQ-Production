@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   // @ts-nocheck
   import "carbon-components-svelte/css/all.css";
   import '@carbon/charts-svelte/styles.css';
@@ -470,4 +470,4 @@
     color:"0E1011";
   }
 
-  </style> 
+  </style>  -->
