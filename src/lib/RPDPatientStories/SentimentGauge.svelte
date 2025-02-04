@@ -4,7 +4,7 @@
 
   export let value = 0;
   export let label = '';
-  export let size = 120;
+  export let size = 225;
 
   let scale;
   

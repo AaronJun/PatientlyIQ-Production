@@ -36,9 +36,9 @@
 
       /* Custom properties */
       --navigation-height: 3.5rem;
-      --color-one: #ffbd7a;
-      --color-two: #fe8bbb;
-      --color-three: #9e7aff;
+      --color-one: #ff4a4a;
+      --color-two: #656EC8;
+      --color-three: #006454;
 
       /*
     --color-one: #37ecba;
@@ -78,7 +78,7 @@
 
          /* Custom properties */
          --navigation-height: 3.5rem;
-         --color-one: #f94938;
+         --color-one: #ff4a4a;
          --color-two: #ffba60;
          --color-three: #493dc7;
    }

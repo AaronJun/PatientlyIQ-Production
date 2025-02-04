@@ -1,0 +1,419 @@
+{
+    "stages": [
+      {
+        "id": 1,
+        "name": "Symptom Onset",
+        "description": "The initial period when patients first experience symptoms of CIDP, typically characterized by gradual onset of weakness, numbness, or tingling in extremities. This stage is marked by significant uncertainty and often delayed recognition of symptom significance, with many patients initially attributing symptoms to stress or overwork. The uncertainty during this period often leads to anxiety and confusion about the changes they're experiencing, with many patients delaying medical attention.",
+        "keyQuotes": [
+          {
+            "quote": "It started with just some tingling in my feet. I ignored it for weeks thinking it would go away. Looking back, I wish I had acted sooner.",
+            "author": "David R.",
+            "context": "Early Symptoms"
+          },
+          {
+            "quote": "The scariest part was not knowing what was happening. My symptoms kept getting worse, and every doctor had a different theory.",
+            "author": "Maria S.",
+            "context": "Diagnostic Uncertainty"
+          },
+          {
+            "quote": "Each day brought new challenges. First it was trouble with stairs, then buttoning my shirt became impossible. The progression was terrifying.",
+            "author": "John K.",
+            "context": "Symptom Progression"
+          }
+        ],
+        "patientChallenges": [
+          "Average of 15.5 healthcare provider visits before reaching correct diagnosis",
+          "83% of patients report feeling isolated during initial symptom period",
+          "68% struggle with accurate symptom documentation for medical appointments",
+          "42% delay specialist consultation due to uncertainty about which type of doctor to see",
+          "Difficulty recognizing early warning signs and symptom significance",
+          "Emotional distress from unexplained physical changes"
+        ],
+        "statisticalInsights": {
+          "diagnosisDelay": "Average 9.2 months from first symptoms to specialist consultation",
+          "symptomProgression": "71% experience gradual worsening over weeks to months",
+          "initialResponse": "42% initially attribute symptoms to stress or overwork",
+          "earlyImpact": "65% report significant impact on daily activities within first month",
+          "supportNeeds": "83% express need for emotional support during this period",
+          "symptomRecognition": "Only 35% recognize symptoms as potentially serious within first month"
+        },
+        "recommendedActions": [
+          "Start a detailed symptom diary recording frequency, severity, and impact on daily activities",
+          "Seek immediate medical attention for rapidly progressing symptoms",
+          "Connect with CIDP support groups for guidance and emotional support",
+          "Prepare detailed symptom history for medical appointments",
+          "Document impact on daily activities and quality of life",
+          "Consider seeking second opinions if symptoms persist or worsen"
+        ],
+        "summaryPoints": [
+          "Most patients experience a gradual decline in function, with symptoms worsening over time",
+          "Early recognition and documentation of symptoms is crucial for diagnosis",
+          "Support systems play vital role in early stage management",
+          "Healthcare navigation often proves challenging during this period"
+        ],
+        "commonSearchTerms": [
+          "CIDP early symptoms",
+          "numbness and tingling causes",
+          "progressive weakness symptoms",
+          "when to see neurologist",
+          "unexplained muscle weakness"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Diagnosis Pathway",
+        "description": "A complex and often lengthy period involving multiple healthcare providers, diagnostic tests, and specialist consultations. Patients typically undergo various tests including EMG studies, MRIs, and nerve conduction studies while dealing with uncertainty and potential misdiagnoses. The path to a definitive diagnosis by a neurologist or neuromuscular specialist can be emotionally and physically challenging, often requiring significant persistence and advocacy.",
+        "keyQuotes": [
+          {
+            "quote": "After six different doctors and countless tests, someone finally connected the dots. The journey to diagnosis felt endless.",
+            "author": "Mark R.",
+            "context": "Diagnostic Journey"
+          },
+          {
+            "quote": "The EMG was uncomfortable, but it finally gave us answers. Having a diagnosis meant we could start fighting back.",
+            "author": "Patricia K.",
+            "context": "Testing Experience"
+          },
+          {
+            "quote": "Watching my husband go through test after test was exhausting. But each one brought us closer to understanding what we were facing.",
+            "author": "Lisa W.",
+            "context": "Caregiver Perspective"
+          }
+        ],
+        "patientChallenges": [
+          "71% report high anxiety about diagnostic procedures",
+          "Multiple specialist referrals and coordinating between healthcare providers",
+          "Long waiting periods between tests and consultations",
+          "Managing symptom progression while awaiting diagnosis",
+          "Emotional toll of diagnostic uncertainty",
+          "Financial burden of multiple medical consultations"
+        ],
+        "statisticalInsights": {
+          "specialistWait": "9.2 months average time to see CIDP specialist",
+          "testingPeriod": "54% reduction in diagnosis time with patient navigator support",
+          "misdiagnosis": "63% receive at least one incorrect diagnosis",
+          "diagnosticAccuracy": "89% accuracy with complete neurological workup",
+          "emotionalImpact": "78% report significant anxiety during diagnostic period",
+          "financialBurden": "Average $12,000 in out-of-pocket expenses before diagnosis"
+        },
+        "recommendedActions": [
+          "Request referral to neuromuscular specialist",
+          "Maintain organized records of all tests and medical visits",
+          "Consider seeking second opinions from CIDP specialists",
+          "Prepare questions about diagnostic procedures and results",
+          "Join support groups for guidance during diagnostic process",
+          "Investigate insurance coverage for specialist consultations"
+        ],
+        "summaryPoints": [
+          "Diagnostic journey often involves multiple healthcare providers and tests",
+          "Patient advocacy and persistence crucial for reaching diagnosis",
+          "Support systems essential for navigating complex healthcare landscape",
+          "Financial planning important aspect of diagnostic journey"
+        ],
+        "commonSearchTerms": [
+          "CIDP diagnosis process",
+          "EMG test preparation",
+          "nerve conduction study",
+          "finding CIDP specialist",
+          "diagnostic test costs"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Newly Diagnosed",
+        "description": "A pivotal period following diagnosis when patients must process their condition while making important treatment decisions. This stage involves rapid education about CIDP, significant lifestyle adjustments, and emotional adaptation to living with a chronic condition. Patients and caregivers must navigate complex medical information while managing the emotional impact of the diagnosis.",
+        "keyQuotes": [
+          {
+            "quote": "Learning about CIDP was overwhelming at first. There's so much information to process, and you have to make treatment decisions quickly.",
+            "author": "Thomas M.",
+            "context": "Information Overload"
+          },
+          {
+            "quote": "Finding the online CIDP community was a turning point. Here were people who understood exactly what I was going through.",
+            "author": "Robert F.",
+            "context": "Community Support"
+          },
+          {
+            "quote": "The hardest part was telling my kids. How do you explain to children that mom might not be able to play with them like before?",
+            "author": "Emily T.",
+            "context": "Family Impact"
+          }
+        ],
+        "patientChallenges": [
+          "87% seek additional disease information within 48 hours of diagnosis",
+          "63% feel overwhelmed by treatment decisions",
+          "76% require significant lifestyle modifications",
+          "92% of caregivers need structured guidance",
+          "Emotional processing of chronic condition diagnosis",
+          "Balancing immediate treatment needs with long-term planning"
+        ],
+        "statisticalInsights": {
+          "informationOverload": "87% research CIDP online within 48 hours",
+          "treatmentDecisions": "63% feel overwhelmed by initial treatment choices",
+          "lifestyleChanges": "76% make major life changes in first year",
+          "supportNeeds": "92% of families seek caregiver guidance",
+          "emotionalSupport": "85% benefit from professional counseling",
+          "workImpact": "64% require workplace accommodations"
+        },
+        "recommendedActions": [
+          "Schedule comprehensive consultation with CIDP specialist",
+          "Join patient support organizations and educational programs",
+          "Develop treatment plan with healthcare team",
+          "Create support network including family and healthcare providers",
+          "Explore workplace accommodation options",
+          "Consider professional counseling or support services"
+        ],
+        "summaryPoints": [
+          "Critical period for education and understanding CIDP",
+          "Treatment decisions require careful consideration",
+          "Family and workplace adjustments often necessary",
+          "Support networks play crucial role in adaptation"
+        ],
+        "commonSearchTerms": [
+          "CIDP treatment options",
+          "living with CIDP",
+          "CIDP support groups",
+          "workplace disability rights",
+          "chronic illness counseling"
+        ]
+      }
+    ,
+      {
+        "id": 4,
+        "name": "Treatment Initiation",
+        "description": "The beginning of active CIDP treatment, typically involving IVIg therapy initiation. This critical phase involves adapting to regular treatment schedules, monitoring response, and managing side effects. Patients must balance treatment demands with daily life while working on rehabilitation to regain strength and mobility. The physical and emotional response to initial treatment can vary significantly among patients.",
+        "keyQuotes": [
+          {
+            "quote": "Starting IVIg was a game-changer. Yes, the schedule is demanding, but watching my strength return made it worth it.",
+            "author": "Michael H.",
+            "context": "Treatment Impact"
+          },
+          {
+            "quote": "Learning to balance treatment schedules with work was challenging. My employer's support made it possible.",
+            "author": "Daniel P.",
+            "context": "Work-Life Balance"
+          },
+          {
+            "quote": "Physical therapy alongside IVIg was crucial. It felt amazing to regain control of my movements.",
+            "author": "Rachel M.",
+            "context": "Rehabilitation"
+          }
+        ],
+        "patientChallenges": [
+          "44% miss or delay treatments due to scheduling complexity",
+          "Adapting to regular infusion schedules",
+          "Managing treatment side effects",
+          "Balancing treatment with work and family life",
+          "Coordinating multiple healthcare appointments",
+          "Financial management of ongoing treatment costs"
+        ],
+        "statisticalInsights": {
+          "adherence": "44% struggle with treatment scheduling initially",
+          "homePreference": "58% prefer home-based treatment options",
+          "responseRate": "81% show improvement with consistent treatment",
+          "supportImpact": "73% report better outcomes with peer support",
+          "rehabilitationSuccess": "65% regain significant function within 6 months",
+          "employmentImpact": "52% require temporary work adjustments"
+        },
+        "recommendedActions": [
+          "Establish consistent treatment schedule",
+          "Monitor and document treatment response",
+          "Consider home infusion options if available",
+          "Engage in recommended physical therapy program",
+          "Develop coping strategies for treatment side effects",
+          "Plan for treatment-related expenses"
+        ],
+        "summaryPoints": [
+          "Treatment initiation marks beginning of active disease management",
+          "Response to treatment varies among patients",
+          "Support systems crucial for treatment adherence",
+          "Balance between treatment and daily life essential"
+        ],
+        "commonSearchTerms": [
+          "IVIg treatment process",
+          "CIDP treatment side effects",
+          "home infusion therapy",
+          "CIDP physical therapy",
+          "treatment cost management"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Long-term Management",
+        "description": "The ongoing phase of CIDP management focusing on maintaining health, preventing relapses, and optimizing quality of life. This stage requires careful balance of treatment effectiveness, lifestyle management, and emotional well-being. Patients develop expertise in managing their condition while adapting to the long-term implications of living with CIDP.",
+        "keyQuotes": [
+          {
+            "quote": "Managing CIDP is like a full-time job. Between treatments, exercises, and monitoring symptoms, it takes constant vigilance.",
+            "author": "Robert C.",
+            "context": "Daily Management"
+          },
+          {
+            "quote": "The support groups have been invaluable. Sometimes just talking to someone who truly understands makes all the difference.",
+            "author": "Elizabeth D.",
+            "context": "Community Support"
+          },
+          {
+            "quote": "I've learned to listen to my body. Pushing too hard isn't worth the setback.",
+            "author": "Carol T.",
+            "context": "Self-Awareness"
+          }
+        ],
+        "patientChallenges": [
+          "Maintaining treatment adherence long-term",
+          "Managing potential relapses",
+          "Balancing normal life activities with condition management",
+          "Addressing fatigue and other persistent symptoms",
+          "Maintaining emotional well-being",
+          "Financial planning for ongoing care"
+        ],
+        "statisticalInsights": {
+          "relapseRisk": "67% of relapses show early warning signs",
+          "lifestyleImpact": "39% reduction in fatigue with structured management",
+          "adherenceSuccess": "84% better compliance with support networks",
+          "qualityOfLife": "72% report stable or improved quality of life",
+          "employmentStability": "68% maintain regular employment",
+          "mentalHealth": "45% require ongoing psychological support"
+        },
+        "recommendedActions": [
+          "Maintain regular monitoring schedule with healthcare team",
+          "Follow structured exercise and wellness program",
+          "Stay connected with support community",
+          "Monitor and report any changes in symptoms",
+          "Develop long-term financial planning strategies",
+          "Regular mental health check-ins"
+        ],
+        "summaryPoints": [
+          "Long-term management requires comprehensive approach",
+          "Quality of life focus becomes central",
+          "Support systems remain crucial",
+          "Financial planning essential for ongoing care"
+        ],
+        "commonSearchTerms": [
+          "CIDP long term prognosis",
+          "managing CIDP fatigue",
+          "CIDP relapse prevention",
+          "chronic illness coping",
+          "CIDP lifestyle management"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Treatment Reconsideration",
+        "description": "A critical phase when patients and healthcare providers evaluate current treatment effectiveness and explore potential modifications. This stage often involves careful assessment of treatment response, side effects, and impact on quality of life, while considering alternative therapeutic approaches and emerging treatment options.",
+        "keyQuotes": [
+          {
+            "quote": "After two years, my IVIg stopped working as well. Having to switch treatments was scary, but sometimes change is necessary.",
+            "author": "William P.",
+            "context": "Treatment Change"
+          },
+          {
+            "quote": "Researching new treatment options was overwhelming, but my neurologist helped me understand each choice.",
+            "author": "Alex B.",
+            "context": "Decision Making"
+          },
+          {
+            "quote": "Switching to subcutaneous treatment was a big change, but the flexibility it offers has improved my quality of life.",
+            "author": "Michelle L.",
+            "context": "Treatment Adaptation"
+          }
+        ],
+        "patientChallenges": [
+          "Uncertainty about changing established treatment",
+          "Evaluating risks and benefits of alternatives",
+          "Managing transition between treatments",
+          "Anxiety about potential outcomes",
+          "Coordinating care during treatment transitions",
+          "Managing insurance coverage for new treatments",
+          "Maintaining stability during treatment changes"
+        ],
+        "statisticalInsights": {
+          "changeFactors": "91% of changes influenced by quality of life considerations",
+          "researchRate": "77% research alternatives independently",
+          "optimizationTime": "64% faster optimization with structured approach",
+          "successRate": "82% report improved outcomes after optimization",
+          "insuranceImpact": "58% face insurance challenges during changes",
+          "transitionPeriod": "Average 3.2 months for treatment transition"
+        },
+        "recommendedActions": [
+          "Document treatment effectiveness systematically",
+          "Discuss concerns openly with healthcare team",
+          "Research available treatment alternatives",
+          "Consider quality of life impacts in decision-making",
+          "Prepare for potential insurance challenges",
+          "Develop transition management plan"
+        ],
+        "summaryPoints": [
+          "Treatment changes often necessary for optimal management",
+          "Patient-provider communication crucial for success",
+          "Quality of life considerations drive decisions",
+          "Support during transitions essential"
+        ],
+        "commonSearchTerms": [
+          "CIDP treatment alternatives",
+          "when to change CIDP treatment",
+          "IVIg alternatives",
+          "subcutaneous vs intravenous treatment",
+          "CIDP treatment effectiveness"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Clinical Trial Consideration",
+        "description": "A significant decision point where patients explore participation in research studies, weighing the potential benefits of advancing CIDP treatment against the uncertainties of experimental therapies. This stage involves careful evaluation of trial protocols, potential impacts on current treatment, and the broader implications for both personal health and scientific progress.",
+        "keyQuotes": [
+          {
+            "quote": "I joined a clinical trial because I wanted to contribute to finding better treatments. We need more options for future patients.",
+            "author": "Richard S.",
+            "context": "Research Participation"
+          },
+          {
+            "quote": "The trial protocols are strict, but knowing I might help advance CIDP research makes it worthwhile.",
+            "author": "Jennifer A.",
+            "context": "Contributing to Research"
+          },
+          {
+            "quote": "Being part of advancing CIDP treatment gives me purpose. It's not just about my journey anymore.",
+            "author": "Sandra M.",
+            "context": "Scientific Progress"
+          }
+        ],
+        "patientChallenges": [
+          "Understanding complex trial protocols",
+          "Balancing potential benefits against risks",
+          "Managing regular trial appointments and monitoring",
+          "Coordinating trial participation with current care",
+          "Travel and time commitment requirements",
+          "Emotional aspects of experimental treatment"
+        ],
+        "statisticalInsights": {
+          "participationRate": "47% decline due to insufficient understanding",
+          "matchingSuccess": "3.2x higher enrollment with matching services",
+          "completionRate": "72% higher completion with navigation support",
+          "decisionSupport": "88% need structured guidance for decisions",
+          "outcomeImpact": "64% report positive trial experiences",
+          "researchContribution": "92% feel satisfied with contributing to research"
+        },
+        "recommendedActions": [
+          "Research available clinical trials thoroughly",
+          "Discuss participation with current healthcare team",
+          "Evaluate impact on current treatment routine",
+          "Consider long-term implications of participation",
+          "Plan for trial-related commitments",
+          "Build support network for trial period"
+        ],
+        "summaryPoints": [
+          "Clinical trials offer opportunities for treatment advancement",
+          "Decision requires careful consideration of multiple factors",
+          "Support systems crucial for successful participation",
+          "Contribution to research provides additional motivation"
+        ],
+        "commonSearchTerms": [
+          "CIDP clinical trials",
+          "experimental treatment risks",
+          "joining medical research",
+          "clinical trial requirements",
+          "new CIDP treatments"
+        ]
+      }
+    ]
+  }

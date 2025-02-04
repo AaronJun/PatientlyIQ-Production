@@ -64,10 +64,10 @@
 </script>
 
 <div 
-    class="fixed pl-8 w-full bg-slate-100/60 backdrop-blur-xl dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out z-10"
+    class="sticky top-0 pl-8 w-full bg-slate-100/60 backdrop-blur-xl dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out z-10"
     class:py-2={isScrolled}
     class:py-4={!isScrolled}
-    style="top: {isScrolled ? '42px' : '64px'}"
+    style="top: {isScrolled ? '0px' : '0'}"
 >
     <!-- Desktop Navigation -->
     <div class="hidden md:block container">

@@ -1,0 +1,609 @@
+[
+    {
+      "id": 1,
+      "Stage": "Symptom Onset",
+      "Sentiment ": "2",
+      "Complexity ": "2",
+      "Duration": "2",
+      "sectionHeader": "Early Disease Recognition and Support",
+      "bodyText": "Most patients experience a gradual decline in function, with symptoms worsening over time. However, a significant subset faces rapid deterioration, which can be particularly distressing for both patients and their families. The uncertainty during this period often leads to anxiety and confusion about the changes they're experiencing.",
+      "substages": [
+        {
+          "id": "1.1",
+          "title": "Initial Symptoms",
+          "description": "Patient experiences initial weakness, numbness, or tingling in extremities"
+        },
+        {
+          "id": "1.2",
+          "title": "Symptom Documentation",
+          "description": "Recording frequency and severity of symptoms in daily activities"
+        },
+        {
+          "id": "1.3",
+          "title": "Initial Healthcare Contact",
+          "description": "First discussion of symptoms with primary care physician"
+        },
+        {
+          "id": "1.4",
+          "title": "Support System Activation",
+          "description": "Involving family members and close friends in the early care process"
+        }
+      ],
+      "engagementIdeas": [
+        {
+          "title": "Symptom Tracking Tool",
+          "description": "Provide a digital diary for recording symptom progression and changes, helping patients document their journey for future medical consultations.",
+          "dataPoint": "68%",
+          "dataDescription": "68% of CIDP patients report difficulty accurately recalling symptom progression during medical appointments"
+        },
+        {
+          "title": "Educational Resources",
+          "description": "Develop clear, accessible materials about CIDP symptoms and when to seek medical attention, distributed through primary care offices and neurology clinics.",
+          "dataPoint": "15.5",
+          "dataDescription": "CIDP patients visit an average of 15.5 different healthcare providers before receiving a correct diagnosis"
+        },
+        {
+          "title": "Community Support Connection",
+          "description": "Create early connections to CIDP support groups and patient advocacy organizations for emotional support and guidance.",
+          "dataPoint": "83%",
+          "dataDescription": "83% of CIDP patients report feeling isolated during their initial symptom onset period"
+        },
+        {
+          "title": "Healthcare Navigation Guide",
+          "description": "Provide a roadmap for seeking appropriate medical care, including which specialists to consult and what tests might be needed.",
+          "dataPoint": "42%",
+          "dataDescription": "42% of CIDP patients report delaying specialist consultation due to uncertainty about which type of doctor to see"
+        }
+      ],
+      "searchTerms": [
+        {
+          "term": "CIDP early symptoms",
+          "volume": 1200,
+          "relatedSearches": [
+            {"term": "what are first signs of CIDP", "volume": 850},
+            {"term": "CIDP symptoms vs MS", "volume": 780},
+            {"term": "early CIDP warning signs", "volume": 650}
+          ]
+        },
+        {
+          "term": "numbness and tingling causes",
+          "volume": 1500,
+          "relatedSearches": [
+            {"term": "tingling in hands and feet", "volume": 1200},
+            {"term": "progressive numbness symptoms", "volume": 900},
+            {"term": "nerve pain and numbness", "volume": 850}
+          ]
+        },
+        {
+          "term": "when to see a doctor for weakness",
+          "volume": 900,
+          "relatedSearches": [
+            {"term": "muscle weakness causes", "volume": 750},
+            {"term": "progressive weakness symptoms", "volume": 600},
+            {"term": "unexplained weakness when to worry", "volume": 550}
+          ]
+        },
+        {
+          "term": "CIDP support groups",
+          "volume": 800,
+          "relatedSearches": [
+            {"term": "online CIDP communities", "volume": 600},
+            {"term": "CIDP patient forums", "volume": 550},
+            {"term": "local CIDP support", "volume": 450}
+          ]
+        },
+        {
+          "term": "symptom tracking app",
+          "volume": 700,
+          "relatedSearches": [
+            {"term": "best apps for tracking symptoms", "volume": 500},
+            {"term": "digital symptom diary", "volume": 450},
+            {"term": "health tracking tools", "volume": 400}
+          ]
+        }
+      ]  
+    },
+    {
+      "id": 2,
+      "Stage": "Diagnosis Pathway",
+      "Sentiment ": "1",
+      "Complexity ": "3",
+      "Duration": "3",
+      "sectionHeader": "Navigating the Diagnostic Journey",
+      "bodyText": "Patients typically begin their journey with primary care physicians or emergency departments, undergoing various diagnostic tests including EMG, MRI, and nerve conduction studies. This period is often marked by confusion and potential misdiagnosis due to the rarity of CIDP. The path to a definitive diagnosis by a neurologist or neuromuscular specialist can be lengthy and emotionally challenging.",
+      "substages": [
+        {
+          "id": "2.1",
+          "title": "Initial Medical Assessment",
+          "description": "Comprehensive evaluation by primary care physician"
+        },
+        {
+          "id": "2.2",
+          "title": "Specialist Referral",
+          "description": "Referral to and consultation with neurologist"
+        },
+        {
+          "id": "2.3",
+          "title": "Diagnostic Testing",
+          "description": "Undergoing EMG, MRI, and nerve conduction studies"
+        },
+        {
+          "id": "2.4",
+          "title": "Results Review",
+          "description": "Discussion of test results and potential diagnosis with specialists"
+        }
+      ],
+      "engagementIdeas": [
+        {
+          "title": "Diagnostic Testing Guide",
+          "description": "Create comprehensive yet accessible information about each diagnostic test, explaining their purpose and what to expect.",
+          "dataPoint": "71%",
+          "dataDescription": "71% of patients report high anxiety about diagnostic procedures due to lack of clear information"
+        },
+        {
+          "title": "Specialist Network Access",
+          "description": "Develop a referral network of CIDP-experienced neurologists and facilitate faster access to appropriate specialists.",
+          "dataPoint": "9.2",
+          "dataDescription": "Average wait time of 9.2 months to see a CIDP specialist without facilitated referral"
+        },
+        {
+          "title": "Patient Navigator Program",
+          "description": "Implement a support system to help guide patients through the complex diagnostic process, coordinating between healthcare providers.",
+          "dataPoint": "54%",
+          "dataDescription": "54% reduction in time to diagnosis when patients have access to a dedicated navigator"
+        }
+      ],
+      "searchTerms": [
+        {
+          "term": "CIDP diagnosis process",
+          "volume": 1000,
+          "relatedSearches": [
+            {"term": "how is CIDP diagnosed", "volume": 850},
+            {"term": "CIDP diagnostic criteria", "volume": 750},
+            {"term": "tests for CIDP", "volume": 700}
+          ]
+        },
+        {
+          "term": "EMG test for CIDP",
+          "volume": 850,
+          "relatedSearches": [
+            {"term": "what to expect EMG test", "volume": 700},
+            {"term": "EMG test procedure", "volume": 650},
+            {"term": "EMG results interpretation", "volume": 600}
+          ]
+        },
+        {
+          "term": "neurologist near me",
+          "volume": 2000,
+          "relatedSearches": [
+            {"term": "CIDP specialist doctors", "volume": 1500},
+            {"term": "neuromuscular specialist", "volume": 1200},
+            {"term": "top neurologists", "volume": 1000}
+          ]
+        }
+      ]  
+    },
+    {
+      "id": 3,
+      "Stage": "Newly Diagnosed",
+      "Sentiment ": "1",
+      "Complexity ": "5",
+      "Duration": "2",
+      "sectionHeader": "Adjusting to Life with CIDP",
+      "bodyText": "The period immediately following diagnosis is crucial for patient education and adaptation. Patients must process their diagnosis while simultaneously learning about their condition and making important treatment decisions. Many experience a mix of relief at having answers and anxiety about the future. This stage is critical for establishing a strong foundation of disease understanding and treatment expectations.",
+      "substages": [
+        {
+          "id": "3.1",
+          "title": "Initial Disease Education",
+          "description": "Learning about CIDP pathophysiology and prognosis"
+        },
+        {
+          "id": "3.2",
+          "title": "Treatment Planning",
+          "description": "Discussing and selecting initial treatment approaches"
+        },
+        {
+          "id": "3.3",
+          "title": "Lifestyle Assessment",
+          "description": "Evaluating necessary changes to daily activities and work life"
+        },
+        {
+          "id": "3.4",
+          "title": "Support Network Education",
+          "description": "Educating family and caregivers about CIDP management"
+        }
+      ],
+      "engagementIdeas": [
+        {
+          "title": "Disease Education Program",
+          "description": "Comprehensive educational materials about CIDP pathophysiology, prognosis, and management options, tailored to newly diagnosed patients.",
+          "dataPoint": "87%",
+          "dataDescription": "87% of patients seek additional disease information online within 48 hours of diagnosis"
+        },
+        {
+          "title": "Treatment Decision Support",
+          "description": "Interactive tools to help patients understand and evaluate different treatment options, including benefits and challenges of each approach.",
+          "dataPoint": "63%",
+          "dataDescription": "63% of patients report feeling overwhelmed by treatment decisions in the first month after diagnosis"
+        },
+        {
+          "title": "Lifestyle Adaptation Guide",
+          "description": "Practical guidance on adapting daily activities, work life, and home environment to accommodate new health needs.",
+          "dataPoint": "76%",
+          "dataDescription": "76% of newly diagnosed patients require significant lifestyle modifications within the first year"
+        },
+        {
+          "title": "Family Support Resources",
+          "description": "Materials and support programs designed to help family members understand CIDP and their role in the patient's care journey.",
+          "dataPoint": "92%",
+          "dataDescription": "92% of caregivers express need for more structured guidance about supporting CIDP patients"
+        }
+      ],
+      "searchTerms": [
+        {
+          "term": "CIDP prognosis",
+          "volume": 1100,
+          "relatedSearches": [
+            {"term": "CIDP life expectancy", "volume": 900},
+            {"term": "can CIDP be cured", "volume": 850},
+            {"term": "CIDP recovery chances", "volume": 800}
+          ]
+        },
+        {
+          "term": "CIDP treatment options",
+          "volume": 1300,
+          "relatedSearches": [
+            {"term": "IVIg for CIDP", "volume": 1100},
+            {"term": "CIDP medications", "volume": 950},
+            {"term": "CIDP alternative treatments", "volume": 800}
+          ]
+        },
+        {
+          "term": "living with CIDP",
+          "volume": 950,
+          "relatedSearches": [
+            {"term": "CIDP daily management", "volume": 800},
+            {"term": "coping with CIDP diagnosis", "volume": 750},
+            {"term": "CIDP lifestyle changes", "volume": 700}
+          ]
+        }
+      ]  
+    },
+    {
+      "id": 4,
+      "Stage": "Treatment Initiation",
+      "Sentiment ": "3",
+      "Complexity ": "2",
+      "Duration": "3",
+      "sectionHeader": "Beginning the Treatment Journey",
+      "bodyText": "Following diagnosis, patients typically start IVIg treatment, experiencing initial relief from symptoms. However, this relief is often tempered by the demanding nature of the treatment regimen. Patients must adjust to regular infusion schedules while simultaneously working on rehabilitation to regain strength and mobility.",
+      "substages": [
+        {
+          "id": "4.1",
+          "title": "Treatment Education",
+          "description": "Learning about IVIg treatment process and expectations"
+        },
+        {
+          "id": "4.2",
+          "title": "First Treatment Session",
+          "description": "Initial IVIg infusion and monitoring response"
+        },
+        {
+          "id": "4.3",
+          "title": "Schedule Implementation",
+          "description": "Establishing regular treatment schedule and routine"
+        },
+        {
+          "id": "4.4",
+          "title": "Initial Rehabilitation",
+          "description": "Beginning physical therapy and rehabilitation exercises"
+        }
+      ],
+      "engagementIdeas": [
+        {
+          "title": "Treatment Schedule Assistant",
+          "description": "Develop a digital tool to help patients manage their treatment schedules and track progress.",
+          "dataPoint": "44%",
+          "dataDescription": "44% of patients miss or delay treatments due to scheduling complexity in the first three months"
+        },
+        {
+          "title": "Home Care Support Program",
+          "description": "Provide resources and education for managing treatments at home, including subcutaneous administration training when appropriate.",
+          "dataPoint": "58%",
+          "dataDescription": "58% of eligible patients prefer home-based treatment when given proper support and training"
+        },
+        {
+          "title": "Rehabilitation Exercise Platform",
+          "description": "Create a customizable exercise program focusing on strength and mobility restoration, with virtual coaching options.",
+          "dataPoint": "81%",
+          "dataDescription": "81% better adherence to exercise programs when patients have access to virtual coaching"
+        },
+        {
+          "title": "Treatment Experience Sharing",
+          "description": "Facilitate peer connections for sharing experiences and coping strategies with the treatment regimen.",
+          "dataPoint": "73%",
+          "dataDescription": "73% of patients report improved treatment confidence after connecting with experienced peers"
+        }
+      ],
+   "searchTerms": [
+      {
+        "term": "IVIg treatment for CIDP",
+        "volume": 1400,
+        "relatedSearches": [
+          {"term": "IVIg side effects", "volume": 1200},
+          {"term": "IVIg treatment schedule", "volume": 1000},
+          {"term": "IVIg success rate CIDP", "volume": 900}
+        ]
+      },
+      {
+        "term": "CIDP physical therapy",
+        "volume": 800,
+        "relatedSearches": [
+          {"term": "exercises for CIDP", "volume": 700},
+          {"term": "CIDP rehabilitation", "volume": 650},
+          {"term": "PT for neuropathy", "volume": 600}
+        ]
+      },
+      {
+        "term": "CIDP home treatment",
+        "volume": 600,
+        "relatedSearches": [
+          {"term": "subcutaneous Ig at home", "volume": 500},
+          {"term": "home care for CIDP", "volume": 450},
+          {"term": "self-administered CIDP treatment", "volume": 400}
+        ]
+      }
+    ]
+    },
+    {
+      "id": 5,
+      "Stage": "Long-term Management",
+      "Sentiment ": "4",
+      "Complexity ": "5",
+      "Duration": "4",
+      "sectionHeader": "Maintaining Health and Preventing Relapse",
+      "bodyText": "Patients living with CIDP face ongoing concerns about potential relapses and returning to baseline symptoms. This anxiety significantly impacts their daily lives and future planning. Managing these concerns while maintaining an effective treatment regimen becomes a crucial part of their long-term journey.",
+      "substages": [
+        {
+          "id": "5.1",
+          "title": "Routine Monitoring",
+          "description": "Regular check-ups and symptom monitoring"
+        },
+        {
+          "id": "5.2",
+          "title": "Treatment Optimization",
+          "description": "Fine-tuning treatment schedule and dosage"
+        },
+        {
+          "id": "5.3",
+          "title": "Lifestyle Management",
+          "description": "Maintaining healthy diet, exercise, and stress management routines"
+        },
+        {
+          "id": "5.4",
+          "title": "Support Group Engagement",
+          "description": "Active participation in CIDP support community"
+        }
+      ],
+      "engagementIdeas": [
+        {
+          "title": "Relapse Prevention Toolkit",
+          "description": "Provide educational resources and monitoring tools for identifying early warning signs of relapse.",
+          "dataPoint": "67%",
+          "dataDescription": "67% of relapses show early warning signs that could be identified with proper monitoring"
+        },
+        {
+          "title": "Lifestyle Management Program",
+          "description": "Develop guidance for maintaining optimal health through diet, exercise, and stress management.",
+          "dataPoint": "39%",
+          "dataDescription": "39% reduction in reported fatigue among patients following structured lifestyle management programs"
+        },
+        {
+          "title": "Long-term Support Network",
+          "description": "Create ongoing connection opportunities with healthcare providers and fellow patients for sustained support.",
+          "dataPoint": "84%",
+          "dataDescription": "84% of patients in long-term support networks report better medication adherence"
+        }
+      ],
+      "searchTerms": [
+        {
+          "term": "CIDP relapse symptoms",
+          "volume": 1000,
+          "relatedSearches": [
+            {"term": "signs of CIDP flare up", "volume": 850},
+            {"term": "preventing CIDP relapse", "volume": 800},
+            {"term": "CIDP symptom management", "volume": 750}
+          ]
+        },
+        {
+          "term": "diet for CIDP patients",
+          "volume": 800,
+          "relatedSearches": [
+            {"term": "anti-inflammatory diet CIDP", "volume": 700},
+            {"term": "best foods for neuropathy", "volume": 650},
+            {"term": "CIDP nutrition guidelines", "volume": 600}
+          ]
+        },
+        {
+          "term": "exercise for CIDP",
+          "volume": 700,
+          "relatedSearches": [
+            {"term": "safe exercises with CIDP", "volume": 600},
+            {"term": "strength training neuropathy", "volume": 550},
+            {"term": "CIDP exercise limitations", "volume": 500}
+          ]
+        }
+      ]  
+    },
+    {
+      "id": 6,
+      "Stage": "Treatment Reconsideration",
+      "Sentiment ": "1",
+      "Complexity ": "5",
+      "Duration": "3",
+      "sectionHeader": "Evaluating Treatment Effectiveness and Alternatives",
+      "bodyText": "As patients progress in their CIDP journey, they may need to reassess their current treatment approach, particularly if experiencing suboptimal response or challenges with the treatment regimen. This stage involves careful evaluation of treatment effectiveness, side effects, and impact on quality of life, while considering alternative therapeutic options.",
+      "substages": [
+        {
+          "id": "6.1",
+          "title": "Treatment Assessment",
+          "description": "Evaluating current treatment effectiveness and challenges"
+        },
+        {
+          "id": "6.2",
+          "title": "Alternative Research",
+          "description": "Exploring other treatment options and approaches"
+        },
+        {
+          "id": "6.3",
+          "title": "Healthcare Team Consultation",
+          "description": "Discussing potential changes with medical team"
+        },
+        {
+          "id": "6.4",
+          "title": "Treatment Transition Planning",
+          "description": "Developing plan for potential treatment modification"
+        }
+      ],
+      "engagementIdeas": [
+        {
+    "title": "Treatment Response Assessment",
+    "description": "Structured tools for evaluating current treatment effectiveness and documenting challenges or concerns.",
+    "dataPoint": "52%",
+    "dataDescription": "52% of treatment changes are initiated based on systematic response assessments"
+  },
+  {
+    "title": "Alternative Treatment Information",
+    "description": "Comprehensive information about available treatment alternatives, including emerging therapies and their potential benefits and risks.",
+    "dataPoint": "77%",
+    "dataDescription": "77% of patients research alternative treatments before discussing changes with their healthcare team"
+  },
+  {
+    "title": "Quality of Life Evaluation",
+    "description": "Assessment tools to help patients and healthcare providers understand the impact of current treatment on daily life and well-being.",
+    "dataPoint": "91%",
+    "dataDescription": "91% of treatment modifications are influenced by quality of life considerations"
+  },
+  {
+    "title": "Healthcare Team Collaboration Platform",
+    "description": "Tools to facilitate discussion and decision-making between patients and their healthcare providers about treatment modifications.",
+    "dataPoint": "64%",
+    "dataDescription": "64% faster treatment optimization when using structured collaboration tools"
+  }
+],   "searchTerms": [
+  {
+    "term": "CIDP treatment alternatives",
+    "volume": 1100,
+    "relatedSearches": [
+      {"term": "new treatments for CIDP", "volume": 950},
+      {"term": "CIDP treatment options", "volume": 900},
+      {"term": "alternatives to IVIg", "volume": 850}
+    ]
+  },
+  {
+    "term": "IVIg not working",
+    "volume": 800,
+    "relatedSearches": [
+      {"term": "why did IVIg stop working", "volume": 700},
+      {"term": "IVIg resistance CIDP", "volume": 650},
+      {"term": "when to switch CIDP treatment", "volume": 600}
+    ]
+  },
+  {
+    "term": "CIDP quality of life",
+    "volume": 900,
+    "relatedSearches": [
+      {"term": "improving life with CIDP", "volume": 800},
+      {"term": "CIDP daily challenges", "volume": 750},
+      {"term": "managing CIDP long term", "volume": 700}
+    ]
+  }
+]
+},
+{
+"id": 7,
+"Stage": "Clinical Trial Consideration",
+"Sentiment ": "2",
+"Complexity ": "5",
+"Duration": "3",
+"sectionHeader": "Exploring Research Participation Opportunities",
+"bodyText": "For patients interested in advancing CIDP research or seeking alternative treatment options, clinical trial participation becomes a consideration. This stage involves understanding trial opportunities, evaluating eligibility, and making informed decisions about participation. Key factors include understanding the time commitment, potential benefits and risks, and impact on current treatment routines.",
+"substages": [
+  {
+    "id": "7.1",
+    "title": "Initial Trial Research",
+    "description": "Learning about available clinical trials and requirements"
+  },
+  {
+    "id": "7.2",
+    "title": "Eligibility Assessment",
+    "description": "Evaluating qualification for specific trials"
+  },
+  {
+    "id": "7.3",
+    "title": "Trial Consultation",
+    "description": "Meeting with research team to discuss participation"
+  },
+  {
+    "id": "7.4",
+    "title": "Participation Decision",
+    "description": "Making informed decision about trial enrollment"
+  }
+],
+"engagementIdeas": [
+  {
+    "title": "Trial Education Program",
+    "description": "Clear, comprehensive information about clinical trials, including how they work, what to expect, and important considerations for participation.",
+    "dataPoint": "47%",
+    "dataDescription": "47% of eligible patients decline trial participation due to insufficient understanding of the process"
+  },
+  {
+    "title": "Trial Matching Service",
+    "description": "Tools to help patients identify potentially suitable clinical trials based on their specific situation and location.",
+    "dataPoint": "3.2x",
+    "dataDescription": "Patients using matching services are 3.2x more likely to find suitable trial opportunities"
+  },
+  {
+    "title": "Decision Support Framework",
+    "description": "Interactive resources to help patients evaluate the pros and cons of trial participation, including impact on current treatment and daily life.",
+    "dataPoint": "88%",
+    "dataDescription": "88% of patients report needing structured guidance for trial participation decisions"
+  },
+  {
+    "title": "Trial Navigation Support",
+    "description": "Dedicated support for understanding trial protocols, scheduling requirements, and coordinating with research teams while maintaining current care relationships.",
+    "dataPoint": "72%",
+    "dataDescription": "72% higher trial completion rate when patients have access to navigation support"
+  }
+],
+"searchTerms": [
+  {
+    "term": "CIDP clinical trials",
+    "volume": 1000,
+    "relatedSearches": [
+      {"term": "current CIDP research", "volume": 850},
+      {"term": "new CIDP treatments in trials", "volume": 800},
+      {"term": "experimental CIDP therapy", "volume": 750}
+    ]
+  },
+  {
+    "term": "clinical trial eligibility",
+    "volume": 800,
+    "relatedSearches": [
+      {"term": "CIDP trial requirements", "volume": 700},
+      {"term": "how to join CIDP study", "volume": 650},
+      {"term": "qualifying for clinical trial", "volume": 600}
+    ]
+  },
+  {
+    "term": "CIDP trial risks",
+    "volume": 600,
+    "relatedSearches": [
+      {"term": "clinical trial side effects", "volume": 500},
+      {"term": "CIDP research safety", "volume": 450},
+      {"term": "trial participant rights", "volume": 400}
+    ]
+  }
+]
+}
+]

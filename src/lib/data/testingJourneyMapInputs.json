@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "Stage": "Symptom Onset",
+        "Sentiment ": "2",
+        "Complexity ": "2",
+        "Duration": "2"
+    },
+    {
+        "id": 2,
+        "Stage": "Diagnosis Pathway",
+        "Sentiment ": "1",
+        "Complexity ": "3",
+        "Duration": "3"
+    },
+    {
+        "id": 3,
+        "Stage": "Newly Diagnosed",
+        "Sentiment ": "1",
+        "Complexity ": "5",
+        "Duration": "2"
+    },
+    {
+        "id": 4,
+        "Stage": "Treatment Initiation",
+        "Sentiment ": "3",
+        "Complexity ": "2",
+        "Duration": "3"
+    },
+    {
+        "id": 5,
+        "Stage": "Symptom Management",
+        "Sentiment ": "4",
+        "Complexity ": "5",
+        "Duration": "4"
+    },
+    {
+        "id": 6,
+        "Stage": "Treatment Reconsideration",
+        "Sentiment ": "1",
+        "Complexity ": "5",
+        "Duration": "3"
+    },
+    {
+        "id": 7,
+        "Stage": "Clinical Trial Consideration",
+        "Sentiment ": "2",
+        "Complexity ": "5",
+        "Duration": "3"
+    }
+]

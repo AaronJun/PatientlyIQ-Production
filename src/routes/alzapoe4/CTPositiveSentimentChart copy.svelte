@@ -303,7 +303,7 @@
         {/if}
 
         <p class="caption prose text-left text-base text-slate-600 font-serif mt-8 mb-12 max-w-3xl mx-auto">
-            Alzheon's focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
+            A focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
         </p>
     </div>
 </div>

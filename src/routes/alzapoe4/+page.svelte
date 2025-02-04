@@ -19,9 +19,6 @@
     import AlzIntroductionS2P3 from './ALZIntroductionS2P3.svelte';
     import AlzIntroductionS3P2 from './ALZIntroductionS3P2.svelte';
     import AlzConclusion from './ALZConclusion.svelte';
-    import GeneticPatientQuoteCards from '$lib/patientcards/GeneticPatientQuoteCards.svelte';
-    import CtPatientQuoteCards from '$lib/patientcards/CtPatientQuoteCards.svelte';
-    import AlzheonQuoteCards from '$lib/patientcards/AlzheonQuoteCards.svelte';
     import SwipeableJourneyCards from '$lib/patientcards/SwipeableJourneyCards.svelte';
 
     import ALZMethology from './ALZMethology.svelte';
@@ -29,13 +26,8 @@
     import ctsentimentData from './ctsentimentData.json';
     import WaffleStages from './WaffleStages.svelte';
     import CtWaffleStages from './CTWaffleStages.svelte';
-    import PatientStoryCircles from '$lib/RPDPatientStories/ALZPatientStoryCircles1.svelte';
     import CtPositiveSentimentChart from './CTPositiveSentimentChart.svelte';
 
-
-    import flareData from '$lib/data/flare-alz.json';
-    import { getTopicsForDisease } from '$lib/stores/sentimentTopicsStore';
-	import PatientJourneyDrawer from '$lib/patientcards/ALZPatientJourneyDrawer.svelte';
 	import PositiveSentimentDriversChart from './PositiveSentimentDriversChart.svelte';
 	import NegativeSentimentDriversChart from './NegativeSentimentDriversChart.svelte';
     
@@ -44,10 +36,10 @@
     let isDrawerOpen = false;
    
     const siteUrl = 'https://patientlyiq.com';
-    const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
-    const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 56 new rare disease treatments, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
+    const pageTitle = "APOE4 Genotype Carrier + Caregiver Journey";
+    const pageDescription = "Explore the patient journey of individuals who carry the APOE4 genotype. Learn about this community's sentiment towards genetic testing, clinical trials, and the future of Alzheimer's disease research.";
     const pageImage = `${siteUrl}/rpd-program-preview.png`; // Make image URL absolute
-    const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
+    const pageUrl = `${siteUrl}/alzapoe4`; // Make page URL absolute
     
 </script>
 

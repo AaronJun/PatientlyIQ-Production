@@ -1,0 +1,361 @@
+{
+    "stages": [
+      {
+        "id": 1,
+        "name": "Symptom Onset",
+        "description": "Early Disease Recognition and Support",
+        "quotes": [
+          {
+            "id": 1,
+            "name": "David R.",
+            "age": "Early-50s",
+            "persona": "CIDP Patient",
+            "stageId": 1,
+            "stageName": "Symptom Onset",
+            "quote": "It started with just some tingling in my feet. I ignored it for weeks thinking it would go away. Looking back, I wish I had acted sooner.",
+            "emotionalState": "Uncertain",
+            "theme": "Symptom Recognition"
+          },
+          {
+            "id": 2,
+            "name": "Maria S.",
+            "age": "Mid-40s",
+            "persona": "CIDP Patient",
+            "stageId": 1,
+            "stageName": "Symptom Onset",
+            "quote": "The scariest part was not knowing what was happening. My symptoms kept getting worse, and every doctor had a different theory.",
+            "emotionalState": "Anxious",
+            "theme": "Diagnostic Uncertainty"
+          },
+          {
+            "id": 3,
+            "name": "John K.",
+            "age": "Late-30s",
+            "persona": "CIDP Patient",
+            "stageId": 1,
+            "stageName": "Symptom Onset",
+            "quote": "Each day brought new challenges. First it was trouble with stairs, then buttoning my shirt became impossible. The progression was terrifying.",
+            "emotionalState": "Frightened",
+            "theme": "Symptom Progression"
+          },
+          {
+            "id": 4,
+            "name": "Susan M.",
+            "age": "Early-40s",
+            "persona": "CIDP Patient",
+            "stageId": 1,
+            "stageName": "Symptom Onset",
+            "quote": "I kept telling myself it was just stress or overwork. When I finally couldn't feel my feet properly, I knew something was seriously wrong.",
+            "emotionalState": "Concerned",
+            "theme": "Denial to Recognition"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Diagnosis Pathway",
+        "description": "Navigating the Diagnostic Journey",
+        "quotes": [
+          {
+            "id": 5,
+            "name": "James L.",
+            "age": "Late-30s",
+            "persona": "CIDP Patient",
+            "stageId": 2,
+            "stageName": "Diagnosis Pathway",
+            "quote": "After months of tests and uncertainty, getting the CIDP diagnosis was actually a relief. At least we knew what we were dealing with.",
+            "emotionalState": "Relieved",
+            "theme": "Diagnostic Confirmation"
+          },
+          {
+            "id": 6,
+            "name": "Patricia K.",
+            "age": "Mid-50s",
+            "persona": "CIDP Patient",
+            "stageId": 2,
+            "stageName": "Diagnosis Pathway",
+            "quote": "The EMG was uncomfortable, but it finally gave us answers. Having a diagnosis meant we could start fighting back.",
+            "emotionalState": "Determined",
+            "theme": "Testing Experience"
+          },
+          {
+            "id": 7,
+            "name": "Mark R.",
+            "age": "Mid-40s",
+            "persona": "CIDP Patient",
+            "stageId": 2,
+            "stageName": "Diagnosis Pathway",
+            "quote": "Six different doctors, countless tests, and nearly a year before someone finally connected the dots. The journey to diagnosis felt endless.",
+            "emotionalState": "Frustrated",
+            "theme": "Diagnostic Delays"
+          },
+          {
+            "id": 8,
+            "name": "Lisa W.",
+            "age": "Early-50s",
+            "persona": "Caregiver",
+            "stageId": 2,
+            "stageName": "Diagnosis Pathway",
+            "quote": "Watching my husband go through test after test was exhausting. But each one brought us closer to understanding what we were facing.",
+            "emotionalState": "Hopeful",
+            "theme": "Support Through Testing"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Newly Diagnosed",
+        "description": "Adjusting to Life with CIDP",
+        "quotes": [
+          {
+            "id": 9,
+            "name": "Thomas M.",
+            "age": "Early-60s",
+            "persona": "CIDP Patient",
+            "stageId": 3,
+            "stageName": "Newly Diagnosed",
+            "quote": "Learning about CIDP was overwhelming at first. There's so much information to process, and you have to make treatment decisions quickly.",
+            "emotionalState": "Overwhelmed",
+            "theme": "Information Overload"
+          },
+          {
+            "id": 10,
+            "name": "Sarah B.",
+            "age": "Mid-40s",
+            "persona": "Caregiver",
+            "stageId": 3,
+            "stageName": "Newly Diagnosed",
+            "quote": "When my husband was diagnosed, we had to completely rethink our future. But we're taking it one day at a time.",
+            "emotionalState": "Adapting",
+            "theme": "Life Adjustment"
+          },
+          {
+            "id": 11,
+            "name": "Robert F.",
+            "age": "Late-40s",
+            "persona": "CIDP Patient",
+            "stageId": 3,
+            "stageName": "Newly Diagnosed",
+            "quote": "Finding the online CIDP community was a turning point. Here were people who understood exactly what I was going through.",
+            "emotionalState": "Connected",
+            "theme": "Community Support"
+          },
+          {
+            "id": 12,
+            "name": "Emily T.",
+            "age": "Early-30s",
+            "persona": "CIDP Patient",
+            "stageId": 3,
+            "stageName": "Newly Diagnosed",
+            "quote": "The hardest part was telling my young children. But their resilience and understanding amazed me.",
+            "emotionalState": "Emotional",
+            "theme": "Family Impact"
+          }
+        ]
+      },
+    {
+        "id": 4,
+        "name": "Treatment Initiation",
+        "description": "Beginning the Treatment Journey",
+        "quotes": [
+          {
+            "id": 13,
+            "name": "Michael H.",
+            "age": "Late-40s",
+            "persona": "CIDP Patient",
+            "stageId": 4,
+            "stageName": "Treatment Initiation",
+            "quote": "Starting IVIg was a game-changer. Yes, the schedule is demanding, but watching my strength return made it worth it.",
+            "emotionalState": "Optimistic",
+            "theme": "Treatment Impact"
+          },
+          {
+            "id": 14,
+            "name": "Linda W.",
+            "age": "Mid-50s",
+            "persona": "CIDP Patient",
+            "stageId": 4,
+            "stageName": "Treatment Initiation",
+            "quote": "The first few infusions were intimidating. Finding the right infusion center and nurses made such a difference.",
+            "emotionalState": "Grateful",
+            "theme": "Healthcare Support"
+          },
+          {
+            "id": 15,
+            "name": "Daniel P.",
+            "age": "Early-40s",
+            "persona": "CIDP Patient",
+            "stageId": 4,
+            "stageName": "Treatment Initiation",
+            "quote": "Learning to balance treatment schedules with work was challenging. My employer's support made it possible.",
+            "emotionalState": "Adjusting",
+            "theme": "Work-Life Balance"
+          },
+          {
+            "id": 16,
+            "name": "Rachel M.",
+            "age": "Mid-30s",
+            "persona": "CIDP Patient",
+            "stageId": 4,
+            "stageName": "Treatment Initiation",
+            "quote": "Physical therapy alongside IVIg was crucial. It felt amazing to regain control of my movements.",
+            "emotionalState": "Motivated",
+            "theme": "Rehabilitation"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Long-term Management",
+        "description": "Maintaining Health and Preventing Relapse",
+        "quotes": [
+          {
+            "id": 17,
+            "name": "Robert C.",
+            "age": "Early-50s",
+            "persona": "CIDP Patient",
+            "stageId": 5,
+            "stageName": "Long-term Management",
+            "quote": "Managing CIDP is like a full-time job. Between treatments, exercises, and monitoring symptoms, it takes constant vigilance.",
+            "emotionalState": "Focused",
+            "theme": "Daily Management"
+          },
+          {
+            "id": 18,
+            "name": "Elizabeth D.",
+            "age": "Late-40s",
+            "persona": "CIDP Patient",
+            "stageId": 5,
+            "stageName": "Long-term Management",
+            "quote": "The support groups have been invaluable. Sometimes just talking to someone who truly understands makes all the difference.",
+            "emotionalState": "Supported",
+            "theme": "Community Support"
+          },
+          {
+            "id": 19,
+            "name": "George H.",
+            "age": "Mid-60s",
+            "persona": "CIDP Patient",
+            "stageId": 5,
+            "stageName": "Long-term Management",
+            "quote": "Keeping a symptom diary helped me identify triggers and patterns. It's made managing flare-ups more predictable.",
+            "emotionalState": "Empowered",
+            "theme": "Self-Management"
+          },
+          {
+            "id": 20,
+            "name": "Carol T.",
+            "age": "Early-50s",
+            "persona": "CIDP Patient",
+            "stageId": 5,
+            "stageName": "Long-term Management",
+            "quote": "I've learned to listen to my body. Pushing too hard isn't worth the setback.",
+            "emotionalState": "Wise",
+            "theme": "Self-Awareness"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Treatment Reconsideration",
+        "description": "Evaluating Treatment Effectiveness and Alternatives",
+        "quotes": [
+          {
+            "id": 21,
+            "name": "William P.",
+            "age": "Mid-50s",
+            "persona": "CIDP Patient",
+            "stageId": 6,
+            "stageName": "Treatment Reconsideration",
+            "quote": "After two years, my IVIg stopped working as well. Having to switch treatments was scary, but sometimes change is necessary.",
+            "emotionalState": "Apprehensive",
+            "theme": "Treatment Change"
+          },
+          {
+            "id": 22,
+            "name": "Karen M.",
+            "age": "Early-40s",
+            "persona": "CIDP Patient",
+            "stageId": 6,
+            "stageName": "Treatment Reconsideration",
+            "quote": "The hardest part was accepting that my first treatment wasn't working anymore. But there are other options, and that gives me hope.",
+            "emotionalState": "Resilient",
+            "theme": "Treatment Evolution"
+          },
+          {
+            "id": 23,
+            "name": "Alex B.",
+            "age": "Late-30s",
+            "persona": "CIDP Patient",
+            "stageId": 6,
+            "stageName": "Treatment Reconsideration",
+            "quote": "Researching new treatment options was overwhelming, but my neurologist helped me understand each choice.",
+            "emotionalState": "Informed",
+            "theme": "Decision Making"
+          },
+          {
+            "id": 24,
+            "name": "Michelle L.",
+            "age": "Mid-40s",
+            "persona": "CIDP Patient",
+            "stageId": 6,
+            "stageName": "Treatment Reconsideration",
+            "quote": "Switching to subcutaneous treatment was a big change, but the flexibility it offers has improved my quality of life.",
+            "emotionalState": "Satisfied",
+            "theme": "Treatment Adaptation"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Clinical Trial Consideration",
+        "description": "Exploring Research Participation Opportunities",
+        "quotes": [
+          {
+            "id": 25,
+            "name": "Richard S.",
+            "age": "Mid-60s",
+            "persona": "CIDP Patient",
+            "stageId": 7,
+            "stageName": "Clinical Trial Consideration",
+            "quote": "I joined a clinical trial because I wanted to contribute to finding better treatments. We need more options for future patients.",
+            "emotionalState": "Committed",
+            "theme": "Research Participation"
+          },
+          {
+            "id": 26,
+            "name": "Jennifer A.",
+            "age": "Early-50s",
+            "persona": "CIDP Patient",
+            "stageId": 7,
+            "stageName": "Clinical Trial Consideration",
+            "quote": "The trial protocols are strict, but knowing I might help advance CIDP research makes it worthwhile.",
+            "emotionalState": "Purposeful",
+            "theme": "Contributing to Research"
+          },
+          {
+            "id": 27,
+            "name": "Peter K.",
+            "age": "Late-40s",
+            "persona": "CIDP Patient",
+            "stageId": 7,
+            "stageName": "Clinical Trial Consideration",
+            "quote": "The research team explained everything so thoroughly. It helped ease my concerns about trying something new.",
+            "emotionalState": "Confident",
+            "theme": "Research Support"
+          },
+          {
+            "id": 28,
+            "name": "Sandra M.",
+            "age": "Mid-50s",
+            "persona": "CIDP Patient",
+            "stageId": 7,
+            "stageName": "Clinical Trial Consideration",
+            "quote": "Being part of advancing CIDP treatment gives me purpose. It's not just about my journey anymore.",
+            "emotionalState": "Inspired",
+            "theme": "Scientific Progress"
+          }
+        ]
+      }
+    ]
+  }

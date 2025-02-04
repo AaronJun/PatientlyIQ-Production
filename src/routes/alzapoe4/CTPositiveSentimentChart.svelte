@@ -274,7 +274,7 @@
 
 <div class="min-h-screen flex flex-col items-center justify-center bg-slate-50">
     <h3 class="text-xs font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">        
-        3.1B: Main Drivers of Positive Sentiment, Alzheon Studies
+        3.1B: Main Drivers of Positive Sentiment, [SPONSOR] studies
     </h3>
     
     <div id="positive-sentiment-tooltip" 
@@ -303,7 +303,7 @@
         {/if}
 
         <p class="caption text-sm max-w-96 font-serif text-left mx-auto mt-12">
-            Alzheon's focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
+            A focus on the APOE4 genotype sets it apart from other companies in the eyes of the audience. Carriers and caregivers are encouraged by the company's commitment to developing treatments for this high-risk group, especially in the face of treatment options which are specifically riskier (e.g. lecanemab) for the cohort. 
         </p>
     </div>
 </div>

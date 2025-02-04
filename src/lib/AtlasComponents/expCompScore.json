@@ -1,0 +1,699 @@
+[
+    {
+      "name": "United States",
+      "id": "USA",
+      "compositeScore": 10.85,
+      "baseMetrics": {
+        "studyStartUpDays": 112,
+        "studiesWithCountryExperience": 46,
+        "competingStudies": 17,
+        "experiencedSites": 419,
+        "totalIPFCases": 53622,
+        "ipfPatientRegistry": "yes",
+        "worldwideIPFExperience": 8,
+        "medidataAggregateRecruitmentRate": 0.11
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 37.3, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 37.3, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 37.3, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 18.4, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 13.8, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 13.8, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 167.6, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 125.7, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 125.7, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 21448.8, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 16086.6, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 16086.6, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 3.2, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 2.4, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 2.4, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.044, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.033, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.033, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    },
+    {
+      "name": "United Kingdom",
+      "id": "GBR", 
+      "compositeScore": 11.05,
+      "baseMetrics": {
+        "studyStartUpDays": 199,
+        "studiesWithCountryExperience": 26,
+        "competingStudies": 2,
+        "experiencedSites": 52,
+        "totalIPFCases": 33400,
+        "ipfPatientRegistry": "yes",
+        "worldwideIPFExperience": 5,
+        "medidataAggregateRecruitmentRate": 0.1
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 66.3, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 66.3, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 66.3, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 10.4, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 7.8, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 7.8, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 20.8, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 15.6, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 15.6, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 13360, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 10020, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 10020, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 2.0, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 1.5, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 1.5, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.04, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.03, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.03, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    },
+    {
+      "name": "Germany",
+      "id": "DEU",
+      "compositeScore": 11.6,
+      "baseMetrics": {
+        "studyStartUpDays": 204,
+        "studiesWithCountryExperience": 23,
+        "competingStudies": 4,
+        "experiencedSites": 81,
+        "totalIPFCases": 23124,
+        "ipfPatientRegistry": "yes", 
+        "worldwideIPFExperience": 3,
+        "medidataAggregateRecruitmentRate": 0.16
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 68, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 68, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 68, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 9.2, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 6.9, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 6.9, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 32.4, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 24.3, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 24.3, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 9249.6, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 6937.2, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 6937.2, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 1.2, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 0.9, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 0.9, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.064, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.048, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.048, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    },
+    {
+        "name": "Australia",
+        "id": "AUS", 
+        "compositeScore": 11.05,
+        "baseMetrics": {
+          "studyStartUpDays": 199,
+          "studiesWithCountryExperience": 26,
+          "competingStudies": 2,
+          "experiencedSites": 52,
+          "totalIPFCases": 33400,
+          "ipfPatientRegistry": "yes",
+          "worldwideIPFExperience": 5,
+          "medidataAggregateRecruitmentRate": 0.1
+        },
+        "calculatedMetrics": {
+          "startupDays": {
+            "score": 0,
+            "weight": 0.2,
+            "isInverse": true,
+            "subMetrics": {
+              "regulatoryApproval": { "value": 66.3, "weight": 0.4, "min": 30, "max": 90 },
+              "contractNegotiation": { "value": 66.3, "weight": 0.3, "min": 20, "max": 70 },
+              "siteActivation": { "value": 66.3, "weight": 0.3, "min": 15, "max": 60 }
+            }
+          },
+          "countryExperience": {
+            "score": 0,
+            "weight": 0.15,
+            "isInverse": false,
+            "subMetrics": {
+              "completedTrials": { "value": 10.4, "weight": 0.4, "min": 0, "max": 20 },
+              "ongoingTrials": { "value": 7.8, "weight": 0.3, "min": 0, "max": 15 },
+              "siteRelationships": { "value": 7.8, "weight": 0.3, "min": 0, "max": 30 }
+            }
+          },
+          "experiencedSites": {
+            "score": 0,
+            "weight": 0.15,
+            "isInverse": false,
+            "subMetrics": {
+              "activeInvestigators": { "value": 20.8, "weight": 0.4, "min": 10, "max": 200 },
+              "siteInfrastructure": { "value": 15.6, "weight": 0.3, "min": 5, "max": 100 },
+              "researchStaff": { "value": 15.6, "weight": 0.3, "min": 10, "max": 150 }
+            }
+          },
+          "totalCases": {
+            "score": 0,
+            "weight": 0.2,
+            "isInverse": false,
+            "subMetrics": {
+              "diagnosedCases": { "value": 13360, "weight": 0.4, "min": 5000, "max": 40000 },
+              "treatedCases": { "value": 10020, "weight": 0.3, "min": 3000, "max": 30000 },
+              "registryCases": { "value": 10020, "weight": 0.3, "min": 2000, "max": 25000 }
+            }
+          },
+          "pastExperience": {
+            "score": 0,
+            "weight": 0.15,
+            "isInverse": false,
+            "subMetrics": {
+              "earlyPhaseTrials": { "value": 2.0, "weight": 0.4, "min": 0, "max": 8 },
+              "latePhaseTrials": { "value": 1.5, "weight": 0.3, "min": 0, "max": 10 },
+              "activeInvestigators": { "value": 1.5, "weight": 0.3, "min": 0, "max": 12 }
+            }
+          },
+          "recruitmentRate": {
+            "score": 0,
+            "weight": 0.15,
+            "isInverse": false,
+            "subMetrics": {
+              "screeningRate": { "value": 0.04, "weight": 0.4, "min": 0.03, "max": 0.15 },
+              "conversionRate": { "value": 0.03, "weight": 0.3, "min": 0.02, "max": 0.12 },
+              "retentionRate": { "value": 0.03, "weight": 0.3, "min": 0.02, "max": 0.14 }
+            }
+          }
+        }
+      },
+{
+    "name": "France",
+    "id": "FRA",
+    "compositeScore": 12.1,
+    "baseMetrics": {
+      "studyStartUpDays": 213,
+      "studiesWithCountryExperience": 20,
+      "competingStudies": 4,
+      "experiencedSites": 47,
+      "totalIPFCases": 16645,
+      "ipfPatientRegistry": "yes",
+      "worldwideIPFExperience": 3,
+      "medidataAggregateRecruitmentRate": 0.17
+    },
+    "calculatedMetrics": {
+      "startupDays": {
+        "score": 0,
+        "weight": 0.2,
+        "isInverse": true,
+        "subMetrics": {
+          "regulatoryApproval": { "value": 71, "weight": 0.4, "min": 30, "max": 90 },
+          "contractNegotiation": { "value": 71, "weight": 0.3, "min": 20, "max": 70 },
+          "siteActivation": { "value": 71, "weight": 0.3, "min": 15, "max": 60 }
+        }
+      },
+      "countryExperience": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "completedTrials": { "value": 8, "weight": 0.4, "min": 0, "max": 20 },
+          "ongoingTrials": { "value": 6, "weight": 0.3, "min": 0, "max": 15 },
+          "siteRelationships": { "value": 6, "weight": 0.3, "min": 0, "max": 30 }
+        }
+      },
+      "experiencedSites": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "activeInvestigators": { "value": 18.8, "weight": 0.4, "min": 10, "max": 200 },
+          "siteInfrastructure": { "value": 14.1, "weight": 0.3, "min": 5, "max": 100 },
+          "researchStaff": { "value": 14.1, "weight": 0.3, "min": 10, "max": 150 }
+        }
+      },
+      "totalCases": {
+        "score": 0,
+        "weight": 0.2,
+        "isInverse": false,
+        "subMetrics": {
+          "diagnosedCases": { "value": 6658, "weight": 0.4, "min": 5000, "max": 40000 },
+          "treatedCases": { "value": 4993.5, "weight": 0.3, "min": 3000, "max": 30000 },
+          "registryCases": { "value": 4993.5, "weight": 0.3, "min": 2000, "max": 25000 }
+        }
+      },
+      "pastExperience": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "earlyPhaseTrials": { "value": 1.2, "weight": 0.4, "min": 0, "max": 8 },
+          "latePhaseTrials": { "value": 0.9, "weight": 0.3, "min": 0, "max": 10 },
+          "activeInvestigators": { "value": 0.9, "weight": 0.3, "min": 0, "max": 12 }
+        }
+      },
+      "recruitmentRate": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "screeningRate": { "value": 0.068, "weight": 0.4, "min": 0.03, "max": 0.15 },
+          "conversionRate": { "value": 0.051, "weight": 0.3, "min": 0.02, "max": 0.12 },
+          "retentionRate": { "value": 0.051, "weight": 0.3, "min": 0.02, "max": 0.14 }
+        }
+      }
+    }
+  },
+  {
+    "name": "Canada",
+    "id": "CAN",
+    "compositeScore": 12.15,
+    "baseMetrics": {
+      "studyStartUpDays": 128,
+      "studiesWithCountryExperience": 20,
+      "competingStudies": 6,
+      "experiencedSites": 43,
+      "totalIPFCases": 24004,
+      "ipfPatientRegistry": "yes",
+      "worldwideIPFExperience": 1,
+      "medidataAggregateRecruitmentRate": 0.16
+    },
+    "calculatedMetrics": {
+      "startupDays": {
+        "score": 0,
+        "weight": 0.2,
+        "isInverse": true,
+        "subMetrics": {
+          "regulatoryApproval": { "value": 42.7, "weight": 0.4, "min": 30, "max": 90 },
+          "contractNegotiation": { "value": 42.7, "weight": 0.3, "min": 20, "max": 70 },
+          "siteActivation": { "value": 42.7, "weight": 0.3, "min": 15, "max": 60 }
+        }
+      },
+      "countryExperience": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "completedTrials": { "value": 8, "weight": 0.4, "min": 0, "max": 20 },
+          "ongoingTrials": { "value": 6, "weight": 0.3, "min": 0, "max": 15 },
+          "siteRelationships": { "value": 6, "weight": 0.3, "min": 0, "max": 30 }
+        }
+      },
+      "experiencedSites": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "activeInvestigators": { "value": 17.2, "weight": 0.4, "min": 10, "max": 200 },
+          "siteInfrastructure": { "value": 12.9, "weight": 0.3, "min": 5, "max": 100 },
+          "researchStaff": { "value": 12.9, "weight": 0.3, "min": 10, "max": 150 }
+        }
+      },
+      "totalCases": {
+        "score": 0,
+        "weight": 0.2,
+        "isInverse": false,
+        "subMetrics": {
+          "diagnosedCases": { "value": 9601.6, "weight": 0.4, "min": 5000, "max": 40000 },
+          "treatedCases": { "value": 7201.2, "weight": 0.3, "min": 3000, "max": 30000 },
+          "registryCases": { "value": 7201.2, "weight": 0.3, "min": 2000, "max": 25000 }
+        }
+      },
+      "pastExperience": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "earlyPhaseTrials": { "value": 0.4, "weight": 0.4, "min": 0, "max": 8 },
+          "latePhaseTrials": { "value": 0.3, "weight": 0.3, "min": 0, "max": 10 },
+          "activeInvestigators": { "value": 0.3, "weight": 0.3, "min": 0, "max": 12 }
+        }
+      },
+      "recruitmentRate": {
+        "score": 0,
+        "weight": 0.15,
+        "isInverse": false,
+        "subMetrics": {
+          "screeningRate": { "value": 0.064, "weight": 0.4, "min": 0.03, "max": 0.15 },
+          "conversionRate": { "value": 0.048, "weight": 0.3, "min": 0.02, "max": 0.12 },
+          "retentionRate": { "value": 0.048, "weight": 0.3, "min": 0.02, "max": 0.14 }
+        }
+      }
+    }
+  },
+  [
+    {
+      "name": "Belgium",
+      "id": "BEL",
+      "compositeScore": 12.45,
+      "baseMetrics": {
+        "studyStartUpDays": 194,
+        "studiesWithCountryExperience": 16,
+        "competingStudies": 4,
+        "experiencedSites": 25,
+        "totalIPFCases": 7380,
+        "ipfPatientRegistry": "yes",
+        "worldwideIPFExperience": 1,
+        "medidataAggregateRecruitmentRate": 0.06
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 64.7, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 64.7, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 64.7, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 6.4, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 4.8, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 4.8, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 10, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 7.5, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 7.5, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 2952, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 2214, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 2214, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 0.4, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 0.3, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 0.3, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.024, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    },
+    {
+      "name": "Sweden",
+      "id": "SWE", 
+      "compositeScore": 12.5,
+      "baseMetrics": {
+        "studyStartUpDays": 194,
+        "studiesWithCountryExperience": 16,
+        "competingStudies": 4,
+        "experiencedSites": 25,
+        "totalIPFCases": 7380,
+        "ipfPatientRegistry": "yes",
+        "worldwideIPFExperience": 1,
+        "medidataAggregateRecruitmentRate": 0.06
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 64.7, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 64.7, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 64.7, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 6.4, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 4.8, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 4.8, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 10, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 7.5, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 7.5, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 2952, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 2214, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 2214, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 0.4, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 0.3, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 0.3, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.024, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    },
+    {
+      "name": "Denmark",
+      "id": "DNK",
+      "compositeScore": 12.55,
+      "baseMetrics": {
+        "studyStartUpDays": 194,
+        "studiesWithCountryExperience": 16,
+        "competingStudies": 4,
+        "experiencedSites": 25,
+        "totalIPFCases": 7380,
+        "ipfPatientRegistry": "yes",
+        "worldwideIPFExperience": 1,
+        "medidataAggregateRecruitmentRate": 0.06
+      },
+      "calculatedMetrics": {
+        "startupDays": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": true,
+          "subMetrics": {
+            "regulatoryApproval": { "value": 64.7, "weight": 0.4, "min": 30, "max": 90 },
+            "contractNegotiation": { "value": 64.7, "weight": 0.3, "min": 20, "max": 70 },
+            "siteActivation": { "value": 64.7, "weight": 0.3, "min": 15, "max": 60 }
+          }
+        },
+        "countryExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "completedTrials": { "value": 6.4, "weight": 0.4, "min": 0, "max": 20 },
+            "ongoingTrials": { "value": 4.8, "weight": 0.3, "min": 0, "max": 15 },
+            "siteRelationships": { "value": 4.8, "weight": 0.3, "min": 0, "max": 30 }
+          }
+        },
+        "experiencedSites": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "activeInvestigators": { "value": 10, "weight": 0.4, "min": 10, "max": 200 },
+            "siteInfrastructure": { "value": 7.5, "weight": 0.3, "min": 5, "max": 100 },
+            "researchStaff": { "value": 7.5, "weight": 0.3, "min": 10, "max": 150 }
+          }
+        },
+        "totalCases": {
+          "score": 0,
+          "weight": 0.2,
+          "isInverse": false,
+          "subMetrics": {
+            "diagnosedCases": { "value": 2952, "weight": 0.4, "min": 5000, "max": 40000 },
+            "treatedCases": { "value": 2214, "weight": 0.3, "min": 3000, "max": 30000 },
+            "registryCases": { "value": 2214, "weight": 0.3, "min": 2000, "max": 25000 }
+          }
+        },
+        "pastExperience": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "earlyPhaseTrials": { "value": 0.4, "weight": 0.4, "min": 0, "max": 8 },
+            "latePhaseTrials": { "value": 0.3, "weight": 0.3, "min": 0, "max": 10 },
+            "activeInvestigators": { "value": 0.3, "weight": 0.3, "min": 0, "max": 12 }
+          }
+        },
+        "recruitmentRate": {
+          "score": 0,
+          "weight": 0.15,
+          "isInverse": false,
+          "subMetrics": {
+            "screeningRate": { "value": 0.024, "weight": 0.4, "min": 0.03, "max": 0.15 },
+            "conversionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.12 },
+            "retentionRate": { "value": 0.018, "weight": 0.3, "min": 0.02, "max": 0.14 }
+          }
+        }
+      }
+    }
+    ]
+    ]
+    
+

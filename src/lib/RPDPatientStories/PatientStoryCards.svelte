@@ -2,23 +2,33 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    
+    import WordCloud from '../wordcloud/SentimentWordCloud.svelte';
+    import { fade } from 'svelte/transition';
+
     export let name: string = "Timothy K.";
     export let age: string = "Mid-50s";
     export let disease: string = "APOE4/4 Carrier";
     export let persona: string = "Working professional";
-    export let photoUrl: string =  '$lib/assets/profiles/timothyK.jpg';
+    export let photoUrl: string = '$lib/assets/profiles/timothyK.jpg';
     export let quote: string = "Managing my condition while balancing work and family life has been challenging.";
     export let metrics = {
         treatmentAdherence: 85,
         qualityOfLife: 75,
         symptomsControl: 80
     };
-
-    let metricsContainer: HTMLElement;
+    export let wordCloudData: Array<{text: string, value: number}> = [];
     
-    // D3 visualization setup
+    let metricsContainer: HTMLElement;
+    let showMetrics = true;
+    
+    function toggleView() {
+        showMetrics = !showMetrics;
+    }
+
+    // D3 metrics visualization setup
     onMount(() => {
+        if (!metricsContainer) return;
+        
         const width = 120;
         const height = 120;
         const radius = Math.min(width, height) / 2;
@@ -75,7 +85,6 @@
 <div 
     class="card"
     on:click={handleClick}
-    transition:fade
 >
     <div class="card-content">
         <!-- Photo Circle -->
@@ -102,7 +111,7 @@
             <!-- Quote -->
             <div class="quote">
                 <svg class="quote-icon" viewBox="0 0 24 24" width="18" height="18">
-                <path 
+                    <path 
                         fill="currentColor" 
                         d="M10 11v6H6v-6h4zm8 0v6h-4v-6h4zm-8-8v6H6V3h4zm8 0v6h-4V3h4z"
                     />
@@ -110,8 +119,25 @@
                 <p>{quote}</p>
             </div>
 
-            <!-- D3 Metrics Visualization -->
-            <div bind:this={metricsContainer} class="metrics-container"></div>
+            <!-- Toggle button -->
+            <button class="toggle-btn" on:click|stopPropagation={toggleView}>
+                {showMetrics ? 'Show Word Cloud' : 'Show Metrics'}
+            </button>
+
+            <!-- Visualization Container -->
+            <div class="visualization-container">
+                {#if showMetrics}
+                    <div bind:this={metricsContainer} class="metrics-container"></div>
+                {:else}
+                    <div class="word-cloud-container">
+                        <WordCloud 
+                            data={wordCloudData}
+                            width={300}
+                            height={150}
+                        />
+                    </div>
+                {/if}
+            </div>
         </div>
     </div>
 </div>
@@ -214,9 +240,35 @@
         margin-top: 0.25rem;
     }
 
-    .metrics-container {
+    .toggle-btn {
         margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        color: #ff5151;
+        background: transparent;
+        border: 1px solid #ff5151;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+        background: #ff5151;
+        color: white;
+    }
+
+    .visualization-container {
+        margin-top: 1rem;
+        min-height: 150px;
+    }
+
+    .metrics-container {
         display: flex;
         justify-content: center;
+    }
+
+    .word-cloud-container {
+        width: 100%;
+        height: 150px;
     }
 </style>

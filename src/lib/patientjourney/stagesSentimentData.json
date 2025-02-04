@@ -1,0 +1,62 @@
+{
+    "stages": [
+      {
+        "name": "Symptom Onset",
+        "sentiments": {
+          "Entirely Negative": 28,
+          "Somewhat Negative": 35,
+          "Neutral": 12,
+          "Somewhat Positive": 8
+        }
+      },
+      {
+        "name": "Diagnosis Pathway",
+        "sentiments": {
+          "Entirely Negative": 32,
+          "Somewhat Negative": 30,
+          "Neutral": 15,
+          "Somewhat Positive": 5
+        }
+      },
+      {
+        "name": "Newly Diagnosed",
+        "sentiments": {
+          "Entirely Negative": 25,
+          "Somewhat Negative": 28,
+          "Neutral": 18,
+          "Somewhat Positive": 12,
+          "Entirely Positive": 4
+        }
+      },
+      {
+        "name": "Treatment Initiation",
+        "sentiments": {
+          "Entirely Negative": 15,
+          "Somewhat Negative": 20,
+          "Neutral": 25,
+          "Somewhat Positive": 18,
+          "Entirely Positive": 10
+        }
+      },
+      {
+        "name": "Long-term Management",
+        "sentiments": {
+          "Entirely Negative": 8,
+          "Somewhat Negative": 15,
+          "Neutral": 22,
+          "Somewhat Positive": 20,
+          "Entirely Positive": 15
+        }
+      },
+      {
+        "name": "Clinical Trial Consideration",
+        "sentiments": {
+          "Entirely Negative": 12,
+          "Somewhat Negative": 18,
+          "Neutral": 25,
+          "Somewhat Positive": 15,
+          "Entirely Positive": 8
+        }
+      }
+    ]
+  }

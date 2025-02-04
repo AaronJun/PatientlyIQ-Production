@@ -9,15 +9,29 @@
           "disease": "APOE4/4 MCI",
           "persona": "Caregiver",
           "img": "/profiles/maggieP.jpg",
-          "bio": "Maggie is a retired physician navigating her husband’s APOE4/4 status and early-stage Alzheimer's treatment and arranging care. While their retirement home is close to a major hospital, they now live five hours from their closest relatives.",
-
+          "bio": "Maggie is a retired physician navigating her husband's APOE4/4 status and early-stage Alzheimer's treatment and arranging care. While their retirement home is close to a major hospital, they now live five hours from their closest relatives.",
+          "wordCloudData": [
+            { "text": "treatment", "value": 85 },
+            { "text": "overwhelmed", "value": 70 },
+            { "text": "medical", "value": 65 },
+            { "text": "hope", "value": 60 },
+            { "text": "lecanemab", "value": 55 },
+            { "text": "clinical", "value": 50 },
+            { "text": "retirement", "value": 45 },
+            { "text": "hospital", "value": 40 },
+            { "text": "risks", "value": 35 },
+            { "text": "care", "value": 30 },
+            { "text": "support", "value": 25 },
+            { "text": "diagnosis", "value": 20 },
+            { "text": "trial", "value": 15 }
+          ],
           "cards": [
             {
               "type": "Bio",
               "quote": "I'm trying not to panic, but I feel overwhelmed and lost. Our retirement plans are going to look very different from what we dreamed of.",
               "context": "First Week After Diagnosis",
               "contextDescription": "After the initial shock, Maggie is trying to find a way to cope with the diagnosis.",
-              "goals": "Improve husband’s quality of life by exploring treatments options while balancing risks and benefits",
+              "goals": "Improve husband's quality of life by exploring treatments options while balancing risks and benefits",
               "strengths": "A medical background, proximity to large hospitals, and financial stability",
               "anxieties": "Lack of treatment options, limited support network, and treatment risks",
               "medicalLiteracy": "9",
@@ -27,7 +41,7 @@
             },
             {
               "type": "Initial Response",
-              "quote": "For me, it's like living under a dark cloud. I’m trying to hang onto hope.",
+              "quote": "For me, it's like living under a dark cloud. I'm trying to hang onto hope.",
               "context": "First Week After Diagnosis",
               "contextDescription": "After the initial shock, Maggie is trying to find a way to cope with the diagnosis.",
               "sentiment": 15,
@@ -41,14 +55,14 @@
               "quadrantData": [
                 {
                   "label": "Emotional Coping",
-                  "x": 0,
+                  "x": 10,
                   "y": 55
                 }
               ]
             },
             {
               "type": "First Steps",
-              "quote": "We’re torn about starting lecanemab treatment. The statistics show high risks for little benefit, but he’s relatively young and fit. Even as an MD, I find the decision hard to make.",
+              "quote": "We're torn about starting lecanemab treatment. The statistics show high risks for little benefit, but he's relatively young and fit. Even as an MD, I find the decision hard to make.",
               "context": "One Month In",
               "contextDescription": "Despite her medical background, Maggie found it difficult to make a decision about her husband's treatment. After much deliberation, they decided to start lecanemab.",
               "sentiment": 55,
@@ -69,7 +83,7 @@
             },
             {
               "type": "Clinical Trial",
-              "quote": "We needed to pause treatment after four infusions. Thankfully, he’s not showing behavioral changes…still, it’s back to the drawing board.",
+              "quote": "We needed to pause treatment after four infusions. Thankfully, he's not showing behavioral changes…still, it's back to the drawing board.",
               "context": "Three Months After Stopping Treatment",
               "contextDescription": "After an initially smooth start, Maggie and her husband were forced to stop lecanemab treatments, and are now considering clinical trial options.",
               "sentiment": 35,
@@ -86,7 +100,7 @@
                   "x": 15,
                   "y": 55
                 }
-            ]
+              ]
             }
           ]
         },
@@ -97,12 +111,25 @@
           "disease": "APOE4/4",
           "persona": "Carrier",
           "img": "/profiles/nancyA.jpg",
-          "bio": "Nancy, who lost her mother to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options."
-,
+          "bio": "Nancy, who lost her mother to Alzheimer's, leans on her research background to stay up-to-date with the latest research and is beginning to consider clinical trial options.",
+          "wordCloudData": [
+            { "text": "research", "value": 80 },
+            { "text": "genetic", "value": 75 },
+            { "text": "prepared", "value": 65 },
+            { "text": "proactive", "value": 60 },
+            { "text": "opportunity", "value": 55 },
+            { "text": "mother", "value": 50 },
+            { "text": "clinical", "value": 45 },
+            { "text": "options", "value": 40 },
+            { "text": "studies", "value": 35 },
+            { "text": "support", "value": 30 },
+            { "text": "background", "value": 25 },
+            { "text": "lifestyle", "value": 20 }
+          ],
           "cards": [
             {
               "type": "Bio",
-              "quote": "Learning that I was APOE4/4 rocked my world. I don’t think I was as prepared as I thought.",
+              "quote": "Learning that I was APOE4/4 rocked my world. I don't think I was as prepared as I thought.",
               "context": "Motivated to take genetic test",
               "contextDescription": "Nancy's mother's Alzheimer's diagnosis made her more aware of her own risk, and motivated to take a genetic test.",
               "goals": "Preserve quality of life, take preventative health actions, and actively pursue new treatment opportunities",
@@ -115,7 +142,7 @@
             },
             {
               "type": "Initial Response",
-              "quote": "Learning that I was APOE4/4 rocked my world. I don’t think I was as prepared as I thought.",
+              "quote": "Learning that I was APOE4/4 rocked my world. I don't think I was as prepared as I thought.",
               "context": "Receiving her genetic test results",
               "contextDescription": "Nancy believed she was mentally prepared for the results, but found herself struggling with the implications.",
               "sentiment": 20,
@@ -134,7 +161,7 @@
             },
             {
               "type": "First Steps",
-              "quote": "I have to think that this genetic marker is not my destiny. I’m trying to think of it as an opportunity.",
+              "quote": "I have to think that this genetic marker is not my destiny. I'm trying to think of it as an opportunity.",
               "context": "1-2 months after receiving test result",
               "contextDescription": "Though anxious about the implications of her APOE4/4 status, Nancy is determined to stay positive and proactive.",
               "sentiment": 20,
@@ -158,7 +185,7 @@
               "contextDescription": "Leaning on her research background, Nancy is diving deep into clinical data as she considers study options.",
               "sentiment": 70,
               "topics": [
-                { "topic": "Treatment Hope", "value": 7  },
+                { "topic": "Treatment Hope", "value": 7 },
                 { "topic": "Care Access", "value": 3 },
                 { "topic": "Future Outlook", "value": 2 }
               ],
@@ -179,8 +206,21 @@
           "disease": "APOE4/4",
           "persona": "Carrier",
           "img": "/profiles/timothyK.jpg",
-          "bio": "Timothy is APOE4/4 carrier who lost his mother to Alzheimer's. After learning of his genotype, he's beginning to take his first steps toward confronting his new reality."
-,
+          "bio": "Timothy is APOE4/4 carrier who lost his mother to Alzheimer's. After learning of his genotype, he's beginning to take his first steps toward confronting his new reality.",
+          "wordCloudData": [
+            { "text": "emotional", "value": 85 },
+            { "text": "scared", "value": 75 },
+            { "text": "mother", "value": 70 },
+            { "text": "lifestyle", "value": 65 },
+            { "text": "stress", "value": 60 },
+            { "text": "future", "value": 55 },
+            { "text": "community", "value": 50 },
+            { "text": "support", "value": 45 },
+            { "text": "diagnosis", "value": 40 },
+            { "text": "genetic", "value": 35 },
+            { "text": "hope", "value": 30 },
+            { "text": "health", "value": 25 }
+          ],
           "cards": [
             {
               "type": "Bio",
@@ -197,7 +237,7 @@
             },
             {
               "type": "Pre-Screening",
-              "quote": "After mom died of Alzheimer’s I used a 23andme DNA kit to see if I’m a APOE4 carrier. I thought it would be helpful to know.",
+              "quote": "After mom died of Alzheimer's I used a 23andme DNA kit to see if I'm a APOE4 carrier. I thought it would be helpful to know.",
               "context": "Motivated to take a genetic test",
               "contextDescription": "Hoping that knowing his genetic status would help him prepare for the future, Timothy took a 23andMe test.",
               "sentiment": 50,
@@ -215,7 +255,7 @@
             },
             {
               "type": "First Steps",
-              "quote": "Knowing about my APOE4/4 status has had the opposite effect from what I’d hoped – I feel like I’ve lost all my interest in the things I used to enjoy.",
+              "quote": "Knowing about my APOE4/4 status has had the opposite effect from what I'd hoped – I feel like I've lost all my interest in the things I used to enjoy.",
               "context": "5-7 weeks after taking test",
               "contextDescription": "Timothy expected to find out he was an APOE4 carrier, but the reality of the diagnosis hit him harder than he anticipated.",
               "sentiment": 20,
@@ -234,7 +274,7 @@
             },
             {
               "type": "Moving Forward",
-              "quote": "Now it’s been over a year since I’ve learned that I’m APOE4/4, I finally feel like I’m ready to confront it with more than a healthy lifestyle.",
+              "quote": "Now it's been over a year since I've learned that I'm APOE4/4, I finally feel like I'm ready to confront it with more than a healthy lifestyle.",
               "context": "12-15 months after learning status",
               "contextDescription": "After a year of struggling with his diagnosis, Timothy is ready to take the next steps in his journey and is actively engaging in online and offline APOE4 communities.",
               "sentiment": 55,
