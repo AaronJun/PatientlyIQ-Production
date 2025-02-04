@@ -156,7 +156,7 @@ function handleCalculatorOpen() {
 		  Feasibility Mapper<span class="tag text-[9.25px] w-fit h-fit ml-2">Beta</span>
 		</h1>	
 	  </div>	
-	  <div class="header-filter-container w-4/5">	
+	  <div class="header-filter-container w-full">	
 	  {#if allData.length > 0}
 		<HeaderFilter 
 		  bind:selectedMetric={$selectedMetricStore}
@@ -166,11 +166,11 @@ function handleCalculatorOpen() {
 	  {/if}
 	  </div>
 	  
-	  <div class="flex flex-row min-h-[85vh] w-full">
-		<div class="outline-wrapper flex-1 bg-[#E9EEFB]/30 w-4/5 px-8 pt-24 min-h-full">
+	  <div class="flex flex-row w-full">
+		<div class="outline-wrapper flex-1 bg-[#E9EEFB]/30 w-4/5">
 		  <BubbleMapper
-			width={1200}
-			height={950}
+			width={960}
+			height={500}
 			{rankedData}
 			{colorGradient}
 			onCountryClick={(country) => handleCountryClick(country)}

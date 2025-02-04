@@ -63,7 +63,7 @@
                     on:mouseenter={() => handleCountryHover(country)}
                     on:mouseleave={() => handleCountryHover(null)}
                     on:click={() => handleCountryClick(country)}
-                    class="cursor-pointer hover:bg-blue-50"
+                    class="cursor-pointer hover:bg-blue-100"
                   >
                     <td class="p-2">
                       <div class="color-indicator" style="background-color: {getColorForRank(country.rank)}">
@@ -92,14 +92,13 @@
 <style>
   .sidebar {
     border-top: 1px solid #e5e7eb;
-    min-height: 85vh;
   }
 
   .color-indicator {
-    @apply inline-flex items-center justify-center;
-    width: 1.2rem;
-    height: 1.2rem;
-    border-radius: 9999px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    border-radius: 10px;
   }
 
   .rank {
