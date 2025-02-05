@@ -78,7 +78,7 @@
             </table>
             <button 
               on:click={handleAdjustInputs}
-              class="w-full bg-[#ff4A4A] text-white p-3 mt-8 font-medium font-mono text-sm tracking-wide upper hover:bg-blue-700 transition-colors"
+              class="w-full bg-[#ff4A4A] text-white p-3 mt-8 font-medium font-mono text-xs uppercase tracking-wide upper hover:bg-[#AA9AFA] transition-colors"
             >
               Adjust Inputs
             </button>
@@ -114,15 +114,17 @@
   }
 
   th {
+    padding: 0.5rem 0 0.25rem 0.25rem;
+    align-content: center;
+    border-bottom: .5px solid #666666;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05rem;
+    font-size: .6275rem
   }
 
   td {
     font-family: 'ibm plex mono', monospace;
     height: 100%;
     font-size: 0.75rem;
-  }
-
-  th {
-    @apply text-[10.25px] font-mono font-medium text-slate-600;
   }
 </style>

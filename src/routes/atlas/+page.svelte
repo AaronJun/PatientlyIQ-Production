@@ -153,7 +153,8 @@ function handleCalculatorOpen() {
 	<div class="flex-1 pt-16 place-content-center">
 	  <div class="heading-container">
 		<h1 class="heading text-2xl font-mono tracking-normal uppercase align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-600">
-		  Feasibility Mapper<span class="tag text-[10.25px] font-medium font-mono text-slate-400 tracking-wide uppercase w-fit h-fit ml-2">Beta</span>
+		  Feasibility Atlas<span class="tag text-[10.25px] font-medium font-mono text-slate-400 tracking-wide uppercase w-fit h-fit ml-2">Beta</span>
+		
 		</h1>	
 	</div>	
 	<div class="header-filter-container flex-row w-full">	
