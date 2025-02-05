@@ -29,8 +29,8 @@
     };
 
     const stageDescriptions = {
-        "Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers about clinical trials, excluding specific mentions of Alzheon's programs.",
-        "Alzheon Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers specifically about Alzheon's research and clinical trials."
+        "Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers about clinical trials, excluding specific mentions of [SPONSOR]'s programs.",
+        "[SPONSOR] Clinical Trials": "Sentiment expressed by APOE4 carriers and caregivers specifically about [SPONSOR]'s research and clinical trials."
     };
 
     const quotes = {
@@ -40,7 +40,7 @@
             index: 5,
             text: "My reaction is no way am I going to be a guinea pig for this snake oil. There is no cure, only the ability to possibly prolong the misery."
         }, 
-        "Alzheon Clinical Trials": {
+        "[SPONSOR] Clinical Trials": {
             sentiment: "Somewhat Positive",
             persona: "Carrier, APOE4/4",
             index: 10,
@@ -394,7 +394,7 @@ function createVisualization(animate = false) {
         <svg bind:this={svg}></svg>
     </div>
     <p class="caption text-sm max-w-96 font-serif text-left mx-auto">
-        The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. Alzheon's clinical trials, by comparison, provoke a more positive community response.
+        The community's overall perception of clinical trials is largely negative, colored by cancelled programs and negative news cycles. [SPONSOR]'s clinical trials, by comparison, provoke a more positive community response.
      </p>
     
 </div>
