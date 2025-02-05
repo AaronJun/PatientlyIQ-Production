@@ -149,7 +149,7 @@ function handleCalculatorOpen() {
 	}
 </script>
 
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-[100vh] w-[100vw]">
 	<div class="flex-1 pt-16 place-content-center">
 	  <div class="heading-container">
 		<h1 class="heading text-2xl font-mono tracking-normal uppercase align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-600">

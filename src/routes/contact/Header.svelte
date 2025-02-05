@@ -84,7 +84,8 @@
                 {/if}
             </button>
 
-            <Button href="/contact"
+            <Button 
+                on:click={() => scrollToSection('contactform')}
                 class="hidden md:flex -translate-y-2 animate-fade-in gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white hover:bg-[#ff6b6b] dark:text-orange-100"
             >
                 <span>Project Inquiries</span>
@@ -110,7 +111,7 @@
                 {/each}
                 <div class="px-4 pt-4">
                     <Button 
-                        href="/contact"
+                        on:click={() => scrollToSection('contactform')}
                         class="w-full justify-center gap-1 rounded-full text-xs bg-[#ff5151] border-orange-400 text-white hover:bg-[#ff6b6b] dark:text-orange-100"
                     >
                         <span>Project Inquiries</span>
