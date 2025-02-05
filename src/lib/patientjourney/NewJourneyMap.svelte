@@ -66,7 +66,7 @@
             const gradientId = `gradient-${i}`;
             const gradient = defs.append('linearGradient')
                 .attr('id', gradientId)
-                .attr('x1', '0%')
+                .attr('x1', '100%')
                 .attr('y1', '0%')
                 .attr('x2', '100%')
                 .attr('y2', '0%');
@@ -79,7 +79,7 @@
             gradient.append('stop')
                 .attr('offset', '100%')
                 .attr('stop-color', sentimentColors[stage['Sentiment ']])
-                .attr('stop-opacity', 0.3);
+                .attr('stop-opacity', 1);
 
             // Add stage rectangle
             stageGroup.append('rect')
@@ -94,7 +94,7 @@
                     tooltip
                         .style('opacity', 1)
                         .html(`
-                            <div class="font-sans text-xs">
+                            <div class="font-mono text-xs">
                                 <div class="font-semibold">${stage.Stage}</div>
                                 <div>Duration: ${stage.Duration}</div>
                                 <div>Sentiment: ${stage['Sentiment ']}</div>
@@ -110,9 +110,11 @@
 
             // Add stage label
             labelsGroup.append('text')
-                .attr('x', currentX + stageWidth/4)
+                .attr('x', currentX + 2.125)
                 .attr('y', yOffset + 22)
                 .attr('text-anchor', 'start')
+                .attr('font-family', 'IBM Plex Mono')
+                .attr('font-weight', '500')
                 .attr('font-size', '9.25px')
                 .attr('fill', '#4a4a4a')
                 .text(stage.Stage);
@@ -210,7 +212,7 @@
 
 <div 
     bind:this={containerRef} 
-    class="w-full p-4 transition-opacity duration-300"
+    class="p-4 transition-opacity duration-300"
     class:opacity-0={!isVisible}
     class:opacity-100={isVisible}
 >

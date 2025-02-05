@@ -16,7 +16,7 @@
     const stageSpacing = 80;
     const labelHeight = 40;
     const gridWidth = 5;
-    const legendHeight = 50;
+    const legendHeight = 30;
     const animationDuration = 800;
 
     const colors = {
@@ -348,8 +348,9 @@
             const text = legendItem.append("text")
                 .attr("y", 8)
                 .attr("fill", "#6D635B")
-                .attr("font-size", "8px")
-                .attr("font-family", "IBM Plex Sans Condensed")
+                .attr("font-size", "7.25px")
+                .attr('letter-spacing', '.2px')
+                .attr("font-family", "IBM Plex Mono")
                 .attr("text-anchor", "middle")
                 .text(sentiment);
 
@@ -386,12 +387,13 @@
 
             labelGroup.append("text")
                 .attr("x", stageWidth / 2)
-                .attr("y", -20)
+                .attr("y", -25)
                 .attr("text-anchor", "middle")
-                .attr("fill", "#828487")
-                .attr("font-size", "7.25px")
-                .attr("font-weight", "800")
-                .attr("font-family", "IBM Plex Sans Condensed")
+                .attr("fill", "#565656")
+                .attr("font-size", "6.725px")
+                .attr("font-weight", "500")
+                .style("text-transform", "uppercase")
+                .attr("font-family", "IBM Plex Mono")
                 .text(stage.name)
                 .style("opacity", animate ? 0 : 1);
 
@@ -431,8 +433,9 @@
                 .attr("x", stageWidth / 2)
                 .attr("y", totalRows * (cellSize + cellPadding) + 15)
                 .attr("text-anchor", "middle")
-                .attr("fill", "#6D635B")
-                .attr("font-size", "10px")
+                .attr("fill", "#565656")
+                .attr("font-size", "9.25px")
+                .attr("font-weight", "500")
                 .text(total)
                 .style("opacity", animate ? 0 : 1);
 
@@ -488,16 +491,21 @@
     }
 </script>
 
-<div class="relative flex flex-col bg-slate-50 py-8 items-center justify-center w-full mt-12" bind:this={containerRef}>
-    <h3 class="text-sm font-mono text-slate-800 px-4 py-2 text-center mb-12 uppercase underline underline-offset-4">
-        1.1a: Expressed Sentiment, Major Journey Stages
+<div class="relative flex flex-col items-center bg-slate-100/70 justify-center w-full mt-10" bind:this={containerRef}>
+    <div class="heading-container flex flex-col bg-sky-100/20 w-full p-6">
+    <h3 class="text-xs font-mono font-medium text-slate-800 text-left mb-4 uppercase">
+    Post Sentiment at Key Journey Stages
     </h3>
+    <p class="text-sm text-slate-600 text-left text-pretty max-w-prose">
+        Explore the sentiment distribution at each stage of the CIDP patient journey. Hover over each stage to learn more about the experience.
+    </p>
+    </div>
 
     <div id="tooltip" 
          class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
          style="visibility: hidden; z-index: 9999; transform: translateY(-50%);">
     </div>
-    <div class="chart-container flex items-center justify-center">
+    <div class="chart-container flex items-center justify-center pt-12 px-4">
         <svg bind:this={svg}></svg>
     </div>
 </div>
@@ -521,5 +529,9 @@
     :global(.tooltip-title) {
         font-weight: 500;
         margin-bottom: 0.5rem;
+    }
+
+    .heading-container {
+        border-bottom: 1px dotted #565656;
     }
 </style>

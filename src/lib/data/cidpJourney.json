@@ -7,26 +7,68 @@
       "Duration": "2",
       "sectionHeader": "Early Disease Recognition and Support",
       "bodyText": "Most patients experience a gradual decline in function, with symptoms worsening over time. However, a significant subset faces rapid deterioration, which can be particularly distressing for both patients and their families. The uncertainty during this period often leads to anxiety and confusion about the changes they're experiencing.",
+      "quoteDescription": "Early conversations often center on the confusion and uncertainty surrounding initial symptoms. Many patients report spending months trying to understand their symptoms before seeking medical attention, highlighting the need for better awareness of early CIDP signs.",
+
       "substages": [
         {
           "id": "1.1",
           "title": "Initial Symptoms",
-          "description": "Patient experiences initial weakness, numbness, or tingling in extremities"
+          "description": "Patient experiences initial weakness, numbness, or tingling in extremities",
+          "conversationTopics": [
+            "Unexplained tingling sensations",
+            "Muscle weakness patterns",
+            "Daily activity impact"
+          ],
+          "searchTerms": [
+            "tingling hands feet causes",
+            "muscle weakness getting worse",
+            "early neuropathy symptoms"
+          ]
         },
         {
           "id": "1.2",
           "title": "Symptom Documentation",
-          "description": "Recording frequency and severity of symptoms in daily activities"
+          "description": "Recording frequency and severity of symptoms in daily activities",
+          "conversationTopics": [
+            "Symptom tracking methods",
+            "Activity limitations",
+            "Pattern recognition"
+          ],
+          "searchTerms": [
+            "how to track symptoms",
+            "symptom diary app",
+            "documenting nerve symptoms"
+          ]
         },
         {
           "id": "1.3",
           "title": "Initial Healthcare Contact",
-          "description": "First discussion of symptoms with primary care physician"
+          "description": "First discussion of symptoms with primary care physician",
+          "conversationTopics": [
+            "Doctor communication strategies",
+            "Medical history relevance",
+            "Test expectations"
+          ],
+          "searchTerms": [
+            "when to see doctor numbness",
+            "preparing for doctor visit",
+            "neurological symptoms checklist"
+          ]
         },
         {
           "id": "1.4",
           "title": "Support System Activation",
-          "description": "Involving family members and close friends in the early care process"
+          "description": "Involving family members and close friends in the early care process",
+          "conversationTopics": [
+            "Family communication",
+            "Workplace accommodations",
+            "Daily assistance needs"
+          ],
+          "searchTerms": [
+            "how to explain symptoms family",
+            "workplace disability rights",
+            "caregiver resources neuropathy"
+          ]
         }
       ],
       "engagementIdeas": [
@@ -40,7 +82,7 @@
           "title": "Educational Resources",
           "description": "Develop clear, accessible materials about CIDP symptoms and when to seek medical attention, distributed through primary care offices and neurology clinics.",
           "dataPoint": "3200",
-          "dataDescription": "On average, there are 3200 monthly searches for CIDP symptoms and early signs"
+          "dataDescription": "On average, there are 3200 month"
         },
         {
           "title": "Community Support Connection",
@@ -111,26 +153,68 @@
       "Duration": "3",
       "sectionHeader": "Navigating the Diagnostic Journey",
       "bodyText": "Patients typically begin their journey with primary care physicians or emergency departments, undergoing various diagnostic tests including EMG, MRI, and nerve conduction studies. This period is often marked by confusion and potential misdiagnosis due to the rarity of CIDP. The path to a definitive diagnosis by a neurologist or neuromuscular specialist can be lengthy and emotionally challenging.",
+      "quoteDescription": "During the diagnostic phase, patients frequently express frustration with the lengthy and complex process. Many report multiple misdiagnoses and referrals before reaching a definitive CIDP diagnosis.",
+
       "substages": [
         {
           "id": "2.1",
           "title": "Initial Medical Assessment",
-          "description": "Comprehensive evaluation by primary care physician"
+          "description": "Comprehensive evaluation by primary care physician",
+          "conversationTopics": [
+            "Diagnostic process length",
+            "Required testing types",
+            "Insurance coverage"
+          ],
+          "searchTerms": [
+            "neuropathy diagnosis process",
+            "nerve test types explained",
+            "neurologist referral wait time"
+          ]
         },
         {
           "id": "2.2",
           "title": "Specialist Referral",
-          "description": "Referral to and consultation with neurologist"
+          "description": "Referral to and consultation with neurologist",
+          "conversationTopics": [
+            "Specialist selection criteria",
+            "Appointment preparation",
+            "Medical records transfer"
+          ],
+          "searchTerms": [
+            "find CIDP specialist",
+            "neurologist first visit prepare",
+            "best CIDP doctors near me"
+          ]
         },
         {
           "id": "2.3",
           "title": "Diagnostic Testing",
-          "description": "Undergoing EMG, MRI, and nerve conduction studies"
+          "description": "Undergoing EMG, MRI, and nerve conduction studies",
+          "conversationTopics": [
+            "Test procedure details",
+            "Pain management",
+            "Results timeline"
+          ],
+          "searchTerms": [
+            "EMG test what to expect",
+            "nerve conduction study pain",
+            "MRI for neuropathy"
+          ]
         },
         {
           "id": "2.4",
           "title": "Results Review",
-          "description": "Discussion of test results and potential diagnosis with specialists"
+          "description": "Discussion of test results and potential diagnosis with specialists",
+          "conversationTopics": [
+            "Understanding results",
+            "Treatment options",
+            "Prognosis discussion"
+          ],
+          "searchTerms": [
+            "CIDP test results meaning",
+            "CIDP diagnosis criteria",
+            "CIDP prognosis outlook"
+          ]
         }
       ],
       "engagementIdeas": [
@@ -191,26 +275,68 @@
       "Duration": "2",
       "sectionHeader": "Adjusting to Life with CIDP",
       "bodyText": "The period immediately following diagnosis is crucial for patient education and adaptation. Patients must process their diagnosis while simultaneously learning about their condition and making important treatment decisions. Many experience a mix of relief at having answers and anxiety about the future. This stage is critical for establishing a strong foundation of disease understanding and treatment expectations.",
+      "quoteDescription": "Post-diagnosis discussions reflect a mix of relief at having answers and anxiety about the future. Many patients describe feeling overwhelmed by the amount of information and decisions they need to make in a short time.",
+
       "substages": [
         {
           "id": "3.1",
           "title": "Initial Disease Education",
-          "description": "Learning about CIDP pathophysiology and prognosis"
+          "description": "Learning about CIDP pathophysiology and prognosis",
+          "conversationTopics": [
+            "Disease progression patterns",
+            "Lifestyle modifications",
+            "Long-term outlook"
+          ],
+          "searchTerms": [
+            "CIDP disease progression",
+            "what to expect with CIDP",
+            "CIDP patient resources"
+          ]
         },
         {
           "id": "3.2",
           "title": "Treatment Planning",
-          "description": "Discussing and selecting initial treatment approaches"
+          "description": "Discussing and selecting initial treatment approaches",
+          "conversationTopics": [
+            "Treatment options comparison",
+            "Side effect management",
+            "Insurance coverage"
+          ],
+          "searchTerms": [
+            "CIDP treatment options",
+            "IVIg vs other treatments",
+            "CIDP medication costs"
+          ]
         },
         {
           "id": "3.3",
           "title": "Lifestyle Assessment",
-          "description": "Evaluating necessary changes to daily activities and work life"
+          "description": "Evaluating necessary changes to daily activities and work life",
+          "conversationTopics": [
+            "Work adaptations",
+            "Home modifications",
+            "Energy conservation"
+          ],
+          "searchTerms": [
+            "living with CIDP daily",
+            "CIDP workplace accommodations",
+            "adaptive equipment CIDP"
+          ]
         },
         {
           "id": "3.4",
           "title": "Support Network Education",
-          "description": "Educating family and caregivers about CIDP management"
+          "description": "Educating family and caregivers about CIDP management",
+          "conversationTopics": [
+            "Family role definitions",
+            "Caregiver training",
+            "Emergency planning"
+          ],
+          "searchTerms": [
+            "CIDP caregiver guide",
+            "family support CIDP",
+            "CIDP emergency plan"
+          ]
         }
       ],
       "engagementIdeas": [
@@ -277,28 +403,70 @@
       "Duration": "3",
       "sectionHeader": "Beginning the Treatment Journey",
       "bodyText": "Following diagnosis, patients typically start IVIg treatment, experiencing initial relief from symptoms. However, this relief is often tempered by the demanding nature of the treatment regimen. Patients must adjust to regular infusion schedules while simultaneously working on rehabilitation to regain strength and mobility.",
+      "quoteDescription": "Patient discussions during treatment initiation often focus on practical challenges of managing regular infusions alongside daily life, while expressing hope about potential symptom improvement.",
+
       "substages": [
         {
           "id": "4.1",
           "title": "Treatment Education",
-          "description": "Learning about IVIg treatment process and expectations"
+          "description": "Learning about IVIg treatment process and expectations",
+          "conversationTopics": [
+            "Treatment schedules",
+            "Preparation steps",
+            "Side effect management"
+          ],
+          "searchTerms": [
+            "IVIg treatment process",
+            "prepare for IVIg infusion",
+            "IVIg side effects manage"
+          ]
         },
         {
           "id": "4.2",
           "title": "First Treatment Session",
-          "description": "Initial IVIg infusion and monitoring response"
+          "description": "Initial IVIg infusion and monitoring response",
+          "conversationTopics": [
+            "Infusion experience",
+            "Monitoring reactions",
+            "Recovery time"
+          ],
+          "searchTerms": [
+            "first IVIg infusion tips",
+            "IVIg reaction symptoms",
+            "post IVIg recovery"
+          ]
         },
         {
           "id": "4.3",
           "title": "Schedule Implementation",
-          "description": "Establishing regular treatment schedule and routine"
+          "description": "Establishing regular treatment schedule and routine",
+          "conversationTopics": [
+            "Treatment coordination",
+            "Work scheduling",
+            "Travel planning"
+          ],
+          "searchTerms": [
+            "IVIg treatment schedule",
+            "balance work and treatment",
+            "traveling with CIDP"
+          ]
         },
         {
           "id": "4.4",
           "title": "Initial Rehabilitation",
-          "description": "Beginning physical therapy and rehabilitation exercises"
+          "description": "Beginning physical therapy and rehabilitation exercises",
+          "conversationTopics": [
+            "Exercise limitations",
+            "Progress tracking",
+            "Home exercise program"
+          ],
+          "searchTerms": [
+            "CIDP physical therapy",
+            "safe exercises CIDP",
+            "home exercises neuropathy"
+          ]
         }
-      ],
+      ],  
       "engagementIdeas": [
         {
           "title": "Treatment Schedule Assistant",
@@ -363,26 +531,68 @@
       "Duration": "4",
       "sectionHeader": "Maintaining Health and Preventing Relapse",
       "bodyText": "Patients living with CIDP face ongoing concerns about potential relapses and returning to baseline symptoms. This anxiety significantly impacts their daily lives and future planning. Managing these concerns while maintaining an effective treatment regimen becomes a crucial part of their long-term journey.",
+      "quoteDescription": "Long-term management discussions typically center around balancing treatment effectiveness with quality of life. Patients often share strategies for maintaining normalcy while managing their condition.",
+
       "substages": [
         {
           "id": "5.1",
           "title": "Routine Monitoring",
-          "description": "Regular check-ups and symptom monitoring"
+          "description": "Regular check-ups and symptom monitoring",
+          "conversationTopics": [
+            "Progress evaluation",
+            "Symptom changes",
+            "Treatment effectiveness"
+          ],
+          "searchTerms": [
+            "CIDP monitoring guidelines",
+            "track CIDP progression",
+            "CIDP symptom diary"
+          ]
         },
         {
           "id": "5.2",
           "title": "Treatment Optimization",
-          "description": "Fine-tuning treatment schedule and dosage"
+          "description": "Fine-tuning treatment schedule and dosage",
+          "conversationTopics": [
+            "Dose adjustments",
+            "Timing modifications",
+            "Response patterns"
+          ],
+          "searchTerms": [
+            "optimize IVIg treatment",
+            "CIDP treatment frequency",
+            "IVIg dose adjustment"
+          ]
         },
         {
           "id": "5.3",
           "title": "Lifestyle Management",
-          "description": "Maintaining healthy diet, exercise, and stress management routines"
+          "description": "Maintaining healthy diet, exercise, and stress management routines",
+          "conversationTopics": [
+            "Diet impact",
+            "Exercise adaptation",
+            "Stress reduction"
+          ],
+          "searchTerms": [
+            "CIDP diet recommendations",
+            "stress management CIDP",
+            "exercise routine CIDP"
+          ]
         },
         {
           "id": "5.4",
           "title": "Support Group Engagement",
-          "description": "Active participation in CIDP support community"
+          "description": "Active participation in CIDP support community",
+          "conversationTopics": [
+            "Peer experiences",
+            "Coping strategies",
+            "Resource sharing"
+          ],
+          "searchTerms": [
+            "CIDP support groups",
+            "CIDP patient forum",
+            "connect CIDP patients"
+          ]
         }
       ],
       "engagementIdeas": [
@@ -443,26 +653,68 @@
       "Duration": "3",
       "sectionHeader": "Evaluating Treatment Effectiveness and Alternatives",
       "bodyText": "As patients progress in their CIDP journey, they may need to reassess their current treatment approach, particularly if experiencing suboptimal response or challenges with the treatment regimen. This stage involves careful evaluation of treatment effectiveness, side effects, and impact on quality of life, while considering alternative therapeutic options.",
+      "quoteDescription": "Conversations about treatment changes reveal the complex decision-making process patients face when considering alternatives. Many express concerns about losing progress while acknowledging the need for change.",
+
       "substages": [
         {
           "id": "6.1",
           "title": "Treatment Assessment",
-          "description": "Evaluating current treatment effectiveness and challenges"
+          "description": "Evaluating current treatment effectiveness and challenges",
+          "conversationTopics": [
+            "Treatment response",
+            "Side effect burden",
+            "Quality of life impact"
+          ],
+          "searchTerms": [
+            "IVIg effectiveness CIDP",
+            "when to change CIDP treatment",
+            "CIDP treatment options"
+          ]
         },
         {
           "id": "6.2",
           "title": "Alternative Research",
-          "description": "Exploring other treatment options and approaches"
+          "description": "Exploring other treatment options and approaches",
+          "conversationTopics": [
+            "Treatment alternatives",
+            "Research developments",
+            "Success stories"
+          ],
+          "searchTerms": [
+            "alternative CIDP treatments",
+            "new CIDP therapies",
+            "CIDP clinical trials"
+          ]
         },
         {
           "id": "6.3",
           "title": "Healthcare Team Consultation",
-          "description": "Discussing potential changes with medical team"
+          "description": "Discussing potential changes with medical team",
+          "conversationTopics": [
+            "Treatment goals",
+            "Risk assessment",
+            "Transition planning"
+          ],
+          "searchTerms": [
+            "change CIDP medication",
+            "CIDP treatment risks",
+            "switch from IVIg"
+          ]
         },
         {
           "id": "6.4",
           "title": "Treatment Transition Planning",
-          "description": "Developing plan for potential treatment modification"
+          "description": "Developing plan for potential treatment modification",
+          "conversationTopics": [
+            "Transition timeline",
+            "Coverage verification",
+            "Support needs"
+          ],
+          "searchTerms": [
+            "transition between treatments",
+            "insurance coverage new treatment",
+            "CIDP treatment change plan"
+          ]
         }
       ],
       "engagementIdeas": [
@@ -528,26 +780,68 @@
 "Duration": "3",
 "sectionHeader": "Exploring Research Participation Opportunities",
 "bodyText": "For patients interested in advancing CIDP research or seeking alternative treatment options, clinical trial participation becomes a consideration. This stage involves understanding trial opportunities, evaluating eligibility, and making informed decisions about participation. Key factors include understanding the time commitment, potential benefits and risks, and impact on current treatment routines.",
+"quoteDescription": "Discussion about clinical trials shows a mix of hope and hesitation, with patients weighing the potential benefits of new treatments against the uncertainties of research participation.",
+
 "substages": [
   {
     "id": "7.1",
     "title": "Initial Trial Research",
-    "description": "Learning about available clinical trials and requirements"
+    "description": "Learning about available clinical trials and requirements",
+    "conversationTopics": [
+      "Trial types",
+      "Eligibility criteria",
+      "Time commitments"
+    ],
+    "searchTerms": [
+      "CIDP clinical trials near me",
+      "join CIDP research study",
+      "clinical trial requirements"
+    ]
   },
   {
     "id": "7.2",
     "title": "Eligibility Assessment",
-    "description": "Evaluating qualification for specific trials"
+    "description": "Evaluating qualification for specific trials",
+    "conversationTopics": [
+      "Medical history review",
+      "Current treatment impact",
+      "Location logistics"
+    ],
+    "searchTerms": [
+      "qualify CIDP trial",
+      "clinical trial criteria",
+      "CIDP study locations"
+    ]
   },
   {
     "id": "7.3",
     "title": "Trial Consultation",
-    "description": "Meeting with research team to discuss participation"
+    "description": "Meeting with research team to discuss participation",
+    "conversationTopics": [
+      "Protocol details",
+      "Safety measures",
+      "Support provisions"
+    ],
+    "searchTerms": [
+      "what happens clinical trial",
+      "CIDP trial safety",
+      "research participant rights"
+    ]
   },
   {
     "id": "7.4",
     "title": "Participation Decision",
-    "description": "Making informed decision about trial enrollment"
+    "description": "Making informed decision about trial enrollment",
+    "conversationTopics": [
+      "Risk-benefit analysis",
+      "Family input",
+      "Practical considerations"
+    ],
+    "searchTerms": [
+      "decide clinical trial participation",
+      "CIDP trial pros cons",
+      "prepare for clinical trial"
+    ]
   }
 ],
 "engagementIdeas": [
