@@ -44,7 +44,7 @@
 	  <div class="button-group">
 		{#each metrics as metric}
 		  <button
-			class="metric-button font-mono text-sm uppercase tracking-wide text-slate-500 cursor-point hover:bg-orange-100 duration-200"
+			class="metric-button font-mono text-xs uppercase tracking-wide text-slate-500 cursor-point hover:bg-orange-100 duration-200"
 			class:selected={selectedMetric === metric.value}
 			on:click={() => handleMetricClick(metric)}
 		  >
@@ -71,17 +71,19 @@
 	}
   
 	.metric-button {
-		padding: 0.125rem .7125rem .2725rem .7125rem;
-		font-size: 0.675rem;
+		padding: 0.425rem .6425rem .425rem .6425rem;
+		font-size: 0.5975rem;
 		font-weight: 400;
+		border: .25px dotted #555555;
 	}
   
 	.metric-button.selected {
-		padding: 0.625rem 1.25rem .75rem 1.25rem;
+		padding: 0.425rem .6425rem .425rem .6425rem;
 		background-color: #ffcbAA;
 		border: .25px dotted #666666;
-		color: #565656;	
-		font-weight: 600;
+		color: #666666;	
+		font-weight: 800;
+		letter-spacing: 1px;
 		}
 
 	.metric-button:hover {

@@ -178,7 +178,7 @@ function handleCalculatorOpen() {
 		  />
 		</div>
 		
-		<div class="outline-wrapper w-1/5">
+		<div class="outline-wrapper overflow-auto w-1/5">
 		  <MapSidebar 
 			on:openCalculator={handleCalculatorOpen}
 			on:countryHover={(event) => {
@@ -232,9 +232,7 @@ function handleCalculatorOpen() {
 </div>
 
 <style>
-    :global(body) {
-        @apply overflow-hidden;
-    }
+ 
     .page-container {
         width: 100%;
         top: 0;
@@ -242,7 +240,7 @@ function handleCalculatorOpen() {
     }
 
     :global(body) {
-        overflow: hidden;
+
         position: fixed;
         width: 100%;
         height: 100%;
