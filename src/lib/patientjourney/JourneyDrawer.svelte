@@ -99,7 +99,7 @@
                             <ul class="space-y-2">
                                 {#each currentStageDetails.summaryPoints as point}
                                     <li class="flex items-start gap-2">
-                                        <div class="w-2 h-2 mt-2 rounded-full flex-shrink-0" 
+                                        <div class="w-1 h-1 mt-1 rounded-full flex-shrink-0" 
                                              style="background-color: {stageColor}"></div>
                                         <span class="text-slate-600">{point}</span>
                                     </li>
@@ -110,10 +110,10 @@
                         <!-- Challenges -->
                         <div>
                             <h3 class="text-lg font-semibold text-slate-800 mb-3">Common Challenges</h3>
-                            <ul class="space-y-2">
+                            <ul class="list-outside space-y-2">
                                 {#each currentStageDetails.patientChallenges as challenge}
-                                    <li class="flex items-start gap-2">
-                                        <div class="w-2 h-2 mt-2 rounded-full flex-shrink-0" 
+                                    <li class="flex items-start align-middle gap-2">
+                                        <div class="w-1 h-1 mt-1 rounded-full flex-shrink-0" 
                                              style="background-color: {stageColor}"></div>
                                         <span class="text-slate-600">{challenge}</span>
                                     </li>

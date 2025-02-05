@@ -82,10 +82,6 @@
 </div>
 
 <style>
-    .tracker-container {
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
 
     h4 {
         font-size: 0.82rem;
@@ -106,11 +102,6 @@
         padding-bottom: 0.625rem;
         border-bottom: 0.5px solid #DDDDDD;
     }
-
-    .sentiment-row:last-child {
-        border-bottom: none;
-    }
-
     .sentiment-row h3 {
         margin-right: 0.5rem;
         width: 100%;

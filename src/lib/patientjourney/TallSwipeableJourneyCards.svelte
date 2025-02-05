@@ -25,13 +25,6 @@
         
     if (imgPath.startsWith('http')) return imgPath;
     return imgPath.startsWith('/') ? imgPath : `/${imgPath}`;        
-        try {
-            const cleanPath = imgPath.startsWith('/') ? imgPath : `/${imgPath}`;
-            return `${assets}${cleanPath}`;
-        } catch (error) {
-            console.error('Error processing image path:', error);
-            return '/api/placeholder/128/128';
-        }
     }
 
     $: {

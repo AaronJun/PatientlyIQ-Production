@@ -83,8 +83,7 @@
             The CIDP patient journey is a complex, multistage process characterized by progressive 
             challenges and emotional transitions. It typically begins with subtle symptom onset—often 
             unrecognized tingling or weakness—where patients frequently delay seeking medical attention. 
-            The diagnostic pathway is particularly challenging, with patients averaging 15.5 different 
-            healthcare providers before receiving a definitive diagnosis.
+            The diagnostic pathway is particularly challenging, with the community reporting navigating towards a proper diagnosis as a major driver of negative sentiment.
         </p>
         
         <StageWaffle data={sentimentData} />
@@ -103,47 +102,40 @@
             <div class="min-w-full flex-row mx-auto">
                 {#each mergedJourneyData as stage, index}
                     <section id={stage.id.toString()} class="mb-8 md:mb-12">
-                        <div class="flex flex-col mt-4 pt-16 md:pt-24 mb-8 md:mb-12 w-full" 
+                        <div class="flex flex-col mt-4 mb-8 pt-8 pb-16 w-full" 
                              style="background-color: {getStageColor(index)}">
                             <div class="flex gap-4 items-center mb-6 md:mb-8 justify-start px-4 md:pl-16 md:pr-32">
-                                <div class="w-4 h-4 bg-slate-50/50"></div>
-                                <h3 class="text-base font-sans font-medium text-slate-100/80">
-                                    {stage.sectionHeader}
-                                </h3>
+                            
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-5 px-4 md:pl-16 md:pr-32">
-                                <h2 class="text-3xl md:text-5xl/tight md:col-span-2 text-white mb-4 md:mb-0">
-                                    {stage.Stage}
-                                </h2>
-                                <div class="hidden md:block md:col-span-1"></div>
-                                <p class="md:col-span-2 text-white">{stage.bodyText}</p>
-
-                                <div class="hidden md:block md:col-span-3"></div>
-                                <div class="journey-tracker md:col-span-2 mt-8 md:mt-16 flex flex-col justify-end">
-                                    <JourneyTracker 
-                                        id={stage.id.toString()}
-                                    />
-                                </div>
+                            <div class="grid grid-cols-4 gap-64 px-4">
+                                <div class="flex-col col-span-2">
+                                    <div class="w-fit px-4 py-2 mb-4 rounded-full bg-slate-900/40">
+                                        <h3 class="text-base font-sans font-medium text-slate-50">
+                                            {stage.sectionHeader}
+                                        </h3>
+                                        </div>
+                                <h2 class="text-3xl md:text-5xl/tight md:col-span-2 text-white mb-12">
+                                {stage.Stage}
+                            </h2>     
+                            <JourneyTracker 
+                                id={stage.id.toString()}
+                            />
                             </div>
-
-                            <button 
-                                class="drawer-button flex gap-4 text-base md:text-lg text-left min-w-full"
-                                style="hover:font-weight:800; border-top: .5px solid #161616; 
-                                       border-bottom: .5px solid #161616; color:{getStageColor(index)}; 
-                                       background-color: #F8FAFC"
-                                on:click={() => openDrawer(stage.id.toString(), index)}
-                            >
-                                <div class="button-content inline-block flex gap-8 align-middle">
-                                    <p class="pl-32">Learn More</p>
-                                    <div class="circle-container-outline align-middle">
-                                        <ArrowUpRight 
-                                            class="w-4 h-4 text-center align-middle" 
-                                            style="color: {getStageColor(index)}" 
-                                        />
-                                    </div>
-                                </div>
+                                <div class="flex-col max-w-prose place-content-end col-span-2 gap-4">
+                                <p class="md:col-span-2 text-white">{stage.bodyText}</p>
+                                <button 
+                                class="drawer-button mt-8 flex flex-row py-2 px-4 justify-evenly w-fit rounded-full text-base font-sans font-medium cursor-pointer text-slate-100 bg-slate-50 hover:bg-slate-100"
+                                style="hover:font-weight:800; color:{getStageColor(index)}"
+                                on:click={() => openDrawer(stage.id.toString(), index)}>
+                                Learn More
+                                <ArrowUpRight 
+                                class="w-4 h-4 ml-4" 
+                                style="color: {getStageColor(index)}" 
+                                />
                             </button>
+                            </div>
+                        </div>
                         </div>
 
                         <div class="mt-8 mb-12">
@@ -156,7 +148,7 @@
                         <div class="flex flex-col px-4 md:pl-16 w-full md:w-2/3">
                             <div class="flex flex-row gap-4 align-middle items-center mt-4 mb-6 md:mb-8">
                                 <div class="grid grid-rows-2 gap-4 align-middle w-full items-center mt-4 mb-8 md:mb-12">
-                                    <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-md" 
+                                    <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-sm" 
                                          style="background-color: {getStageColor(index)}">
                                         <h4 class="text-xl font-sans font-medium text-slate-50">
                                             What the Community Says
@@ -174,7 +166,7 @@
                             {#if stage.searchTerms}
                                 <div class="mt-6 md:mt-8 mb-8 md:mb-12">
                                     <div class="flex flex-row gap-4 align-middle items-center mt-4 mb-4">
-                                        <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-md" 
+                                        <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-sm" 
                                              style="background-color: {getStageColor(index)}">
                                             <h4 class="text-xl font-sans font-semibold align-middle text-slate-50">
                                                 What the Community Looks For
@@ -189,7 +181,7 @@
 
                             <div class="mt-6 md:mt-8 mb-16 md:mb-24">
                                 <div class="grid grid-rows-2 gap-4 align-middle items-center mt-4 mb-8 md:mb-12">
-                                    <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-md" 
+                                    <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-sm" 
                                          style="background-color: {getStageColor(index)}">
                                         <h4 class="text-xl font-sans font-medium text-slate-50">
                                             The Steps the Community Takes
@@ -214,7 +206,7 @@
 
                                 <div class="mt-6 md:mt-8 space-y-4">
                                     <div class="flex flex-row gap-4 md:gap-8 align-middle mt-4 mb-6 md:mb-8">
-                                        <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-md" 
+                                        <div class="w-full h-fit row-span-2 p-4 mb-12 rounded-sm" 
                                              style="background-color: {getStageColor(index)}">
                                             <h4 class="text-xl font-sans font-medium text-slate-50">
                                                 How We Can Support the Community
@@ -295,9 +287,6 @@
 
     .drawer-button {
         font-family: 'IBM Plex Sans', sans-serif;
-        padding: .525rem .725rem .525rem .725rem;
-        margin-top: 2.25rem;
-        font-weight: 400;
         transition: all 0.25s ease;
     }
 

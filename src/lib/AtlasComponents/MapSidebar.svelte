@@ -42,18 +42,18 @@
     isExpanded = !isExpanded;
   }
 </script>
-<div class="sidebar flex flex-col rounded-sm drop-shadow-sm bg-slate-50 pt-2 px-4 pb-4">
+<div class="sidebar flex flex-col pl-4 pr-2">
   {#if isExpanded}
     <div class="content" transition:slide>
       <div class="grid grid-cols">
         <div class="align-top">
-          <div class="overflow-y-auto max-h-[90vh]">
+          <div class="overflow-y-auto h-[90vh]">
             <table class="w-full border-separate border-spacing-0">
               <thead class="sticky top-0">
                 <tr class="text-left font-mono uppercase text-xs font-semibold text-slate-500">
-                  <th class="p-2 w-16">Rank</th>
-                  <th class="p-2">Country</th>
-                  <th class="p-2 text-right">Value</th>
+                  <th class="w-12">Rank</th>
+                  <th class="text-left">Country</th>
+                  <th class="text-right">Value</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,8 +65,8 @@
                     on:click={() => handleCountryClick(country)}
                     class="cursor-pointer hover:bg-blue-100"
                   >
-                    <td class="p-2">
-                      <div class="color-indicator" style="background-color: {getColorForRank(country.rank)}">
+                    <td class="p-1">
+                      <div class="color-indicator max-w-12" style="background-color: {getColorForRank(country.rank)}">
                         <span class="rank">{country.rank}</span>
                       </div>
                     </td>
@@ -76,14 +76,14 @@
                 {/each}
               </tbody>
             </table>
+            <button 
+              on:click={handleAdjustInputs}
+              class="w-full bg-[#ff4A4A] text-white p-3 mt-8 font-medium font-mono text-sm tracking-wide upper hover:bg-blue-700 transition-colors"
+            >
+              Adjust Inputs
+            </button>
           </div>
         </div>
-        <button 
-          on:click={handleAdjustInputs}
-          class="w-full bg-[#ff4A4A] text-white p-3 mt-8 rounded-full font-semibold hover:bg-blue-700 transition-colors"
-        >
-          Adjust Inputs
-        </button>
       </div>
     </div>
   {/if}
@@ -96,9 +96,13 @@
 
   .color-indicator {
     width: 100%;
-    text-align: center;
     height: 100%;
-    border-radius: 10px;
+    padding: 0.2725rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
   }
 
   .rank {
@@ -106,17 +110,19 @@
   }
 
   .highlighted {
-    @apply bg-blue-50;
-  }
-
-  thead {
-  }
-
-  td {
-    @apply text-sm;
+    @apply bg-orange-200;
   }
 
   th {
-    @apply font-mono uppercase tracking-wider;
+  }
+
+  td {
+    font-family: 'ibm plex mono', monospace;
+    height: 100%;
+    font-size: 0.75rem;
+  }
+
+  th {
+    @apply text-[10.25px] font-mono font-medium text-slate-600;
   }
 </style>

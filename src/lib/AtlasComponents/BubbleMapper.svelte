@@ -63,8 +63,8 @@ let worldData: FeatureCollection;
       .attr("class", "graticule")
       .attr("d", path)
       .attr("fill", "none")
-      .attr("stroke", "#B4C7ff")
-      .attr("stroke-width", "0.25px");
+      .attr("stroke", "#969696")
+      .attr("stroke-width", "0.15px");
 
     // Add countries
     g.selectAll<SVGPathElement, Feature<Geometry, any>>("path.country")
@@ -74,8 +74,8 @@ let worldData: FeatureCollection;
       .attr("class", "country")
       .attr("fill", d => getCountryColor(d))
       .attr("d", path)
-      .style("stroke", "#98A9DA")
-      .style("stroke-width", "0.25px")
+      .style("stroke", "#565656")
+      .style("stroke-width", "0.125px")
       .on("mouseover", (event, d) => {
         const countryInfo = countryData.find(c => 
           c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3
@@ -114,7 +114,7 @@ let worldData: FeatureCollection;
     const countryInfo = countryData.find(c => 
       c.geoJsonId === d.properties.ISO_A3 || c.id === d.properties.ISO_A3
     );
-    if (!countryInfo) return '#E9E5E0';
+    if (!countryInfo) return '#E1EEEE';
     const rank = rankedData[countryInfo.id];
     return colorGradient[rank];
   }

@@ -81,11 +81,11 @@
     <div class="calc-header bg-slate-50 pt-4 sticky top-6">
         <div class="flex flex-col space-y-4">
             <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select Region</label>
+                <label class="block font-medium font-mono text-xs tracking-wide uppercase text-[#565656] mb-1">Select Region</label>
                 <select 
                     value={selectedCountry?.id}
                     on:change={handleCountryChange}
-                    class="w-full p-2 border rounded-lg  hover:border-blue-500 transition-colors"
+                    class="w-full font-mono text-sm uppercase p-2 hover:border-blue-500 transition-colors cursor-pointer"
                 >
                     {#each countries as country}
                         <option value={country.id}>{country.name}</option>
@@ -95,15 +95,14 @@
             
             <!-- Score display and update button -->
             <div class="flex justify-between items-center">
-                <div class="text-center bg-slate-50 px-6 py-3 rounded-lg">
-                    <div class="text-sm text-slate-500 mb-1">Composite Score</div>
-                    <div class="text-2xl font-bold text-blue-600">{formattedScore}</div>
+                <div class="text-center pt-4">
+                    <div class="font-medium font-mono tracking-wide uppercase text-[10.25px] tracking-wide text-[#565656] mb-1">Composite Score</div>
+                    <div class="text-2xl text-left font-bold font-mono uppercase text-[#8AA7BB]">{formattedScore}</div>
                 </div>
-                
                 <button
-                    class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium 
-                           disabled:bg-gray-400 disabled:cursor-not-allowed
-                           hover:bg-blue-700 transition-colors"
+                    class="px-4 py-2 flex flex-row justify-stretch h-12 align-middle justify-center items-center uppercase font-mono tracking-wide text-xs bg-[#8AA799] text-slate-50 font-medium 
+                           disabled:bg-[#8AA788]/40 disabled:cursor-not-allowed
+                           hover:bg-[#FFA234] transition-colors"
                     disabled={!isDirty}
                     on:click={handleCalculate}
                 >
@@ -119,15 +118,15 @@
             {#each Object.entries(metrics || {}) as [metricKey, metricGroup]}
                 <div class="">
                     <div class="p-4 border-b">
-                        <h3 class="text-lg font-semibold text-slate-600">
+                        <h3 class="field-label text-xs uppercase font-mono font-medium text-slate-500">
                             {metricConfig[metricKey]?.label || metricKey.replace(/([A-Z])/g, ' $1').trim()}
                         </h3>
                     </div>
 
                     <div class="p-4 space-y-4">
                         {#each Object.entries(metricGroup.subMetrics) as [subMetricKey, subMetric]}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 capitalize">
+                            <div class="flex flex-col">
+                                <label class="block font-mono font-medium tracking-wide uppercase text-xs text-slate-500 mb-1 capitalize">
                                     {subMetricKey.replace(/([A-Z])/g, ' $1').trim()}
                                 </label>
                                 
@@ -135,7 +134,7 @@
                                     <select
                                         bind:value={subMetric.value}
                                         on:change={handleMetricChange}
-                                        class="w-full p-2 border rounded-full hover:border-blue-500 transition-colors"
+                                        class="select font-xs font-mono uppercase w-full p-2"
                                     >
                                         {#each metricConfig[metricKey].options as option}
                                             <option value={option.value}>
@@ -151,27 +150,27 @@
                                         max={subMetric.max}
                                         step={subMetric.max < 1 ? 0.01 : 1}
                                         on:input={handleMetricChange}
-                                        class="w-full p-2 border roupnded-lg hover:border-blue-500 transition-colors"
+                                        class="w-full p-2 border roupnded-lg font-mono font-medium tracking-wide uppercase text-sm text-slate-500"
                                     />
                                 {/if}
 
                                 <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-gray-500">
+                                    <span class="font-mono  font-medium tracking-wide uppercase text-[9.25px] text-slate-500">
                                         Range: {subMetric.min} - {subMetric.max}
                                     </span>
-                                    <span class="text-xs text-gray-500">
+                                    <span class="font-mono font-medium tracking-wide uppercase text-[9.25px] text-slate-500">
                                         Weight: {(subMetric.weight * 100).toFixed(1)}%
                                     </span>
                                 </div>
                             </div>
                         {/each}
 
-                        <div class="pt-3 mt-3 border-t">
+                        <div class="bg-green-50 py-2 px-2 mt-3 border-t">
                             <div class="flex justify-between text-sm">
-                                <span class="font-medium text-gray-700">Category Score</span>
+                                <span class="font-mono font-medium tracking-wide uppercase text-[9.25px] text-slate-500">Category Score</span>
                                 <span>
-                                    <span class="font-mono">{metricGroup.score?.toFixed(3) || '0.000'}</span>
-                                    <span class="text-gray-500 ml-2">
+                                    <span class="font-mono font-medium tracking-wide uppercase text-[9.25px] text-slate-500">{metricGroup.score?.toFixed(3) || '0.000'}</span>
+                                    <span class="font-mono font-medium tracking-wide uppercase text-[9.25px] text-slate-500 ml-2">
                                         (Weight: {(metricGroup.weight * 100).toFixed(1)}%)
                                     </span>
                                 </span>
@@ -183,3 +182,37 @@
         </div>
     </div>
 </div>
+
+<style>
+    .select {
+        border: 1px dotted #666666;
+        cursor: pointer;
+        background-color: #99111;
+        font-size: 0.725rem;
+    }
+
+    .button:hover {
+        border: .25px dotted #666666;
+    }
+
+    .select:hover {
+        border: 1px solid #3182ce;
+        background: #BCCABB;
+    }
+
+    .field-label {
+        border-bottom: 1px solid #666666;
+        margin-left: -1.25rem;
+        padding-left: .525rem;
+        flex-direction: row;
+        height: 100%;
+        align-content: middle;
+        justify-content: center;
+    }
+
+    .calc-header {
+        border-bottom: .625px dotted #666666;
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+</style>

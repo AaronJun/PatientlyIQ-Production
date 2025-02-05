@@ -152,22 +152,22 @@ function handleCalculatorOpen() {
 <div class="flex flex-col h-full">
 	<div class="flex-1 pt-16 place-content-center">
 	  <div class="heading-container">
-		<h1 class="heading text-2xl align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-800">
-		  Feasibility Mapper<span class="tag text-[9.25px] w-fit h-fit ml-2">Beta</span>
+		<h1 class="heading text-2xl font-mono tracking-normal uppercase align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-600">
+		  Feasibility Mapper<span class="tag text-[10.25px] font-medium font-mono text-slate-400 tracking-wide uppercase w-fit h-fit ml-2">Beta</span>
 		</h1>	
-	  </div>	
-	  <div class="header-filter-container w-full">	
-	  {#if allData.length > 0}
-		<HeaderFilter 
-		  bind:selectedMetric={$selectedMetricStore}
-		  {metrics}
-		  on:change={handleMetricChange}    
-		/>
-	  {/if}
-	  </div>
-	  
+	</div>	
+	<div class="header-filter-container flex-row w-full">	
+	{#if allData.length > 0}
+	  <HeaderFilter 
+		bind:selectedMetric={$selectedMetricStore}
+		{metrics}
+		on:change={handleMetricChange}    
+	  />
+	{/if}
+	</div>
+	
 	  <div class="flex flex-row w-full">
-		<div class="outline-wrapper flex-1 bg-[#E9EEFB]/30 w-4/5">
+		<div class="outline-wrapper flex-1 bg-white/30 w-4/5 min-h-[90vh]">
 		  <BubbleMapper
 			width={960}
 			height={500}
@@ -274,8 +274,8 @@ function handleCalculatorOpen() {
 		display: flex;
 		flex-direction: row;
 		min-height: 10vh;
-		border: 1px solid #e0e0e0;
-		border-bottom: 0.25px solid #e0e0e0;
+		border-bottom: 0.25px solid #666666;
+		margin-bottom: 1rem;
 	}
 
 	:global(.outline-wrapper) {
@@ -286,10 +286,7 @@ function handleCalculatorOpen() {
 	}
 
 	.tag {
-		border: 1px solid #ff4a4a;
-		color: #ff4a4a;
 		padding: 0.25rem 0.5rem;
-		border-radius: 150px;
 	}
 
 </style>
