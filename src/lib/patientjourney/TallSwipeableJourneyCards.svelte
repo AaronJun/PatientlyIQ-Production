@@ -300,7 +300,7 @@
         container.selectAll('.journey-card')
             .data(expandedCards, (d, i) => `${d.type}-${d.isQuote}-${i}`)
             .join('div')
-            .attr('class', 'journey-card absolute inset-0 rounded-xl shadow-xl overflow-hidden')
+            .attr('class', 'journey-card absolute inset-0 rounded-sm shadow-xl overflow-hidden')
             .style('z-index', (d, i) => i === active ? 20 : expandedCards.length + 2 - i)
             .style('background-color', d => d.isQuote ? '#FF4A4A' : 'white')
             .transition()
@@ -323,7 +323,7 @@
     container.selectAll('.journey-card')
         .data(expandedCards, (d, i) => `${d.type}-${d.isQuote}-${i}`)
         .join('div')
-        .attr('class', 'journey-card pt-12 absolute inset-0 rounded-2xl shadow-xl overflow-hidden')
+        .attr('class', 'journey-card pt-12 absolute inset-0 rounded-sm shadow-xl overflow-hidden')
         .style('background-color', d => d.isQuote ? '#FF4A4A' : 'white')
         .each(function(d) {
             const content = createCardContent(d);
@@ -380,8 +380,8 @@ $: if (selectedPatient) {
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="6"
+                    height="10"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#e5e7eb"
@@ -397,7 +397,7 @@ $: if (selectedPatient) {
             <div class="flex justify-center gap-2 mt-4">
                 {#each expandedCards as _, i}
                     <div 
-                        class="w-2 h-2 gap-4 rounded-full transition-colors duration-300"
+                        class="w-2 h-2 gap-4 rounded-full transition-colors duration-100"
                         class:bg-orange-600={i === active}
                         class:bg-slate-200={i !== active}
                     ></div>
@@ -508,6 +508,16 @@ $: if (selectedPatient) {
 </div>
 
 <style>
+@media (max-width: 768px) {
+    .cardcircle {
+        gap: 1rem;
+    }
+    .journey-card {
+        width: 100%;
+        padding: 0.5rem;
+    }
+}
+
 :global(body) {
     overflow-x: hidden;
 }

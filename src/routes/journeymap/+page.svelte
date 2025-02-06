@@ -11,6 +11,7 @@ import SwipeableJourneyCards from '$lib/patientjourney/TallSwipeableJourneyCards
 import PatientQuoteCards from '$lib/patientjourney/PatientQuoteCards.svelte';
 import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 import { ArrowUpRight } from 'carbon-icons-svelte';
+import StackedBars from '$lib/patientjourney/StackedBars.svelte';
 
 import mergedJourneyData from '$lib/data/cidpJourney.json';
 import cidpQuotes from '$lib/data/cidpPatientQuotes.json';
@@ -276,8 +277,10 @@ onMount(() => {
                                         </div>  
                                     </div>
                                     <div class="flex">
-                                        <SearchBubbles searchTerms={stage.searchTerms} />
-                                    </div>
+                                        <StackedBars
+                                        searchTerms={stage.searchTerms}
+                                        stageColor={getStageColor(index)}
+                                    />                                    </div>
                                 </div>
                             {/if}
                                     
@@ -289,7 +292,7 @@ onMount(() => {
                                                 How We Can Support the Community
                                             </h4>
                                         </div>
-                                    </div>
+                                </div>
 
                                     <div class="flex-col gap-6 md:gap-8">
                                         {#each stage.engagementIdeas as idea}
@@ -297,7 +300,7 @@ onMount(() => {
                                                 <div class="flex flex-col max-w-full justify-between font-sans mb-4" 
                                                      style="color: {getStageColor(index)}">
                                                     <div class="flex flex-col md:flex-row">
-                                                        <div class="stat-line flex flex-col py-3 md:py-4 px-2 w-full">
+                                                        <div class="flex flex-col border-t-black py-3 md:py-4 px-2 w-full">
                                                             <h5 class="font-sans text-lg pb-2 md:pb-4 font-normal font-semibold">
                                                                 {idea.title}
                                                             </h5>
@@ -347,18 +350,6 @@ onMount(() => {
     
     :global(html) {
         scroll-behavior: smooth;
-    }
-
-    .sticky {
-        border-bottom: .25px solid #666666;
-    }
-
-    .stat-line {
-        border-top: .5px solid #161616;
-    }
-
-    .stage-line {
-        border: .725px dotted #161616;
     }
 
     .sticky {

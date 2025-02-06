@@ -1,4 +1,4 @@
-<script lang="ts">
+p<script lang="ts">
     import { Accordion, AccordionItem, ProgressBar } from "carbon-components-svelte";
     import RadarChart from "./RadarChart.svelte";
     export let metricName: string;
