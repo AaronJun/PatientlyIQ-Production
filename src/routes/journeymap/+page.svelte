@@ -66,7 +66,7 @@ onMount(() => {
         },
         {
             threshold: 0.1,
-            rootMargin: '-10% 0px -5% 0px'
+            rootMargin: '0% 0px -0% 0px'
         }
     );
 
@@ -130,7 +130,7 @@ onMount(() => {
 
     <!-- Main Content -->
     <div class="relative bg-slate-50">
-        <div class="sticky top-0z-40">
+        <div class="map sticky bg-slate-200 top-20 z-30">
             <NewJourneyMap 
                 data={mergedJourneyData} 
                 isVisible={isJourneyMapVisible} 
@@ -396,6 +396,10 @@ onMount(() => {
     @media (max-width: 768px) {
         .page-layout {
             margin: 0 0 1.25rem 0;
+        }
+
+        .flex-row {
+            flex-direction: column;
         }
 
         .search-bubbles-container {

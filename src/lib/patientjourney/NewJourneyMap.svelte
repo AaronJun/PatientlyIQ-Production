@@ -19,9 +19,9 @@
         if (!data.length) return;
 
         const container = d3.select(containerRef);
-        const margin = { top: 20, right: 30, bottom: 10, left: 20 };
+        const margin = { top: 18, right: 30, bottom: 10, left: 20 };
         const width = containerRef.clientWidth - margin.left - margin.right;
-        const height = 35;
+        const height = 30;
 
         // Create base SVG group for rectangles
         const svg = container.append('svg')
@@ -29,7 +29,7 @@
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
-
+ 
         // Create separate groups for layers
         const rectanglesGroup = svg.append('g').attr('class', 'rectangles');
         const linesGroup = svg.append('g').attr('class', 'connecting-lines');
@@ -42,7 +42,7 @@
             .range([0, width]);
 
         let currentX = 0;
-        const staggerHeight = 10;
+        const staggerHeight = 0;
         const sectionMeta = [];
 
         // Create defs for gradient
@@ -83,11 +83,11 @@
 
             // Add stage rectangle
             stageGroup.append('rect')
-                .attr('height', 9.25)
-                .attr('width', stageWidth - 3.725)
+                .attr('height', 6.25)
+                .attr('width', stageWidth - 6.725)
                 .attr('fill', `url(#${gradientId})`)
                 .style('cursor', 'pointer')
-                .style('opacity', 0.3)
+                .style('opacity', 1)
                 .style('transition', 'opacity 0.2s')
                 .attr('data-index', i)
                 .on('mouseover', function() {
@@ -111,12 +111,12 @@
             // Add stage label
             labelsGroup.append('text')
                 .attr('x', currentX + 2.125)
-                .attr('y', yOffset + 22)
+                .attr('y', yOffset + 18)
                 .attr('text-anchor', 'start')
                 .attr('font-family', 'IBM Plex Mono')
                 .attr('font-weight', '500')
-                .attr('font-size', '9.25px')
-                .attr('fill', '#4a4a4a')
+                .attr('font-size', '8.25px')
+                .attr('fill', '#565656')
                 .text(stage.Stage);
 
             currentX += stageWidth;
@@ -212,7 +212,7 @@
 
 <div 
     bind:this={containerRef} 
-    class="p-4 transition-opacity duration-300"
+    class="pt-2 transition-opacity duration-300"
     class:opacity-0={!isVisible}
     class:opacity-100={isVisible}
 >
