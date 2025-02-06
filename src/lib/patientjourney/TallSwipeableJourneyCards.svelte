@@ -190,17 +190,17 @@
                         </div>
                         
                         <div class="text-center">
-                            <h2 class="text-xl sm:text-2xl font-serif text-slate-800">
+                            <h2 class="text-xl font-sans font-medium text-slate-600">
                                 ${d.name}
                             </h2>
                             
-                            <p class="text-base sm:text-lg mx-auto w-11/12 sm:w-5/6 text-pretty text-slate-600 font-serif leading-normal mt-4 sm:mt-6">
+                            <p class="text-base mx-auto text-pretty px-8 max-w-prose text-slate-600 font-sans mt-4 sm:mt-6">
                                 ${d.bio}
                             </p>
                         </div>
                         <div class="flex flex-wrap gap-2 mb-6 sm:mb-8">
                             ${[d.age, d.disease, d.persona].map(tag => `
-                                <span class="px-3 py-1.5 bg-orange-200 rounded-full text-xs font-semibold text-slate-900">
+                                <span class="px-2.5 py-1 bg-orange-200 rounded-full text-xs font-semibold text-slate-900">
                                     ${tag}
                                 </span>
                             `).join('')}

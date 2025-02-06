@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import * as d3 from 'd3';
+import JourneyFilterHeader from '$lib/patientjourney/JourneyFilterHeader.svelte';
 import NewJourneyMap from '$lib/patientjourney/NewJourneyMap.svelte';
 import JourneyTracker from '$lib/patientjourney/JourneyTracker.svelte';
 import JourneyMapDrawer from '$lib/patientjourney/JourneyDrawer.svelte';
@@ -17,7 +18,7 @@ import patientStories from '$lib/data/cidp-patient-stories.json';
 import sentimentData from '$lib/patientjourney/stagesSentimentData.json';
 
 const colors = [
-    "#FF4A4A", "#002365", "#69295C", "#B5685E", "#006454",
+    "#330000", "#002365", "#69295C", "#B5685E", "#006454",
     "#831ED4", "#DD3C9F", "#3b623d", "#27513a", "#362149"
 ];
 
@@ -107,24 +108,24 @@ onMount(() => {
 });
 </script>
 
-<div class="page-layout flex flex-col min-h-screen">
+<div class="page-layout flex flex-col">
     <!-- Hero Section -->
-    <div class="min-h-[80vh] bg-slate-50 flex-row justify-start pt-16 md:pt-32 px-4 md:px-16">
-        <div class="flex-col">
-        <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-auto mt-8 md:mt-12 mb-6 md:mb-8" />
-        <h1 class="text-2xl md:text-4xl/normal max-w-prose mb-4 text-slate-800 font-light">
-            Mapping the CIDP Patient Journey
-        </h1>
+    <div class="min-h-[80vh] place-items-center bg-slate-50 flex-row pt-24">
+    <div class="flex-col justify-center place-items-center align-middle px-8">
+        <img src={PIQLogo} alt="PIQ Logo" class="w-8 col-span-2 mb-8 items-center" />
+        <h1 class="w-full text-4xl tracking-tight mb-8 text-center">Mapping the <JourneyFilterHeader on:diseaseChange={(event) => {
+        // Handle disease change here
+        console.log('Selected disease:', event.detail);
+    }} /> Journey </h1>
+            <p class="max-w-prose text-pretty text-lg text-center leading-normal">
+                The CIDP patient journey is a complex, multistage process characterized by progressive 
+                challenges and emotional transitions. <br><br>
+                Compiled through the consolidation and analysis of more than <span class="appendix-link"> 400 </span> social media posts, forum comments, blog posts, videos, and more, this report provides an overview of this community's goals and challenges, from symptom onset to clinical trial consideration. <br><br>
+            </p>
     </div>
-    <div class="flex-col max-w-prose">
-        <p class="max-w-prose">
-            The CIDP patient journey is a complex, multistage process characterized by progressive 
-            challenges and emotional transitions. It typically begins with subtle symptom onset—often 
-            unrecognized tingling or weakness—where patients frequently delay seeking medical attention. 
-            The diagnostic pathway is particularly challenging, with the community reporting navigating towards a proper diagnosis as a major driver of negative sentiment.
-        </p>
-    </div>  
+        <div class="flex w-full px-8">
         <StageWaffle data={sentimentData} />
+    </div>  
     </div>
 
     <!-- Main Content -->
@@ -148,7 +149,7 @@ onMount(() => {
                      {stage.sectionHeader}
                  </h3>      
                 <div class="flex justify-between items-end px-8 pt-2 pb-4">
-                        <h2 class="text-4xl text-slate-50">
+                        <h2 class="text-3xl text-slate-50">
                             {stage.Stage}
                         </h2>
                     <button 
@@ -167,25 +168,25 @@ onMount(() => {
         </div>
 
              
-            <div class="flex flex-row items-center justify-between py-8 w-full px-8" 
+            <div class="flex flex-row items-center justify-between pt-4 pb-8 w-full px-8" 
                  style="background-color: {getStageColor(index)}">
                  <div class="flex-col w-2/3 max-w-prose">
                     <p class="text-white max-w-prose">{stage.bodyText}</p>
                 </div>
-                <div class="flex-col w-1/3">
+                <div class="flex-col w-1/3 pt-4 pb-8">
                    <JourneyTracker id={stage.id.toString()} />
                </div>
             </div>
 
             <!-- Substages -->
             <div class="grid grid-rows-2 gap-4 align-middle items-center mt-4 mb-8 md:mb-12">
-                <div class="w-full h-fit row-span-2 p-4 mb-4" 
+                <div class="w-full h-fit row-span-2 px-8 py-2 mb-4" 
                      style="background-color: {getStageColor(index)}">
                     <h4 class="text-lg font-sans font-medium text-slate-50">
                         Key Milestones
                     </h4>
                 </div>
-                <div class="flex flex-row flex-wrap max-w-2/3 pl-4 gap-4">
+                <div class="flex flex-row w-9/12 pl-4 gap-4">
                     {#each stage.substages as substage}
                         <div class="stage-line w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] p-4 pb-6">
                             <h5 class="font-mono text-xs" 
@@ -235,7 +236,7 @@ onMount(() => {
 
 
             <!-- Journey Cards -->
-            <div class="mt-8 mb-12">
+            <div class="w-5/12 pl-8 mt-8 mb-12">
                 <SwipeableJourneyCards 
                     selectedDisease="cidp"
                     selectedId={patientStories.diseases.cidp.patients.find(p => p.stage === stage.id)?.id}
@@ -249,7 +250,7 @@ onMount(() => {
                                     What the Community Says
                                 </h4>
                             </div>
-                            <div class="flex flex-row gap-4 mt-4 mb-6 md:mb-8">
+                            <div class="flex flex-row">
                             <div class="w-3/5 pl-4">
                             <PatientQuoteCards 
                                 stageId={stage.id} 
@@ -257,7 +258,7 @@ onMount(() => {
                                 color={getStageColor(index)} 
                             />
                             </div>
-                            <div class="w-1/5 pl-4">
+                            <div class="w-2/5 max-w-80 pl-4">
                                 <p class="caption text-slate-800 text-sm">
                                     {stage.quoteDescription}
                                 </div>
@@ -272,16 +273,15 @@ onMount(() => {
                                             <h4 class="text-lg font-sans font-semibold align-middle text-slate-50">
                                                 What the Community Looks For
                                             </h4>
-                                        </div>
+                                        </div>  
                                     </div>
-                                    <div class="search-bubbles-container max-w-2/3">
+                                    <div class="flex">
                                         <SearchBubbles searchTerms={stage.searchTerms} />
                                     </div>
                                 </div>
                             {/if}
-
-                         
-                                <div class="mt-6 md:mt-8 space-y-4">
+                                    
+                                    <div class="mt-6 md:mt-8 space-y-4">
                                     <div class="flex flex-row gap-4 md:gap-8 align-middle mt-4 mb-6 md:mb-8">
                                         <div class="w-full h-fit row-span-2 px-8 py-2 mb-12 " 
                                              style="background-color: {getStageColor(index)}">
@@ -350,7 +350,7 @@ onMount(() => {
     }
 
     .sticky {
-        border-bottom: .25px solid #432eaa;
+        border-bottom: .25px solid #666666;
     }
 
     .stat-line {
@@ -362,7 +362,7 @@ onMount(() => {
     }
 
     .sticky {
-        border-bottom: .25px solid #432eaa;
+        border-bottom: .25px solid #666666;
     }
 
     .drawer-button {
@@ -416,5 +416,18 @@ onMount(() => {
             height: 100%;
             border-radius: 100%;
         }
+    }
+
+    :global(.appendix-link){
+        color: #2A7980;
+        border: 1px dotted #2A7980;
+        padding: 0.125rem .425rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
+    :global(.appendix-link:hover){
+        border: 1px solid #2A7980;
+        background-color: #2a798020;
+        padding: 0.1525rem .475rem;
     }
 </style>

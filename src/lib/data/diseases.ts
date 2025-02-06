@@ -33,6 +33,11 @@ export const diseases: DiseaseCategory[] = [
     category: "Rare Diseases",
     items: [
       { 
+        id: "cidp",
+        name: "CIDP",
+        description: "A rare autoimmune disorder affecting the peripheral nerves"
+      },
+      {
         id: "pompe",
         name: "Pompe Disease",
         description: "A rare genetic condition affecting muscle and nerve cells"
@@ -129,13 +134,8 @@ export const diseases: DiseaseCategory[] = [
       },
       {
         id: "lupus",
-        name: "Lupus",
+        name: "Lupus Nephritis",
         description: "A systemic autoimmune disease"
-      },
-      {
-        id: "psoriasis",
-        name: "Psoriasis",
-        description: "An immune-mediated skin condition"
       },
       {
         id: "crohns",
