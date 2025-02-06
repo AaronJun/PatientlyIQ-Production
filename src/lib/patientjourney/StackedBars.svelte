@@ -199,9 +199,8 @@
         <svg bind:this={svg} class="w-full h-full"></svg>
         
         <div id="chart-tooltip" 
-            class="absolute bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm pointer-events-none opacity-0 transition-opacity duration-200 z-50"
-            style="visibility: hidden;"
-        ></div>
+        class="fixed bg-gray-800 text-white px-4 py-3 rounded text-sm pointer-events-none max-w-md" 
+        style="visibility: hidden; z-index: 9999; transform: translateY(-50%);"></div>
     </div>
 
     <!-- Legend -->

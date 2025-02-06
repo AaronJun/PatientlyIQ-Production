@@ -251,13 +251,13 @@ onMount(() => {
                                     What the Community Says
                                 </h4>
                             </div>
-                            <div class="flex flex-row">
+                        <div class="flex flex-row">
                             <div class="w-3/5 pl-4">
-                            <PatientQuoteCards 
-                                stageId={stage.id} 
-                                quotes={cidpQuotes}
-                                color={getStageColor(index)} 
-                            />
+                                <PatientQuoteCards 
+                                    stageId={stage.id} 
+                                    quotes={cidpQuotes}
+                                    color={getStageColor(index)} 
+                                />
                             </div>
                             <div class="w-2/5 max-w-80 pl-4">
                                 <p class="caption text-slate-800 text-sm">
@@ -308,7 +308,7 @@ onMount(() => {
                                                                 {idea.description}
                                                             </p>
                                                         </div>
-                                                        <div class="flex-col text-slate-600 px-4 ml-8 place-content-center items-center mx-auto">
+                                                        <div class="flex-col text-slate-600 px-4 ml-8 w-2/5">
                                                             <div class="px-2 py-1 w-full h-fit text-left align-top mb-2" 
                                                                  style="background-color: {getStageColor(index)}">
                                                                 <p class="font-mono text-base font-semibold text-slate-50">

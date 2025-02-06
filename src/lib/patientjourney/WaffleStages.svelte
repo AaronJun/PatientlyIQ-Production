@@ -10,7 +10,7 @@
     let containerRef;
     let hasAnimated = false;
     const width = 925;
-    let height;
+    let height = width;
     const cellSize = 16;
     const cellPadding = 2;
     const stageSpacing = 80;
@@ -492,7 +492,7 @@
 </script>
 
 <div class="relative flex flex-col items-center bg-slate-100/70 justify-center w-full mt-10" bind:this={containerRef}>
-    <div class="heading-container flex flex-col bg-sky-100/20 w-full p-6">
+    <div class="heading-container flex flex-col bg-sky-100/20 min-w-full p-6">
     <h3 class="text-xs font-mono font-medium text-slate-800 text-left mb-4 uppercase">
     Post Sentiment at Key Journey Stages
     </h3>
@@ -533,5 +533,12 @@
 
     .heading-container {
         border-bottom: 1px dotted #565656;
+    }
+
+    @media (min-width: 768px) {
+        .heading-container {
+            border-bottom: 1px dotted #565656;
+            max-width: 600px;
+        }
     }
 </style>
