@@ -1,100 +1,172 @@
 {
-  "diseases": {
-    "cidp": {
-      "patients": [
-        {
-          "id": "david-r",
-          "name": "David R.",
-          "age": "Early-50s",
-          "disease": "CIDP",
-          "persona": "Patient",
-          "stage": 1,
-          "stageId": "symptom-onset",
-          "img": "/profiles/davidR.jpg",
-          "bio": "David initially dismissed early symptoms as work-related stress. After a challenging diagnostic journey, he's now actively managing his CIDP through regular IVIg treatments while maintaining his career in software development.",
-          "cards": [
-            {
-              "type": "Bio",
-              "quote": "It started with just some tingling in my feet. I ignored it for weeks thinking it would go away. Looking back, I wish I had acted sooner.",
-              "context": "Symptom Onset",
-              "contextDescription": "David experienced initial symptoms but delayed seeking medical attention, a common pattern in early CIDP.",
-              "goals": "Maintain career while managing treatment schedule, regain strength and mobility",
-              "strengths": "Strong support system, employer flexibility, technical background helping research",
-              "anxieties": "Long-term prognosis, treatment effectiveness, maintaining work-life balance",
-              "medicalLiteracy": "7",
-              "financialStability": "8",
-              "medicalAccess": "7",
-              "supportNetwork": "9"
-            },
-            {
-              "type": "Diagnosis Journey",
-              "quote": "After six different doctors and countless tests, someone finally connected the dots. The journey to diagnosis felt endless.",
-              "context": "Finding Answers",
-              "contextDescription": "David's path to diagnosis involved multiple healthcare providers and specialists before reaching a definitive CIDP diagnosis.",
-              "sentiment": 25,
-              "topics": [
-                {"topic": "Medical Navigation", "value": 18},
-                {"topic": "Diagnostic Tests", "value": 15},
-                {"topic": "Healthcare Access", "value": 12},
-                {"topic": "Emotional Support", "value": 10}
-              ],
-              "quadrantData": [
-                {
-                  "label": "Healthcare Journey",
-                  "x": 30,
-                  "y": 45
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "patricia-k",
-          "name": "Patricia K.",
-          "age": "Mid-50s",
-          "disease": "CIDP",
-          "persona": "Patient",
-          "stage": 4,
-          "stageId": "treatment-initiation",
-          "img": "/profiles/patriciaK.jpg",
-          "bio": "Patricia's CIDP diagnosis came after a rapid decline in mobility. Now stabilized on treatment, she advocates for better CIDP awareness and supports newly diagnosed patients.",
-          "cards": [
-            {
-              "type": "Bio",
-              "quote": "The EMG was uncomfortable, but it finally gave us answers. Having a diagnosis meant we could start fighting back.",
-              "context": "Treatment Initiation",
-              "contextDescription": "Patricia began her treatment journey with determination after receiving a clear diagnosis.",
-              "goals": "Maintain independence, support other CIDP patients, optimize treatment routine",
-              "strengths": "Medical knowledge from personal research, strong advocacy skills, resilient attitude",
-              "anxieties": "Future mobility, treatment longevity, impact on family life",
-              "medicalLiteracy": "8",
-              "financialStability": "7",
-              "medicalAccess": "8",
-              "supportNetwork": "9"
-            },
-            {
-              "type": "Treatment Experience",
-              "quote": "Managing CIDP is like a full-time job. Between treatments, exercises, and monitoring symptoms, it takes constant vigilance.",
-              "context": "Daily Management",
-              "contextDescription": "Patricia has developed a comprehensive approach to managing her CIDP, balancing treatment with daily life.",
-              "sentiment": 65,
-              "topics": [
-                {"topic": "Treatment Routine", "value": 18},
-                {"topic": "Lifestyle Management", "value": 15},
-                {"topic": "Support Systems", "value": 12},
-                {"topic": "Symptom Monitoring", "value": 10}
-              ],
-              "quadrantData": [
-                {
-                  "label": "Disease Management",
-                  "x": 75,
-                  "y": 70
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+"diseases": {
+  "cidp": {
+    "patients": [
+      {
+        "id": "david-r",
+        "name": "David R.",
+        "age": "Early-50s",
+        "disease": "CIDP",
+        "persona": "Patient",
+        "stage": 1,
+        "stageId": "symptom-onset",
+        "img": "/profiles/davidR.jpg",
+        "bio": "David initially dismissed early symptoms as work-related stress. After a challenging diagnostic journey, he's now actively managing his CIDP through regular IVIg treatments while maintaining his career in software development.",
+        "cards": [
+          {
+            "type": "Bio",
+            "quote": "It started with just some tingling in my feet. I ignored it for weeks thinking it would go away. Looking back, I wish I had acted sooner.",
+            "context": "Symptom Onset",
+            "contextDescription": "David experienced initial symptoms but delayed seeking medical attention, a common pattern in early CIDP.",
+            "goals": "Maintain career while managing treatment schedule, regain strength and mobility",
+            "strengths": "Strong support system, employer flexibility, technical background helping research",
+            "anxieties": "Long-term prognosis, treatment effectiveness, maintaining work-life balance",
+            "medicalLiteracy": "7",
+            "financialStability": "8",
+            "medicalAccess": "7",
+            "supportNetwork": "9"
+          },
+          {
+            "type": "Diagnosis Journey",
+            "quote": "After six different doctors and countless tests, someone finally connected the dots. The journey to diagnosis felt endless.",
+            "context": "Finding Answers",
+            "contextDescription": "David's path to diagnosis involved multiple healthcare providers and specialists before reaching a definitive CIDP diagnosis.",
+            "sentiment": 25,
+            "topics": [
+              {"topic": "Medical Navigation", "value": 18},
+              {"topic": "Diagnostic Tests", "value": 15},
+              {"topic": "Healthcare Access", "value": 12},
+              {"topic": "Emotional Support", "value": 10}
+            ],
+            "quadrantData": [
+              {
+                "label": "Healthcare Journey",
+                "x": 30,
+                "y": 45
+              }
+            ]
+          },
+          {
+            "type": "Treatment Metrics",
+            "quote": "Finding the right treatment combination took time, but the improvements have been worth the effort.",
+            "context": "Treatment Response",
+            "contextDescription": "David's treatment journey showing response to different therapeutic approaches.",
+            "sentiment": 65,
+            "treatmentData": [
+              {
+                "term": "IVIg",
+                "volume": 100,
+                "relatedSearches": [
+                  {"term": "Complete Response", "volume": 45},
+                  {"term": "Partial Response", "volume": 35},
+                  {"term": "No Response", "volume": 20}
+                ]
+              },
+              {
+                "term": "Corticosteroids",
+                "volume": 80,
+                "relatedSearches": [
+                  {"term": "Complete Response", "volume": 30},
+                  {"term": "Partial Response", "volume": 40},
+                  {"term": "No Response", "volume": 10}
+                ]
+              },
+              {
+                "term": "Plasma Exchange",
+                "volume": 60,
+                "relatedSearches": [
+                  {"term": "Complete Response", "volume": 20},
+                  {"term": "Partial Response", "volume": 25},
+                  {"term": "No Response", "volume": 15}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "patricia-k",
+        "name": "Patricia K.",
+        "age": "Mid-50s",
+        "disease": "CIDP",
+        "persona": "Patient",
+        "stage": 4,
+        "stageId": "treatment-initiation",
+        "img": "/profiles/patriciaK.jpg",
+        "bio": "Patricia's CIDP diagnosis came after a rapid decline in mobility. Now stabilized on treatment, she advocates for better CIDP awareness and supports newly diagnosed patients.",
+        "cards": [
+          {
+            "type": "Bio",
+            "quote": "The EMG was uncomfortable, but it finally gave us answers. Having a diagnosis meant we could start fighting back.",
+            "context": "Treatment Initiation",
+            "contextDescription": "Patricia began her treatment journey with determination after receiving a clear diagnosis.",
+            "goals": "Maintain independence, support other CIDP patients, optimize treatment routine",
+            "strengths": "Medical knowledge from personal research, strong advocacy skills, resilient attitude",
+            "anxieties": "Future mobility, treatment longevity, impact on family life",
+            "medicalLiteracy": "8",
+            "financialStability": "7",
+            "medicalAccess": "8",
+            "supportNetwork": "9"
+          },
+          {
+            "type": "Treatment Experience",
+            "quote": "Managing CIDP is like a full-time job. Between treatments, exercises, and monitoring symptoms, it takes constant vigilance.",
+            "context": "Daily Management",
+            "contextDescription": "Patricia has developed a comprehensive approach to managing her CIDP, balancing treatment with daily life.",
+            "sentiment": 65,
+            "topics": [
+              {"topic": "Treatment Routine", "value": 18},
+              {"topic": "Lifestyle Management", "value": 15},
+              {"topic": "Support Systems", "value": 12},
+              {"topic": "Symptom Monitoring", "value": 10}
+            ],
+            "quadrantData": [
+              {
+                "label": "Disease Management",
+                "x": 75,
+                "y": 70
+              }
+            ]
+          },
+          {
+            "type": "Symptom Tracking",
+            "quote": "Keeping track of my symptoms helps me communicate better with my healthcare team.",
+            "context": "Symptom Management",
+            "contextDescription": "Patricia's systematic tracking of CIDP symptoms over time reveals patterns and treatment effectiveness.",
+            "sentiment": 70,
+            "symptomData": [
+              {
+                "term": "Muscle Weakness",
+                "volume": 100,
+                "relatedSearches": [
+                  {"term": "Upper Body", "volume": 40},
+                  {"term": "Lower Body", "volume": 45},
+                  {"term": "Core", "volume": 15}
+                ]
+              },
+              {
+                "term": "Sensory Issues",
+                "volume": 85,
+                "relatedSearches": [
+                  {"term": "Numbness", "volume": 35},
+                  {"term": "Tingling", "volume": 30},
+                  {"term": "Pain", "volume": 20}
+                ]
+              },
+              {
+                "term": "Fatigue",
+                "volume": 75,
+                "relatedSearches": [
+                  {"term": "Physical", "volume": 35},
+                  {"term": "Mental", "volume": 25},
+                  {"term": "Post-Exertion", "volume": 15}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
+}
 }

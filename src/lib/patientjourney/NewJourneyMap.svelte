@@ -218,3 +218,12 @@
 >
     <!-- SVG will be inserted here -->
 </div>
+
+<style>
+@media (max-width: 768px) {    
+    .journey-tooltip {
+        font-size: 0.75rem;
+    }
+}
+
+</style>

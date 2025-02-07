@@ -21,11 +21,10 @@
     let imageLoading = new Map();
 
     function getImagePath(imgPath) {
-    if (!imgPath) return '/api/placeholder/128/128';
-        
+    if (!imgPath) return 'https://placehold.co/128x128';
     if (imgPath.startsWith('http')) return imgPath;
-    return imgPath.startsWith('/') ? imgPath : `/${imgPath}`;        
-    }
+    return imgPath.startsWith('/') ? imgPath : `/${imgPath}`;
+}
 
     $: {
         if (selectedId && patientData.diseases[selectedDisease]) {
@@ -358,13 +357,13 @@ $: if (selectedPatient) {
 }
 </script>
 
-<div class="w-full max-w-[900px] mx-auto px-4">
+<div class="w-full mx-auto px-4">
 {#if selectedPatient}
     {#if !showGrid}
         <div class="flex justify-center">
             <div 
                 bind:this={containerRef}
-                class="relative h-[40rem] sm:h-[42.25rem] w-full cursor-grab active:cursor-grabbing"
+                class="relative h-[50vh] w-full max-w-[700px] cursor-grab active:cursor-grabbing"
                 on:touchstart={handleTouchStart}
                 on:touchmove={handleTouchMove}
                 on:touchend={handleTouchEnd}
@@ -373,7 +372,7 @@ $: if (selectedPatient) {
             </div>
         </div>
 
-        <div class="flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-28 sm:mt-24 px-4 md:px-0">
+        <div class="button-container flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-28 sm:mt-24 px-4 md:px-0">
             <button
                 on:click={handlePrev}
                 class="h-10 w-10 rounded-full bg-orange-600 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
@@ -443,7 +442,7 @@ $: if (selectedPatient) {
                     class="transform transition-transform hover:scale-105 focus:outline-none"
                 >
                     <div 
-                        class="h-[12.25rem] w-full rounded-lg shadow-md overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300"
+                        class="h-[12.25rem] rounded-lg shadow-md overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300"
                     >
                         {#if card.isIntro}
                             <div class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-orange-50 to-white py-2 px-2">
@@ -509,12 +508,8 @@ $: if (selectedPatient) {
 
 <style>
 @media (max-width: 768px) {
-    .cardcircle {
-        gap: 1rem;
-    }
-    .journey-card {
-        width: 100%;
-        padding: 0.5rem;
+    .button-container {
+        width: 95%;
     }
 }
 
@@ -557,13 +552,6 @@ img {
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-}
-
-@media (max-width: 640px) {
-    img {
-        width: 100%;
-        height: auto;
-    }
 }
 
 .line-clamp-2 {

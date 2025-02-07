@@ -149,26 +149,29 @@ function handleCalculatorOpen() {
 	}
 </script>
 
-<div class="flex flex-col h-[100vh] w-[100vw]">
-	<div class="flex-1 pt-16 place-content-center">
+<div class="flex flex-col h-screen w-screen">
+	<div class="flex-1 pt-16">
+	  <!-- Header -->
 	  <div class="heading-container">
 		<h1 class="heading text-2xl font-mono tracking-normal uppercase align-middle justify-center w-full ml-4 mr-12 mt-8 font-semibold text-slate-600">
 		  Feasibility Atlas<span class="tag text-[10.25px] font-medium font-mono text-slate-400 tracking-wide uppercase w-fit h-fit ml-2">Beta</span>
-		
-		</h1>	
-	</div>	
-	<div class="header-filter-container flex-row w-full">	
-	{#if allData.length > 0}
-	  <HeaderFilter 
-		bind:selectedMetric={$selectedMetricStore}
-		{metrics}
-		on:change={handleMetricChange}    
-	  />
-	{/if}
-	</div>
+		</h1>
+		<div class="header-filter-container w-full">
+			{#if allData.length > 0}
+			  <HeaderFilter 
+				bind:selectedMetric={$selectedMetricStore}
+				{metrics}
+				on:change={handleMetricChange}    
+			  />
+			{/if}
+		  </div>
+	  </div>
 	
-	  <div class="flex flex-row w-full">
-		<div class="outline-wrapper flex-1 bg-white/30 w-4/5 min-h-[90vh]">
+    <!-- Filter Header -->
+    
+	  <div class="content-wrapper relative flex-1">
+		<!-- Full-width/height outline wrapper -->
+		<div class="outline-wrapper absolute inset-0">
 		  <BubbleMapper
 			width={960}
 			height={500}
@@ -179,7 +182,8 @@ function handleCalculatorOpen() {
 		  />
 		</div>
 		
-		<div class="outline-wrapper overflow-auto w-1/5">
+		<!-- Overlay Sidebar -->
+		<div class="sidebar-overlay">
 		  <MapSidebar 
 			on:openCalculator={handleCalculatorOpen}
 			on:countryHover={(event) => {
@@ -204,88 +208,72 @@ function handleCalculatorOpen() {
 		  />
 		</div>
 	  </div>
-  </div>
+	</div>
   
-
-    <InfoDrawer 
-        isOpen={isDrawerOpen}
-        onClose={closeDrawer}
-        data={selectedData}
-        {circleColor}
-        selectedMetric={$selectedMetricStore}
-        rank={selectedData ? rankedData[selectedData.id] : null}
-        totalCountries={allData.length}
-        {allData}
-    />
-
-    <CalcDrawer
-        isOpen={isCalculatorOpen}
-        onClose={handleCalculatorClose}
-        on:scoreUpdated={(event) => {
-            allData = allData.map(country => 
-                country.id === event.detail.countryId 
-                    ? {...country, compositeScore: event.detail.newScore}
-                    : country
-            );
-            rankedData = getRankedData(allData, $selectedMetricStore);
-        }}
-    />
-</div>
+	<InfoDrawer 
+	  isOpen={isDrawerOpen}
+	  onClose={closeDrawer}
+	  data={selectedData}
+	  {circleColor}
+	  selectedMetric={$selectedMetricStore}
+	  rank={selectedData ? rankedData[selectedData.id] : null}
+	  totalCountries={allData.length}
+	  {allData}
+	/>
+  
+	<CalcDrawer
+	  isOpen={isCalculatorOpen}
+	  onClose={handleCalculatorClose}
+	  on:scoreUpdated={(event) => {
+		allData = allData.map(country => 
+		  country.id === event.detail.countryId 
+			? {...country, compositeScore: event.detail.newScore}
+			: country
+		);
+		rankedData = getRankedData(allData, $selectedMetricStore);
+	  }}
+	/>
+  </div>
 
 <style>
- 
-    .page-container {
-        width: 100%;
-        top: 0;
-        left: 0;
-    }
+.content-wrapper {
+  position: relative;
+  height: calc(100vh - 160px); /* Adjust based on header + filter height */
+  width: 100%;
+}
 
-    :global(body) {
+.outline-wrapper {
+  position: absolute;
+  inset: 0;
+  border: 0.25px solid #AA9AFA;
+  height: 100vh;
+}
 
-        position: fixed;
-        width: 100%;
-        height: 100%;
-    }
+.sidebar-overlay {
+  position: fixed;
+  right: 0;
+  margin-top: 10rem;
+  width: 320px;
+  height: fit-content;
+  padding-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 0.25px solid #AA9AFA;
+  overflow-y: auto;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
 
-    .header-filter-container {
-		position: relative;
-    }
+.heading-container {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(10px);
+  border-bottom: 0.25px solid #666666;
+  z-index: 10;
+}
 
-		.map-wrapper {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-		height: 100%;
-		}
-
-		.outline-wrapper {
-		padding: 0;
-		border: .25px solid #B4C7FF;
-		}
-
-    :global(.mapContainer) {
-        width: 100%;
-        height: 100%;
-    }
-
-	:global(.heading-container) {
-		backdrop-filter: blur(10px);
-		display: flex;
-		flex-direction: row;
-		min-height: 10vh;
-		border-bottom: 0.25px solid #666666;
-		margin-bottom: 1rem;
-	}
-
-	:global(.outline-wrapper) {
-		padding: 0;
-		border: .25px solid #AA9AFA;
-		border-bottom: 0px;
-		z-index: 10;
-	}
-
-	.tag {
-		padding: 0.25rem 0.5rem;
-	}
-
+.header-filter-container {
+  position: relative;
+  z-index: 10;
+}
 </style>

@@ -12,8 +12,8 @@
     const width = 925;
     let height = width;
     const cellSize = 16;
-    const cellPadding = 2;
-    const stageSpacing = 80;
+    const cellPadding = 2;  
+    const stageSpacing = 76;
     const labelHeight = 40;
     const gridWidth = 5;
     const legendHeight = 30;
@@ -539,6 +539,11 @@
         .heading-container {
             border-bottom: 1px dotted #565656;
             max-width: 600px;
+        }
+
+        .chart-container {
+         width: 100%; 
+         overflow-x: auto;
         }
     }
 </style>

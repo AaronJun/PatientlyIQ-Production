@@ -11,7 +11,7 @@ import SwipeableJourneyCards from '$lib/patientjourney/TallSwipeableJourneyCards
 import PatientQuoteCards from '$lib/patientjourney/PatientQuoteCards.svelte';
 import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 import { ArrowUpRight } from 'carbon-icons-svelte';
-import StackedBars from '$lib/patientjourney/StackedBars.svelte';
+import StackedBars from '$lib/patientjourney/StackedBarsLegend.svelte';
 
 import mergedJourneyData from '$lib/data/cidpJourney.json';
 import cidpQuotes from '$lib/data/cidpPatientQuotes.json';
@@ -111,20 +111,20 @@ onMount(() => {
 
 <div class="page-layout flex flex-col">
     <!-- Hero Section -->
-    <div class="min-h-[80vh] place-items-center bg-slate-50 flex-row pt-24">
-    <div class="flex-col justify-center place-items-center align-middle px-8">
+    <div class="min-h-[80vh] bg-slate-50 flex-row pt-24">
+    <div class="flex-col justify-start px-8">
         <img src={PIQLogo} alt="PIQ Logo" class="w-8 col-span-2 mb-8 items-center" />
-        <h1 class="w-full text-4xl tracking-tight mb-8 text-center">Mapping the <JourneyFilterHeader on:diseaseChange={(event) => {
+        <h1 class="main-header w-full text-4xl tracking-tight mb-8 text">Mapping the <JourneyFilterHeader on:diseaseChange={(event) => {
         // Handle disease change here
         console.log('Selected disease:', event.detail);
     }} /> Journey </h1>
-            <p class="max-w-prose text-pretty text-lg text-center leading-normal">
+            <p class="max-w-prose justify-center text-left text-slate-800 text-lg">
                 The CIDP patient journey is a complex, multistage process characterized by progressive 
                 challenges and emotional transitions. <br><br>
                 Compiled through the consolidation and analysis of more than <span class="appendix-link"> 400 </span> social media posts, forum comments, blog posts, videos, and more, this report provides an overview of this community's goals and challenges, from symptom onset to clinical trial consideration. <br><br>
             </p>
     </div>
-        <div class="flex w-full px-8">
+        <div class="flex w-full px-2">
         <StageWaffle data={sentimentData} />
     </div>  
     </div>
@@ -187,9 +187,9 @@ onMount(() => {
                         Key Milestones
                     </h4>
                 </div>
-                <div class="flex flex-row w-9/12 pl-4 gap-4">
+                <div class="flex flex-row w-full pl-4 gap-4">
                     {#each stage.substages as substage}
-                        <div class="stage-line w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] p-4 pb-6">
+                        <div class="milestone-card w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] p-4 pb-6">
                             <h5 class="font-mono text-xs" 
                                 style="color: {getStageColor(index)}">
                                 {substage.id}
@@ -205,8 +205,8 @@ onMount(() => {
                             <!-- Conversation Topics -->
                             {#if substage.conversationTopics}
                                 <div class="mt-4">
-                                    <h6 class="text-xs font-mono mb-2" style="color: {getStageColor(index)}">
-                                        Common Topics
+                                    <h6 class="text-xs font-sans mb-2" style="color: {getStageColor(index)}">
+                                        Frequently-Discussed Topics
                                     </h6>
                                     <ul class="list-none space-y-1">
                                         {#each substage.conversationTopics as topic}
@@ -219,12 +219,12 @@ onMount(() => {
                             <!-- Search Terms -->
                             {#if substage.searchTerms}
                                 <div class="mt-4">
-                                    <h6 class="text-xs font-mono mb-2" style="color: {getStageColor(index)}">
-                                        Search Terms
+                                    <h6 class="text-xs font-sans mb-2" style="color: {getStageColor(index)}">
+                                        Relevant Common Search Terms
                                     </h6>
                                     <div class="flex flex-wrap gap-2">
                                         {#each substage.searchTerms as term}
-                                            <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-600">
+                                            <span class="text-[10px] px-2 py-1 rounded-full bg-slate-200 text-slate-800">
                                                 {term}
                                             </span>
                                         {/each}
@@ -237,7 +237,7 @@ onMount(() => {
 
 
             <!-- Journey Cards -->
-            <div class="w-5/12 pl-8 mt-8 mb-12">
+            <div class="w-full pl-8 mt-8 mb-12">
                 <SwipeableJourneyCards 
                     selectedDisease="cidp"
                     selectedId={patientStories.diseases.cidp.patients.find(p => p.stage === stage.id)?.id}
@@ -252,16 +252,16 @@ onMount(() => {
                                 </h4>
                             </div>
                         <div class="flex flex-row">
-                            <div class="w-3/5 pl-4">
+                            <div class="w-full">
                                 <PatientQuoteCards 
                                     stageId={stage.id} 
                                     quotes={cidpQuotes}
+                                    quotesDescription={stage.quotesDescription}
                                     color={getStageColor(index)} 
                                 />
                             </div>
                             <div class="w-2/5 max-w-80 pl-4">
                                 <p class="caption text-slate-800 text-sm">
-                                    {stage.quoteDescription}
                                 </div>
                             </div>
 
@@ -286,7 +286,7 @@ onMount(() => {
                                     
                                     <div class="mt-6 md:mt-8 space-y-4">
                                     <div class="flex flex-row gap-4 md:gap-8 align-middle mt-4 mb-6 md:mb-8">
-                                        <div class="w-full h-fit row-span-2 px-8 py-2 mb-12 " 
+                                        <div class="w-full h-fit row-span-2 px-2 py-2 mb-12" 
                                              style="background-color: {getStageColor(index)}">
                                             <h4 class="text-lg font-sans font-medium text-slate-50">
                                                 How We Can Support the Community
@@ -294,7 +294,7 @@ onMount(() => {
                                         </div>
                                 </div>
 
-                                    <div class="flex-col gap-6 md:gap-8">
+                                    <div class="idea-col flex-col gap-6">
                                         {#each stage.engagementIdeas as idea}
                                             <div class="flex flex-col place-content-around px-8 w-2/3 mt-6 md:mt-8">
                                                 <div class="flex flex-col max-w-full justify-between font-sans mb-4" 
@@ -389,6 +389,10 @@ onMount(() => {
             margin: 0 0 1.25rem 0;
         }
 
+        .text-4xl {
+            font-size: 1.75rem;
+        }
+
         .flex-row {
             flex-direction: column;
         }
@@ -424,5 +428,14 @@ onMount(() => {
         border: 1px solid #2A7980;
         background-color: #2a798020;
         padding: 0.1525rem .475rem;
+    }
+
+    .milestone-card {
+        border: .425px solid #bbbbbb;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .idea-col {
+
     }
 </style>

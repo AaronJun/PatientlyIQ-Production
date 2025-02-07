@@ -5,6 +5,7 @@
 
     export let stageId: number;
     export let quotes;
+    export let quotesDescription;
     export let color: string;
 
     let containerRef: HTMLDivElement;

@@ -47,7 +47,7 @@
     <div class="content" transition:slide>
       <div class="grid grid-cols">
         <div class="align-top">
-          <div class="overflow-y-auto h-[90vh]">
+          <div class="overflow-y-auto">
             <table class="w-full border-separate border-spacing-0">
               <thead class="sticky top-0">
                 <tr class="text-left font-mono uppercase text-xs font-semibold text-slate-500">
