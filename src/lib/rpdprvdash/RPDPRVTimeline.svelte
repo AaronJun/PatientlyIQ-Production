@@ -12,7 +12,6 @@
     const height = 120;
     const width = 1000;
 
-    // Color scale for therapeutic areas
     const therapeuticAreaColors = {
         'Neurology': '#FF6B6B',
         'Oncology': '#4ECDC4',
@@ -31,10 +30,11 @@
         'Urology': '#B8B8D1'
     };
     
-    // Process data to get counts and therapeutic area distributions by year
     $: yearData = Object.entries(
         data.reduce((acc, entry) => {
-            const year = entry["RPDD Year"];
+            const year = entry["PRV Issue Year"] || entry["RPDD Year"];
+            if (!year) return acc;
+            
             if (!acc[year]) {
                 acc[year] = {
                     count: 0,
@@ -64,11 +64,30 @@
         return `gradient-${year}`;
     }
 
-    function createGradients(svg: d3.Selection<SVGElement, unknown, null, undefined>, data: any[]) {
-        const defs = svg.append("defs");
+    function createVisualization() {
+        if (!svg || !yearData.length) return;
 
-        // Create gradients for each year
-        data.forEach(yearEntry => {
+        const svgElement = d3.select(svg);
+        svgElement.selectAll("*").remove();
+
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+
+        const xScale = d3.scalePoint()
+            .domain(yearData.map(d => d.year))
+            .range([0, innerWidth])
+            .padding(0);
+
+        const radiusScale = d3.scaleSqrt()
+            .domain([0, d3.max(yearData, d => d.count) || 0])
+            .range([4, 24]);
+
+        const g = svgElement.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Create gradients
+        const defs = svgElement.append("defs");
+        yearData.forEach(yearEntry => {
             const gradient = defs.append("linearGradient")
                 .attr("id", createGradientId(yearEntry.year))
                 .attr("x1", "0%")
@@ -76,7 +95,6 @@
                 .attr("x2", "100%")
                 .attr("y2", "100%");
 
-            // Calculate stop positions based on area percentages
             let currentPosition = 0;
             yearEntry.areas.forEach(area => {
                 gradient.append("stop")
@@ -108,31 +126,6 @@
             .attr("in", "coloredBlur");
         feMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
-    }
-
-    function createVisualization() {
-        if (!svg || !yearData.length) return;
-
-        const svgElement = d3.select(svg);
-        svgElement.selectAll("*").remove();
-
-        const innerWidth = width - margin.left - margin.right;
-        const innerHeight = height - margin.top - margin.bottom;
-
-        const xScale = d3.scalePoint()
-            .domain(yearData.map(d => d.year))
-            .range([0, innerWidth])
-            .padding(0);
-
-        const radiusScale = d3.scaleSqrt()
-            .domain([0, d3.max(yearData, d => d.count) || 0])
-            .range([4, 24]);
-
-        const g = svgElement.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-
-        // Create gradients and filters
-        createGradients(svgElement, yearData);
 
         // Add connecting line
         g.append("line")
@@ -150,17 +143,16 @@
             .attr("class", "year-group")
             .attr("transform", d => `translate(${xScale(d.year)},${innerHeight / 2})`);
 
-        // Add highlight circles (larger, behind main circle)
+        // Add highlight circles
         yearGroups.append("circle")
             .attr("class", "highlight-circle")
             .attr("r", d => radiusScale(d.count) + 4)
             .attr("fill", "none")
             .attr("stroke", "#4fd1c5")
             .attr("stroke-width", 3)
-            .attr("opacity", 0)
-            .style("pointer-events", "none");
+            .attr("opacity", 0);
 
-        // Add main circles with gradient fills
+        // Add main circles
         yearGroups.append("circle")
             .attr("class", "year-circle")
             .attr("r", d => radiusScale(d.count))
@@ -168,7 +160,11 @@
             .attr("stroke", "#37587e")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
-            .style("transition", "all 0.3s ease")
+            .on("click", (event, d) => {
+                selectedYear = d.year;
+                onYearSelect(d.year);
+                updateSelection();
+            })
             .on("mouseenter", function(event, d) {
                 if (d.year !== selectedYear) {
                     d3.select(this.parentNode)
@@ -212,11 +208,6 @@
                         .attr("font-weight", "400")
                         .attr("fill", "#718096");
                 }
-            })
-            .on("click", (event, d) => {
-                selectedYear = d.year;
-                onYearSelect(d.year);
-                updateSelection();
             });
 
         // Add year labels
@@ -239,41 +230,35 @@
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.count);
 
-        // Always call updateSelection to handle initial state
         updateSelection();
     }
 
     function updateSelection() {
         if (!svg) return;
 
-        // Update all year groups
         d3.select(svg)
             .selectAll(".year-group")
             .each(function(d: any) {
                 const group = d3.select(this);
                 const isSelected = d.year === selectedYear;
 
-                // Update highlight circle
                 group.select(".highlight-circle")
                     .transition()
                     .duration(300)
                     .attr("opacity", isSelected ? 0.5 : 0);
 
-                // Update main circle
                 group.select(".year-circle")
                     .transition()
                     .duration(300)
                     .attr("stroke-width", isSelected ? 3 : 1.5)
                     .style("filter", isSelected ? "url(#glow)" : "none");
 
-                // Update year label
                 group.select(".year-label")
                     .transition()
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
                     .attr("fill", isSelected ? "#2d3748" : "#718096");
 
-                // Update count label
                 group.select(".count-label")
                     .transition()
                     .duration(300)

@@ -17,7 +17,7 @@
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
 
-  import rpddData from '$lib/data/rpdprvdash/rpdprvdashdemo.json';
+  import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
   import constellationDataRaw from '../data/RPDConstellationData.json';
 
@@ -284,6 +284,7 @@
                 onShowDrugDetail={handleShowDrugDetail}
                 onShowCompanyDetail={handleShowCompanyDetail}
             />
+            
           <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
             <RPDRadialLegend 
               items={processedData}

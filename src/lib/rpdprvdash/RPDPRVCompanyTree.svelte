@@ -1,4 +1,4 @@
-<!-- RPDCompanyConcentricChart.svelte -->
+<!-- RPDCompanyTree.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -15,7 +15,7 @@
     const height = 1200;
     const radius = Math.min(width, height) / 2 - 60;
 
-    // Stage-specific radii (from outer to inner)
+    // Stage-specific radii (from outer to inner)  
     const stageRadii = {
         'PRE': radius * 0.925,
         'P1': radius * 0.825,
@@ -23,22 +23,22 @@
         'P2': radius * 0.625,
         'P3': radius * 0.525,
         'FILED': radius * 0.4125,
-        'APRV': radius * 0.285,
+        'APRV': radius * 0.295,
         'PRV': radius * 0.15
     };
 
-    // Stage labels configuration
+    // UI Configuration
     const stageLabelConfig = {
         padding: { x: 6, y: 4 },
         height: 18,
         cornerRadius: 10
     };
 
-    // Company-specific angles
     const labelRadius = radius * .9725;
     const maxLabelWidth = 85;
     const ANGLE_BUFFER = Math.PI / 24;
 
+    // Tooltip state
     let tooltipVisible = false;
     let tooltipContent = {
         sponsor: '',
@@ -50,46 +50,49 @@
     let tooltipX = 0;
     let tooltipY = 0;
 
-    // Stage color scale
+    // Color scales
     const stageColorScale = d3.scaleOrdinal()
         .domain(['PRE', 'P1', 'P1/2', 'P2', 'P3', 'APRV', 'PRV'])
         .range([
-            '#4A5568', // Preclinical - slate
-            '#60ACA9', // Phase 1 - blue
-            '#2B6CB0', // Phase 1/2 - darker blue
-            '#2C5282', // Phase 2 - even darker blue
-            '#1A365D', // Phase 3 - darkest blue
-            '#48BB78', // FDA Approved - green
-            '#2F855A'  // PRV Awarded - darker green
+            '#4A5568', // Preclinical 
+            '#60ACA9', // Phase 1
+            '#2B6CB0', // Phase 1/2
+            '#2C5282', // Phase 2
+            '#1A365D', // Phase 3
+            '#48BB78', // Approved
+            '#2F855A'  // PRV
         ]);
 
     const therapeuticAreaColorScale = d3.scaleOrdinal()
         .domain([
-            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology', 
-            'Cardiovascular', 'Pulmonology', 'Hematology', 
-            'Endocrinology', 'Genetic', 'Immunology', 
-            'Gastroenterology', 'Hepatology', 'Dermatology', 
+            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+            'Cardiovascular', 'Pulmonology', 'Hematology',
+            'Endocrinology', 'Genetic', 'Immunology',
+            'Gastroenterology', 'Hepatology', 'Dermatology',
             'Neonatology', 'Urology'
         ])
         .range([
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-            '#FFEEAD', '#D4A5A5', '#9DE0AD', 
-            '#FF9F1C', '#2EC4B6', '#E71D36', 
-            '#FDFFB6', '#CBE896', '#FFA07A', 
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+            '#FFEEAD', '#D4A5A5', '#9DE0AD',
+            '#FF9F1C', '#2EC4B6', '#E71D36',
+            '#FDFFB6', '#CBE896', '#FFA07A',
             '#98D8C8', '#B8B8D1'
         ]);
 
     function getStage(entry: any) {
         if (entry["PRV Issue Year"]) return "PRV";
-        if (entry["Approved"] === "Approved") return "APRV";
-        if (entry["Filed"] === "Filed") return "FILED";
         
         const stage = entry["Current Development Stage"];
+        if (!stage || stage === "") return entry["PRV Issue Year"] ? "PRV" : "PRE";
+        
         if (stage === "Preclinical") return "PRE";
-        if (stage === "Phase 1") return "P1";
+        if (stage === "Phase 1") return "P1"; 
         if (stage === "Phase 1/2") return "P1/2";
         if (stage === "Phase 2" || stage === "Phase 2a" || stage === "Phase 2b") return "P2";
         if (stage === "Phase 3") return "P3";
+        if (stage === "Filed") return "FILED";
+        if (stage === "Approved") return "APRV";
+        
         return "PRE";
     }
 
@@ -111,7 +114,7 @@
                 sponsor: d.Company,
                 drugName: d.Candidate,
                 therapeuticArea: d.TherapeuticArea1,
-                id: d["Current Development Stage"]
+                id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
             };
             tooltipBorderColor = stageColorScale(getStage(d));
         }
@@ -181,14 +184,12 @@
         const mainGroup = svgElement.append("g")
             .attr("transform", `translate(${width/2},${height/2})`);
 
-        // Create containers for different layers
         const linesGroup = mainGroup.append("g").attr("class", "connecting-lines");
         const stagesGroup = mainGroup.append("g").attr("class", "stage-circles");
         const companyLabelsGroup = mainGroup.append("g").attr("class", "company-labels");
 
-        // Create stage circles with rectangular labels
+        // Create stage circles and labels
         Object.entries(stageRadii).forEach(([stage, radius]) => {
-            // Stage circle
             stagesGroup.append("circle")
                 .attr("r", radius)
                 .attr("fill", "none")
@@ -197,45 +198,33 @@
                 .attr("stroke-dasharray", "1,4")
                 .attr("stroke-opacity", 1);
 
-            // Stage label with background
             const labelAngle = -Math.PI / 10;
-            const labelX = radius * Math.cos(labelAngle)- 15;
+            const labelX = radius * Math.cos(labelAngle) - 15;
             const labelY = radius * Math.sin(labelAngle) + 25;
 
-            // Create label group
             const labelGroup = stagesGroup.append("g")
                 .attr("transform", `translate(${labelX},${labelY})`)
                 .attr("cursor", "pointer")
-                .attr("class", "stage-label")
-                .attr("dx", "")
-                .on("click", () => {
-                    onCompanyHover(data.filter(entry => getStage(entry) === stage));
-                })
-                .on("mouseenter", () => {
-                    showTooltip({ clientX: -10, clientY: 10 }, { company: stage }, true);
-                })
-                .on("mouseleave", () => {
-                    hideTooltip();
-                });
+                .attr("class", "stage-label");
 
-            // Calculate text width for background
+            // Calculate label width
             const tempText = labelGroup.append("text")
                 .attr("opacity", 0)
                 .text(stage);
             const textWidth = tempText.node().getBBox().width;
             tempText.remove();
 
-            // Background rectangle
+            // Add label background
             labelGroup.append("rect")
                 .attr("x", -stageLabelConfig.padding.x)
                 .attr("y", -stageLabelConfig.height/2)
-                .attr("width", textWidth + (stageLabelConfig.padding.x))
+                .attr("width", textWidth + stageLabelConfig.padding.x)
                 .attr("height", stageLabelConfig.height)
                 .attr("rx", stageLabelConfig.cornerRadius)
                 .attr("fill", '#F8FAFC')
                 .attr("opacity", 1);
 
-            // Label text
+            // Add label text
             labelGroup.append("text")
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.3em")
@@ -248,17 +237,16 @@
         const companies = processDataForLayout(data);
         const companyAngles = calculateCompanyAngles(companies);
 
-        // Draw company sections
+        // Draw company sections and drugs
         companies.forEach(company => {
             const angle = companyAngles.get(company.company);
             const companyGroup = mainGroup.append("g");
 
-            // Calculate company label position
             const labelAngle = angle.center;
             const labelX = labelRadius * Math.cos(labelAngle - Math.PI/2);
             const labelY = labelRadius * Math.sin(labelAngle - Math.PI/2);
 
-            // Draw connecting lines to drugs
+            // Connect lines to drugs
             company.stages.forEach((drugs, stage) => {
                 const stageRadius = stageRadii[stage];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
@@ -277,59 +265,12 @@
                 });
             });
 
-            // Company label group
+            // Add company label
             const labelGroup = companyLabelsGroup.append("g")
                 .attr("transform", `translate(${labelX},${labelY})`)
-                .attr("cursor", "pointer")
-                .on("click", () => {
-                    onShowCompanyDetail({
-                        Company: company.company,
-                        entries: data.filter(entry => entry.Company === company.company),
-                        color: '#37587e',
-                        companyUrl: data.find(entry => entry.Company === company.company)?.["Link to CrunchBase"] || ""
-                    });
-                })
-                .on("mouseenter", (event) => {
-                    labelGroup.select("rect")
-                        .transition()
-                        .duration(200)
-                        .attr("height", 8)
-                        .attr("width", 8)
-                        .attr("fill", "#FF4A4A")
-                        .attr("stroke-width", 0.725)
-                        .attr("stroke", "#375810")
-                        .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+                .attr("cursor", "pointer");
 
-                        labelGroup.select("text")
-                        .transition()
-                        .duration(500)
-                        .attr("font-weight", "800")
-                        .attr("font-size", "12px")
-                        .attr("fill", "#FF4A4A");
-                    showTooltip(event, drug);
-                        })
-                        
-                .on("mouseleave", () => {
-                    labelGroup.select("rect")
-                        .transition()
-                        .attr("height", 7.25)
-                        .attr("width", 7.25)
-                        .attr("fill", "#A598D9")
-                        .attr("stroke", "#161616")
-                        .attr("stroke-width", 0.725)                   
-
-                        labelGroup.select("text")
-                        .transition()
-                        .duration(500)
-                        .text(truncateText(company.company, maxLabelWidth+12))
-                        .attr("fill", "#A598D9")
-                        .attr("font-size", "11.25px")
-                        .attr("font-weight", "500")
-                        .duration(200);
-                            hideTooltip();
-                        });
-
-            // Company node circle
+            // Company node
             labelGroup.append("rect")
                 .attr("width", 7.25)
                 .attr("height", 7.25)
@@ -339,7 +280,7 @@
                 .attr("stroke", "#375810")
                 .attr("stroke-width", 0.725);
 
-            // Company text label - positioned consistently outside
+            // Company text label
             const textAngle = labelAngle > Math.PI ? "end" : "start";
             const dx = labelAngle > Math.PI ? -8 : 8;
             
@@ -348,12 +289,58 @@
                 .attr("dx", dx)
                 .attr("dy", "-1em")
                 .text(truncateText(company.company, maxLabelWidth+12))
-                .attr("fill", "#666666")
+                .attr("fill", "#A59899")
                 .attr("font-size", "11.25px")
-                .attr("font-weight", "500")
-                ;
+                .attr("font-weight", "500");
 
-            // Draw drugs for each stage
+            // Add interaction handlers for company label
+            labelGroup
+                .on("mouseenter", (event) => {
+                    labelGroup.select("rect")
+                        .transition()
+                        .duration(200)
+                        .attr("height", 12)
+                        .attr("width", 12)
+                        .attr("fill", "#FF4A4A")
+                        .attr("stroke-width", 2.725);
+
+                    labelGroup.select("text")
+                        .transition()
+                        .duration(500)
+                        .attr("font-weight", "800")
+                        .attr("font-size", "12px")
+                        .attr("fill", "#FF4A4A");
+
+                    showTooltip(event, { company: company.company, totalDrugs: company.totalDrugs }, true);
+                    onCompanyHover(data.filter(d => d.Company === company.company));
+                })
+                .on("mouseleave", () => {
+                    labelGroup.select("rect")
+                        .transition()
+                        .attr("height", 7.25)
+                        .attr("width", 7.25)
+                        .attr("fill", "#A598D9")
+                        .attr("stroke-width", 0.725);
+
+                    labelGroup.select("text")
+                        .transition()
+                        .duration(500)
+                        .attr("fill", "#A59899")
+                        .attr("font-size", "11.25px")
+                        .attr("font-weight", "500");
+
+                    hideTooltip();
+                    onLeave();
+                })
+                .on("click", () => {
+                    onShowCompanyDetail({
+                        Company: company.company,
+                        entries: data.filter(d => d.Company === company.company),
+                        color: '#37587e'
+                    });
+                });
+
+            // Draw drugs
             company.stages.forEach((drugs, stage) => {
                 const stageRadius = stageRadii[stage];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
@@ -372,8 +359,10 @@
                         .attr("r", 8.25)
                         .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                         .attr("stroke", "#565656")
-                        .attr("stroke-width", ".425px")
+                        .attr("stroke-width", ".425px");
 
+                    // Add drug interaction handlers
+                    drugGroup
                         .on("mouseenter", (event) => {
                             drugGroup.select("circle")
                                 .transition()
@@ -382,20 +371,48 @@
                                 .attr("stroke-width", 1.725)
                                 .attr("stroke", "#375810")
                                 .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+
+                            drugGroup.select(".drug-label")
+                                .transition()
+                                .duration(200)
+                                .attr("opacity", 1);
+
                             showTooltip(event, drug);
                         })
                         .on("mouseleave", () => {
                             drugGroup.select("circle")
                                 .transition()
+                                .duration(200)
                                 .attr("r", 8.25)
-                                .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
+                                .attr("stroke-width", .425)
                                 .attr("stroke", "#565656")
-                                .attr("stroke-width", ".425px")
-                                .duration(200);
+                                .style("filter", "none");
+
+                            drugGroup.select(".drug-label")
+                                .transition()
+                                .duration(200)
+                                .attr("opacity", 0);
+
                             hideTooltip();
                         })
+                        .on("click", () => {
+                            onShowDrugDetail({
+                                drugName: drug.Candidate,
+                                year: drug["RPDD Year"],
+                                Company: drug.Company,
+                                therapeuticArea: drug.TherapeuticArea1,
+                                entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
+                                color: therapeuticAreaColorScale(drug.TherapeuticArea1),
+                                currentStage: drug["Current Development Stage"] || "TBD",
+                                indication: drug.Indication || "",
+                                rpddAwardDate: drug["RPDD Year"],
+                                voucherAwardDate: drug["PRV Issue Year"] || "",
+                                treatmentClass: drug.Class1 || "TBD",
+                                mechanismOfAction: drug.MOA || "TBD"
+                            });
+                        });
 
-                    // Hidden label group (shown on hover)
+                    // Hidden drug label
                     const labelGroup = drugGroup.append("g")
                         .attr("opacity", 0)
                         .attr("class", "drug-label");
@@ -406,54 +423,18 @@
                         .attr("x", labelX)
                         .attr("y", 0)
                         .attr("text-anchor", drugAngle < Math.PI ? "start" : "end")
-                        .attr("z-index", 999)
                         .attr("dy", "1.425em")
                         .attr("dx", "-.825em")
                         .text(truncateText(drug.Candidate, maxLabelWidth))
                         .attr("fill", "#565656")
                         .attr("font-size", "11.25px")
                         .style("text-transform", "uppercase");
-
-                    // Interactions
-                    drugGroup
-                        .on("mouseenter", (event) => {
-                            drugGroup.select(".drug-label")
-                                .transition()
-                                .duration(200)
-                                .attr("font-weight", "600")
-                                .attr("font-size", "11.25px")
-                                .attr("opacity", 1);
-                            showTooltip(event, drug);
-                        })
-                        .on("mouseleave", () => {
-                            drugGroup.select(".drug-label")
-                                .transition()
-                                .duration(200)
-                                .attr("opacity", 0);
-                            hideTooltip();
-                        })
-                        .on("click", () => {
-                            onShowDrugDetail({
-                                drugName: drug.Candidate,
-                                year: drug["RPDD Year"],
-                                Company: drug.Company,
-                                therapeuticArea: drug.TherapeuticArea1,
-                                entries: data.filter(entry => entry.TherapeuticArea1 === drug.TherapeuticArea1),
-                                color: therapeuticAreaColorScale(drug.TherapeuticArea1),
-                                currentStage: drug["Current Development Stage"] || "TBD",
-                                indication: drug.Indication || "",
-                                rpddAwardDate: drug["RPDD Year"],
-                                voucherAwardDate: drug["PRV Issue Year"] || "",
-                                treatmentClass: drug.Class1 || "TBD",
-                                mechanismOfAction: drug.MOA || "TBD",
-                                companyUrl: drug["Link to CrunchBase"] || ""
-                            });
-                        });
                 });
             });
         });
     }
 
+    // Initialize visualization when data or svg changes
     $: if (data.length > 0 && svg) {
         createVisualization();
     }
@@ -486,6 +467,4 @@
         margin: 0 auto;
         position: relative;
     }
-
-    
 </style>
