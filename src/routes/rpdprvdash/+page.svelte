@@ -1,7 +1,11 @@
 <!-- +page.svelte -->
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
+  import { RadialTimeline, YearlySummary } from '$lib/componentStores';
+
   import RpdRadialBarChartYear from '$lib/rpdprvdash/RPDRadialBarChartYear.svelte';
   import RpdTreeChart from '$lib/rpdprvdash/RPDTreeChart.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
@@ -14,7 +18,9 @@
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
 
   import rpddData from '$lib/data/rpdprvdash/rpdprvdashdemo.json';
-  
+  import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
+  import constellationDataRaw from '../data/RPDConstellationData.json';
+
   import { DashboardReference, Globe } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
 
@@ -34,9 +40,26 @@
     mechanismOfAction?: string;
     companyUrl?: string;
   }
-  
+
+  interface ConstellationData extends SimulationNodeDatum {
+    Purchased: string;
+    "Sale  Price (USD, Millions)": string;
+    Purchaser: string;
+    Sponsor: string;
+    "Drug Name": string;
+    Year: string;
+    id: string;
+    name: string;
+    x?: number;
+    y?: number;
+  }
 
   let activeTab = 'By Sponsor + Stage';
+  let processedRpdPrvData: RPDData[] = [];
+
+  let selectedData: ConstellationEntry | null = null;
+  let processedConstellationData: ConstellationEntry[] = [];
+  let selectedColor: string = "";
   let currentArea: string | null = null;
   let currentView: string | null = null;
   let currentEntries: any[] = [];
@@ -59,6 +82,25 @@
     color: '',
     companyUrl: ''
   };
+
+  function getColorForTherapeuticArea(ta: string): string {
+    const colorMap = {
+    "Gastroenterology": "#a6cee3",
+    "Neurology": "#1f78b4",
+    "Ophthalmology": "#6C6C6C",
+    "Immunology": "#33a02c",
+    "Metabolic": "#fb9a99",
+    "Dermatology": "#fdbf6f",
+    "Hematology": "#e31a1c",
+    "Orthopedics": "#ff7f00",
+    "Pulmonology": "#cab2d6",
+    "Nephrology": "#6a3d9a",
+    "Oncology": "#ffff99",
+    "Endocrinology": "#b15928",
+    "Hepatology": "#8dd3c7",
+  };
+    return colorMap[ta] || "#000000";
+  }
 
   function handleCompanyHover(entries: any[]) {
     currentEntries = entries;
@@ -138,6 +180,13 @@
     return '';
   }
 
+  const handleClusterElementClick = (event: CustomEvent) => {
+    const { entry, color } = event.detail;
+    selectedData = entry;
+    selectedColor = color;
+    isDrawerOpen = true;
+  };
+
   const colorMap: Record<string, string> = {
     'Neurology': '#FF6B6B',
     'Oncology': '#4ECDC4',
@@ -166,13 +215,22 @@
       return acc;
     }, {} as Record<string, number>)
   ).map(([area, count]) => ({ area, count }));
+
+  onMount(async () => {
+    try {
+      processedConstellationData = processConstellationData(constellationDataRaw as ConstellationEntry[]);
+            
+    } catch (error) {
+      console.error('Error initializing:', error);
+    }
+  });
 </script>
 
 <div class="flex-row min-w-full pt-16 pb-22 bg-slate-50">
   <div class="header flex align-baseline justify-between font-sans bg-slate-100 text-slate-800 font-medium text-6xl px-4 py-8 w-full h-full">
     <div class="flex gap-12 align-middle justify-evenly items-center">
       <Balanced class="p-1 mb-2 max-h-10 max-w-10 rounded-full bg-slate-700 text-slate-50" />
-      <h1 class="flex"><span class="text-sm">RPDD + PRV Atlas</span></h1>
+      <h1 class="flex"><span class="text-sm">RPDD + PRV Constellation</span></h1>
     </div>
 
 </div>
@@ -207,11 +265,12 @@
       </button>
     </div>
 </nav>
-<div class="w-full max-w-5xl mx-auto px-4 py-6">
+<div class="w-full max-w-5xl py-6">
   <RpdprvTimeline 
-      data={rpddData}
-      onYearSelect={handleYearSelect}
-  />
+  data={rpddData}
+  selectedYear="2023"
+  onYearSelect={handleYearSelect}
+/>
 </div>    
   <div class="tab-content w-full">
     {#if activeTab === 'By Sponsor + Stage'}
@@ -325,33 +384,21 @@
           
           {:else if activeTab === 'By Transactions'}
           <div class="flex h-[80vh]">
-           </div>
-      <!--     <div class="flowers-view">
-            <div class="w-1/6 md:w-1/6 sm:w-5/6 flex flex-col pt-16 pr-4 lg:pr-0 lg:pb-7 lg:border-r-0">
-              <h2 class="text-xs mb-8 font-bold col-span-1">Inside the PRV Transactions Ecosystem</h2>
-              <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900">
-                Priority Review Vouchers (PRVs) accelerate FDA review by 4 months, reducing the timeline from 10 months to 6. These transferable vouchers incentivize rare disease research - smaller companies can sell them to fund continued research, while larger companies use them to expedite their own programs.
-              </p>
-              <p class="text-base w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">
-                With a median price of $110M and over 25 transactions completed, the PRV market has become a significant force in drug development. Below, we present a comprehensive dataset of PRV transactions through 2024. We encourage you to explore the trends and patterns within this unique marketplace.
-              </p>
-            </div>
-            <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top min-h-full">
             <SaleBenchmarks 
-              constellationData={processedConstellationData} 
-              onCompanySelect={(data, color) => {
-                selectedData = data;
-                selectedColor = color;
-                isDrawerOpen = true;
-              }}
-              onDrugClick={(drugData) => {
-                selectedData = drugData;
-                selectedColor = getColorForTherapeuticArea(drugData.name);
-                isDrawerOpen = true;
-              }}
-            />
-            </div>
-          </div> -->
+            constellationData={processedConstellationData} 
+            onCompanySelect={(data, color) => {
+              selectedData = data;
+              selectedColor = color;
+              isDrawerOpen = true;
+            }}
+            onDrugClick={(drugData) => {
+              selectedData = drugData;
+              selectedColor = getColorForTherapeuticArea(drugData.name);
+              isDrawerOpen = true;
+            }}
+          />
+          </div>
+  
 
           {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row flex-grow px-2 py-4">
