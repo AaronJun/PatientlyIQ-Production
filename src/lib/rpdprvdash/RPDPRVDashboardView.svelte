@@ -53,7 +53,7 @@
     transition:fly={{duration: 525}}
 >
     <div 
-        class="drawer relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
+        class="drawer relative w-[62.25vw] h-full bg-slate-50 shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
         on:click={handleDrawerClick}
         style="border-color: #37587e"
     >
@@ -67,9 +67,9 @@
             </button>
 
             <h2 class="text-4xl font-light text-slate-800 mb-8">
-                <span class="inline-flex items-center gap-2">
-                    <BookmarkFilled class="text-emerald-600" /> 
+                <span class="inline-flex gap-2">
                     Tracked Drugs
+                    <BookmarkFilled class="bg-emerald-800 rounded-full p-2" /> 
                 </span>
             </h2>
 
@@ -81,7 +81,7 @@
                 <div class="grid grid-cols-1 gap-4">
                     {#each $trackedDrugs as drug}
                         <div 
-                            class="card hover:shadow-md transition-shadow cursor-pointer group relative"
+                            class="card cursor-pointer group relative"
                             on:click={() => handleDrugClick(drug)}
                         >
                             <button

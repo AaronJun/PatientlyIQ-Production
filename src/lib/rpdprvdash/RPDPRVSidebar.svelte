@@ -24,7 +24,7 @@
     }
 </script>
 
-    <div class="info-panel bg-slate-50 pt-4 px-4 min-h-full">
+    <div class="info-panel bg-slate-50 px-4 min-h-full">
         <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
             {currentArea ? currentArea : 'Overview'}
         </h2>

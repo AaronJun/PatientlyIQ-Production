@@ -1,6 +1,7 @@
 <!-- +page.svelte -->
 <script lang="ts">
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
+  import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import RpdRadialBarChartYear from '$lib/rpdprvdash/RPDRadialBarChartYear.svelte';
   import RpdTreeChart from '$lib/rpdprvdash/RPDTreeChart.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
@@ -41,6 +42,14 @@
   let currentEntries: any[] = [];
   let isDrawerOpen = false;
   let isDashboardOpen = false;
+  let selectedYear = "2023"; // Default year
+  
+  // Filter data based on selected year
+  $: filteredData = rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
+  
+  function handleYearSelect(year: string) {
+    selectedYear = year;
+  }
   
   let drawerProps: DrawerProps = {
     isCompanyView: false,
@@ -159,7 +168,7 @@
   ).map(([area, count]) => ({ area, count }));
 </script>
 
-<div class="flex flex-col pt-16 pb-22 bg-slate-50">
+<div class="flex-row min-w-full pt-16 pb-22 bg-slate-50">
   <div class="header flex align-baseline justify-between font-sans bg-slate-100 text-slate-800 font-medium text-6xl px-4 py-8 w-full h-full">
     <div class="flex gap-12 align-middle justify-evenly items-center">
       <Balanced class="p-1 mb-2 max-h-10 max-w-10 rounded-full bg-slate-700 text-slate-50" />
@@ -181,38 +190,41 @@
             {tab}
           </button>
           {/each}
-       
-          
-        </div>
-      <div class="flex gap-4 min-w-96">
-        <RpdprvSearch
-          class= "py-3 justify-between text-base font-normal align-middle text-slate-800 hover:text-[#FF4A4A] transition-all duration-300 ease-in-out"
-          data={rpddData}
-          onShowDrugDetail={handleShowDrugDetail}
-          onShowCompanyDetail={handleShowCompanyDetail}
-          />
-          <button 
-          class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-          on:click={handleDashboardClick}
-          >
-          <DashboardReference size={14}/>
-          Dashboard
-        </button>
+      </div>
+    <div class="flex gap-4 min-w-96">
+      <RpdprvSearch
+        class= "py-3 justify-between text-base font-normal align-middle text-slate-800 hover:text-[#FF4A4A] transition-all duration-300 ease-in-out"
+        data={rpddData}
+        onShowDrugDetail={handleShowDrugDetail}
+        onShowCompanyDetail={handleShowCompanyDetail}
+        />
+      <button 
+        class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+        on:click={handleDashboardClick}
+        >
+      <DashboardReference size={14}/>
+        Dashboard
+      </button>
     </div>
-  </nav>
-    
+</nav>
+<div class="w-full max-w-5xl mx-auto px-4 py-6">
+  <RpdprvTimeline 
+      data={rpddData}
+      onYearSelect={handleYearSelect}
+  />
+</div>    
   <div class="tab-content w-full">
     {#if activeTab === 'By Sponsor + Stage'}
-      <div class="flex flex-row flex-grow px-2 py-4">
-        <div class="w-5/6 flex-col max-w-5xl">
-          <RpdprvCompanyTree 
-            data={rpddData}
-            onCompanyHover={handleCompanyHover}
-            onStageHover={handleStageHover}
-            onLeave={handleLeave}
-            onShowDrugDetail={handleShowDrugDetail}
-            onShowCompanyDetail={handleShowCompanyDetail}
-          />
+    <div class="flex flex-row flex-grow px-2 py-4">
+        <div class="w-5/6 flex-col">
+            <RpdprvCompanyTree 
+                data={filteredData}
+                onCompanyHover={handleCompanyHover}
+                onStageHover={handleStageHover}
+                onLeave={handleLeave}
+                onShowDrugDetail={handleShowDrugDetail}
+                onShowCompanyDetail={handleShowCompanyDetail}
+            />
           <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
             <RPDRadialLegend 
               items={processedData}
@@ -220,7 +232,7 @@
             />
           </div>
         </div>
-        <div class="sidebar w-1/6 flex flex-col">
+        <div class="sidebar w-1/6 max-w-[350px] flex flex-col">
           <div class="info-panel bg-slate-50 pt-4 px-4 min-h-full">
             <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
               {currentView || 'Overview'}
@@ -341,17 +353,17 @@
             </div>
           </div> -->
 
-      {:else if activeTab === 'By Therapeutic Area'}
-        <div class="flex flex-row flex-grow px-2 py-4">
-          <div class="w-5/6 flex-col h-full max-w-5xl">
-            <RPDDRadialYear 
-            data={rpddData}
-            onCompanyHover={handleCompanyHover}
-            onStageHover={handleStageHover}
-            onLeave={handleLeave}
-            onShowDrugDetail={handleShowDrugDetail}
-            onShowCompanyDetail={handleShowCompanyDetail}
-            />
+          {:else if activeTab === 'By Therapeutic Area'}
+          <div class="flex flex-row flex-grow px-2 py-4">
+              <div class="w-5/6 flex-col h-full">
+                  <RPDDRadialYear 
+                      data={filteredData}
+                      onCompanyHover={handleCompanyHover}
+                      onStageHover={handleStageHover}
+                      onLeave={handleLeave}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                  />
             <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
               <RPDRadialLegend 
               items={processedData}
@@ -359,7 +371,7 @@
             />
             </div>
           </div>
-          <div class="sidebar w-1/6 flex flex-col">
+          <div class="sidebar w-1/6 max-w-[350px] flex flex-col">
             <div class="info-panel bg-slate-50 pt-4 px-4 min-h-full">
               <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
                 {currentArea ? currentArea : 'Overview'}
@@ -428,9 +440,11 @@
 
 <style>
   .sidebar {
-    height: 65vh;
+    max-height: 80vh;
+    overflow-y: scroll;
+    margin-top: 10vh;
     scrollbar-color: #e5e7eb #f9fafb;
-    border-left: .25px solid #565656;
+    border-left: .25px solid #b4b4b4;
     overflow-y: scroll;
   }
 

@@ -287,7 +287,7 @@
                         .attr("fill", therapeuticAreaColorScale(area.area));
 
                     onCompanyHover(data.filter(entry => entry.TherapeuticArea1 === area.area));
-                showTooltip(event, { area: area.area, count: area.totalDrugs });
+                    showTooltip(event, { area: area.area, count: area.totalDrugs });
                 })
                 .on("mouseleave", () => {
                     labelGroup.select("rect")
@@ -445,7 +445,7 @@
         {width}
         {height}
         viewBox="0 0 {width} {height}"
-        class="w-full h-auto"
+        class="w-full h-auto my-auto"
     />
 
     {#if tooltipVisible}
