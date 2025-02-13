@@ -172,9 +172,8 @@
     }
 </script>
 
-<div class="bar-chart-container relative flex w-full p-6">
+<div class="bar-chart-container relative flex gap-12 w-full py-6">
     <div bind:this={container} class="bar-chart w-3/5 h-fit relative">
-        <h3 class="text-sm font-medium mb-4">Search Volume Distribution</h3>
         <svg bind:this={svg} class="w-full h-full"></svg>
     </div>
 
@@ -188,25 +187,25 @@
         {#each chartData as term}
             <div class="p-4">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="font-medium text-sm capitalize">{term.term}</span>
+                    <span class="font-medium text-xs capitalize">{term.term}</span>
                     <span 
-                        class="text-sm px-2 py-1 rounded"
-                        style="background-color: {stageColor}25; color: {stageColor}"
+                        class="text-[10.25px] px-2 py-1 rounded-full"
+                        style="background-color: {stageColor}15; color: {stageColor}"
                     >
                         {term.relatedSearches.reduce((sum, rs) => sum + rs.volume, 0).toLocaleString()} searches
                     </span>
                 </div>
                 <div class="mt-2 space-y-1">
                     {#each term.relatedSearches as search, i}
-                        <div class="flex justify-between items-center text-sm text-gray-600 pl-4">
+                        <div class="flex justify-between items-center text-xs text-gray-600">
                             <div class="flex items-center gap-2">
                                 <div 
-                                    class="w-3 h-3 rounded"
+                                    class="w-2 h-2 rounded-full"
                                     style="background-color: {getBrighterColor(stageColor, i)}"
                                 ></div>
-                                <span class="text-xs capitalize">{search.term}</span>
+                                <span class="text-[10.25px] capitalize">{search.term}</span>
                             </div>
-                            <span class="text-xs">{search.volume.toLocaleString()}</span>
+                            <span class="text-[10.25px]">{search.volume.toLocaleString()}</span>
                         </div>
                     {/each}
                 </div>
