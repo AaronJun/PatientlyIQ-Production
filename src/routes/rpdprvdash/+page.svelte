@@ -384,7 +384,7 @@
           
           {:else if activeTab === 'By Transactions'}
           <div class="flex h-[80vh]">
-            <SaleBenchmarks 
+            <!-- <SaleBenchmarks 
             constellationData={processedConstellationData} 
             onCompanySelect={(data, color) => {
               selectedData = data;
@@ -396,7 +396,7 @@
               selectedColor = getColorForTherapeuticArea(drugData.name);
               isDrawerOpen = true;
             }}
-          />
+          /> -->
           </div>
   
 
