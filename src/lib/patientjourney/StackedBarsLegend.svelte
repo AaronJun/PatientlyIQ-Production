@@ -70,13 +70,13 @@
             .attr("transform", `translate(0,${innerHeight})`)
             .call(d3.axisBottom(x))
             .selectAll("text")
-            .style("text-anchor", "start")
-            .style("align-items", "top")
-            .attr("font-size", "10.25px")
+            .style("text-anchor", "middle")
+            .style("align-items", "bottom")
+            .attr("font-size", "9.25px")
             .attr("font-weight", "600")
-            .attr("transform", "rotate(-90)")
-            .attr("dx", "1em")
-            .attr("dy", "-9.25em");
+            .attr("transform", "rotate(0)")
+            .attr("dx", "0")
+            .attr("dy", "7");
 
         svgEl.append("g")
             .call(d3.axisLeft(y)

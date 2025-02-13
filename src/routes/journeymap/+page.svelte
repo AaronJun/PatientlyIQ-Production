@@ -251,12 +251,12 @@ onMount(() => {
 
 
             <!-- Journey Cards -->
-            <div class="w-full pl-8 mt-8 mb-12">
+ <!--            <div class="w-full pl-8 mt-8 mb-12">
                 <SwipeableJourneyCards 
                     selectedDisease="cidp"
                     selectedId={patientStories.diseases.cidp.patients.find(p => p.stage === stage.id)?.id}
                 />
-            </div>
+            </div> -->
 
                         <div class="flex flex-col w-full">
                             <div class="h-fit row-span-2 px-8 py-2 mb-12 " 
@@ -294,7 +294,8 @@ onMount(() => {
                                         <StackedBars
                                         searchTerms={stage.searchTerms}
                                         stageColor={getStageColor(index)}
-                                    />                                    </div>
+                                    />                                 
+                                   </div>
                                 </div>
                             {/if}
                                     

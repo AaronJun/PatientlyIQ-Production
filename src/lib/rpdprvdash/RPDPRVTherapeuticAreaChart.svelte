@@ -254,15 +254,30 @@
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                     const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
+      
+                    // Create right-angled path with two segments
+                    const path = d3.path();
+                    path.moveTo(labelX, labelY);
+                    
+                    // Calculate intermediate point for right angle
+                    // Use the drug's radius for the first segment
+                    const intermediateX = drugX;
+                    const intermediateY = labelY;
+                    
+                    // Draw path with right angles
+                    path.lineTo(intermediateX, intermediateY);
+                    path.lineTo(drugX, drugY);
 
                     linesGroup.append("path")
-                        .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
+                        .attr("d", path.toString())
                         .attr("stroke", therapeuticAreaColorScale(area.area))
-                        .attr("stroke-width", .725)
+                        .attr("stroke-width", .425)
                         .attr("stroke-opacity", 0.525)
-                        .attr("fill", "none");
-                });
+                        .attr("fill", "none")
+                        .attr("stroke-linecap", "square")
+                        .attr("stroke-linejoin", "miter");
             });
+        });
 
             // Area label group
             const labelGroup = areaLabelsGroup.append("g")
