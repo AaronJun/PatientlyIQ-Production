@@ -16,7 +16,7 @@
     import sentimentData from '$lib/patientjourney/stagesSentimentData.json';
     
     const STAGE_COLORS = [
-        "#B11F0E", "#002365", "#69295C", "#B5685E", "#006454",
+        "#330000", "#002365", "#69295C", "#B5685E", "#006454",
         "#831ED4", "#AB2B7A", "#3b623d", "#27513a", "#362149"
     ];
     
@@ -89,7 +89,7 @@
             {#each mergedJourneyData as stage, index}
                 <section id={stage.id.toString()} class="mb-24">
                     <!-- Stage Header -->
-                    <div class="sticky top-0 z-40 bg-slate-100 shadow-md">
+                    <div class="sticky top-0 z-40 bg-slate-100">
                         <div class="text-xs uppercase tracking-wide px-4 py-2 bg-slate-200" 
                              style="color: {getStageColor(index)}; border-color: {getStageColor(index)}">
                             {stage.sectionHeader}
