@@ -4,7 +4,7 @@
 
   export let value = 0;
   export let label = '';
-  export let size = 225;
+  export let size = 325;
 
   let scale;
   
@@ -22,7 +22,7 @@
     value >= range.min && value <= range.max
   ) || sentimentRanges[0];
 
-  $: boxWidth = size / 5;
+  $: boxWidth = size / 4.625;
   $: boxHeight = boxWidth;
   $: totalWidth = boxWidth * 10;
   $: activeIndex = sentimentRanges.indexOf(currentSentiment);
@@ -62,18 +62,17 @@
       .attr('x', (d, i) => i * boxWidth)
       .attr('y', 0)
       .attr('width', boxWidth - 2)  // -2 for gap
-      .attr('height', boxHeight)
-      .attr('rx', 2)  // Rounded corners
+      .attr('height', boxHeight -2)
       .style('fill', (d, i) => getBoxColor(i))
-      .style('opacity', 0.3);
+      .style('opacity', 0.15);
 
     // Add active box highlight
     svg.append('rect')
       .attr('class', 'active-box')
       .attr('width', boxWidth - 2)
-      .attr('height', boxHeight)
-      .attr('rx', 2)
-      .style('fill', getBoxColor(activeIndex));
+      .attr('height', boxHeight -2)
+      .style('fill', getBoxColor(activeIndex))
+      .style('saturate', '2.5');
 
     // Add sentiment label with left alignment
     svg.append('text')

@@ -4,8 +4,8 @@
     import { scaleLinear } from 'd3-scale';
   
     export let data = [];
-    export let width = 250;
-    export let height = 250;
+    export let width = 350;
+    export let height = width;
   
     let margin = {
       top: 0,

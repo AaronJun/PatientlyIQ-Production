@@ -39,7 +39,17 @@
         }
       },
       {
-        "name": "Long-term Management",
+        "name": "Long-Term Management",
+        "sentiments": {
+          "Entirely Negative": 8,
+          "Somewhat Negative": 15,
+          "Neutral": 22,
+          "Somewhat Positive": 20,
+          "Entirely Positive": 15
+        }
+      },
+      {
+        "name": "Treatment Reconsideration",
         "sentiments": {
           "Entirely Negative": 8,
           "Somewhat Negative": 15,

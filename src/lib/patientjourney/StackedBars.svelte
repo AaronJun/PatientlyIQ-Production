@@ -107,7 +107,7 @@
 <style>
     :global(.tick text) {
         fill: #666;
-        font-size: 12px;
+        font-size: 10px;
     }
 
     :global(.tick line) {

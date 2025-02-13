@@ -11,9 +11,9 @@
     let hasAnimated = false;
     const width = 925;
     let height = width;
-    const cellSize = 16;
+    const cellSize = 14;
     const cellPadding = 2;  
-    const stageSpacing = 76;
+    const stageSpacing = 50;
     const labelHeight = 40;
     const gridWidth = 5;
     const legendHeight = 30;

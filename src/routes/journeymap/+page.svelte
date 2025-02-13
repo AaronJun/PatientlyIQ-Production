@@ -6,12 +6,13 @@ import NewJourneyMap from '$lib/patientjourney/NewJourneyMap.svelte';
 import JourneyTracker from '$lib/patientjourney/JourneyTracker.svelte';
 import JourneyMapDrawer from '$lib/patientjourney/JourneyDrawer.svelte';
 import SearchBubbles from '$lib/patientjourney/SearchBubbles.svelte';
-import StageWaffle from '$lib/patientjourney/WaffleStages.svelte';
+import StageWaffle from '$lib/patientjourney/WaffleStages.svelte'; 
 import SwipeableJourneyCards from '$lib/patientjourney/TallSwipeableJourneyCards.svelte';
 import PatientQuoteCards from '$lib/patientjourney/PatientQuoteCards.svelte';
 import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 import { ArrowUpRight } from 'carbon-icons-svelte';
 import StackedBars from '$lib/patientjourney/StackedBarsLegend.svelte';
+import StageDetailWaffle from '$lib/patientjourney/StageDetailWaffle.svelte';
 
 import mergedJourneyData from '$lib/data/cidpJourney.json';
 import cidpQuotes from '$lib/data/cidpPatientQuotes.json';
@@ -95,7 +96,7 @@ onMount(() => {
     );
 
     const sections = document.querySelectorAll('section');
-    const firstSection = document.getElementById('1');
+    const firstSection = document.getElementyId('1');
     const lastSection = document.getElementById(mergedJourneyData.length.toString());
     
     if (firstSection) mapObserver.observe(firstSection);
@@ -114,7 +115,7 @@ onMount(() => {
     <div class="min-h-[80vh] bg-slate-50 flex-row pt-24">
     <div class="flex-col justify-start px-8">
         <img src={PIQLogo} alt="PIQ Logo" class="w-8 col-span-2 mb-8 items-center" />
-        <h1 class="main-header w-full text-4xl tracking-tight mb-8 text">Mapping the <JourneyFilterHeader on:diseaseChange={(event) => {
+        <h1 class="main-header w-full text-4xl tracking-tight mb-8 text-">Mapping the <JourneyFilterHeader on:diseaseChange={(event) => {
         // Handle disease change here
         console.log('Selected disease:', event.detail);
     }} /> Journey </h1>
@@ -131,12 +132,12 @@ onMount(() => {
 
     <!-- Main Content -->
     <div class="relative bg-slate-50">
-        <div class="map sticky bg-slate-200 top-20 z-30">
+        <!-- <div class="map sticky bg-slate-200 top-20 z-30">
             <NewJourneyMap 
                 data={mergedJourneyData} 
                 isVisible={isJourneyMapVisible} 
             />
-        </div>
+        </div> -->
         
     <div class="w-full">
             <div class="flex-row mx-auto">
@@ -144,17 +145,17 @@ onMount(() => {
     <section id={stage.id.toString()} class="relative">
         <!-- Sticky header -->
         <div class="sticky top-0 z-40 transition-all duration-300">
-            <div class="flex flex-col w-full" 
-                 style="background-color: {getStageColor(index)}">
-                 <h3 class="text-xs font-sans font-base uppercase tracking-wide text-slate-50 w-full px-8 py-2 bg-slate-900/40">
+            <div class="flex flex-col w-full bg-slate-100" 
+                 style="color: {getStageColor(index)}">
+                 <h3 class="text-xs font-sans font-medium uppercase tracking-wide w-full px-8 py-2 bg-slate-200">
                      {stage.sectionHeader}
                  </h3>      
                 <div class="flex justify-between items-end px-8 pt-2 pb-4">
-                        <h2 class="text-3xl text-slate-50">
+                        <h2 class="text-3xl">
                             {stage.Stage}
                         </h2>
                     <button 
-                        class="drawer-button flex flex-row py-2 px-4 justify-evenly w-fit rounded-full text-sm font-sans font-medium cursor-pointer text-slate-100 bg-white/90 hover:bg-white"
+                        class="drawer-button flex flex-row py-2 px-4 justify-evenly w-fit rounded-full text-sm font-sans font-medium cursor-pointer text-slate-100 bg-slate-200 hover:bg-white"
                         style="hover:font-weight:800; color:{getStageColor(index)}"
                         on:click={() => openDrawer(stage.id.toString(), index)}>
                         Learn More
@@ -164,20 +165,33 @@ onMount(() => {
                         />
                     </button>
                 </div>
+                <!-- <div class="flex-col w-full">
+                    <StageDetailWaffle 
+                        stageName={stage.Stage}
+                        sentiments={sentimentData.stages.find(s => s.name === stage.Stage)?.sentiments || {}}
+                        stageColor={getStageColor(index)}
+                    />
+                </div> -->
             </div>
             <!-- Bottom border that shows on scroll -->
         </div>
+        <div class="flex flex-row items-center justify-between pt-4 pb-8 w-full px-8" 
+        style="background-color: {getStageColor(index)}">
+       <div class="flex-col w-2/3 max-w-prose">
+           <p class="text-white max-w-prose">{stage.bodyText}</p>
+        </div>
+    </div>
+    
+    
+    <div class="flex flex-row items-center justify-between pt-4 pb-8 w-full px-8" 
+    style="background-color: {getStageColor(index)}">
+    <div class="flex-col w-2/3 max-w-prose">
+    </div>
+    <div class="flex-col w-1/3 pt-4 pb-8">
+        <JourneyTracker id={stage.id.toString()} />
+    </div>
+</div>
 
-             
-            <div class="flex flex-row items-center justify-between pt-4 pb-8 w-full px-8" 
-                 style="background-color: {getStageColor(index)}">
-                 <div class="flex-col w-2/3 max-w-prose">
-                    <p class="text-white max-w-prose">{stage.bodyText}</p>
-                </div>
-                <div class="flex-col w-1/3 pt-4 pb-8">
-                   <JourneyTracker id={stage.id.toString()} />
-               </div>
-            </div>
 
             <!-- Substages -->
             <div class="grid grid-rows-2 gap-4 align-middle items-center mt-4 mb-8 md:mb-12">
@@ -270,13 +284,13 @@ onMount(() => {
                                 <div class="mt-6 md:mt-8 mb-8 md:mb-12">
                                     <div class="flex flex-row gap-4 align-middle items-center mt-4 mb-4">
                                         <div class="w-full h-fit row-span-2 px-8 py-2 mb-12 " 
-                                             style="background-color: {getStageColor(index)}">
-                                            <h4 class="text-lg font-sans font-semibold align-middle text-slate-50">
+                                             style="border-bottom: 1px solid {getStageColor(index)}">
+                                            <h4 class="text-lg font-sans font-semibold align-middle" style="color: {getStageColor(index)}">
                                                 What the Community Looks For
                                             </h4>
                                         </div>  
                                     </div>
-                                    <div class="flex">
+                                    <div class="flex" style="color: {getStageColor(index)}">
                                         <StackedBars
                                         searchTerms={stage.searchTerms}
                                         stageColor={getStageColor(index)}

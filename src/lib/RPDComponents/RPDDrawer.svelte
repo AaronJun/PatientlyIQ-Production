@@ -525,7 +525,7 @@
             >
               <svelte:fragment slot="cell" let:row let:cell>
                 {#if cell.key === 'drugName'}
-                  <div class="clickable-cell flex items-center gap-2"
+                  <div class="clickable-cell flex items-center uppercase gap-2"
                        on:click={() => handleClick(() => showEntryData(currentSponsorData.find(e => e["Drug Name"] === row.id)))}>
                     {cell.value}
                     <ArrowUpRight size={12} />
