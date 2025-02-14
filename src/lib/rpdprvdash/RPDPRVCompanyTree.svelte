@@ -80,20 +80,37 @@
         ]);
 
     function getStage(entry: any) {
-        if (entry["PRV Issue Year"]) return "PRV";
+        // Check for PRV status first
+        if (entry["PRV Year"]) {
+            return "PRV";
+        }
         
+        // Get current development stage
         const stage = entry["Current Development Stage"];
-        if (!stage || stage === "") return entry["PRV Issue Year"] ? "PRV" : "PRE";
         
-        if (stage === "Preclinical") return "PRE";
-        if (stage === "Phase 1") return "P1"; 
-        if (stage === "Phase 1/2") return "P1/2";
-        if (stage === "Phase 2" || stage === "Phase 2a" || stage === "Phase 2b") return "P2";
-        if (stage === "Phase 3") return "P3";
-        if (stage === "Filed") return "FILED";
-        if (stage === "Approved") return "APRV";
-        
-        return "PRE";
+        // Map development stages
+        switch(stage) {
+            case "PRV Awarded":
+                return "PRV";
+            case "Preclinical":
+                return "PRE";
+            case "Phase 1":
+                return "P1";
+            case "Phase 1/2":
+                return "P1/2";
+            case "Phase 2":
+            case "Phase 2a":
+            case "Phase 2b":
+                return "P2";
+            case "Phase 3":
+                return "P3";
+            case "Filed":
+                return "FILED";
+            case "Approved":
+                return "APRV";
+            default:
+                return "PRE";
+        }
     }
 
     function showTooltip(event: MouseEvent, d: any, isCompany: boolean = false) {
@@ -132,28 +149,47 @@
     }
 
     function processDataForLayout(data: any[]) {
+        console.log('Processing data:', data.length, 'entries');
         const companiesMap = new Map();
         
-        data.forEach(entry => {
-            const stage = getStage(entry);
-            if (!companiesMap.has(entry.Company)) {
-                companiesMap.set(entry.Company, {
-                    company: entry.Company,
+        // First pass: Create company entries and initialize stage maps
+        data.forEach((entry, index) => {
+            const companyName = entry.Company;
+            if (!companiesMap.has(companyName)) {
+                companiesMap.set(companyName, {
+                    company: companyName,
                     stages: new Map(),
-                    totalDrugs: 0
+                    totalDrugs: 0,
+                    entries: []
                 });
             }
-            
+            console.log(`Processed entry ${index + 1}:`, companyName);
+        });
+
+        // Second pass: Process each drug entry
+        data.forEach((entry, index) => {
             const companyData = companiesMap.get(entry.Company);
+            const stage = getStage(entry);
+            
+            // Initialize stage array if it doesn't exist
             if (!companyData.stages.has(stage)) {
                 companyData.stages.set(stage, []);
             }
             
+            // Add entry to appropriate stage
             companyData.stages.get(stage).push(entry);
+            companyData.entries.push(entry);
             companyData.totalDrugs++;
+            
+            console.log(`Added drug ${entry["Candidate"]} to ${entry.Company} in stage ${stage}`);
         });
 
-        return Array.from(companiesMap.values());
+        // Convert map to array and sort by company name
+        const result = Array.from(companiesMap.values())
+            .sort((a, b) => a.company.localeCompare(b.company));
+            
+        console.log('Processed companies:', result.length);
+        return result;
     }
 
     function calculateCompanyAngles(companies: any[]) {
@@ -259,7 +295,7 @@
                     linesGroup.append("path")
                         .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
                         .attr("stroke", "#37587e")
-                        .attr("stroke-width", .725)
+                        .attr("stroke-width", .25)
                         .attr("stroke-opacity", 0.525)
                         .attr("fill", "none");
                 });
@@ -272,10 +308,10 @@
 
             // Company node
             labelGroup.append("rect")
-                .attr("width", 7.25)
-                .attr("height", 7.25)
+                .attr("width", 10.25)
+                .attr("height", 10.25)
                 .attr("transform", "translate(-3.625, -3.625)")
-                .attr("angle", "90")
+                .attr("angle", "120")
                 .attr("fill", "#A598D9")
                 .attr("stroke", "#375810")
                 .attr("stroke-width", 0.725);
@@ -317,8 +353,8 @@
                 .on("mouseleave", () => {
                     labelGroup.select("rect")
                         .transition()
-                        .attr("height", 7.25)
-                        .attr("width", 7.25)
+                        .attr("height", 10.25)
+                        .attr("width", 10.25)
                         .attr("fill", "#A598D9")
                         .attr("stroke-width", 0.725);
 
@@ -333,6 +369,7 @@
                     onLeave();
                 })
                 .on("click", () => {
+                    hideTooltip();
                     onShowCompanyDetail({
                         Company: company.company,
                         entries: data.filter(d => d.Company === company.company),
@@ -361,6 +398,16 @@
                         .attr("stroke", "#565656")
                         .attr("stroke-width", ".425px");
 
+                    // Add PRV indicator for PRV awarded drugs
+                    if (drug["PRV Issue Year"]) {
+                        drugGroup.append("circle")
+                            .attr("r", 10.25)
+                            .attr("fill", "none")
+                            .attr("stroke", "#2F855A")
+                            .attr("stroke-width", "2")
+                            .attr("stroke-dasharray", "2,2");
+                    }
+
                     // Add drug interaction handlers
                     drugGroup
                         .on("mouseenter", (event) => {
@@ -371,6 +418,14 @@
                                 .attr("stroke-width", 1.725)
                                 .attr("stroke", "#375810")
                                 .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+
+                            if (drug["PRV Issue Year"]) {
+                                drugGroup.select("circle:last-child")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", 12)
+                                    .attr("stroke-width", 3);
+                            }
 
                             drugGroup.select(".drug-label")
                                 .transition()
@@ -388,6 +443,14 @@
                                 .attr("stroke", "#565656")
                                 .style("filter", "none");
 
+                            if (drug["PRV Issue Year"]) {
+                                drugGroup.select("circle:last-child")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", 10.25)
+                                    .attr("stroke-width", 2);
+                            }
+
                             drugGroup.select(".drug-label")
                                 .transition()
                                 .duration(200)
@@ -397,18 +460,19 @@
                         })
                         .on("click", () => {
                             onShowDrugDetail({
-                                drugName: drug.Candidate,
-                                year: drug["RPDD Year"],
+                                candidate: drug["Candidate"],
+                                year: drug["PRV Year"] || drug["RPDD Year"],
                                 Company: drug.Company,
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
                                 color: therapeuticAreaColorScale(drug.TherapeuticArea1),
-                                currentStage: drug["Current Development Stage"] || "TBD",
+                                currentStage: drug["Current Development Stage"],
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
-                                voucherAwardDate: drug["PRV Issue Year"] || "",
+                                voucherAwardDate: drug["PRV Year"] || "",
                                 treatmentClass: drug.Class1 || "TBD",
-                                mechanismOfAction: drug.MOA || "TBD"
+                                mechanismOfAction: drug.MOA || "TBD",
+                                companyUrl: drug["Link to CrunchBase"] || ""
                             });
                         });
 
@@ -425,7 +489,7 @@
                         .attr("text-anchor", drugAngle < Math.PI ? "start" : "end")
                         .attr("dy", "1.425em")
                         .attr("dx", "-.825em")
-                        .text(truncateText(drug.Candidate, maxLabelWidth))
+                        .text(truncateText(drug["Candidate"], maxLabelWidth))
                         .attr("fill", "#565656")
                         .attr("font-size", "11.25px")
                         .style("text-transform", "uppercase");

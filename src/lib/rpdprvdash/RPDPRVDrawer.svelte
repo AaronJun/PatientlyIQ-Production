@@ -34,6 +34,10 @@
         color: ''
     };
 
+        // Track the actual PRV award status
+        $: hasPRV = entries.find(e => e["Candidate"] === drugName)?.["PRV Year"];
+
+
     function toggleTracking() {
         if (isTracked) {
             trackedDrugs.update(drugs => 
@@ -162,7 +166,7 @@
 <div 
     class="fixed inset-0 w-full min-w-[400px] h-full bg-black/60 z-[1000] flex justify-end cursor-pointer"
     on:click|self={onClose}
-    transition:fly={{duration: 525}}
+    transition:fly={{duration: 500, x: 420}}
 >
     <div 
         class="drawer relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] cursor-default"
@@ -173,15 +177,15 @@
             <button 
                 class="flex gap-1 pr-3 pl-2 py-1 items-center justify-self-start text-xs font-semibold text-[#37587e] hover:text-emerald-800 hover:underline"
                 on:click={handleClose}
-                in:fly={{duration: 300}}
+                in:fly={{duration: 500, x: 420 }}
             >
                 <ArrowLeft size={12}/> Back
             </button>
             
             <button 
-                class="flex gap-2 px-3 py-2 items-center justify-self-start text-xs font-semibold text-gray-100 transition-all duration-300 ease-in-out {isTracked ? 'bg-emerald-600' : 'bg-[#37587e] hover:bg-green-800'}"
+                class="flex gap-2 px-3 py-2 items-center justify-self-start text-xs font-semibold text-gray-100 ease-in-out {isTracked ? 'bg-emerald-600' : 'bg-[#37587e] hover:bg-green-800'}"
                 on:click={toggleTracking}
-                in:fly={{duration: 300}}
+                in:fly={{duration: 500, x: 420 }}
             >
                 {#if isTracked}
                     <BookmarkFilled class="transition-transform" />
@@ -198,13 +202,13 @@
 
             <div class="header flex gap-4 my-4 pb-4 w-full items-baseline justify-between">
                 <h2 class="text-2xl max-w-96 capitalize font-light text-slate-800" 
-                    in:fly={{duration: 300}}>
+                    in:fly={{duration: 500, x: 420 }}>
                     {drugName}
                 </h2>
                 <button 
                     class="flex text-sm capitalize gap-1 font-semibold text-slate-800 hover:text-emerald-600"
                     on:click={handleCompanyClick}
-                    in:fly={{duration: 300}}
+                    in:fly={{duration: 500, x: 420 }}
                 >
                     {Company} <ArrowUpRight size={12}/>
                 </button>
@@ -376,7 +380,7 @@
             <!-- Related RPDDs Section -->
             <section>
                 <h3 class="text-lg font-base text-slate-800 mt-6 mb-4" 
-                    in:fly={{duration: 300}}>
+                    in:fly={{duration: 500, x: 420 }}>
                     Related RPDDs in {therapeuticArea}
                 </h3>
                 
@@ -387,37 +391,48 @@
                 </Toolbar>
 
                 <DataTable
-                    size="medium"
-                    headers={[
-                        { key: 'year', value: 'Year' },
-                        { key: 'drugName', value: 'Drug Name' },
-                        { key: 'company', value: 'Company' }
-                    ]}
-                    rows={filterData(entries.map(entry => ({
-                        id: entry.Candidate,
-                        year: entry["RPDD Year"],
-                        drugName: entry.Candidate,
-                        company: entry.Company
-                    })), searchTerm)}
-                    sortable
-                >
-                    <svelte:fragment slot="cell" let:row let:cell>
-                        {#if cell.key === 'drugName'}
-                            <button 
-                                class="flex items-center gap-2 text-[#37587e] hover:underline"
-                                on:click={() => onShowCompanyDetail({
-                                    ...entries.find(e => e.Candidate === row.drugName),
-                                    color: '#37587e'
-                                })}
-                            >
-                                {cell.value}
-                                <ArrowUpRight size={12} />
-                            </button>
-                        {:else}
+                size="medium"
+                headers={[
+                    { key: 'year', value: 'Year' },
+                    { key: 'drugName', value: 'Drug Name' },
+                    { key: 'company', value: 'Company' }
+                ]}
+                rows={filterData(entries.map(entry => ({
+                    id: entry.Candidate,
+                    year: entry["RPDD Year"],
+                    drugName: entry.Candidate,
+                    company: entry.Company
+                })), searchTerm)}
+                sortable
+            >
+                <svelte:fragment slot="cell" let:row let:cell>
+                    {#if cell.key === 'drugName'}
+                        <button 
+                            class="flex items-center gap-2 text-[#37587e] hover:underline"
+                            on:click={() => {
+                                const selectedDrug = entries.find(e => e.Candidate === row.drugName);
+                                if (selectedDrug) {
+                                    drugName = selectedDrug.Candidate;
+                                    Company = selectedDrug.Company;
+                                    year = selectedDrug["RPDD Year"];
+                                    therapeuticArea = selectedDrug.TherapeuticArea1;
+                                    currentStage = selectedDrug["Current Development Stage"] || "TBD";
+                                    rpddAwardDate = selectedDrug["RPDD Year"];
+                                    voucherAwardDate = selectedDrug["PRV Issue Year"] || "";
+                                    indication = selectedDrug.Indication || "";
+                                    treatmentClass = selectedDrug.Class1 || "TBD";
+                                    mechanismOfAction = selectedDrug.MOA || "TBD";
+                                }
+                            }}
+                        >
                             {cell.value}
-                        {/if}
-                    </svelte:fragment>
-                </DataTable>
+                            <ArrowUpRight size={12} />
+                        </button>
+                    {:else}
+                        {cell.value}
+                    {/if}
+                </svelte:fragment>
+            </DataTable>
             </section>
         </div>
     </div>

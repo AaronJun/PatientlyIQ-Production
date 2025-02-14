@@ -81,18 +81,38 @@
             '#98D8C8', '#B8B8D1'
         ]);
 
-    function getStage(entry: any) {
-        if (entry["PRV Issue Year"]) return "PRV";
-        if (entry["Approved"] === "Approved") return "APRV";
-        if (entry["Filed"] === "Filed") return "FILED";
+        function getStage(entry: any) {
+        // Check for PRV status first
+        if (entry["PRV Year"]) {
+            return "PRV";
+        }
         
+        // Get current development stage
         const stage = entry["Current Development Stage"];
-        if (stage === "Preclinical") return "PRE";
-        if (stage === "Phase 1") return "P1";
-        if (stage === "Phase 1/2") return "P1/2";
-        if (stage === "Phase 2" || stage === "Phase 2a" || stage === "Phase 2b") return "P2";
-        if (stage === "Phase 3") return "P3";
-        return "PRE";
+        
+        // Map development stages
+        switch(stage) {
+            case "PRV Awarded":
+                return "PRV";
+            case "Preclinical":
+                return "PRE";
+            case "Phase 1":
+                return "P1";
+            case "Phase 1/2":
+                return "P1/2";
+            case "Phase 2":
+            case "Phase 2a":
+            case "Phase 2b":
+                return "P2";
+            case "Phase 3":
+                return "P3";
+            case "Filed":
+                return "FILED";
+            case "Approved":
+                return "APRV";
+            default:
+                return "PRE";
+        }
     }
 
     function showTooltip(event: MouseEvent, d: any) {
@@ -254,29 +274,14 @@
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                     const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
-      
-                    // Create right-angled path with two segments
-                    const path = d3.path();
-                    path.moveTo(labelX, labelY);
-                    
-                    // Calculate intermediate point for right angle
-                    // Use the drug's radius for the first segment
-                    const intermediateX = drugX;
-                    const intermediateY = labelY;
-                    
-                    // Draw path with right angles
-                    path.lineTo(intermediateX, intermediateY);
-                    path.lineTo(drugX, drugY);
 
                     linesGroup.append("path")
-                        .attr("d", path.toString())
-                        .attr("stroke", therapeuticAreaColorScale(area.area))
-                        .attr("stroke-width", .425)
+                        .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
+                        .attr("stroke", "#37587e")
+                        .attr("stroke-width", .25)
                         .attr("stroke-opacity", 0.525)
-                        .attr("fill", "none")
-                        .attr("stroke-linecap", "square")
-                        .attr("stroke-linejoin", "miter");
-            });
+                        .attr("fill", "none");
+                });
         });
 
             // Area label group

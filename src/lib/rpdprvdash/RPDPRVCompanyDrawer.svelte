@@ -135,28 +135,48 @@
                 </Toolbar>
 
                 <DataTable
-                    size="medium"
-                    headers={[
-                        { key: 'candidate', value: 'Drug Candidate' },
-                        { key: 'indication', value: 'Indication' },
-                        { key: 'area', value: 'Therapeutic Area' },
-                        { key: 'stage', value: 'Development Stage' },
-                        { key: 'rpddYear', value: 'RPDD Year' }
-                    ]}
-                    rows={filterData(entries.map(entry => ({
-                        id: entry.Candidate,
-                        candidate: entry.Candidate,
-                        indication: entry.Indication,
-                        area: entry.TherapeuticArea1,
-                        stage: entry["Current Development Stage"],
-                        rpddYear: entry["RPDD Year"]
-                    })), searchTerm)}
-                    sortable
-                >
-                    <svelte:fragment slot="cell" let:row let:cell>
+                size="medium"
+                headers={[
+                    { key: 'year', value: 'Year' },
+                    { key: 'drugName', value: 'Drug Name' },
+                    { key: 'company', value: 'Company' }
+                ]}
+                rows={filterData(entries.map(entry => ({
+                    id: entry.Candidate,
+                    year: entry["RPDD Year"],
+                    drugName: entry.Candidate,
+                    company: entry.Company
+                })), searchTerm)}
+                sortable
+            >
+                <svelte:fragment slot="cell" let:row let:cell>
+                    {#if cell.key === 'drugName'}
+                        <button 
+                            class="flex items-center gap-2 text-[#37587e] hover:underline"
+                            on:click={() => {
+                                const selectedDrug = entries.find(e => e.Candidate === row.drugName);
+                                if (selectedDrug) {
+                                    drugName = selectedDrug.Candidate;
+                                    Company = selectedDrug.Company;
+                                    year = selectedDrug["RPDD Year"];
+                                    therapeuticArea = selectedDrug.TherapeuticArea1;
+                                    currentStage = selectedDrug["Current Development Stage"] || "TBD";
+                                    rpddAwardDate = selectedDrug["RPDD Year"];
+                                    voucherAwardDate = selectedDrug["PRV Issue Year"] || "";
+                                    indication = selectedDrug.Indication || "";
+                                    treatmentClass = selectedDrug.Class1 || "TBD";
+                                    mechanismOfAction = selectedDrug.MOA || "TBD";
+                                }
+                            }}
+                        >
+                            {cell.value}
+                            <ArrowUpRight size={12} />
+                        </button>
+                    {:else}
                         {cell.value}
-                    </svelte:fragment>
-                </DataTable>
+                    {/if}
+                </svelte:fragment>
+            </DataTable>
             </section>
         </div>
     </div>

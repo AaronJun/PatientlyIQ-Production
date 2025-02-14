@@ -22,6 +22,7 @@
         'Hematology': '#9DE0AD',
         'Endocrinology': '#FF9F1C',
         'Genetic': '#2EC4B6',
+        'Orthopedics': '#FF4A4A',
         'Immunology': '#E71D36',
         'Gastroenterology': '#FDFFB6',
         'Hepatology': '#CBE896',

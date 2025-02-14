@@ -13,8 +13,8 @@
 
   export let visible: boolean;
   export let content: {
-    sponsor: string;
-    drugName: string;
+    company: string;
+    candidate: string;
     therapeuticArea: string;
     id: string;
   };
