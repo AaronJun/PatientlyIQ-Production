@@ -483,17 +483,19 @@
       onClose={handleCloseDrawer}
       onShowCompanyDetail={handleShowCompanyDetail}
     />
-  {:else}
+    {:else}
     <RpdprvCompanyDrawer
       Company={drawerProps.Company}
       entries={drawerProps.entries}
       color={drawerProps.color}
       companyUrl={drawerProps.companyUrl}
+      country={drawerProps.country}
+      publicPrivate={drawerProps.publicPrivate}
+      marketCap={drawerProps.marketCap}
       {isDrawerOpen}
       onClose={handleCloseDrawer}
     />
   {/if}
-{/if}
 
 <style>
   .sidebar {
