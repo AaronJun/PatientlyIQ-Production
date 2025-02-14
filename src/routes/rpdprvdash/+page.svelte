@@ -39,6 +39,10 @@
     treatmentClass?: string;
     mechanismOfAction?: string;
     companyUrl?: string;
+    // Add new company info properties
+    country?: string;
+    publicPrivate?: string;
+    marketCap?: string;
   }
 
   interface ConstellationData extends SimulationNodeDatum {
@@ -132,12 +136,17 @@
   }
 
   function handleShowCompanyDetail(detail: any) {
+    const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
     drawerProps = {
       isCompanyView: true,
       Company: detail.Company,
-      entries: detail.entries,
+      entries: companyEntries,
       color: '#37587e',
-      companyUrl: detail.companyUrl
+      companyUrl: detail.companyUrl,
+      // Add company info from the first entry
+      country: companyEntries[0]?.COUNTRY || 'N/A',
+      publicPrivate: companyEntries[0]?.['Public/Private'] || 'N/A',
+      marketCap: companyEntries[0]?.MarketCap || 'N/A'
     };
     isDrawerOpen = true;
   }

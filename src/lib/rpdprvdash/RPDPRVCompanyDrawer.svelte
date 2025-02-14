@@ -1,8 +1,9 @@
 <!-- RPDPRVCompanyDrawer.svelte -->
 <script lang="ts">
     import { fly } from 'svelte/transition';
-    import { ArrowLeft, ArrowUpRight, BookmarkAdd, BookmarkFilled } from 'carbon-icons-svelte';
+    import { ArrowLeft, ArrowUpRight, BookmarkAdd, BookmarkFilled, Globe } from 'carbon-icons-svelte';
     import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
+    import RPDPipelineMetrics from './RPDPipelineMetrics.svelte';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;
@@ -13,6 +14,12 @@
 
     let searchTerm = "";
     let isTracked = false;
+
+    $: companyInfo = entries.length > 0 ? {
+        country: entries[0].COUNTRY || 'N/A',
+        type: entries[0]['Public/Private'] || 'N/A',
+        marketCap: entries[0].MarketCap || 'N/A'
+    } : null;
 
     $: pipelineStats = entries.length > 0 ? {
         totalRPDDs: entries.length,
@@ -100,17 +107,32 @@
 
         <div class="drawer-content">
             <div class="header flex gap-4 my-4 pb-4 w-full align-bottom justify-between">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-4xl font-light text-slate-800" in:fly={{duration: 300}}>
-                        {Company}
-                    </h2>
-                    <p class="text-sm text-slate-600">
-                        {pipelineStats.totalRPDDs} RPDD drugs in development<br/>
-                        {pipelineStats.inClinicalTrials} RPDD drugs in clinical trials<br/>
-                        {pipelineStats.prvAwarded} PRV awarded<br/>
-                        {pipelineStats.prvAvailable} PRV available
-                    </p>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <h2 class="text-4xl font-light text-slate-800" in:fly={{duration: 300}}>
+                            {Company}
+                        </h2>
+                        <!-- Company Info -->
+                        <div class="company-info mt-2 grid grid-cols-3 gap-4">
+                            <div class="flex items-center gap-2">
+                                <Globe size={16} class="text-slate-500" />
+                                <span class="text-sm text-slate-600">{companyInfo?.country}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-slate-600">{companyInfo?.type}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-slate-600">Market Cap: {companyInfo?.marketCap}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pipeline Metrics Visualization -->
+                    {#if pipelineStats}
+                        <RPDPipelineMetrics metrics={pipelineStats} />
+                    {/if}
                 </div>
+                
                 {#if companyUrl}
                     <button 
                         class="flex text-sm capitalize gap-1 font-semibold text-slate-800 hover:text-emerald-600"
@@ -135,48 +157,28 @@
                 </Toolbar>
 
                 <DataTable
-                size="medium"
-                headers={[
-                    { key: 'year', value: 'Year' },
-                    { key: 'drugName', value: 'Drug Name' },
-                    { key: 'company', value: 'Company' }
-                ]}
-                rows={filterData(entries.map(entry => ({
-                    id: entry.Candidate,
-                    year: entry["RPDD Year"],
-                    drugName: entry.Candidate,
-                    company: entry.Company
-                })), searchTerm)}
-                sortable
-            >
-                <svelte:fragment slot="cell" let:row let:cell>
-                    {#if cell.key === 'drugName'}
-                        <button 
-                            class="flex items-center gap-2 text-[#37587e] hover:underline"
-                            on:click={() => {
-                                const selectedDrug = entries.find(e => e.Candidate === row.drugName);
-                                if (selectedDrug) {
-                                    drugName = selectedDrug.Candidate;
-                                    Company = selectedDrug.Company;
-                                    year = selectedDrug["RPDD Year"];
-                                    therapeuticArea = selectedDrug.TherapeuticArea1;
-                                    currentStage = selectedDrug["Current Development Stage"] || "TBD";
-                                    rpddAwardDate = selectedDrug["RPDD Year"];
-                                    voucherAwardDate = selectedDrug["PRV Issue Year"] || "";
-                                    indication = selectedDrug.Indication || "";
-                                    treatmentClass = selectedDrug.Class1 || "TBD";
-                                    mechanismOfAction = selectedDrug.MOA || "TBD";
-                                }
-                            }}
-                        >
-                            {cell.value}
-                            <ArrowUpRight size={12} />
-                        </button>
-                    {:else}
+                    size="medium"
+                    headers={[
+                        { key: 'candidate', value: 'Drug Candidate' },
+                        { key: 'indication', value: 'Indication' },
+                        { key: 'area', value: 'Therapeutic Area' },
+                        { key: 'stage', value: 'Development Stage' },
+                        { key: 'rpddYear', value: 'RPDD Year' }
+                    ]}
+                    rows={filterData(entries.map(entry => ({
+                        id: entry.Candidate,
+                        candidate: entry.Candidate,
+                        indication: entry.Indication,
+                        area: entry.TherapeuticArea1,
+                        stage: entry["Current Development Stage"],
+                        rpddYear: entry["RPDD Year"]
+                    })), searchTerm)}
+                    sortable
+                >
+                    <svelte:fragment slot="cell" let:row let:cell>
                         {cell.value}
-                    {/if}
-                </svelte:fragment>
-            </DataTable>
+                    </svelte:fragment>
+                </DataTable>
             </section>
         </div>
     </div>
@@ -205,5 +207,10 @@
 
     :global(.bx--data-table tbody tr:hover) {
         background-color: #f5f9ff;
+    }
+
+    .company-info {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 0.5rem;
     }
 </style>
