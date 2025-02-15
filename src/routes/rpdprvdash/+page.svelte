@@ -496,6 +496,7 @@
       onClose={handleCloseDrawer}
     />
   {/if}
+{/if}
 
 <style>
   .sidebar {
