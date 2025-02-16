@@ -377,7 +377,7 @@
             .attr("width", 10.25)
             .attr("height", 10.25)
             .attr("transform", "translate(-5.125, -5.125)")
-            .attr("fill", companyStatusColorScale)
+            .attr("fill", companyStatusColorScale(company.status))
             .attr("stroke", "#375810")
             .attr("stroke-width", 0.725)
             .attr("rx", 2);
