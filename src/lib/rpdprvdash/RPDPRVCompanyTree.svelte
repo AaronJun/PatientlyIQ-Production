@@ -203,6 +203,7 @@
             
             dotsGroup.append("circle")
                 .attr("r", 4)
+                .attr("stroke", "#161616")
                 .attr("cx", x+5)
                 .attr("cy", row * labelConfig.dotRowHeight)
                 .attr("fill", company.status === 'Public' ? '#4A90E2' : '#F5A623')
@@ -473,7 +474,6 @@
                                 .attr("r", 11.25)
                                 .attr("stroke-width", "2px");
                         }
-
                         hideTooltip();
                     })
                     .on("click", () => {
@@ -514,8 +514,7 @@
             dotsGroup.selectAll("circle")
                 .transition()
                 .duration(200)
-                .attr("r", dotConfig.radius * 1.5)
-                .attr("fill", "#FF4A4A")
+                .attr("r", 5.25)
                 .attr("opacity", 1);
 
             showTooltip(event, {
@@ -543,7 +542,8 @@
             dotsGroup.selectAll("circle")
                 .transition()
                 .duration(200)
-                .attr("r", dotConfig.radius)
+                .attr("r", 4)
+                .attr("cx", x+5)
                 .attr("fill", companyStatusColorScale(company.status))
                 .attr("opacity", 0.7);
 
