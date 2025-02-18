@@ -17,8 +17,8 @@
   let tooltipX = 0;
   let tooltipY = 0;
 
-  const width = 1000;
-  const height = 800;
+  const width = 982;
+  const height = 982;
   const labelConfig = {
       radius: Math.min(width, height) * 0.40,
       padding: 15,
@@ -42,7 +42,7 @@
       ]);
 
   function getLabelPosition(angle: number) {
-      const labelRadius = labelConfig.radius + 50;
+      const labelRadius = labelConfig.radius+20;
       const x = Math.cos(angle - Math.PI / 2) * labelRadius;
       const y = Math.sin(angle - Math.PI / 2) * labelRadius;
       const rotate = (angle * 180 / Math.PI - 90) + (angle > Math.PI ? 180 : 0);
@@ -137,6 +137,7 @@
           .join("path")
           .attr("d", d3.ribbon().radius(innerRadius))
           .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
+          .style("mix-blend-mode", "multiply")
           .style("opacity", 0.6)
           .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
           .attr("stroke-width", .5);
