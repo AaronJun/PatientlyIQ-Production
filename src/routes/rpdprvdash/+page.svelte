@@ -387,10 +387,15 @@
               on:transactionHover={(event) => highlightedTransaction = event.detail}
               on:transactionLeave={() => highlightedTransaction = null}
             />
+            <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+              <RPDRadialLegend 
+                items={processedData}
+                {colorScale}
+              />
+            </div>
           </div>
           <div class="w-1/6 align-middle flex flex-col gap-4">
               <div class="sidebar bg-slate-100 py-4 px-4 h-[70vh]">                
-                <h3 class="text-base/tight uppercase font-semibold text-slate-700 mb-4">Transaction Distribution</h3>
                 <VoucherBeeswarmPlot 
                   data={rpddData}
                   {highlightedTransaction}

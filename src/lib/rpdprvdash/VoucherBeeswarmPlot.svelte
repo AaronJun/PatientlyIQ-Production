@@ -28,7 +28,7 @@
     therapeuticArea: ''
   };
   
-  const margin = { top: 20, right: 20, bottom: 30, left: 60 };
+  const margin = { top: 10, right: 0, bottom: 40, left: 10 };
   let width: number;
   let height: number;
 
@@ -123,8 +123,7 @@
       .attr("class", "y-axis")
       .call(d3.axisLeft(y)
         .tickFormat(d => `$${d}M`)
-        .ticks(8))
-      .call(g => g.select(".domain").attr("stroke", "#565656"));
+        .ticks(5));
 
     // Add points
     circles = g.selectAll("circle")
@@ -132,7 +131,7 @@
       .join("circle")
       .attr("cx", d => d.x)
       .attr("cy", d => d.y)
-      .attr("r", 5)
+      .attr("r", 6)
       .attr("fill", d => therapeuticAreaColorScale(d.TherapeuticArea1))
       .attr("stroke", "#565656")
       .attr("stroke-width", 1)
@@ -237,6 +236,7 @@
 
   :global(.y-axis text) {
     fill: #4a5568;
-    font-size: 10px;
+    font-size: 8.25px;
+    transform: rotate(-90deg);
   }
 </style>

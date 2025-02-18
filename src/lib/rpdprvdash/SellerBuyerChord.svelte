@@ -68,7 +68,7 @@
       .attr("stroke-width", d => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
-        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 2 : 0.5;
+        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 2 : 0.25;
       });
 
     // Also highlight relevant nodes
@@ -84,7 +84,7 @@
   function resetHighlight() {
     if (!ribbons) return;
     ribbons
-      .style("opacity", 0.6)
+      .style("opacity", 0.25)
       .attr("stroke-width", 0.5);
 
     // Reset node highlighting
@@ -149,8 +149,8 @@
 
       const chords = chord(matrix);
 
-      const innerRadius = Math.min(width, height) * 0.35;
-      const outerRadius = innerRadius + 20;
+      const innerRadius = Math.min(width, height) * 0.3725;
+      const outerRadius = innerRadius;
       const nodeRadius = 8;
 
       // Create SVG
