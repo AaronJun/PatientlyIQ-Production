@@ -1,4 +1,3 @@
-<!-- +page.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
 
@@ -6,20 +5,18 @@
   import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import { RadialTimeline, YearlySummary } from '$lib/componentStores';
 
-  import RpdRadialBarChartYear from '$lib/rpdprvdash/RPDRadialBarChartYear.svelte';
-  import RpdTreeChart from '$lib/rpdprvdash/RPDTreeChart.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
   import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
-  import RpdStageChart from '$lib/rpdprvdash/RPDStageChart.svelte';
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
+  import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
   import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
 
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
-  import constellationDataRaw from '../data/RPDConstellationData.json';
+  import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
   import { DashboardReference, Globe } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
@@ -45,21 +42,9 @@
     marketCap?: string;
   }
 
-  interface ConstellationData extends SimulationNodeDatum {
-    Purchased: string;
-    "Sale  Price (USD, Millions)": string;
-    Purchaser: string;
-    Sponsor: string;
-    "Drug Name": string;
-    Year: string;
-    id: string;
-    name: string;
-    x?: number;
-    y?: number;
-  }
 
   let activeTab = 'By Sponsor + Stage';
-  let processedRpdPrvData: RPDData[] = [];
+  let processedRpdPrvData: rpddData[] = [];
 
   let selectedData: ConstellationEntry | null = null;
   let processedConstellationData: ConstellationEntry[] = [];
@@ -274,15 +259,15 @@
       </button>
     </div>
 </nav>
-<div class="w-full max-w-5xl">
-  <RpdprvTimeline 
-  data={rpddData}
-  selectedYear="2023"
-  onYearSelect={handleYearSelect}
-/>
-</div>    
-  <div class="tab-content w-full">
-    {#if activeTab === 'By Sponsor + Stage'}
+<div class="tab-content w-full">
+  {#if activeTab === 'By Sponsor + Stage'}
+  <div class="w-full max-w-5xl">
+    <RpdprvTimeline 
+    data={rpddData}
+    selectedYear="2023"
+    onYearSelect={handleYearSelect}
+  />
+  </div>    
     <div class="flex flex-row flex-grow px-2 py-4">
         <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
             <RpdprvCompanyTree 
@@ -393,7 +378,11 @@
           </div> -->
           
           {:else if activeTab === 'By Transactions'}
-          <div class="flex h-[80vh]">
+          <div class="flex">
+          <SellerBuyerChord 
+            data={rpddData}
+            
+          />
             <!-- <SaleBenchmarks 
             constellationData={processedConstellationData} 
             onCompanySelect={(data, color) => {
@@ -411,6 +400,13 @@
   
 
           {:else if activeTab === 'By Therapeutic Area'}
+          <div class="w-full max-w-5xl">
+            <RpdprvTimeline 
+            data={rpddData}
+            selectedYear="2023"
+            onYearSelect={handleYearSelect}
+          />
+          </div>    
           <div class="flex flex-row flex-grow px-2 py-4">
             <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
               <RPDDRadialYear 

@@ -3,7 +3,7 @@
     import { fly } from 'svelte/transition';
     import { ArrowLeft, ArrowUpRight, BookmarkAdd, BookmarkFilled, Globe } from 'carbon-icons-svelte';
     import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
-    import RPDPipelineMetrics from './RPDPipelineMetrics.svelte';
+    import RPDPipelineMetrics from './PipelineVisualization.svelte';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;

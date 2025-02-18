@@ -278,7 +278,7 @@
                     linesGroup.append("path")
                         .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
                         .attr("stroke", "#37587e")
-                        .attr("stroke-width", .25)
+                        .attr("stroke-width", .425)
                         .attr("stroke-opacity", 0.525)
                         .attr("fill", "none");
                 });
@@ -314,7 +314,7 @@
                         .transition()
                         .attr("height", 10.25)
                         .attr("width", 10.25)
-                        .attr("stroke-width", 0.725)
+                        .attr("stroke-width", 1.25)
                         .attr("fill", therapeuticAreaColorScale(area.area));
 
                     labelGroup.select("text")
@@ -333,9 +333,9 @@
                 .attr("width", 10.25)
                 .attr("height", 10.25)
                 .attr("transform", "translate(-3.625, -3.625)")
-                .attr("stroke", "#A598D9")
+                .attr("stroke", "#565656")
                 .attr("fill", therapeuticAreaColorScale(area.area))
-                .attr("stroke-width", 0.725);
+                .attr("stroke-width", 1.25);
 
             // Area text label
             const textAngle = labelAngle > Math.PI ? "end" : "start";
@@ -366,16 +366,16 @@
 
                     // Drug circle
                     drugGroup.append("circle")
-                        .attr("r", 8.25)
+                        .attr("r", 10.25)
                         .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                         .attr("stroke", "#565656")
-                        .attr("stroke-width", ".425px")
+                        .attr("stroke-width", "1.725px")
                         .on("mouseenter", (event) => {
                             drugGroup.select("circle")
                                 .transition()
                                 .duration(200)
-                                .attr("r", 10.25)
-                                .attr("stroke-width", 1.725)
+                                .attr("r", 15.25)
+                                .attr("stroke-width", 4.25)
                                 .attr("stroke", "#375810")
                                 .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
                             showTooltip(event, drug);
@@ -383,10 +383,10 @@
                         .on("mouseleave", () => {
                             drugGroup.select("circle")
                                 .transition()
-                                .attr("r", 8.25)
+                                .attr("r", 10.25)
                                 .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                                 .attr("stroke", "#565656")
-                                .attr("stroke-width", ".425px")
+                                .attr("stroke-width", "1.725px")
                                 .duration(200);
                             hideTooltip();
                         })

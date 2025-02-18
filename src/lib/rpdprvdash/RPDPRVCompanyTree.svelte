@@ -412,8 +412,8 @@
                 linesGroup.append("path")
                     .attr("d", `M${nodeX},${nodeY}L${drugX},${drugY}`)
                     .attr("stroke", "#37587e")
-                    .attr("stroke-width", .25)
-                    .attr("stroke-opacity", 0.525)
+                    .attr("stroke-width", .425)
+                    .attr("stroke-opacity", 0.6725)
                     .attr("fill", "none");
 
                 const drugGroup = companyGroup.append("g")
@@ -422,10 +422,10 @@
 
                 // Drug circle
                 drugGroup.append("circle")
-                    .attr("r", 11.25)
+                    .attr("r", 10.25)
                     .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                     .attr("stroke", "#565656")
-                    .attr("stroke-width", "2px");
+                    .attr("stroke-width", "1.7825px");
 
                 // Add PRV indicator for PRV awarded drugs
                 if (drug["PRV Issue Year"]) {
@@ -444,8 +444,6 @@
                             .transition()
                             .duration(200)
                             .attr("r", 14.25)
-                            .attr("stroke-width", 4.725)
-                            .attr("stroke", "#375810")
                             .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
 
                         if (drug["PRV Issue Year"]) {
@@ -462,8 +460,8 @@
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
-                            .attr("r", 11.25)
-                            .attr("stroke-width", "2px")
+                            .attr("r", 10.25)
+                            .attr("stroke-width", "1.7825px")
                             .attr("stroke", "#565656")
                             .style("filter", "none");
 

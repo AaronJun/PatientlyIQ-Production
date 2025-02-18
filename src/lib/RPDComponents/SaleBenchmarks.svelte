@@ -1,25 +1,25 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import type { SimulationNodeDatum } from 'd3';
+
   import * as d3 from 'd3';
   import YearlySalesChart from './YearlySalesChart.svelte';
   import SellerBuyerChord from './SellerBuyerChord.svelte';
   import VoucherBeeswarmPlot from './VoucherBeeswarmPlot.svelte';
   import { Money, PortInput, PortOutput, Medication } from 'carbon-icons-svelte';
   import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
-
   interface ConstellationData extends SimulationNodeDatum {
-    Purchased: string;
-    "Sale  Price (USD, Millions)": string;
-    Purchaser: string;
-    Sponsor: string;
-    "Drug Name": string;
-    Year: string;
-    id: string;
-    name: string;
-    x?: number;
-    y?: number;
-  }
-
+  Purchased: string;
+  "Sale  Price (USD, Millions)": string;
+  Purchaser: string;
+  Sponsor: string;
+  "Drug Name": string;
+  Year: string;
+  id: string;
+  name: string;
+  x?: number;
+  y?: number;
+}
   interface SalePoint {
     price: number;
     buyer: string;
@@ -33,6 +33,21 @@
     totalPrice: number;
     avgPrice: number;
   }
+
+  export function processConstellationData(rawData: ConstellationData[]): ConstellationData[] {
+  return rawData.map(entry => ({
+    ...entry,
+    // Ensure all required fields exist with defaults if needed
+    Purchased: entry.Purchased || 'N',
+    "Sale  Price (USD, Millions)": entry["Sale  Price (USD, Millions)"] || 'NA',
+    Purchaser: entry.Purchaser || 'NA',
+    Sponsor: entry.Sponsor || '',
+    "Drug Name": entry["Drug Name"] || '',
+    Year: entry.Year || '',
+    id: entry.id || '',
+    name: entry.name || ''
+  }));
+}
 
   export let constellationData: ConstellationData[];
   export let handleClusterElementClick: (event: CustomEvent) => void;

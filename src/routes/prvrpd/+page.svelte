@@ -7,7 +7,7 @@
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
   import TextDrawer from '$lib/RPDComponents/TextContentDrawer.svelte';
   import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
-  import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
+  import SaleBenchmarks from '$lib/rpdprvdash/SaleBenchmarks.svelte';
 
   import TAPageSummary from '$lib/RPDComponents/TASummary.svelte';
   import { RpdProgramInfoMd } from '$lib/content/RPDprogramInfo';
@@ -391,17 +391,39 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
               </p>
             </div>
             <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top min-h-full">
-            <SaleBenchmarks 
-              constellationData={processedConstellationData} 
+              <SaleBenchmarks 
+              constellationData={rpddData.map(d => ({
+                Purchased: d.Purchased,
+                "Sale Price (USD, Millions)": d["Sale Price (USD Millions)"],
+                Purchaser: d.Purchaser,
+                Sponsor: d.Company,
+                "Drug Name": d.Candidate,
+                Year: d["Purchase Year"],
+                id: d.Indication,
+                name: d.TherapeuticArea1,
+                TherapeuticArea1: d.TherapeuticArea1,
+                Company: d.Company,
+                Candidate: d.Candidate,
+                "Current Development Stage": d["Current Development Stage"]
+              }))}
               onCompanySelect={(data, color) => {
-                selectedData = data;
-                selectedColor = color;
-                isDrawerOpen = true;
+                const companyEntries = rpddData.filter(entry => entry.Company === data.Sponsor);
+                handleShowCompanyDetail({
+                  Company: data.Sponsor,
+                  entries: companyEntries,
+                  companyUrl: ""
+                });
               }}
               onDrugClick={(drugData) => {
-                selectedData = drugData;
-                selectedColor = getColorForTherapeuticArea(drugData.name);
-                isDrawerOpen = true;
+                handleShowDrugDetail({
+                  Company: drugData.Company,
+                  drugName: drugData.Candidate,
+                  therapeuticArea: drugData.TherapeuticArea1,
+                  entries: [rpddData.find(d => d.Candidate === drugData.Candidate)],
+                  color: getColorForTherapeuticArea(drugData.TherapeuticArea1),
+                  currentStage: drugData["Current Development Stage"],
+                  indication: drugData.id
+                });
               }}
             />
             </div>

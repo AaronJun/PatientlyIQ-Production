@@ -112,30 +112,29 @@
   function createChart() {
   if (!width || !height) return;
 
-  
-const salesData = constellationData
-  .filter(d => d.Purchased === "Y")
-  .map(d => {
-    let price = null;
-    if (d["Sale Price (USD, Millions)"]) {
-      const parsedPrice = parseFloat(d["Sale Price (USD, Millions)"]);
-      if (!isNaN(parsedPrice)) {
-        price = parsedPrice;
+  const salesData = constellationData
+    .filter(d => d.Purchased === "Y")
+    .map(d => {
+      let price = null;
+      if (d["Sale  Price (USD, Millions)"]) {
+        const parsedPrice = parseFloat(d["Sale  Price (USD, Millions)"]);
+        if (!isNaN(parsedPrice)) {
+          price = parsedPrice;
+        }
       }
-    }
 
-    return {
-      purchaseYear: d["Purchase Year"] ? +d["Purchase Year"] : null,
-      price: price,
-      drugName: d.Candidate,  // Changed from "Drug Name" to Candidate
-      buyer: d.Purchaser,
-      seller: d.Company,      // Changed from Sponsor to Company
-      therapeuticArea: d.TherapeuticArea1, // Changed from name to TherapeuticArea1
-      indication: d.Indication, // Changed from id to Indication
-      purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
-        `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
-    };
-  });
+      return {
+        purchaseYear: +d["Purchase Year"],
+        price: price,
+        drugName: d["Drug Name"],
+        buyer: d.Purchaser,
+        seller: d.Sponsor,
+        therapeuticArea: d.name,
+        indication: d.id,
+        purchaseDate: d["Purchase Month"] && d["Purchase Date"] && d["Purchase Year"] ? 
+          `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}` : 'N/A'
+      };
+    });
 
   const stackedData = processTransactionData(salesData);
 

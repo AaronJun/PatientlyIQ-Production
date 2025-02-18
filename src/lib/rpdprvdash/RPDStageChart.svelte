@@ -260,7 +260,6 @@
                     })
                     .attr("r", 8)
                     .style("stroke", "#565656")
-                    .style("fill", d => colorScale(d.TherapeuticArea1))
                     .style("opacity", 0.9)
                     .style("cursor", "pointer")
                     .on("mouseenter", function(event, d) {

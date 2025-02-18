@@ -9,7 +9,7 @@
     
     const dispatch = createEventDispatcher();
     
-    let svg;
+  let svg;
     let width = 800;
     let height = width;
     let innerRadius = Math.min(width, height) * 0.45 * 0.7;
