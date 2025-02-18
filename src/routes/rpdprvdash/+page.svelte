@@ -3,6 +3,7 @@
 
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
+  import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
   import { RadialTimeline, YearlySummary } from '$lib/componentStores';
 
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
@@ -18,7 +19,7 @@
   import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
-  import { DashboardReference, Globe } from 'carbon-icons-svelte';
+  import { Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
 
   interface DrawerProps {
@@ -45,7 +46,7 @@
 
   let activeTab = 'By Sponsor + Stage';
   let processedRpdPrvData: rpddData[] = [];
-
+  let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: ConstellationEntry | null = null;
   let processedConstellationData: ConstellationEntry[] = [];
   let selectedColor: string = "";
@@ -378,26 +379,28 @@
           </div> -->
           
           {:else if activeTab === 'By Transactions'}
-          <div class="flex">
-          <SellerBuyerChord 
-            data={rpddData}
-            
-          />
-            <!-- <SaleBenchmarks 
-            constellationData={processedConstellationData} 
-            onCompanySelect={(data, color) => {
-              selectedData = data;
-              selectedColor = color;
-              isDrawerOpen = true;
-            }}
-            onDrugClick={(drugData) => {
-              selectedData = drugData;
-              selectedColor = getColorForTherapeuticArea(drugData.name);
-              isDrawerOpen = true;
-            }}
-          /> -->
+          <div class="flex flex-row">
+          <div class="w-5/6 bg-slate-50 rounded-lg shadow-sm">
+            <SellerBuyerChord 
+              data={rpddData}
+              highlightedTransaction={highlightedTransaction}
+              on:transactionHover={(event) => highlightedTransaction = event.detail}
+              on:transactionLeave={() => highlightedTransaction = null}
+            />
           </div>
-  
+          <div class="w-1/6 align-middle flex flex-col gap-4">
+              <div class="sidebar bg-slate-100 py-4 px-4 h-[70vh]">                
+                <h3 class="text-base/tight uppercase font-semibold text-slate-700 mb-4">Transaction Distribution</h3>
+                <VoucherBeeswarmPlot 
+                  data={rpddData}
+                  {highlightedTransaction}
+                  onPointClick={handleShowDrugDetail}
+                  on:transactionHover={(event) => highlightedTransaction = event.detail}
+                  on:transactionLeave={() => highlightedTransaction = null}
+                />
+            </div>
+          </div>
+        </div>
 
           {:else if activeTab === 'By Therapeutic Area'}
           <div class="w-full max-w-5xl">
@@ -417,13 +420,15 @@
                       onShowDrugDetail={handleShowDrugDetail}
                       onShowCompanyDetail={handleShowCompanyDetail}
                 />
-            <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-              <RPDRadialLegend 
-              items={processedData}
-              {colorScale}
-            />
+              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+                <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
+                <RPDRadialLegend 
+                items={processedData}
+                {colorScale}
+              />
             </div>
           </div>
+        </div>
           <div class="sidebar w-1/6 max-w-[350px] flex flex-col">
             <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
               <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
@@ -496,7 +501,7 @@
 
 <style>
   .sidebar {
-    max-height: 55vh;
+    max-height: 65vh;
     overflow-y: scroll;
     margin-top: 10vh;
     border-radius: 5.25px;

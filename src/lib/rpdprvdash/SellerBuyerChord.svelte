@@ -1,11 +1,22 @@
 <!-- SellerBuyerChord.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
   import { CalendarHeatMap, Medication, Money } from 'carbon-icons-svelte';
 
   export let data: any[] = [];
+  export let highlightedTransaction: { seller: string, buyer: string } | null = null;
+
+  const dispatch = createEventDispatcher<{
+    transactionHover: { seller: string, buyer: string };
+    transactionLeave: void;
+  }>();
+
   let svg;
+  let ribbons;
+  let companies: string[] = [];
+  let companyData: Map<string, any>;
+  let transactions: any[];
   let tooltipVisible = false;
   let tooltipContent = {
       seller: '',
@@ -26,66 +37,82 @@
   };
 
   const therapeuticAreaColorScale = d3.scaleOrdinal()
-      .domain([
-          'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
-          'Cardiovascular', 'Pulmonology', 'Hematology',
-          'Endocrinology', 'Genetic', 'Immunology',
-          'Gastroenterology', 'Hepatology', 'Dermatology',
-          'Neonatology', 'Urology'
-      ])
-      .range([
-          '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-          '#FFEEAD', '#D4A5A5', '#9DE0AD',
-          '#FF9F1C', '#2EC4B6', '#E71D36',
-          '#FDFFB6', '#CBE896', '#FFA07A',
-          '#98D8C8', '#B8B8D1'
-      ]);
+    .domain([
+        'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+        'Cardiovascular', 'Pulmonology', 'Hematology',
+        'Endocrinology', 'Genetic', 'Immunology',
+        'Gastroenterology', 'Hepatology', 'Dermatology',
+        'Neonatology', 'Urology'
+    ])
+    .range([
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+        '#FFEEAD', '#D4A5A5', '#9DE0AD',
+        '#FF9F1C', '#2EC4B6', '#E71D36',
+        '#FDFFB6', '#CBE896', '#FFA07A',
+        '#98D8C8', '#B8B8D1'
+    ]);
+
+  $: if (highlightedTransaction && ribbons) {
+    highlightRibbon(highlightedTransaction);
+  } else if (ribbons) {
+    resetHighlight();
+  }
+
+  function highlightRibbon(transaction: { seller: string, buyer: string }) {
+    ribbons
+      .style("opacity", d => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 1 : 0.2;
+      })
+      .attr("stroke-width", d => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 2 : 0.5;
+      });
+
+    // Also highlight relevant nodes
+    d3.selectAll("circle.voucher-node")
+      .style("opacity", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2
+      )
+      .attr("r", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
+      );
+  }
+
+  function resetHighlight() {
+    if (!ribbons) return;
+    ribbons
+      .style("opacity", 0.6)
+      .attr("stroke-width", 0.5);
+
+    // Reset node highlighting
+    d3.selectAll("circle.voucher-node")
+      .style("opacity", 0.9)
+      .attr("r", 8);
+  }
 
   function getLabelPosition(angle: number) {
-      const labelRadius = labelConfig.radius+20;
+      const labelRadius = labelConfig.radius + 20;
       const x = Math.cos(angle - Math.PI / 2) * labelRadius;
       const y = Math.sin(angle - Math.PI / 2) * labelRadius;
       const rotate = (angle * 180 / Math.PI - 90) + (angle > Math.PI ? 180 : 0);
       return { x, y, rotate };
   }
 
-  function highlightConnections(company: string, companies: string[], ribbonElements: d3.Selection<any, any, any, any>) {
-      ribbonElements
-          .style("opacity", d => {
-              const sourceCompany = companies[d.source.index];
-              const targetCompany = companies[d.target.index];
-              return (sourceCompany === company || targetCompany === company) ? 1 : 0.2;
-          })
-          .attr("stroke", d => {
-              const sourceCompany = companies[d.source.index];
-              const targetCompany = companies[d.target.index];
-              return (sourceCompany === company || targetCompany === company) ? therapeuticAreaColorScale(companyData.get(sourceCompany).therapeuticArea) : "#565656";
-          })
-          .attr("stroke-width", d => {
-              const sourceCompany = companies[d.source.index];
-              const targetCompany = companies[d.target.index];
-              return (sourceCompany === company || targetCompany === company) ? 3 : 0.5;
-          });
-  }
-
-  function resetHighlight(ribbonElements: d3.Selection<any, any, any, any>) {
-      ribbonElements
-          .style("opacity", 0.6)
-          .attr("stroke-width", 0.5);
-  }
-
   async function createVisualization() {
       // Filter only purchased vouchers with known purchasers
-      const transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
+      transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
       
       // Get unique companies
-      const companies = [...new Set([
+      companies = [...new Set([
           ...transactions.map(d => d.Company),
           ...transactions.map(d => d.Purchaser)
       ])];
 
       // Get company therapeutic areas and transaction counts
-      const companyData = new Map();
+      companyData = new Map();
       companies.forEach(company => {
           const companyTransactions = transactions.filter(d => d.Company === company);
           const areas = data.filter(d => d.Company === company).map(d => d.TherapeuticArea1);
@@ -131,7 +158,7 @@
           .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
       // Add ribbons first
-      const ribbons = svgElem.append("g")
+      ribbons = svgElem.append("g")
           .selectAll("path")
           .data(chords)
           .join("path")
@@ -140,9 +167,39 @@
           .style("mix-blend-mode", "multiply")
           .style("opacity", 0.6)
           .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
-          .attr("stroke-width", .5);
+          .attr("stroke-width", .5)
+          .on("mouseenter", (event, d) => {
+              const transaction = transactions.find(t => 
+                  t.Company === companies[d.source.index] && 
+                  t.Purchaser === companies[d.target.index]
+              );
 
-      // Create groups
+              if (transaction) {
+                  dispatch('transactionHover', {
+                      seller: transaction.Company,
+                      buyer: transaction.Purchaser
+                  });
+
+                  tooltipContent = {
+                      seller: transaction.Company,
+                      buyer: transaction.Purchaser,
+                      Candidate: transaction.Candidate,
+                      amount: transaction["Sale Price (USD Millions)"],
+                      date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`
+                  };
+
+                  const rect = svg.getBoundingClientRect();
+                  tooltipX = event.clientX - rect.left;
+                  tooltipY = event.clientY - rect.top;
+                  tooltipVisible = true;
+              }
+          })
+          .on("mouseleave", () => {
+              dispatch('transactionLeave');
+              tooltipVisible = false;
+          });
+
+      // Create groups for labels and arcs
       const group = svgElem.append("g")
           .selectAll("g")
           .data(chords.groups)
@@ -159,7 +216,7 @@
 
       // Add voucher nodes
       group.each((d, i) => {
-          const company = companies[d.index];
+          const company = companies[i];
           const companyTrans = companyData.get(company).transactions;
           const angle = (d.startAngle + d.endAngle) / 2;
           const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
@@ -170,25 +227,27 @@
               const y = Math.sin(nodeAngle - Math.PI / 2) * outerRadius;
 
               svgElem.append("circle")
+                  .attr("class", "voucher-node")
+                  .datum(transaction)
                   .attr("r", nodeRadius)
                   .attr("transform", `translate(${x},${y})`)
                   .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
                   .attr("stroke", "#565656")
                   .attr("stroke-width", 1.5)
                   .attr("cursor", "pointer")
-                  .on("mouseenter", (event) => {
-                      d3.select(event.target)
-                          .transition()
-                          .duration(200)
-                          .attr("r", nodeRadius * 1.5)
-                          .attr("stroke-width", 2);
+                  .style("opacity", 0.9)
+                  .on("mouseenter", (event, d) => {
+                      dispatch('transactionHover', {
+                          seller: d.Company,
+                          buyer: d.Purchaser
+                      });
 
                       tooltipContent = {
-                          seller: transaction.Company,
-                          buyer: transaction.Purchaser,
-                          Candidate: transaction.Candidate,
-                          amount: transaction["Sale Price (USD Millions)"],
-                          date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`
+                          seller: d.Company,
+                          buyer: d.Purchaser,
+                          Candidate: d.Candidate,
+                          amount: d["Sale Price (USD Millions)"],
+                          date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`
                       };
 
                       const rect = svg.getBoundingClientRect();
@@ -196,97 +255,31 @@
                       tooltipY = event.clientY - rect.top;
                       tooltipVisible = true;
                   })
-                  .on("mouseleave", (event) => {
-                      d3.select(event.target)
-                          .transition()
-                          .duration(200)
-                          .attr("r", nodeRadius)
-                          .attr("stroke-width", 1.5);
-                      
+                  .on("mouseleave", () => {
+                      dispatch('transactionLeave');
                       tooltipVisible = false;
                   });
           });
       });
 
-      // Add labels with connecting lines
+      // Add company labels
       group.each((d, i) => {
-          const company = companies[d.index];
+          const company = companies[i];
           const angle = (d.startAngle + d.endAngle) / 2;
-            const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);
-            const nodeX = Math.cos(angle - Math.PI / 2) * outerRadius;
-            const nodeY = Math.sin(angle - Math.PI / 2) * outerRadius;
+          const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);
 
-
-          // Add interactive label group
           const labelGroup = svgElem.append("g")
               .attr("class", "label-group")
-              .attr("cursor", "pointer")
-              .on("mouseenter", () => {
-                  highlightConnections(company, companies, ribbons);
-                  const companyInfo = companyData.get(company);
-                  if (companyInfo.transactions.length > 0) {
-                      tooltipContent = {
-                          seller: company,
-                          buyer: `${companyInfo.transactions.length} vouchers`,
-                          amount: companyInfo.totalValue.toString(),
-                          date: `Total value: $${companyInfo.totalValue}M`
-                      };
+              .attr("cursor", "pointer");
 
-                      const rect = svg.getBoundingClientRect();
-                      const labelRect = labelGroup.node().getBoundingClientRect();
-                      tooltipX = labelRect.left - rect.left + labelRect.width/2;
-                      tooltipY = labelRect.top - rect.top;
-                      tooltipVisible = true;
-                  }
-              })
-              .on("mouseleave", () => {
-                  resetHighlight(ribbons);
-                  tooltipVisible = false;
-              });
-
-          // Add label text
           labelGroup.append("text")
-              .attr("class", "company-label")
               .attr("x", labelX)
               .attr("y", labelY)
-              .attr("text-anchor", "middle")
               .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
+              .attr("text-anchor", "middle")
               .style("font-size", "8.725px")
               .style("fill", "#4a5568")
               .text(company);
-      });
-
-      // Add hover interactions for ribbons
-      ribbons.on("mouseenter", (event, d) => {
-          const transaction = transactions.find(t => 
-              t.Company === companies[d.source.index] && 
-              t.Purchaser === companies[d.target.index]
-          );
-
-          if (transaction) {
-              tooltipContent = {
-                  seller: transaction.Company,
-                  buyer: transaction.Purchaser,
-                  Candidate: transaction.Candidate,
-                  amount: transaction["Sale Price (USD Millions)"],
-                  date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`
-              };
-
-              const rect = svg.getBoundingClientRect();
-              tooltipX = event.clientX - rect.left;
-              tooltipY = event.clientY - rect.top;
-              tooltipVisible = true;
-          }
-
-          d3.select(event.target)
-              .style("opacity", 1)
-              .attr("stroke-width", 2);
-      })
-      .on("mouseleave", (event) => {
-          tooltipVisible = false;
-          d3.select(event.target)
-              .style("opacity", 0.6)
-              .attr("stroke-width", 0.5);
       });
   }
 
@@ -331,8 +324,6 @@
           {tooltipContent.date}
         </p>
       </div>
-    
-    
       </div>
   {/if}
 </div>

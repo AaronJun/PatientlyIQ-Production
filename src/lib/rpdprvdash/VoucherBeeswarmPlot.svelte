@@ -1,15 +1,21 @@
+<!-- VoucherBeeswarmPlot.svelte -->
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
-  
+  import { Medication } from 'carbon-icons-svelte';
+
   export let data: any[];
-  export let onPointClick: (data: any) => void;
+  export let onPointClick: (data: any) => void = () => {};
+  export let highlightedTransaction: { seller: string, buyer: string } | null = null;
   
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    transactionHover: { seller: string, buyer: string };
+    transactionLeave: void;
+  }>();
   
   let svg;
-  let g;
-  let simulation;
+  let container;
+  let circles;
   let tooltipVisible = false;
   let tooltipX = 0;
   let tooltipY = 0;
@@ -17,171 +23,156 @@
     buyer: '',
     seller: '',
     price: '',
-    drugName: ''
+    drugName: '',
+    date: '',
+    therapeuticArea: ''
   };
-  let tooltipBorderColor = '';
   
-  const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+  const margin = { top: 20, right: 20, bottom: 30, left: 60 };
   let width: number;
   let height: number;
+
+  const therapeuticAreaColorScale = d3.scaleOrdinal()
+    .domain([
+        'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+        'Cardiovascular', 'Pulmonology', 'Hematology',
+        'Endocrinology', 'Genetic', 'Immunology',
+        'Gastroenterology', 'Hepatology', 'Dermatology',
+        'Neonatology', 'Urology'
+    ])
+    .range([
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+        '#FFEEAD', '#D4A5A5', '#9DE0AD',
+        '#FF9F1C', '#2EC4B6', '#E71D36',
+        '#FDFFB6', '#CBE896', '#FFA07A',
+        '#98D8C8', '#B8B8D1'
+    ]);
+
+  $: if (highlightedTransaction && circles) {
+    highlightPoints(highlightedTransaction);
+  } else if (circles) {
+    resetHighlight();
+  }
+
+  function highlightPoints(transaction: { seller: string, buyer: string }) {
+    circles
+      .style("opacity", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2
+      )
+      .attr("r", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 8 : 5
+      )
+      .attr("stroke-width", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 2 : 1
+      );
+  }
+
+  function resetHighlight() {
+    if (!circles) return;
+    circles
+      .style("opacity", 1)
+      .attr("r", 5)
+      .attr("stroke-width", 1);
+  }
   
   function updateDimensions() {
-    const container = d3.select("#beeswarm-container").node();
     if (!container) return;
     
-    width = container.getBoundingClientRect().width - margin.left - margin.right - 100;
-    height = 420 - margin.top - margin.bottom;
+    const containerRect = container.getBoundingClientRect();
+    width = containerRect.width - margin.left - margin.right;
+    height = containerRect.height - margin.top - margin.bottom;
     
     if (svg) {
       svg.attr("width", width + margin.left + margin.right)
          .attr("height", height + margin.top + margin.bottom);
       
-      const purchasedVouchers = data.filter(d => 
-        d.Purchased === "Y" && d["Sale Price (USD, Millions)"]
-      ).map(d => ({
-        ...d,
-        "Sale  Price (USD, Millions)": d["Sale Price (USD, Millions)"],
-        "Drug Name": d.Candidate,
-        Sponsor: d.Company,
-        name: d.TherapeuticArea1
-      }));      
-      const prices = purchasedVouchers.map(d => parseFloat(d["Sale  Price (USD, Millions)"]));
-      
-      const x = d3.scaleLinear()
-        .domain([0, d3.max(prices)])
-        .range([0, width]);
-  
-      g.select(".axis")
-        .call(d3.axisBottom(x))
-        .call(g => {
-          const ticks = g.selectAll(".tick");
-          ticks.each(function(d, i) {
-            if (i === 0 || i === ticks.size() - 1) {
-              d3.select(this).select("line").remove();
-            }
-          });
-          g.select(".domain").attr("stroke", "#161616").attr("stroke-width", "0.5px");
-        });
-  
-      if (simulation) {
-        simulation
-          .force("x", d3.forceX(d => x(parseFloat(d["Sale  Price (USD, Millions)"]))).strength(1))
-          .force("y", d3.forceY(height));
-        
-        simulation.alpha(1).restart();
-      }
+      createVisualization();
     }
   }
   
-  onMount(() => {
-    const purchasedVouchers = data.filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]);
-    const prices = purchasedVouchers.map(d => parseFloat(d["Sale  Price (USD, Millions)"]));
+  function createVisualization() {
+    const purchasedVouchers = data.filter(d => 
+      d.Purchased === "Y" && d["Sale Price (USD Millions)"]
+    );
     
-    svg = d3.select("#beeswarm-plot")
-      .append("svg");
+    const prices = purchasedVouchers.map(d => parseFloat(d["Sale Price (USD Millions)"]));
     
-    g = svg.append("g")
+    // Clear previous content
+    svg.selectAll("*").remove();
+    
+    const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
-    
-    updateDimensions();
-    
-    const x = d3.scaleLinear()
+
+    const y = d3.scaleLinear()
       .domain([0, d3.max(prices)])
-      .range([0, width]);
-  
-    simulation = d3.forceSimulation(purchasedVouchers)
-      .force("x", d3.forceX(d => x(parseFloat(d["Sale  Price (USD, Millions)"]))).strength(1))
-      .force("y", d3.forceY(height / 2))
-      .force("collide", d3.forceCollide(10.25))
+      .range([height, 0])
+      .nice();
+
+    // Create simulation
+    const simulation = d3.forceSimulation(purchasedVouchers)
+      .force("y", d3.forceY(d => y(parseFloat(d["Sale Price (USD Millions)"]))).strength(1))
+      .force("x", d3.forceX(width/2))
+      .force("collide", d3.forceCollide(6))
       .stop();
-  
+
+    // Run simulation
     for (let i = 0; i < 120; ++i) simulation.tick();
-  
+
+    // Add y-axis
     g.append("g")
-      .attr("class", "axis")
-      .attr("transform", `translate(0,${height-12})`)
-      .call(d3.axisBottom(x))
-      .call(g => {
-        const ticks = g.selectAll(".tick");
-        ticks.each(function(d, i) {
-          if (i === 0 || i === ticks.size() - 1) {
-            d3.select(this).select("line").remove();
-          }
-        });
-        g.select(".domain").attr("stroke", "#161616").attr("stroke-width", "0.5px");
-      });
-  
-    const minPrice = d3.min(prices);
-    const maxPrice = d3.max(prices);
-  
-    g.selectAll("circle")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y)
+        .tickFormat(d => `$${d}M`)
+        .ticks(8))
+      .call(g => g.select(".domain").attr("stroke", "#565656"));
+
+    // Add points
+    circles = g.selectAll("circle")
       .data(purchasedVouchers)
-      .enter()
-      .append("circle")
+      .join("circle")
       .attr("cx", d => d.x)
       .attr("cy", d => d.y)
-      .attr("r", 9.25)
-      .attr("fill", d => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
-        if (isNaN(price)) return "#EAE1CD";
-        if (d.Purchaser.toLowerCase() === 'undisclosed' || d.Sponsor.toLowerCase() === 'undisclosed') {
-          return "#BFD3CF";
-        }
-        if (price === minPrice) return "#E59F64";
-        if (price === maxPrice) return "#00EDC6";
-        return "#00A887";
-      })
-      .attr("stroke", d => {
-        if (d.Purchaser.toLowerCase() === 'undisclosed' || d.Sponsor.toLowerCase() === 'undisclosed') {
-          return "#a8a8a8";
-        }
-        return "#a8a8a8";
-      })
-      .attr("stroke-width", 0.5)
-      .attr("stroke-dasharray", d => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
-        return isNaN(price) ? "2,2" : "none";
-      })
+      .attr("r", 5)
+      .attr("fill", d => therapeuticAreaColorScale(d.TherapeuticArea1))
+      .attr("stroke", "#565656")
+      .attr("stroke-width", 1)
       .attr("cursor", "pointer")
-      .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget)
-          .attr("stroke", "#ff1515")
-          .attr("stroke-width", 2.25)
-          .attr("stroke-dasharray", "none");
+      .on("mouseenter", (event, d) => {
+        dispatch('transactionHover', {
+          seller: d.Company,
+          buyer: d.Purchaser
+        });
 
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
         tooltipContent = {
-          drugName: d["Drug Name"] || 'N/A',
-          seller: d.Sponsor || 'N/A',
+          drugName: d.Candidate || 'N/A',
+          seller: d.Company || 'N/A',
           buyer: d.Purchaser || 'N/A',
-          price: price ? `$${price.toFixed(1)}M` : 'Undisclosed'
+          price: `$${d["Sale Price (USD Millions)"]}M`,
+          date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`,
+          therapeuticArea: d.TherapeuticArea1
         };
-        tooltipBorderColor = price === maxPrice ? "#0D312B" : 
-                            price === minPrice ? "#00EDC6" : 
-                            "#00A887";
-                    tooltipX = event.pageX - 320; 
-                    tooltipY = event.pageY - 225;
+
+        const rect = container.getBoundingClientRect();
+        tooltipX = event.pageX - rect.left;
+        tooltipY = event.pageY - rect.top;
         tooltipVisible = true;
       })
-      .on("mouseout", (event, d) => {
-        d3.select(event.currentTarget)
-          .attr("stroke", "#a8a8a8")
-          .attr("stroke-width", 0.5)
-          .attr("stroke-dasharray", d => {
-            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
-            return isNaN(price) ? "2,2" : "none";
-          });
+      .on("mouseleave", () => {
+        dispatch('transactionLeave');
         tooltipVisible = false;
       })
       .on("click", (event, d) => {
-        if (onPointClick) {
-          event.stopPropagation();
-          onPointClick(d);
-        }
+        event.stopPropagation();
+        onPointClick(d);
       });
+  }
   
+  onMount(() => {
+    svg = d3.select("#beeswarm-plot").append("svg");
+    updateDimensions();
+    
     const resizeObserver = new ResizeObserver(updateDimensions);
-    resizeObserver.observe(d3.select("#beeswarm-container").node());
+    resizeObserver.observe(container);
     
     return () => {
       resizeObserver.disconnect();
@@ -189,84 +180,63 @@
   });
 </script>
 
-<div class="beeswarm-wrapper">
-  <div id="beeswarm-container">
-    <div id="beeswarm-plot"></div>
-  </div>
+<div 
+  class="beeswarm-wrapper h-full"
+  bind:this={container}
+>
+  <div id="beeswarm-plot" class="h-full"></div>
+
+  {#if tooltipVisible}
+    <div
+      class="tooltip"
+      style="left: {tooltipX}px; top: {tooltipY}px;"
+    >
+      <div class="tooltip-content">
+        <div class="font-semibold text-slate-800 border-b pb-2 mb-2">
+          {tooltipContent.seller} → {tooltipContent.buyer}
+        </div>
+        <div class="flex gap-2 items-baseline align-middle mb-2">
+          <Medication size={16}/>
+          <span class="text-sm">{tooltipContent.drugName}</span>
+        </div>
+        <div class="text-slate-600">Transaction Value: {tooltipContent.price}</div>
+        <div class="text-slate-600">Date: {tooltipContent.date}</div>
+        <div class="text-slate-600">Area: {tooltipContent.therapeuticArea}</div>
+      </div>
+    </div>
+  {/if}
 </div>
 
-{#if tooltipVisible}
-  <div
-    class="tooltip"
-    style="left: {tooltipX}px; top: {tooltipY}px; --border-color: {tooltipBorderColor};"
-  >
-    <div class="tooltip-content">
-      <div class="entry-title">
-        <p class="text-base font-semibold mb-1">
-          {tooltipContent.drugName}
-        </p>    
-      </div>
-      <div class="entry-bottom">
-        <p class="text-sm font-semibold text-gray-500 mb-4">
-          {tooltipContent.seller} → {tooltipContent.buyer}
-        </p>
-      </div>
-      <div class="entry-bottom">
-        <p class="text-xs font-semibold font-mono text-gray-500 mt-2 "> Reported Price</p>
-        <p class="text-sm/2 font-bold">
-          {tooltipContent.price}
-        </p>
-        <p class="text-xs font-semibold font-mono mt-6 text-green-600">
-          Click to view more details  →
-        </p>      </div>
-    </div>
-  </div>
-{/if}
-
 <style>
-  .beeswarm-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  #beeswarm-container {
-    width: 100%;
-    position: relative;
-  }
 
   #beeswarm-plot {
     width: 100%;
+    height: 100%;
   }
 
   .tooltip {
-    position: fixed;
-    margin: 2rem 0 0 2rem;
-    background-color: rgba(255, 255, 255, 0.962);    
-    border: .5px solid #373737;
-    padding: 1rem .5rem .5rem .5rem;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
     pointer-events: none;
     z-index: 1000;
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 200px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translate(-50%, -100%);
   }
 
-  .tooltip::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: .625rem;
-    background-color: var(--border-color);
+  :global(.y-axis path) {
+    stroke: #e2e8f0;
   }
 
-  .tooltip-content {
-    margin-top: 4px;
+  :global(.y-axis line) {
+    stroke: #e2e8f0;
   }
 
-  .entry-bottom {
-    margin-bottom: 0.425rem;
+  :global(.y-axis text) {
+    fill: #4a5568;
+    font-size: 10px;
   }
 </style>
