@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
-  import { Medication } from 'carbon-icons-svelte';
+  import { Medication, Money, CalendarHeatMap } from 'carbon-icons-svelte';
 
   export let data: any[];
   export let onPointClick: (data: any) => void = () => {};
@@ -23,7 +23,7 @@
     buyer: '',
     seller: '',
     price: '',
-    drugName: '',
+    candidate: '',
     date: '',
     therapeuticArea: ''
   };
@@ -110,7 +110,7 @@
 
     // Create simulation
     const simulation = d3.forceSimulation(purchasedVouchers)
-      .force("y", d3.forceY(d => y(parseFloat(d["Sale Price (USD Millions)"]))).strength(1))
+      .force("y", d3.forceY(d => y(parseFloat(d["Sale Price (USD Millions)"]))).strength(2.25))
       .force("x", d3.forceX(width/2))
       .force("collide", d3.forceCollide(6))
       .stop();
@@ -143,17 +143,17 @@
         });
 
         tooltipContent = {
-          drugName: d.Candidate || 'N/A',
+          candidate: d.Candidate || 'N/A',
           seller: d.Company || 'N/A',
           buyer: d.Purchaser || 'N/A',
-          price: `$${d["Sale Price (USD Millions)"]}M`,
+          price: `${d["Sale Price (USD Millions)"]}M`,
           date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`,
           therapeuticArea: d.TherapeuticArea1
         };
 
         const rect = container.getBoundingClientRect();
-        tooltipX = event.pageX - rect.left;
-        tooltipY = event.pageY - rect.top;
+        tooltipX = event.clientX - rect.left;
+        tooltipY = event.clientY - rect.top;
         tooltipVisible = true;
       })
       .on("mouseleave", () => {
@@ -186,23 +186,33 @@
   <div id="beeswarm-plot" class="h-full"></div>
 
   {#if tooltipVisible}
-    <div
-      class="tooltip"
-      style="left: {tooltipX}px; top: {tooltipY}px;"
-    >
-      <div class="tooltip-content">
-        <div class="font-semibold text-slate-800 border-b pb-2 mb-2">
-          {tooltipContent.seller} → {tooltipContent.buyer}
-        </div>
-        <div class="flex gap-2 items-baseline align-middle mb-2">
-          <Medication size={16}/>
-          <span class="text-sm">{tooltipContent.drugName}</span>
-        </div>
-        <div class="text-slate-600">Transaction Value: {tooltipContent.price}</div>
-        <div class="text-slate-600">Date: {tooltipContent.date}</div>
-        <div class="text-slate-600">Area: {tooltipContent.therapeuticArea}</div>
+      <div
+          class="absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
+          style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%)"
+      >
+      <div class="font-semibold text-base text-slate-800 mb-4">{tooltipContent.seller} → {tooltipContent.buyer}</div>
+      
+      <div class="flex gap-4 text-slate-600 items-baseline">
+        <Medication size="14" class="text-slate-600" />
+        <p class="font-semibold text-sm">
+          {tooltipContent.candidate}
+        </p>
       </div>
-    </div>
+
+      <div class="flex gap-4 items-baseline">
+        <Money size="14" class="text-gray-800" />
+        <p class="text-sm">
+          ${tooltipContent.price}        
+        </p>
+      </div>
+    
+      <div class="flex gap-4 items-baseline">
+        <CalendarHeatMap size="14" class="text-gray-800" />
+        <p class="text-sm">
+          {tooltipContent.date}
+        </p>
+      </div>
+      </div>
   {/if}
 </div>
 

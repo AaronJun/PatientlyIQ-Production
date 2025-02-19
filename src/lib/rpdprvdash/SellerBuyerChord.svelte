@@ -167,7 +167,7 @@
           .style("mix-blend-mode", "multiply")
           .style("opacity", 0.6)
           .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
-          .attr("stroke-width", .5)
+          .attr("stroke-width", 2.5)
           .on("mouseenter", (event, d) => {
               const transaction = transactions.find(t => 
                   t.Company === companies[d.source.index] && 
