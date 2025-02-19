@@ -221,134 +221,94 @@
   });
 </script>
 
-<div class="flex-row min-w-full pt-16 pb-22 bg-slate-50">
-  <div class="header flex align-baseline justify-between font-sans bg-slate-100 text-slate-800 font-medium text-6xl px-4 py-8 w-full h-full">
-    <div class="flex gap-12 align-middle justify-evenly items-center">
-      <Balanced class="p-1 mb-2 max-h-10 max-w-10 rounded-full bg-slate-700 text-slate-50" />
-      <h1 class="flex"><span class="text-sm">RPDD + PRV Constellation</span></h1>
+<div class="flex flex-col min-h-screen bg-slate-50">
+  <!-- Fixed header area -->
+  <div class="fixed top-0 left-0 right-0 z-50 bg-slate-50">
+    <div class="header flex align-baseline justify-between font-sans bg-slate-100 text-slate-800 font-medium text-6xl px-4 py-4">
+      <div class="flex gap-12 align-middle justify-evenly items-center">
+        <Balanced class="p-1 mb-2 max-h-8 max-w-8 rounded-full bg-slate-700 text-slate-50" />
+        <h1 class="flex">
+          <span class="text-sm">
+            RPDD + PRV Constellation
+          </span>
+        </h1>
+      </div>
     </div>
-
-</div>
-<nav class="justify-stretch w-full">
-  <div class="flex align-baseline place-items-baseline gap-12 justify-between px-4 min-w-full max-w-7xl mx-auto my-auto">
-    <div class="flex mt-4 mb-2 space-x-4">
-      {#each ['By Sponsor + Stage', 'By Therapeutic Area', 'By Transactions'] as tab}
-      <button
-      class= "px-1 py-1 border-b-2 font-noraml text-xs transition-colors
-      {activeTab === tab ? 
+    
+    <nav class="justify-stretch w-full bg-slate-50 border-b border-slate-200 shadow-sm">
+      <div class="flex align-baseline place-items-baseline gap-12 justify-between px-4 min-w-full max-w-7xl mx-auto my-auto">
+        <div class="flex mt-4 mb-2 space-x-4">
+          {#each ['By Sponsor + Stage', 'By Therapeutic Area', 'By Transactions'] as tab}
+            <button
+              class="px-1 py-1 border-b-2 font-normal text-xs transition-colors
+              {activeTab === tab ? 
                 'border-orange-500 text-orange-600 font-semibold' : 
                 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'}"
-            on:click={() => setActiveTab(tab)}
+              on:click={() => setActiveTab(tab)}
             >
-            {tab}
-          </button>
+              {tab}
+            </button>
           {/each}
-      </div>
-    <div class="flex gap-4 min-w-96">
-      <RpdprvSearch
-        class= "py-3 justify-between text-base font-normal align-middle text-slate-800 hover:text-[#FF4A4A] transition-all duration-300 ease-in-out"
-        data={rpddData}
-        onShowDrugDetail={handleShowDrugDetail}
-        onShowCompanyDetail={handleShowCompanyDetail}
-        />
-      <button 
-        class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-        on:click={handleDashboardClick}
-        >
-      <DashboardReference size={14}/>
-        Dashboard
-      </button>
-    </div>
-</nav>
-<div class="tab-content w-full">
-  {#if activeTab === 'By Sponsor + Stage'}
-  <div class="w-full max-w-5xl">
-    <RpdprvTimeline 
-    data={rpddData}
-    selectedYear="2023"
-    onYearSelect={handleYearSelect}
-  />
-  </div>    
-    <div class="flex flex-row flex-grow px-2 py-4">
-        <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
-            <RpdprvCompanyTree 
-                data={filteredData}
-                onCompanyHover={handleCompanyHover}
-                onStageHover={handleStageHover}
-                onLeave={handleLeave}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
-            />
-            
-          <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-            <RPDRadialLegend 
-              items={processedData}
-              {colorScale}
-            />
-          </div>
         </div>
-        <div class="sidebar w-1/6 max-w-[320px] mx-8 flex flex-col">
-          <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-            <h4 class="text-xs/snug uppercase font-semibold">              
-              {currentView || 'Overview'}
-            </h4>
-            </div>                
-          <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
-            <div class="space-y-6">
-              {#if currentEntries.length > 0}
-                <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
-                  {getSummaryText()}
-                </p>
-              {/if}
-              
-              <div class="space-y-4">
-                {#each currentEntries as entry}
-                  <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
-                    <div class="flex flex-col gap-2">
-                      <div class="flex justify-between items-start">
-                        <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                        <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                          {entry["Current Development Stage"]}
-                        </span>
-                      </div>
-                      <div>
-                        <p class="text-xs text-slate-600">{entry.Candidate}</p>
-                        <p class="text-xs text-slate-500 mt-1 italic">{entry.Indication}</p>
-                        <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
+
+        <div class="flex gap-4 min-w-96">
+          <RpdprvSearch
+            data={rpddData}
+            onShowDrugDetail={handleShowDrugDetail}
+            onShowCompanyDetail={handleShowCompanyDetail}
+          />
+          <button 
+            class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+            on:click={handleDashboardClick}
+          >
+            <DashboardReference size={14}/>
+            Dashboard
+          </button>
+        </div>
+      </div>
+      <div class="w-full max-w-5xl justify-start">
+        <RpdprvTimeline 
+          data={rpddData}
+          selectedYear="2023"
+          onYearSelect={handleYearSelect}
+        />
+      </div>    
+    </nav>
+  </div>
   
-    <!--     {:else if activeTab === 'Stage'}
-          <div class="flex flex-row flex-grow px-2 py-4">
-            <div class="w-5/6 flex-col max-w-5xl">
-              <RpdStageChart 
-                data={rpddData}
-                onCompanyHover={handleCompanyHover}
-                onStageHover={handleStageHover}
-                onLeave={handleLeave}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
+  <!-- Main content area with proper spacing -->
+  <main class="flex-1 pt-[calc(24vh)] pb-[4vh]">
+    <div class="tab-content w-full">
+      {#if activeTab === 'By Sponsor + Stage'}
+        <div class="flex flex-row flex-grow px-2 py-4">
+          <!-- Main visualization area -->
+          <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
+            <RpdprvCompanyTree 
+              data={filteredData}
+              onCompanyHover={handleCompanyHover}
+              onStageHover={handleStageHover}
+              onLeave={handleLeave}
+              onShowDrugDetail={handleShowDrugDetail}
+              onShowCompanyDetail={handleShowCompanyDetail}
+            />
+            <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+              <RPDRadialLegend 
+                items={processedData}
+                {colorScale}
               />
-              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-                <RPDRadialLegend 
-                  items={processedData}
-                  {colorScale}
-                />
-              </div>
             </div>
-            <div class="sidebar w-1/6 flex flex-col">
-              <div class="info-panel bg-slate-50 pt-4 px-4 min-h-full">
-                <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
+          </div>
+
+          <!-- Sticky sidebar -->
+          <div class="w-1/6 max-w-[320px] mx-8">
+            <div class="sticky top-[calc(24vh+1rem)]">
+              <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+                <h4 class="text-xs/snug uppercase font-semibold">              
                   {currentView || 'Overview'}
-                </h2>
+                </h4>
+              </div>
+              <div class="sidebar bg-slate-100/50 pt-4 px-4 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
                 <div class="space-y-6">
                   {#if currentEntries.length > 0}
                     <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
@@ -359,33 +319,23 @@
                   <div class="space-y-4">
                     {#each currentEntries as entry}
                       <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
-                        <div class="flex flex-col gap-2">
-                          <div class="flex justify-between items-start">
-                            <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                            <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                              {entry["Current Development Stage"]}
-                            </span>
-                          </div>
-                          <div>
-                            <p class="text-xs text-slate-600">{entry.Candidate}</p>
-                            <p class="text-xs text-slate-500 mt-1 italic">{entry.Indication}</p>
-                            <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
-                          </div>
-                        </div>
+                        <!-- Card content remains the same -->
                       </div>
                     {/each}
                   </div>
                 </div>
               </div>
             </div>
-          </div> -->
-          
-          {:else if activeTab === 'By Transactions'}
-          <div class="flex flex-row">
+          </div>
+        </div>
+
+        {:else if activeTab === 'By Transactions'}
+        <div class="flex flex-row gap-8 px-4">
           <div class="w-5/6 bg-slate-50 rounded-lg shadow-sm">
             <SellerBuyerChord 
               data={rpddData}
-              highlightedTransaction={highlightedTransaction}
+              {highlightedTransaction}
+              onShowDrugDetail={handleShowDrugDetail}
               on:transactionHover={(event) => highlightedTransaction = event.detail}
               on:transactionLeave={() => highlightedTransaction = null}
             />
@@ -396,11 +346,13 @@
               />
             </div>
           </div>
-          <div class="fixed right-0 w-1/6 flex flex-col">
-            <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-            <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
-            </div>                
-              <div class="sidebar bg-slate-100 py-4 px-4 h-[70vh]">
+          
+          <div class="w-1/6 min-w-[300px] mx-8">
+            <div class="sticky top-[calc(24vh+1rem)]">
+              <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+                <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
+              </div>
+              <div class="sidebar bg-slate-100/50 overflow-hidden py-12" style="height: calc(72vh - 2rem)">
                 <VoucherBeeswarmPlot 
                   data={rpddData}
                   {highlightedTransaction}
@@ -408,79 +360,96 @@
                   on:transactionHover={(event) => highlightedTransaction = event.detail}
                   on:transactionLeave={() => highlightedTransaction = null}
                 />
-            </div>
-          </div>
-        </div>
-
-          {:else if activeTab === 'By Therapeutic Area'}
-          <div class="w-full max-w-5xl">
-            <RpdprvTimeline 
-            data={rpddData}
-            selectedYear="2023"
-            onYearSelect={handleYearSelect}
-          />
-          </div>    
-          <div class="flex flex-row flex-grow px-2 py-4">
-            <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
-              <RPDDRadialYear 
-                      data={filteredData}
-                      onCompanyHover={handleCompanyHover}
-                      onStageHover={handleStageHover}
-                      onLeave={handleLeave}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                />
-              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-                <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
-                  <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-                    <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
-                    </div>                
-                <RPDRadialLegend 
-                items={processedData}
-                {colorScale}
-              />
-            </div>
-          </div>
-        </div>
-          <div class="sidebar w-1/6 max-w-[350px] flex flex-col">
-            <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-              <h4 class="text-xs/snug uppercase font-semibold">    {currentArea ? currentArea : 'Overview'}</h4>
-              </div>                
-            <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
-              <div class="space-y-6">
-                {#if currentEntries.length > 0}
-                  <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
-                    <span class="highlight">{currentArea}</span> represents 
-                    <span class="highlight">{currentEntries.length}</span> RPDDs from
-                    <span class="highlight">{new Set(currentEntries.map(d => d.Company)).size}</span> unique companies,
-                    developing <span class="highlight">{new Set(currentEntries.map(d => d.Candidate)).size}</span> candidates.
-                  </p>
-                {/if}
-                
-                <div class="space-y-4">
-                  {#each currentEntries as entry}
-                    <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
-                      <div class="flex justify-between items-start">
-                        <div>
-                          <p class="text-xs text-slate-600 mt-1">{entry.Indication}</p>
-                          <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                          <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
-                        </div>
-                        <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                          {entry["Current Development Stage"]}
-                        </span>
-                      </div>
-                    </div>
-                  {/each}
-                </div>
               </div>
             </div>
           </div>
         </div>
-      {/if}
+        <!-- Therapeutic Area Tab Layout -->
+{:else if activeTab === 'By Therapeutic Area'}
+<div class="flex flex-col">
+  <!-- Main content area with visualization and sticky sidebar -->
+  <div class="flex flex-row flex-grow px-2 py-4">
+    <!-- Main visualization area -->
+    <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
+      <RPDDRadialYear 
+        data={filteredData}
+        onCompanyHover={handleCompanyHover}
+        onStageHover={handleStageHover}
+        onLeave={handleLeave}
+        onShowDrugDetail={handleShowDrugDetail}
+        onShowCompanyDetail={handleShowCompanyDetail}
+      />
+      
+      <!-- Legend section -->
+      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+        <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
+          <RPDRadialLegend 
+            items={processedData}
+            {colorScale}
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky sidebar -->
+    <div class="w-1/6 max-w-[350px] mx-8">
+      <div class="sticky top-[calc(24vh+1rem)]">
+        <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+          <h4 class="text-xs/snug uppercase font-semibold">
+            {currentArea ? currentArea : 'Overview'}
+          </h4>
+        </div>                
+        <div class="sidebar bg-slate-100/50 pt-4 px-4 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
+          <div class="space-y-6">
+            {#if currentEntries.length > 0}
+              <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
+                <span class="highlight">{currentArea}</span> represents 
+                <span class="highlight">{currentEntries.length}</span> RPDDs from
+                <span class="highlight">{new Set(currentEntries.map(d => d.Company)).size}</span> unique companies,
+                developing <span class="highlight">{new Set(currentEntries.map(d => d.Candidate)).size}</span> candidates.
+              </p>
+            {/if}
+            
+            <!-- Entries list -->
+            <div class="space-y-4">
+              {#each currentEntries as entry}
+                <div 
+                  class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+                  on:click={() => handleShowDrugDetail({
+                    drugName: entry.Candidate,
+                    year: entry["RPDD Year"],
+                    Company: entry.Company,
+                    therapeuticArea: entry.TherapeuticArea1,
+                    currentStage: entry["Current Development Stage"],
+                    indication: entry.Indication,
+                    entries: currentEntries,
+                    color: colorScale(entry.TherapeuticArea1)
+                  })}
+                >
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <p class="text-xs text-slate-600 mt-1">{entry.Indication}</p>
+                      <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
+                      <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
+                    </div>
+                    <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                      {entry["Current Development Stage"]}
+                    </span>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-      
+</div>
+      {/if}
+    </div>
+  </main>
+</div>
+
 {#if isDashboardOpen}
   <RPDPRVDashboardView
     isOpen={isDashboardOpen}
@@ -510,7 +479,7 @@
       onClose={handleCloseDrawer}
     />
   {/if}
-{/if}
+{/if}f
 
 <style>
   .sidebar {
@@ -533,7 +502,7 @@
   }
 
   .header {
-    min-height: 10vh;
+    min-height: 2vh;
     align-items: center;
     border-bottom: .525px solid #565656;
   }

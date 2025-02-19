@@ -410,26 +410,31 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
       </div>
     </div>
 
-    {#if isDrawerOpen && selectedData}
-      <RPDDrawer
-        isOpen={isDrawerOpen}
-        onClose={closeDrawer}
-        data={selectedData}
-        color={selectedColor}
-        constellationData={processedConstellationData}
+    {#if isDashboardOpen}
+    <RPDPRVDashboardView
+      isOpen={isDashboardOpen}
+      onClose={handleDashboardClose}
+      onShowDrugDetail={handleShowDrugDetail}
+    />
+  {/if}
+  
+  {#if isDrawerOpen}
+    {#if !drawerProps.isCompanyView}
+      <RPDPRVDrawer
+        {...drawerProps}
+        {isDrawerOpen}
+        onClose={handleCloseDrawer}
+        onShowCompanyDetail={handleShowCompanyDetail}
+      />
+    {:else}
+      <RpdprvCompanyDrawer
+        {...drawerProps}
+        {isDrawerOpen}
+        onClose={handleCloseDrawer}
       />
     {/if}
-
-    {#if isProgramInfoDrawerOpen}
-      <TextDrawer 
-        isOpen={isProgramInfoDrawerOpen}
-        onClose={closeProgramInfoDrawer}
-        content={RpdProgramInfoMd}
-        contentType="ts"
-        color="#C9623F"
-      />
-    {/if}
-
+  {/if}
+  
   </div>
 </div>
 

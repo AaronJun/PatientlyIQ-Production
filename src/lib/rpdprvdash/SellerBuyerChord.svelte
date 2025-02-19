@@ -1,11 +1,13 @@
 <!-- SellerBuyerChord.svelte -->
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
   import * as d3 from 'd3';
-  import { CalendarHeatMap, Medication, Money } from 'carbon-icons-svelte';
+  import { CalendarHeatMap, Medication, Money, Catalog } from 'carbon-icons-svelte';
 
   export let data: any[] = [];
   export let highlightedTransaction: { seller: string, buyer: string } | null = null;
+  export let onShowDrugDetail: (detail: any) => void;
 
   const dispatch = createEventDispatcher<{
     transactionHover: { seller: string, buyer: string };
@@ -18,12 +20,20 @@
   let companyData: Map<string, any>;
   let transactions: any[];
   let tooltipVisible = false;
-  let tooltipContent = {
-      seller: '',
-      buyer: '',
-      Candidate: '',
-      amount: '',
-      date: ''
+  let tooltipContent: {
+    type: 'transaction' | 'company';
+    seller?: string;
+    buyer?: string;
+    Candidate?: string;
+    amount?: string;
+    date?: string;
+    companyName?: string;
+    transactionCount?: number;
+    totalValue?: number;
+    candidates?: string[];
+    isUndisclosed?: boolean;
+  } = {
+    type: 'transaction'
   };
   let tooltipX = 0;
   let tooltipY = 0;
@@ -31,31 +41,74 @@
   const width = 982;
   const height = 982;
   const labelConfig = {
-      radius: Math.min(width, height) * 0.40,
-      padding: 15,
-      minAngleDiff: Math.PI / 32
+    radius: Math.min(width, height) * 0.40,
+    padding: 15,
+    minAngleDiff: Math.PI / 32
   };
 
   const therapeuticAreaColorScale = d3.scaleOrdinal()
     .domain([
-        'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
-        'Cardiovascular', 'Pulmonology', 'Hematology',
-        'Endocrinology', 'Genetic', 'Immunology',
-        'Gastroenterology', 'Hepatology', 'Dermatology',
-        'Neonatology', 'Urology'
+      'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+      'Cardiovascular', 'Pulmonology', 'Hematology',
+      'Endocrinology', 'Genetic', 'Immunology',
+      'Gastroenterology', 'Hepatology', 'Dermatology',
+      'Neonatology', 'Urology'
     ])
     .range([
-        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-        '#FFEEAD', '#D4A5A5', '#9DE0AD',
-        '#FF9F1C', '#2EC4B6', '#E71D36',
-        '#FDFFB6', '#CBE896', '#FFA07A',
-        '#98D8C8', '#B8B8D1'
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+      '#FFEEAD', '#D4A5A5', '#9DE0AD',
+      '#FF9F1C', '#2EC4B6', '#E71D36',
+      '#FDFFB6', '#CBE896', '#FFA07A',
+      '#98D8C8', '#B8B8D1'
     ]);
 
   $: if (highlightedTransaction && ribbons) {
     highlightRibbon(highlightedTransaction);
   } else if (ribbons) {
     resetHighlight();
+  }
+
+  function handleNodeClick(event: MouseEvent, d: any) {
+    event.stopPropagation();
+    onShowDrugDetail({
+      drugName: d.Candidate,
+      year: d["RPDD Year"],
+      Company: d.Company,
+      therapeuticArea: d.TherapeuticArea1,
+      entries: data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1),
+      color: therapeuticAreaColorScale(d.TherapeuticArea1),
+      currentStage: d["Current Development Stage"] || "TBD",
+      indication: d.Indication || "",
+      rpddAwardDate: d["RPDD Year"],
+      voucherAwardDate: d["PRV Issue Year"] || "",
+      treatmentClass: d.Class1 || "TBD",
+      mechanismOfAction: d.MOA || "TBD",
+      companyUrl: d["Link to CrunchBase"] || ""
+    });
+  }
+
+  function handleCompanyHover(event: MouseEvent, company: string) {
+    const companyTransactions = transactions.filter(t => 
+      t.Company === company || t.Purchaser === company
+    );
+    
+    const totalValue = companyTransactions.reduce((sum, t) => {
+      const price = t["Sale Price (USD Millions)"];
+      return sum + (price === "Undisclosed" ? 0 : parseFloat(price));
+    }, 0);
+
+    const candidates = [...new Set(companyTransactions.map(t => t.Candidate))];
+
+    tooltipContent = {
+      type: 'company',
+      companyName: company,
+      transactionCount: companyTransactions.length,
+      totalValue,
+      candidates
+    };
+
+    updateTooltipPosition(event);
+    tooltipVisible = true;
   }
 
   function highlightRibbon(transaction: { seller: string, buyer: string }) {
@@ -87,252 +140,390 @@
       .style("opacity", 0.25)
       .attr("stroke-width", 0.5);
 
-    // Reset node highlighting
     d3.selectAll("circle.voucher-node")
       .style("opacity", 0.9)
       .attr("r", 8);
   }
 
   function getLabelPosition(angle: number) {
-      const labelRadius = labelConfig.radius + 20;
-      const x = Math.cos(angle - Math.PI / 2) * labelRadius;
-      const y = Math.sin(angle - Math.PI / 2) * labelRadius;
-      const rotate = (angle * 180 / Math.PI - 90) + (angle > Math.PI ? 180 : 0);
-      return { x, y, rotate };
+    const labelRadius = labelConfig.radius + 20;
+    const x = Math.cos(angle - Math.PI / 2) * labelRadius;
+    const y = Math.sin(angle - Math.PI / 2) * labelRadius;
+    const rotate = (angle * 180 / Math.PI - 90) + (angle > Math.PI ? 180 : 0);
+    return { x, y, rotate };
+  }
+
+  function isUndisclosed(value: any): boolean {
+    return value === "Undisclosed";
+  }
+
+  let tooltipTimeout: number;
+  let lastTooltipUpdate = 0;
+  let lastTooltipPosition = { x: 0, y: 0 };
+  const TOOLTIP_DEBOUNCE = 50; // ms
+  const POSITION_THRESHOLD = 5; // pixels
+  const POSITION_UPDATE_THRESHOLD = 100; // ms
+
+  function updateTooltipPosition(event: MouseEvent) {
+    const currentTime = Date.now();
+    const rect = svg.getBoundingClientRect();
+    const newX = event.clientX - rect.left;
+    const newY = event.clientY - rect.top;
+    
+    // Check if we've moved enough to warrant an update
+    const distance = Math.sqrt(
+      Math.pow(newX - lastTooltipPosition.x, 2) + 
+      Math.pow(newY - lastTooltipPosition.y, 2)
+    );
+    
+    if (distance < POSITION_THRESHOLD && 
+        currentTime - lastTooltipUpdate < POSITION_UPDATE_THRESHOLD) {
+      return;
+    }
+
+    const svgPoint = d3.select(svg).node().createSVGPoint();
+    svgPoint.x = newX;
+    svgPoint.y = newY;
+    
+    // Transform the point from screen to SVG coordinates
+    const transformedPoint = svgPoint.matrixTransform(
+      d3.select(svg).node().getScreenCTM().inverse()
+    );
+    
+    tooltipX = newX;
+    tooltipY = newY;
+    lastTooltipPosition = { x: newX, y: newY };
+    lastTooltipUpdate = currentTime;
+  }
+
+  function showTooltip(event: MouseEvent, content: typeof tooltipContent) {
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = window.setTimeout(() => {
+      tooltipContent = content;
+      updateTooltipPosition(event);
+      tooltipVisible = true;
+    }, TOOLTIP_DEBOUNCE);
+  }
+
+  function hideTooltip() {
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = window.setTimeout(() => {
+      tooltipVisible = false;
+    }, TOOLTIP_DEBOUNCE);
+  }
+
+  function getTransactionValue(transaction: any): number {
+    const price = transaction["Sale Price (USD Millions)"];
+    return isUndisclosed(price) ? 0 : parseFloat(price);
   }
 
   async function createVisualization() {
-      // Filter only purchased vouchers with known purchasers
-      transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
-      
-      // Get unique companies
-      companies = [...new Set([
-          ...transactions.map(d => d.Company),
-          ...transactions.map(d => d.Purchaser)
-      ])];
+    // Filter only purchased vouchers with known purchasers
+    transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
+    
+    // Get unique companies
+    companies = [...new Set([
+      ...transactions.map(d => d.Company),
+      ...transactions.map(d => d.Purchaser)
+    ])];
 
-      // Get company therapeutic areas and transaction counts
-      companyData = new Map();
-      companies.forEach(company => {
-          const companyTransactions = transactions.filter(d => d.Company === company);
-          const areas = data.filter(d => d.Company === company).map(d => d.TherapeuticArea1);
-          const primaryArea = areas.length > 0 ? 
-              areas.reduce((a, b) => 
-                  areas.filter(v => v === a).length >= areas.filter(v => v === b).length ? a : b
-              ) : 'Uncategorized';
-          
-          companyData.set(company, {
-              therapeuticArea: primaryArea,
-              transactions: companyTransactions,
-              totalValue: companyTransactions.reduce((sum, t) => 
-                  sum + parseFloat(t["Sale Price (USD Millions)"]), 0)
+    // Get company therapeutic areas and transaction counts
+    companyData = new Map();
+    companies.forEach(company => {
+      const companyTransactions = transactions.filter(d => d.Company === company);
+      const areas = data.filter(d => d.Company === company).map(d => d.TherapeuticArea1);
+      const primaryArea = areas.length > 0 ? 
+        areas.reduce((a, b) => 
+          areas.filter(v => v === a).length >= areas.filter(v => v === b).length ? a : b
+        ) : 'Uncategorized';
+      
+      companyData.set(company, {
+        therapeuticArea: primaryArea,
+        transactions: companyTransactions,
+        totalValue: companyTransactions.reduce((sum, t) => sum + getTransactionValue(t), 0)
+      });
+    });
+
+    // Create matrix of transaction values
+    const matrix = companies.map(source => 
+      companies.map(target => {
+        const transaction = transactions.find(t => 
+          t.Company === source && t.Purchaser === target
+        );
+        return transaction ? getTransactionValue(transaction) : 0;
+      })
+    );
+
+    // Clear previous
+    d3.select(svg).selectAll("*").remove();
+
+    // Create chord layout
+    const chord = d3.chord()
+      .padAngle(0.05)
+      .sortSubgroups(d3.descending);
+
+    const chords = chord(matrix);
+
+    const innerRadius = Math.min(width, height) * 0.3725;
+    const outerRadius = innerRadius;
+    const nodeRadius = 8;
+
+    // Create SVG
+    const svgElem = d3.select(svg)
+      .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+    // Add ribbons first
+    ribbons = svgElem.append("g")
+      .selectAll("path")
+      .data(chords)
+      .join("path")
+      .attr("d", d3.ribbon().radius(innerRadius))
+      .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
+      .style("mix-blend-mode", "multiply")
+      .style("opacity", 0.6)
+      .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
+      .attr("stroke-width", 2.5)
+      .attr("stroke-dasharray", d => {
+        const transaction = transactions.find(t => 
+          t.Company === companies[d.source.index] && 
+          t.Purchaser === companies[d.target.index]
+        );
+        return isUndisclosed(transaction?.["Sale Price (USD Millions)"]) ? "4,4" : null;
+      })
+      .on("mouseenter", (event, d) => {
+        const transaction = transactions.find(t => 
+          t.Company === companies[d.source.index] && 
+          t.Purchaser === companies[d.target.index]
+        );
+
+        if (transaction) {
+          dispatch('transactionHover', {
+            seller: transaction.Company,
+            buyer: transaction.Purchaser
           });
+
+          showTooltip(event, {
+            type: 'transaction',
+            seller: transaction.Company,
+            buyer: transaction.Purchaser,
+            Candidate: transaction.Candidate,
+            amount: transaction["Sale Price (USD Millions)"],
+            date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`,
+            isUndisclosed: isUndisclosed(transaction["Sale Price (USD Millions)"])
+          });
+        }
+      })
+      .on("mouseleave", () => {
+        dispatch('transactionLeave');
+        tooltipVisible = false;
       });
 
-      // Create matrix of transaction values
-      const matrix = companies.map(source => 
-          companies.map(target => {
-              const transaction = transactions.find(t => 
-                  t.Company === source && t.Purchaser === target
-              );
-              return transaction ? parseFloat(transaction["Sale Price (USD Millions)"]) || 0 : 0;
-          })
-      );
+    // Create groups for labels and arcs
+    const group = svgElem.append("g")
+      .selectAll("g")
+      .data(chords.groups)
+      .join("g");
 
-      // Clear previous
-      d3.select(svg).selectAll("*").remove();
+    // Add background arcs
+    group.append("path")
+      .attr("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.index]).therapeuticArea))
+      .attr("d", d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius)
+      )
+      .attr("opacity", 0.2);
 
-      // Create chord layout
-      const chord = d3.chord()
-          .padAngle(0.05)
-          .sortSubgroups(d3.descending);
+    // Add voucher nodes
+    group.each((d, i) => {
+      const company = companies[i];
+      const companyTrans = companyData.get(company).transactions;
+      const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
 
-      const chords = chord(matrix);
+      companyTrans.forEach((transaction, idx) => {
+        const nodeAngle = d.startAngle + spacing * (idx + 1);
+        const x = Math.cos(nodeAngle - Math.PI / 2) * outerRadius;
+        const y = Math.sin(nodeAngle - Math.PI / 2) * outerRadius;
 
-      const innerRadius = Math.min(width, height) * 0.3725;
-      const outerRadius = innerRadius;
-      const nodeRadius = 8;
-
-      // Create SVG
-      const svgElem = d3.select(svg)
-          .attr("viewBox", [-width / 2, -height / 2, width, height]);
-
-      // Add ribbons first
-      ribbons = svgElem.append("g")
-          .selectAll("path")
-          .data(chords)
-          .join("path")
-          .attr("d", d3.ribbon().radius(innerRadius))
-          .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
-          .style("mix-blend-mode", "multiply")
-          .style("opacity", 0.6)
-          .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
-          .attr("stroke-width", 2.5)
+        svgElem.append("circle")
+          .attr("class", "voucher-node")
+          .datum(transaction)
+          .attr("r", nodeRadius)
+          .attr("transform", `translate(${x},${y})`)
+          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
+          .attr("stroke", "#565656")
+          .attr("stroke-width", 1.5)
+          .attr("stroke-dasharray", isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "2,2" : null)
+          .attr("cursor", "pointer")
+          .style("opacity", 0.9)
           .on("mouseenter", (event, d) => {
-              const transaction = transactions.find(t => 
-                  t.Company === companies[d.source.index] && 
-                  t.Purchaser === companies[d.target.index]
-              );
+            dispatch('transactionHover', {
+              seller: d.Company,
+              buyer: d.Purchaser
+            });
 
-              if (transaction) {
-                  dispatch('transactionHover', {
-                      seller: transaction.Company,
-                      buyer: transaction.Purchaser
-                  });
+            tooltipContent = {
+              type: 'transaction',
+              seller: d.Company,
+              buyer: d.Purchaser,
+              Candidate: d.Candidate,
+              amount: d["Sale Price (USD Millions)"],
+              date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`,
+              isUndisclosed: isUndisclosed(d["Sale Price (USD Millions)"])
+            };
 
-                  tooltipContent = {
-                      seller: transaction.Company,
-                      buyer: transaction.Purchaser,
-                      Candidate: transaction.Candidate,
-                      amount: transaction["Sale Price (USD Millions)"],
-                      date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`
-                  };
-
-                  const rect = svg.getBoundingClientRect();
-                  tooltipX = event.clientX - rect.left;
-                  tooltipY = event.clientY - rect.top;
-                  tooltipVisible = true;
-              }
+            const rect = svg.getBoundingClientRect();
+            const svgPoint = svgElem.node().createSVGPoint();
+            svgPoint.x = event.clientX - rect.left;
+            svgPoint.y = event.clientY - rect.top;
+            
+            // Transform the point from screen to SVG coordinates
+            const transformedPoint = svgPoint.matrixTransform(svgElem.node().getScreenCTM().inverse());
+            tooltipX = event.clientX - rect.left;
+            tooltipY = event.clientY - rect.top;
+            tooltipVisible = true;
           })
           .on("mouseleave", () => {
-              dispatch('transactionLeave');
-              tooltipVisible = false;
-          });
-
-      // Create groups for labels and arcs
-      const group = svgElem.append("g")
-          .selectAll("g")
-          .data(chords.groups)
-          .join("g");
-
-      // Add background arcs
-      group.append("path")
-          .attr("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.index]).therapeuticArea))
-          .attr("d", d3.arc()
-              .innerRadius(innerRadius)
-              .outerRadius(outerRadius)
-          )
-          .attr("opacity", 0.2);
-
-      // Add voucher nodes
-      group.each((d, i) => {
-          const company = companies[i];
-          const companyTrans = companyData.get(company).transactions;
-          const angle = (d.startAngle + d.endAngle) / 2;
-          const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
-
-          companyTrans.forEach((transaction, idx) => {
-              const nodeAngle = d.startAngle + spacing * (idx + 1);
-              const x = Math.cos(nodeAngle - Math.PI / 2) * outerRadius;
-              const y = Math.sin(nodeAngle - Math.PI / 2) * outerRadius;
-
-              svgElem.append("circle")
-                  .attr("class", "voucher-node")
-                  .datum(transaction)
-                  .attr("r", nodeRadius)
-                  .attr("transform", `translate(${x},${y})`)
-                  .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
-                  .attr("stroke", "#565656")
-                  .attr("stroke-width", 1.5)
-                  .attr("cursor", "pointer")
-                  .style("opacity", 0.9)
-                  .on("mouseenter", (event, d) => {
-                      dispatch('transactionHover', {
-                          seller: d.Company,
-                          buyer: d.Purchaser
-                      });
-
-                      tooltipContent = {
-                          seller: d.Company,
-                          buyer: d.Purchaser,
-                          Candidate: d.Candidate,
-                          amount: d["Sale Price (USD Millions)"],
-                          date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`
-                      };
-
-                      const rect = svg.getBoundingClientRect();
-                      tooltipX = event.clientX - rect.left;
-                      tooltipY = event.clientY - rect.top;
-                      tooltipVisible = true;
-                  })
-                  .on("mouseleave", () => {
-                      dispatch('transactionLeave');
-                      tooltipVisible = false;
-                  });
-          });
+            dispatch('transactionLeave');
+            tooltipVisible = false;
+          })
+          .on("click", handleNodeClick);
       });
+    });
 
-      // Add company labels
-      group.each((d, i) => {
-          const company = companies[i];
-          const angle = (d.startAngle + d.endAngle) / 2;
-          const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);
+    // Add company labels
+    group.each((d, i) => {
+      const company = companies[i];
+      const angle = (d.startAngle + d.endAngle) / 2;
+      const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);
 
-          const labelGroup = svgElem.append("g")
-              .attr("class", "label-group")
-              .attr("cursor", "pointer");
+      const labelGroup = svgElem.append("g")
+        .attr("class", "label-group")
+        .attr("cursor", "pointer");
 
-          labelGroup.append("text")
-              .attr("x", labelX)
-              .attr("y", labelY)
-              .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
-              .attr("text-anchor", "middle")
-              .style("font-size", "8.725px")
-              .style("fill", "#4a5568")
-              .text(company);
-      });
+      labelGroup.append("text")
+        .attr("x", labelX)
+        .attr("y", labelY)
+        .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
+        .attr("text-anchor", "middle")
+        .style("font-size", "8.725px")
+        .style("fill", "#4a5568")
+        .text(company)
+        .on("mouseenter", (event) => handleCompanyHover(event, company))
+        .on("mouseleave", () => {
+          tooltipVisible = false;
+        });
+    });
   }
 
   onMount(() => {
-      createVisualization();
+    createVisualization();
   });
 </script>
 
 <div class="chord-container relative bg-slate-50 mt-4 rounded-lg p-8">
   <svg
-      bind:this={svg}
-      {width}
-      {height}
-      viewBox="0 0 {width} {height}"
-      class="w-full h-auto"
+    bind:this={svg}
+    {width}
+    {height}
+    viewBox="0 0 {width} {height}"
+    class="w-full h-auto"
   />
 
   {#if tooltipVisible}
-      <div
-          class="absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
-          style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%)"
-      >
-      <div class="font-semibold text-base text-slate-800 mb-4">{tooltipContent.seller} → {tooltipContent.buyer}</div>
-      
-      <div class="flex gap-4 text-slate-600 items-baseline">
-        <Medication size="14" class="text-slate-600" />
-        <p class="font-semibold text-sm">
-          {tooltipContent.Candidate}
-        </p>
-      </div>
+    <div
+      class="tooltip absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
+      style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, {tooltipY > height/2 ? '-100%' : '10px'})"
+      in:fly={{ y: tooltipY > height/2 ? 20 : -20, duration: 200 }}
+      out:fade={{ duration: 100 }}
+    >
+      {#if tooltipContent.type === 'transaction'}
+        <div class="font-semibold text-base text-slate-800 mb-4">
+          {tooltipContent.seller} → {tooltipContent.buyer}
+        </div>
+        
+        <div class="flex gap-4 text-slate-600 items-baseline">
+          <Medication size="14" class="text-slate-600" />
+          <p class="font-semibold text-sm">
+            {tooltipContent.Candidate}
+          </p>
+        </div>
 
-      <div class="flex gap-4 items-baseline">
-        <Money size="14" class="text-gray-800" />
-        <p class="text-sm">
-          ${tooltipContent.amount}M        
-        </p>
-      </div>
-    
-      <div class="flex gap-4 items-baseline">
-        <CalendarHeatMap size="14" class="text-gray-800" />
-        <p class="text-sm">
-          {tooltipContent.date}
-        </p>
-      </div>
-      </div>
+        <div class="flex gap-4 items-baseline">
+          <Money size="14" class="text-gray-800" />
+          <p class="text-sm">
+            {#if tooltipContent.isUndisclosed}
+              <span class="italic">Undisclosed</span>
+            {:else}
+              ${tooltipContent.amount}M
+            {/if}
+          </p>
+        </div>
+      
+        <div class="flex gap-4 items-baseline">
+          <CalendarHeatMap size="14" class="text-gray-800" />
+          <p class="text-sm">
+            {tooltipContent.date}
+          </p>
+        </div>
+      {:else}
+        <div class="font-semibold text-base text-slate-800 mb-4">
+          {tooltipContent.companyName}
+        </div>
+
+        <div class="flex gap-4 items-baseline mb-2">
+          <Money size="14" class="text-gray-800" />
+          <p class="text-sm">
+            Total Value: ${tooltipContent.totalValue?.toFixed(1)}M
+          </p>
+        </div>
+
+        <div class="flex gap-4 items-baseline mb-4">
+          <Catalog size="14" class="text-gray-800" />
+          <p class="text-sm">
+            {tooltipContent.transactionCount} Transactions
+          </p>
+        </div>
+
+        {#if tooltipContent.candidates && tooltipContent.candidates.length > 0}
+          <div class="text-xs text-slate-600">
+            <div class="font-semibold mb-1">Drug Candidates:</div>
+            <ul class="list-disc pl-4 space-y-1 max-h-48 overflow-y-auto">
+              {#each tooltipContent.candidates as candidate}
+                <li>{candidate}</li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+      {/if}
+    </div>
   {/if}
 </div>
 
 <style>
   .chord-container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .tooltip {
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  }
+
+  /* Fade in animation for tooltip content */
+  :global(.tooltip > *) {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
