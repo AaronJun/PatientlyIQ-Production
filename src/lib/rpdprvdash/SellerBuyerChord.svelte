@@ -1,7 +1,6 @@
 <!-- SellerBuyerChord.svelte -->
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
   import * as d3 from 'd3';
   import { CalendarHeatMap, Medication, Money, Catalog } from 'carbon-icons-svelte';
 
@@ -70,20 +69,21 @@
 
   function handleNodeClick(event: MouseEvent, d: any) {
     event.stopPropagation();
+    const entries = data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1);
     onShowDrugDetail({
       drugName: d.Candidate,
       year: d["RPDD Year"],
       Company: d.Company,
       therapeuticArea: d.TherapeuticArea1,
-      entries: data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1),
+      entries,
       color: therapeuticAreaColorScale(d.TherapeuticArea1),
       currentStage: d["Current Development Stage"] || "TBD",
       indication: d.Indication || "",
       rpddAwardDate: d["RPDD Year"],
-      voucherAwardDate: d["PRV Issue Year"] || "",
+      voucherAwardDate: d["PRV Year"] || "",
       treatmentClass: d.Class1 || "TBD",
       mechanismOfAction: d.MOA || "TBD",
-      companyUrl: d["Link to CrunchBase"] || ""
+      companyUrl: d["Company URL"] || ""
     });
   }
 
@@ -107,7 +107,9 @@
       candidates
     };
 
-    updateTooltipPosition(event);
+    const rect = svg.getBoundingClientRect();
+    tooltipX = event.clientX - rect.left;
+    tooltipY = event.clientY - rect.top;
     tooltipVisible = true;
   }
 
@@ -155,61 +157,6 @@
 
   function isUndisclosed(value: any): boolean {
     return value === "Undisclosed";
-  }
-
-  let tooltipTimeout: number;
-  let lastTooltipUpdate = 0;
-  let lastTooltipPosition = { x: 0, y: 0 };
-  const TOOLTIP_DEBOUNCE = 50; // ms
-  const POSITION_THRESHOLD = 5; // pixels
-  const POSITION_UPDATE_THRESHOLD = 100; // ms
-
-  function updateTooltipPosition(event: MouseEvent) {
-    const currentTime = Date.now();
-    const rect = svg.getBoundingClientRect();
-    const newX = event.clientX - rect.left;
-    const newY = event.clientY - rect.top;
-    
-    // Check if we've moved enough to warrant an update
-    const distance = Math.sqrt(
-      Math.pow(newX - lastTooltipPosition.x, 2) + 
-      Math.pow(newY - lastTooltipPosition.y, 2)
-    );
-    
-    if (distance < POSITION_THRESHOLD && 
-        currentTime - lastTooltipUpdate < POSITION_UPDATE_THRESHOLD) {
-      return;
-    }
-
-    const svgPoint = d3.select(svg).node().createSVGPoint();
-    svgPoint.x = newX;
-    svgPoint.y = newY;
-    
-    // Transform the point from screen to SVG coordinates
-    const transformedPoint = svgPoint.matrixTransform(
-      d3.select(svg).node().getScreenCTM().inverse()
-    );
-    
-    tooltipX = newX;
-    tooltipY = newY;
-    lastTooltipPosition = { x: newX, y: newY };
-    lastTooltipUpdate = currentTime;
-  }
-
-  function showTooltip(event: MouseEvent, content: typeof tooltipContent) {
-    clearTimeout(tooltipTimeout);
-    tooltipTimeout = window.setTimeout(() => {
-      tooltipContent = content;
-      updateTooltipPosition(event);
-      tooltipVisible = true;
-    }, TOOLTIP_DEBOUNCE);
-  }
-
-  function hideTooltip() {
-    clearTimeout(tooltipTimeout);
-    tooltipTimeout = window.setTimeout(() => {
-      tooltipVisible = false;
-    }, TOOLTIP_DEBOUNCE);
   }
 
   function getTransactionValue(transaction: any): number {
@@ -279,7 +226,7 @@
       .join("path")
       .attr("d", d3.ribbon().radius(innerRadius))
       .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
-      .style("mix-blend-mode", "multiply")
+      .style("mix-blend-mode", "divide")
       .style("opacity", 0.6)
       .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
       .attr("stroke-width", 2.5)
@@ -302,7 +249,7 @@
             buyer: transaction.Purchaser
           });
 
-          showTooltip(event, {
+          tooltipContent = {
             type: 'transaction',
             seller: transaction.Company,
             buyer: transaction.Purchaser,
@@ -310,7 +257,12 @@
             amount: transaction["Sale Price (USD Millions)"],
             date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`,
             isUndisclosed: isUndisclosed(transaction["Sale Price (USD Millions)"])
-          });
+          };
+
+          const rect = svg.getBoundingClientRect();
+          tooltipX = event.clientX - rect.left;
+          tooltipY = event.clientY - rect.top;
+          tooltipVisible = true;
         }
       })
       .on("mouseleave", () => {
@@ -372,12 +324,6 @@
             };
 
             const rect = svg.getBoundingClientRect();
-            const svgPoint = svgElem.node().createSVGPoint();
-            svgPoint.x = event.clientX - rect.left;
-            svgPoint.y = event.clientY - rect.top;
-            
-            // Transform the point from screen to SVG coordinates
-            const transformedPoint = svgPoint.matrixTransform(svgElem.node().getScreenCTM().inverse());
             tooltipX = event.clientX - rect.left;
             tooltipY = event.clientY - rect.top;
             tooltipVisible = true;
@@ -431,10 +377,8 @@
 
   {#if tooltipVisible}
     <div
-      class="tooltip absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
-      style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, {tooltipY > height/2 ? '-100%' : '10px'})"
-      in:fly={{ y: tooltipY > height/2 ? 20 : -20, duration: 200 }}
-      out:fade={{ duration: 100 }}
+      class="absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
+      style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%)"
     >
       {#if tooltipContent.type === 'transaction'}
         <div class="font-semibold text-base text-slate-800 mb-4">
@@ -505,25 +449,5 @@
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-  }
-
-  .tooltip {
-    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-  }
-
-  /* Fade in animation for tooltip content */
-  :global(.tooltip > *) {
-    animation: fadeIn 0.2s ease-out forwards;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(5px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 </style>

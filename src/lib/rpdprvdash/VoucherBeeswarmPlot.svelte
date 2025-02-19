@@ -114,21 +114,24 @@
     isTransitioning = true;
     tooltipVisible = false;
 
-    // Dispatch click event with data
+    // Get all entries with same therapeutic area
+    const entries = data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1);
+
+    // Call onPointClick with drug details for drawer
     onPointClick({
       drugName: d.Candidate,
       year: d["RPDD Year"],
       Company: d.Company,
       therapeuticArea: d.TherapeuticArea1,
-      entries: data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1),
+      entries,
       color: therapeuticAreaColorScale(d.TherapeuticArea1),
       currentStage: d["Current Development Stage"] || "TBD",
       indication: d.Indication || "",
       rpddAwardDate: d["RPDD Year"],
-      voucherAwardDate: d["PRV Issue Year"] || "",
-      treatmentClass: d.Class1 || "TBD",
+      voucherAwardDate: d["PRV Year"] || "",
+      treatmentClass: d.Class1 || "TBD", 
       mechanismOfAction: d.MOA || "TBD",
-      companyUrl: d["Link to CrunchBase"] || ""
+      companyUrl: d["Company URL"] || ""
     });
 
     // Reset transitioning state after a delay
@@ -292,7 +295,7 @@
 
   {#if tooltipVisible}
     <div
-      class="tooltip absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
+      class="tooltip absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200 min-w-fit"
       style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, {tooltipY > height/2 ? '-100%' : '10px'})"
       in:fly={{ y: tooltipY > height/2 ? 20 : -20, duration: 200 }}
       out:fade={{ duration: 100 }}

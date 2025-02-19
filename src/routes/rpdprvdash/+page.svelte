@@ -107,18 +107,8 @@
     currentView = null;
   }
 
-  function handleAreaHover(event: CustomEvent) {
-    currentArea = event.detail.area;
-    currentEntries = event.detail.entries;
-  }
-
   function setActiveTab(tab: string) {
     activeTab = tab;
-  }
-
-  function handleAreaLeave() {
-    currentArea = null;
-    currentEntries = [];
   }
 
   function handleShowCompanyDetail(detail: any) {
@@ -162,6 +152,7 @@
     
     const stats = {
       totalEntries: currentEntries.length,
+      companyName: currentEntries[0].Company,
       uniqueCompanies: new Set(currentEntries.map(d => d.Company)).size,
       uniqueIndications: new Set(currentEntries.map(d => d.Indication)).size,
       uniqueAreas: new Set(currentEntries.map(d => d.TherapeuticArea1)).size
@@ -303,25 +294,38 @@
           <!-- Sticky sidebar -->
           <div class="w-1/6 max-w-[320px] mx-8">
             <div class="sticky top-[calc(24vh+1rem)]">
-              <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-                <h4 class="text-xs/snug uppercase font-semibold">              
+              <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+                <div class="w-2 h-2 bg-slate-600" />               
+                <h4 class="text-xs/snug uppercase font-base">              
                   {currentView || 'Overview'}
                 </h4>
               </div>
-              <div class="sidebar bg-slate-100/50 pt-4 px-4 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
+              <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
                 <div class="space-y-6">
                   {#if currentEntries.length > 0}
-                    <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
+                    <p class="text-sm/snug w-full pr-2 max-w-4xl text-slate-900">
                       {getSummaryText()}
                     </p>
                   {/if}
                   
                   <div class="space-y-4">
-                    {#each currentEntries as entry}
-                      <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
-                        <!-- Card content remains the same -->
+                {#each currentEntries as entry}
+                  <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
+                    <div class="flex flex-col gap-2">
+                      <div class="flex justify-between items-start">
+                        <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
+                        <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
+                          {entry["Current Development Stage"]}
+                        </span>
                       </div>
-                    {/each}
+                      <div>
+                        <p class="text-sm text-slate-600">{entry.Candidate}</p>
+                        <p class="text-xs text-slate-400 mt-1">{entry.Indication}</p>
+                        <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
+                      </div>
+                    </div>
+                  </div>
+                {/each}
                   </div>
                 </div>
               </div>
@@ -349,8 +353,10 @@
           
           <div class="w-1/6 min-w-[300px] mx-8">
             <div class="sticky top-[calc(24vh+1rem)]">
-              <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-                <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
+              <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+                <div class="w-2 h-2 bg-slate-600" />               
+                <h4 class="text-xs/snug uppercase font-base">                              
+                  Transaction Value Distribution</h4>
               </div>
               <div class="sidebar bg-slate-100/50 overflow-hidden py-12" style="height: calc(72vh - 2rem)">
                 <VoucherBeeswarmPlot 
@@ -394,12 +400,13 @@
     <!-- Sticky sidebar -->
     <div class="w-1/6 max-w-[350px] mx-8">
       <div class="sticky top-[calc(24vh+1rem)]">
-        <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
-          <h4 class="text-xs/snug uppercase font-semibold">
+        <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+          <div class="w-2 h-2 bg-slate-600" />               
+          <h4 class="text-xs/snug uppercase font-base">              
             {currentArea ? currentArea : 'Overview'}
           </h4>
         </div>                
-        <div class="sidebar bg-slate-100/50 pt-4 px-4 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
+        <div class="sidebar bg-slate-100/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
           <div class="space-y-6">
             {#if currentEntries.length > 0}
               <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
@@ -428,11 +435,11 @@
                 >
                   <div class="flex justify-between items-start">
                     <div>
-                      <p class="text-xs text-slate-600 mt-1">{entry.Indication}</p>
+                      <p class="text-xs capitalize text-slate-600 mt-1">{entry.Indication}</p>
                       <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
                       <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
                     </div>
-                    <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                    <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
                       {entry["Current Development Stage"]}
                     </span>
                   </div>
@@ -486,12 +493,10 @@
     max-height: 65vh;
     overflow-y: scroll;
     scrollbar-color: #e5e7eb #f9fafb;
-    border: .25px solid #b4b4b4;
     border-top: 0px;
     overflow-y: scroll;
   }
   .sidebar-header {
-    border: .25px solid #565656;
   }
 
   .legend {
