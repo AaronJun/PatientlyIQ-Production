@@ -288,10 +288,12 @@
           </div>
         </div>
         <div class="sidebar w-1/6 max-w-[320px] mx-8 flex flex-col">
-          <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
-            <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-slate-700 uppercase">        
+          <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+            <h4 class="text-xs/snug uppercase font-semibold">              
               {currentView || 'Overview'}
-            </h2>
+            </h4>
+            </div>                
+          <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
             <div class="space-y-6">
               {#if currentEntries.length > 0}
                 <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
@@ -394,8 +396,11 @@
               />
             </div>
           </div>
-          <div class="w-1/6 align-middle flex flex-col gap-4">
-              <div class="sidebar bg-slate-100 py-4 px-4 h-[70vh]">                
+          <div class="fixed right-0 w-1/6 flex flex-col">
+            <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+            <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
+            </div>                
+              <div class="sidebar bg-slate-100 py-4 px-4 h-[70vh]">
                 <VoucherBeeswarmPlot 
                   data={rpddData}
                   {highlightedTransaction}
@@ -427,6 +432,9 @@
                 />
               <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
                 <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
+                  <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+                    <h4 class="text-xs/snug uppercase font-semibold">Transaction Value Distribution</h4>
+                    </div>                
                 <RPDRadialLegend 
                 items={processedData}
                 {colorScale}
@@ -435,10 +443,10 @@
           </div>
         </div>
           <div class="sidebar w-1/6 max-w-[350px] flex flex-col">
+            <div class="sidebar-header text-sm uppercase font-semibold bg-emerald-100 py-2 px-4">                
+              <h4 class="text-xs/snug uppercase font-semibold">    {currentArea ? currentArea : 'Overview'}</h4>
+              </div>                
             <div class="info-panel bg-slate-100/50 pt-4 px-4 min-h-full">
-              <h2 class="text-lg leading-normal font-extrabold mb-4 px-8 pl-0 text-emerald-800 uppercase">        
-                {currentArea ? currentArea : 'Overview'}
-              </h2>
               <div class="space-y-6">
                 {#if currentEntries.length > 0}
                   <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
@@ -508,11 +516,13 @@
   .sidebar {
     max-height: 65vh;
     overflow-y: scroll;
-    margin-top: 10vh;
-    border-radius: 5.25px;
     scrollbar-color: #e5e7eb #f9fafb;
     border: .25px solid #b4b4b4;
+    border-top: 0px;
     overflow-y: scroll;
+  }
+  .sidebar-header {
+    border: .25px solid #565656;
   }
 
   .legend {

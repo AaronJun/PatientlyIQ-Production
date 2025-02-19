@@ -134,7 +134,7 @@
       .attr("r", 6)
       .attr("fill", d => therapeuticAreaColorScale(d.TherapeuticArea1))
       .attr("stroke", "#565656")
-      .attr("stroke-width", 1)
+      .attr("stroke-width", .125)
       .attr("cursor", "pointer")
       .on("mouseenter", (event, d) => {
         dispatch('transactionHover', {
