@@ -295,9 +295,9 @@
           <div class="w-1/6 max-w-[320px] mx-8">
             <div class="sticky top-[calc(24vh+1rem)]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                <div class="w-2 h-2 bg-slate-600" />               
+              <div class="w-2 h-2 rounded-full bg-slate-600" />               
                 <h4 class="text-xs/snug uppercase font-base">              
-                  {currentView || 'Overview'}
+                  {currentView || 'Overview by Sponsor'}
                 </h4>
               </div>
               <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
@@ -354,11 +354,11 @@
           <div class="w-1/6 min-w-[300px] mx-8">
             <div class="sticky top-[calc(24vh+1rem)]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                <div class="w-2 h-2 bg-slate-600" />               
+                <div class="w-2 h-2 rounded-full bg-slate-600" />               
                 <h4 class="text-xs/snug uppercase font-base">                              
                   Transaction Value Distribution</h4>
               </div>
-              <div class="sidebar bg-slate-100/50 overflow-hidden py-12" style="height: calc(72vh - 2rem)">
+              <div class="sidebar overflow-hidden py-12" style="height: calc(72vh - 2rem)">
                 <VoucherBeeswarmPlot 
                   data={rpddData}
                   {highlightedTransaction}
@@ -401,12 +401,12 @@
     <div class="w-1/6 max-w-[350px] mx-8">
       <div class="sticky top-[calc(24vh+1rem)]">
         <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-          <div class="w-2 h-2 bg-slate-600" />               
+          <div class="w-2 h-2 rounded-full bg-slate-600" />               
           <h4 class="text-xs/snug uppercase font-base">              
-            {currentArea ? currentArea : 'Overview'}
+            {currentArea ? currentArea : 'Overview by Therapeutic Area'}
           </h4>
         </div>                
-        <div class="sidebar bg-slate-100/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
+        <div class="sidebar pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
           <div class="space-y-6">
             {#if currentEntries.length > 0}
               <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">

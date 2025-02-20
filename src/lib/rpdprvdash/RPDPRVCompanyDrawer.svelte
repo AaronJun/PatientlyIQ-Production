@@ -21,26 +21,6 @@
         marketCap: entries[0].MarketCap || 'N/A'
     } : null;
 
-    $: pipelineStats = entries.length > 0 ? {
-        totalRPDDs: entries.length,
-        inClinicalTrials: entries.filter(entry => {
-            const stage = entry["Current Development Stage"];
-            return ["Phase 1", "Phase 1/2", "Phase 2", "Phase 2a", "Phase 2b", "Phase 3"].includes(stage);
-        }).length,
-        prvAwarded: entries.filter(entry => entry["PRV Issue Year"]).length,
-        prvAvailable: entries.filter(entry => entry["PRV Issue Year"] && !entry["Sale Year"]).length,
-        byStage: entries.reduce((acc, curr) => {
-            const stage = curr["Current Development Stage"];
-            acc[stage] = (acc[stage] || 0) + 1;
-            return acc;
-        }, {}),
-        byArea: entries.reduce((acc, curr) => {
-            const area = curr.TherapeuticArea1;
-            acc[area] = (acc[area] || 0) + 1;
-            return acc;
-        }, {})
-    } : null;
-
     function handleClose() {
         onClose();
     }
@@ -106,35 +86,38 @@
         </div>
 
         <div class="drawer-content">
-            <div class="header flex gap-4 my-4 pb-4 w-full align-bottom justify-between">
-                <div class="flex flex-col gap-4">
-                    <div>
+            <div class="header flex gap-4 my-4 pb-4 w-full align-bottom min-w-max justify-between">
+                <div class="flex flex-col gap-4 rounded-lg">
+                    <div class="flex w-full items-center gap-24">
                         <h2 class="text-4xl font-light text-slate-800" in:fly={{duration: 300}}>
                             {Company}
                         </h2>
-                        <!-- Company Info -->
-                        <div class="company-info mt-2 grid grid-cols-3 gap-4">
-                            <div class="flex items-center gap-2">
-                                <Globe size={16} class="text-slate-500" />
-                                <span class="text-sm text-slate-600">{companyInfo?.country}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="text-sm text-slate-600">{companyInfo?.type}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <span class="text-sm text-slate-600">Market Cap: {companyInfo?.marketCap}</span>
-                            </div>
+                    </div>
+               
+                </div>
+                <div class="flex gap-4 w-fit rounded-lg">
+                    <div class="flex flex-col gap-4 w-64 rounded-lg">
+                        <div class="entries flex-row">
+                            <p class="text-base text-slate-800 font-medium">{companyInfo?.country}</p>
+                            <span class="text-[9.25px] uppercase tracking-wide text-slate-500 font-semibold">Country</span>
+                        </div>
+
+                        <div class="entries flex-row">
+                            <p class="text-base text-slate-800 font-medium">{companyInfo?.type}</p>
+                            <span class="text-[9.25px] uppercase tracking-wide text-slate-500 font-semibold">Status</span>
+                        </div>
+                        <div class="entries flex-row">
+                            <p class="text-base text-slate-800 font-medium">${companyInfo?.marketCap}</p>
+                            <span class="text-[9.25px] uppercase tracking-wide text-slate-500 font-semibold">
+                            Market Cap</span>
                         </div>
                     </div>
-                    
-                    <!-- Pipeline Metrics Visualization -->
-                    {#if pipelineStats}
-                        <RPDPipelineMetrics metrics={pipelineStats} />
-                    {/if}
+                    <div class="flex flex-col gap-4 w-64 rounded-lg">
+                <RPDPipelineMetrics data={entries} company={Company}  />
                 </div>
-                
-                {#if companyUrl}
-                    <button 
+                </div>
+                        {#if companyUrl}
+                        <button 
                         class="flex text-sm capitalize gap-1 font-semibold text-slate-800 hover:text-emerald-600"
                         on:click={handleCompanyClick}
                         in:fly={{duration: 300}}
@@ -144,7 +127,6 @@
                 {/if}
             </div>
 
-            <!-- Pipeline Table -->
             <section class="mt-8">
                 <h3 class="text-lg font-base text-slate-800 mb-4">
                     Development Pipeline
@@ -213,4 +195,11 @@
         border-top: 1px solid #e2e8f0;
         padding-top: 0.5rem;
     }
+
+
+.entries {
+    position: relative;
+    padding-bottom: .425rem;
+    border-bottom: .25px solid #e5e5e5;
+}
 </style>

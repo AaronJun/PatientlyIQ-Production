@@ -234,7 +234,7 @@
       .style("opacity", 0.8)
       .attr("cursor", "pointer")
       .style("stroke", "#565656")
-      .style("stroke-width", 1)
+      .style("stroke-width", 1) 
       .style("stroke-dasharray", d => isUndisclosed(d) ? "2,2" : "none");
 
     // Add event listeners
