@@ -195,7 +195,7 @@
                 on:click={handleClose}
                 in:fly={{duration: 500, x: 420 }}
             >
-                <ArrowLeft size={12}/> Back
+                <ArrowLeft size={16}/> Back
             </button>
             
             <button 
@@ -226,7 +226,7 @@
                     on:click={handleCompanyClick}
                     in:fly={{duration: 500, x: 420 }}
                 >
-                    {Company} <ArrowUpRight size={12}/>
+                    {Company} <ArrowUpRight size={16}/>
                 </button>
             </div>
 
@@ -257,7 +257,7 @@
                                     class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                     on:click={() => showStageView(currentStage)}
                                 >
-                                    All <ArrowUpRight size={12} />
+                                    All <ArrowUpRight size={16} />
                                 </button>
                             {/if}
                             </div>
@@ -296,7 +296,7 @@
                                     class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                     on:click={() => showVoucherView(voucherAwardDate)}
                                 >
-                                    All <ArrowUpRight size={12} />
+                                    All <ArrowUpRight size={16} />
                                 </button>
                             {/if}
                             </div>
@@ -345,7 +345,7 @@
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showTherapeuticAreaView(therapeuticArea)}
                                     >
-                                        All <ArrowUpRight size={12} />
+                                        All <ArrowUpRight size={16} />
                                     </button>
                                 {/if}
                             </div>
@@ -363,7 +363,7 @@
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showIndicationView(indication)}
                                     >
-                                        All <ArrowUpRight size={12} />
+                                        All <ArrowUpRight size={16} />
                                     </button>
                                 {/if}
                             </div>
@@ -392,7 +392,7 @@
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showTreatmentClassView(treatmentClass)}
                                     >
-                                        All <ArrowUpRight size={12} />
+                                        All <ArrowUpRight size={16} />
                                     </button>
                                 {/if}
                             </div>
@@ -410,7 +410,7 @@
                                         class="flex align-top gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showMOAView(mechanismOfAction)}
                                     >
-                                        All <ArrowUpRight size={12} />
+                                        All <ArrowUpRight size={16} />
                                     </button>
                                 {/if}
                             </div>
@@ -458,7 +458,7 @@
                                     Company = selectedDrug.Company;
                                     year = selectedDrug["RPDD Year"];
                                     therapeuticArea = selectedDrug.TherapeuticArea1;
-                                    currentStage = selectedDrug["Current Development Stage"] || "TBD";
+                                    currentStage = selectedDrug["Current Development Stage"] || "APR";
                                     rpddAwardDate = selectedDrug["RPDD Year"];
                                     voucherAwardDate = selectedDrug["PRV Issue Year"] || "";
                                     voucherTransactionDate = selectedDrug["Purchase Year"] || "";
@@ -469,7 +469,7 @@
                             }}
                         >
                             {cell.value}
-                            <ArrowUpRight size={12} />
+                            <ArrowUpRight size={16} />
                         </button>
                     {:else}
                         {cell.value}

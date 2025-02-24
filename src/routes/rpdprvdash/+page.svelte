@@ -333,6 +333,8 @@
           </div>
         </div>
 
+
+    <!-- By Transactions Tab Layout -->
         {:else if activeTab === 'By Transactions'}
         <div class="flex flex-row gap-8 px-4">
           <div class="w-5/6 bg-slate-50 rounded-lg shadow-sm">
@@ -370,7 +372,9 @@
             </div>
           </div>
         </div>
-        <!-- Therapeutic Area Tab Layout -->
+
+
+<!-- Therapeutic Area Tab Layout -->  
 {:else if activeTab === 'By Therapeutic Area'}
 <div class="flex flex-col">
   <!-- Main content area with visualization and sticky sidebar -->
