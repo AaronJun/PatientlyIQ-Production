@@ -247,7 +247,7 @@
             .attr("y", 4) // Center vertically
             .attr("text-anchor", "start")
             .attr("fill", "#4a5568")
-            .attr("font-size", "10px")
+            .attr("font-size", "0px")
             .attr("opacity", 0.6)
             .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")

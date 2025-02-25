@@ -267,7 +267,7 @@
             <button
               class="px-4 py-2 font-normal text-base transition-colors
               {activeTab === tab ? 
-                'bg-[#5946EB] text-slate-100 px-2 font-semibold rounded-full' : 
+                'bg-[#5946EB]  text-slate-100 px-2 font-semibold rounded-full' : 
                 'text-slate-500 px-2 rounded-full hover:text-slate-700 hover:bg-slate-300'}"
               on:click={() => setActiveTab(tab)}
             >
@@ -307,7 +307,7 @@
       </div>
 
       <!-- Main content area with adjusted width to accommodate the vertical timeline -->
-      <div class="w-[calc(100%-10rem)]">
+      <div class="w-[calc(100%-5rem)]">
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow px-2">
             <!-- Main visualization area -->
@@ -328,8 +328,7 @@
               </div>
             </div>
 
-            <!-- Sticky sidebar -->
-                    
+        <!-- Sticky sidebar -->
           <div class="w-1/6 max-w-[320px] mx-8">
             <div class="sticky top-[calc(20vh)]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
@@ -374,17 +373,16 @@
             companyUrl: entry["Link to CrunchBase"] || ""
           })}
         >
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col">
             <div class="flex justify-between items-start">
-              <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
+              <h3 class="text-sm font-semibold text-slate-900">{entry.Candidate}</h3>
               <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
                 {entry["Current Development Stage"]}
               </span>
             </div>
             <div>
-              <p class="text-sm text-slate-600">{entry.Candidate}</p>
-              <p class="text-xs text-slate-400 mt-1">{entry.Indication}</p>
-              <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
+              <p class="text-xs text-slate-500 capitalize mt-2">{entry.Indication}</p>
+              <p class="text-xs text-slate-500">{entry.TherapeuticArea1}</p>
             </div>
           </div>
         </div>
@@ -392,76 +390,76 @@
     </div>
   </div>
 </div>
-              </div>
-            </div>
-          </div>
+</div>
+</div>
+</div>
 
-        <!-- By Transactions Tab Layout -->
-        {:else if activeTab === 'By Transactions'}
-          <div class="flex flex-row">
-            <div class="w-5/6 bg-slate-50">
-              <SellerBuyerChord 
-                data={rpddData}
-                stockData={rpdCompanyValues}
-                {highlightedTransaction}
-                onShowDrugDetail={handleShowDrugDetail}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
-              />
-              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-                <RPDRadialLegend 
-                  items={processedData}
-                  {colorScale}
-                />
-              </div>
-            </div>
-            
-            <div class="w-1/6 min-w-[300px]">
-              <div class="sticky top-[calc(20vh)]">
-                <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                  <div class="w-2 h-2 rounded-full bg-slate-600" />               
-                  <h4 class="text-xs/snug uppercase font-base">                              
-                    Transaction Value Distribution</h4>
-                </div>
-                <div class="sidebar overflow-hidden py-12" style="height: calc(80vh - 2rem)">
-                  <VoucherBeeswarmPlot 
-                    data={rpddData}
-                    {highlightedTransaction}
-                    onPointClick={handleShowDrugDetail}
-                    on:transactionHover={(event) => highlightedTransaction = event.detail}
-                    on:transactionLeave={() => highlightedTransaction = null}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+<!-- By Transactions Tab Layout -->
+{:else if activeTab === 'By Transactions'}
+  <div class="flex flex-row">
+    <div class="w-5/6 bg-slate-50">
+      <SellerBuyerChord 
+        data={rpddData}
+        stockData={rpdCompanyValues}
+        {highlightedTransaction}
+        onShowDrugDetail={handleShowDrugDetail}
+        on:transactionHover={(event) => highlightedTransaction = event.detail}
+        on:transactionLeave={() => highlightedTransaction = null}
+      />
+      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+        <RPDRadialLegend 
+          items={processedData}
+          {colorScale}
+        />
+      </div>
+    </div>
+    
+    <div class="w-1/6 min-w-[300px]">
+      <div class="sticky top-[calc(20vh)]">
+        <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+          <div class="w-2 h-2 rounded-full bg-slate-600" />               
+          <h4 class="text-xs/snug uppercase font-base">                              
+            Transaction Value Distribution</h4>
+        </div>
+        <div class="sidebar overflow-hidden py-12" style="height: calc(80vh - 2rem)">
+          <VoucherBeeswarmPlot 
+            data={rpddData}
+            {highlightedTransaction}
+            onPointClick={handleShowDrugDetail}
+            on:transactionHover={(event) => highlightedTransaction = event.detail}
+            on:transactionLeave={() => highlightedTransaction = null}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Therapeutic Area Tab Layout -->  
-        {:else if activeTab === 'By Therapeutic Area'}
-          <div class="flex flex-col">
-            <!-- Main content area with visualization and sticky sidebar -->
-            <div class="flex flex-row flex-grow px-2">
-              <!-- Main visualization area -->
-              <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
-                <RPDDRadialYear 
-                data={filteredData}
-                onCompanyHover={handleCompanyHover}
-                onStageHover={handleStageHover}
-                onLeave={handleLeave}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
-              />
-              
-              <!-- Legend section -->
-              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-                <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
-                  <RPDRadialLegend 
-                    items={processedData}
-                    {colorScale}
-                  />
-                </div>
-              </div>
-            </div>
+<!-- Therapeutic Area Tab Layout -->  
+{:else if activeTab === 'By Therapeutic Area'}
+  <div class="flex flex-col">
+    <!-- Main content area with visualization and sticky sidebar -->
+    <div class="flex flex-row flex-grow px-2">
+      <!-- Main visualization area -->
+      <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
+        <RPDDRadialYear 
+        data={filteredData}
+        onCompanyHover={handleCompanyHover}
+        onStageHover={handleStageHover}
+        onLeave={handleLeave}
+        onShowDrugDetail={handleShowDrugDetail}
+        onShowCompanyDetail={handleShowCompanyDetail}
+      />
+      
+      <!-- Legend section -->
+      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+        <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
+          <RPDRadialLegend 
+            items={processedData}
+            {colorScale}
+          />
+        </div>
+      </div>
+    </div>
 
   <!-- Sticky sidebar -->
    <!-- Updated Therapeutic Area tab sidebar with consistent styling -->
@@ -472,7 +470,7 @@
       <h4 class="text-xs/snug uppercase font-base">              
         {currentArea ? currentArea : 'By Therapeutic Area'}
       </h4>
-    </div>                
+  </div>                
     <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" 
     style="max-height: calc(90vh - 2rem)">
       <div class="space-y-2">
@@ -511,7 +509,7 @@
             >
               <div class="flex flex-col gap-2">
                 <div class="flex justify-between items-start">
-                  <h3 class="text-xs font-semibold capitalize text-slate-800">{entry.Company}</h3>
+                  <h3 class="text-xs font-semibold capitalize text-slate-800">{entry.Candidate}</h3>
                   <span class="text-[9.25px] bg-slate-200 text-slate-800 p-2 rounded-sm">
                     {entry["Current Development Stage"]}
                   </span>

@@ -318,9 +318,9 @@
           // Update tooltip with transaction information
           tooltipContent = {
             sponsor: `${transaction.Company} → ${transaction.Purchaser}`,
-            drugName: transaction.Candidate,
-            therapeuticArea: transaction.TherapeuticArea1,
-            id: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]} | ${priceDisplay}`
+            drugName: `${priceDisplay}`,
+            therapeuticArea: transaction.Candidate,
+            id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
           tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1);
 
@@ -391,13 +391,13 @@
               ? "Undisclosed" 
               : `$${d["Sale Price (USD Millions)"]}M`;
 
-            // Update tooltip with transaction information
-            tooltipContent = {
-              sponsor: `${d.Company} → ${d.Purchaser}`,
-              drugName: d.Candidate,
-              therapeuticArea: d.TherapeuticArea1,
-              id: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]} | ${priceDisplay}`
-            };
+             // Update tooltip with transaction information
+             tooltipContent = {
+            sponsor: `${transaction.Company} → ${transaction.Purchaser}`,
+            drugName: `${priceDisplay}`,
+            therapeuticArea: transaction.Candidate,
+            id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
+          };
             tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1);
 
             const rect = svg.getBoundingClientRect();

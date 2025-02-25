@@ -1,5 +1,7 @@
 <!-- RPDTooltip.svelte -->
 <script lang="ts">
+	import { back } from "@melt-ui/svelte/internal/helpers";
+
   export let visible: boolean = false;
   export let content: {
       sponsor: string;

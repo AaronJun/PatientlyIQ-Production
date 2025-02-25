@@ -32,15 +32,7 @@
         <span class="text-sm font-medium text-slate-800">{metrics.vouchersAwarded}</span>
       </div>
       
-      <div class="metric-item flex justify-between">
-        <span class="text-xs text-slate-600 font-medium">Unique indications</span>
-        <span class="text-sm font-medium text-slate-800">{metrics.uniqueIndications}</span>
-      </div>
-      
-      <div class="metric-item flex justify-between">
-        <span class="text-xs text-slate-600 font-medium">Therapeutic areas</span>
-        <span class="text-sm font-medium text-slate-800">{metrics.uniqueAreas}</span>
-      </div>
+     
     </div>
   </div>
   

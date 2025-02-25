@@ -41,8 +41,8 @@
 
     // UI Configuration
     const stageLabelConfig = {
-        padding: { x: 6, y: 4 },
-        height: 18,
+        padding: { x: 0, y: 1 },
+        height: 10,
         cornerRadius: 10
     };
 
@@ -354,7 +354,7 @@
             .transition()
             .duration(500)
             .attr("fill", "#4A5568")
-            .attr("font-size", "11.25px")
+            .attr("font-size", "10.25px")
             .attr("font-weight", "500");
             
         d3.selectAll(".pipeline-dots circle")
@@ -458,8 +458,8 @@
             .attr("r", radius)
             .attr("fill", "none")
             .attr("stroke", stageColorScale(stage))
-            .attr("stroke-width", 1.25)
-            .attr("stroke-dasharray", "2,5")
+            .attr("stroke-width", 1.425)
+            .attr("stroke-dasharray", "1,5")
             .attr("stroke-opacity", 1);
 
         const labelAngle = -Math.PI / 15;
@@ -611,7 +611,6 @@
                                 .attr("r", 10.25)
                                 .attr("stroke-width", 4.725);
                         }
-
                         showTooltip(event, drug);
                     })
                     .on("mousemove", (event) => {
