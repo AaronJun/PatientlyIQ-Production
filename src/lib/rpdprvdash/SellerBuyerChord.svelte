@@ -134,21 +134,6 @@
       .attr("r", d => 
         (d.Company === company || d.Purchaser === company) ? 12 : 8
       );
-      
-    // Get all connected companies
-    const connectedCompanies = new Set();
-    transactions.forEach(t => {
-      if (t.Company === company) connectedCompanies.add(t.Purchaser);
-      if (t.Purchaser === company) connectedCompanies.add(t.Company);
-    });
-    connectedCompanies.add(company);
-    
-    // Bold the company name and all connected company names
-    d3.selectAll(".company-label")
-      .style("font-weight", function() {
-        const companyName = d3.select(this).text();
-        return connectedCompanies.has(companyName) ? "bold" : "normal";
-      });
 
     const rect = svg.getBoundingClientRect();
     tooltipX = event.clientX - rect.left;
@@ -187,13 +172,7 @@
       .attr("r", d => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
       );
-      
     // Bold the relevant company labels
-    d3.selectAll(".company-label")
-      .style("font-weight", d => {
-        const company = d3.select(this).attr("data-company");
-        return (company === transaction.seller || company === transaction.buyer) ? "bold" : "normal";
-      });
 
   }
 
@@ -206,10 +185,6 @@
     d3.selectAll("circle.voucher-node")
       .style("opacity", 0.9)
       .attr("r", 8);
-      
-    // Reset all company labels to normal font weight
-    d3.selectAll(".company-label")
-      .style("font-weight", "normal");
   }
 
   function getLabelPosition(angle: number) {
@@ -323,13 +298,6 @@
             date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`,
             isUndisclosed: isUndisclosed(transaction["Sale Price (USD Millions)"])
           };
-          
-          // Bold the company labels involved in this transaction
-          d3.selectAll(".company-label")
-            .style("font-weight", function() {
-              const companyName = d3.select(this).text();
-              return (companyName === transaction.Company || companyName === transaction.Purchaser) ? "bold" : "normal";
-            });
 
           const rect = svg.getBoundingClientRect();
           tooltipX = event.clientX - rect.left;
@@ -356,9 +324,6 @@
         .outerRadius(outerRadius)
       )
       .attr("opacity", 0.2);
-      
-    // Store all company label text elements for later use
-    let companyLabels = new Map();
 
     // Add voucher nodes
     group.each((d, i) => {
@@ -421,16 +386,13 @@
         .attr("class", "label-group")
         .attr("cursor", "pointer");
 
-      const textLabel = labelGroup.append("text")
-        .attr("class", "company-label")
-        .attr("data-company", company)
+      labelGroup.append("text")
         .attr("x", labelX)
         .attr("y", labelY)
         .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
         .attr("text-anchor", "middle")
         .style("font-size", "8.725px")
         .style("fill", "#4a5568")
-        .style("font-weight", "normal")
         .text(company)
         .on("mouseenter", (event) => handleCompanyHover(event, company))
         .on("mouseleave", () => {
@@ -438,9 +400,6 @@
           resetHighlight();
         })
         .on("click", () => handleCompanyClick(company));
-        
-      // Store reference to this text element
-      companyLabels.set(company, textLabel);
     });
   }
 
