@@ -20,7 +20,7 @@
 
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
-  import rpdCompanyValues from '$lib/data/rpdprvdash/RPDCompanyValues.json';
+  import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
   interface DrawerProps {
