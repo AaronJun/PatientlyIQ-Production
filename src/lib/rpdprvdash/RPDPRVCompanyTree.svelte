@@ -387,8 +387,8 @@
         linesGroup.append("path")
             .attr("d", `M${nodeX},${nodeY}L${labelPlacement.x},${labelPlacement.y}`)
             .attr("stroke", "#37587e")
-            .attr("stroke-width", .25)
-            .attr("stroke-opacity", 0.525)
+            .attr("stroke-width", 5)
+            .attr("stroke-opacity", 0.825)
             .attr("fill", "none");
 
         // Create label group
@@ -412,7 +412,7 @@
                 linesGroup.append("path")
                     .attr("d", `M${nodeX},${nodeY}L${drugX},${drugY}`)
                     .attr("stroke", "#37587e")
-                    .attr("stroke-width", .425)
+                    .attr("stroke-width", .7625)
                     .attr("stroke-opacity", 0.6725)
                     .attr("fill", "none");
 
