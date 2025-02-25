@@ -11,7 +11,7 @@
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
-  import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RpdCompanyDetailDrawer.svelte';
+  import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import StockPriceChart from '$lib/rpdprvdash/StockPriceChart.svelte';
 
   import { Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
