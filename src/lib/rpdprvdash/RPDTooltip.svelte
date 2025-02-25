@@ -1,130 +1,118 @@
+<!-- RPDTooltip.svelte -->
 <script lang="ts">
-  import { 
-    ArrowRight,
-    Building, 
-    ReminderMedical,
-    Medication,
-    Stethoscope,
-    WhitePaper,
-    Money
-  } from 'carbon-icons-svelte';
-  import "carbon-components-svelte/css/all.css";
-  import { fade } from 'svelte/transition';
-
-  export let visible: boolean;
+  export let visible: boolean = false;
   export let content: {
-    company: string;
-    candidate: string;
-    therapeuticArea: string;
-    id: string;
+      sponsor: string;
+      drugName?: string;
+      therapeuticArea?: string;
+      id: string;
   };
-  export let borderColor: string;
+  export let borderColor: string = "#4a5568";
+  export let x: number = 0;
+  export let y: number = 0;
 </script>
 
 {#if visible}
-<div
-  class="tooltip"
-  style="--border-color: {borderColor};"
-  transition:fade={{ duration: 1000 }}
->
-    <div class="tooltip-content">
-      <div class="flex gap-4 items-baseline">
-        <Medication size="12" class="text-gray-800" />
-        <p class="text-base capitalize font-medium">
-          {content.drugName}
-        </p>
+  <div 
+      class="tooltip-container"
+      style="
+          left: {x}px;
+          top: {y}px;
+          border-color: {borderColor};
+      "
+  >
+      <div class="tooltip-header">
+          <h3 class="tooltip-title">{content.sponsor}</h3>
+          {#if content.drugName}
+              <span class="tooltip-subtitle">{content.drugName}</span>
+          {/if}
       </div>
-
-      <div class="flex gap-4 items-baseline mb-2">
-        <Building size="12" class="text-gray-800" />
-        <p class="text-xs font-semibold capitalize text-gray-500">{content.sponsor}</p> 
+      <div class="tooltip-body">
+          {#if content.therapeuticArea}
+              <div class="tooltip-row">
+                  <span class="label">Therapeutic Area:</span>
+                  <span class="value">{content.therapeuticArea}</span>
+              </div>
+          {/if}
+          <div class="tooltip-row">
+              <span class="label">Status:</span>
+              <span class="value">{content.id}</span>
+          </div>
       </div>
-
-      <div class="flex gap-4 items-baseline">
-        <ReminderMedical class="text-gray-500" size="12" />
-        <p class="text-xs font-medium text-gray-500">{content.therapeuticArea}</p>
-      </div>
-
-      <div class="flex gap-4 items-baseline capitalize">
-        <Stethoscope class="text-gray-500" size="12" />
-        <p class="text-xs font-medium text-gray-500 truncate max-w-[200px]">
-          {content.id}
-        </p>
-      </div>
-    </div>
   </div>
 {/if}
 
 <style>
-  .tooltip {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: rgba(255, 255, 255, 0.962);    
-    border: .5px solid #373737;
-    padding: 1rem .5rem .5rem .5rem;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 1000;
-    min-width: 200px;
-    max-width: 200px;
-    margin: 0;
-    transition: all 0.3s ease;
+  .tooltip-container {
+      position: absolute;
+      z-index: 1000;
+      min-width: 180px;
+      max-width: 240px;
+      background-color: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-left: 4px solid;
+      pointer-events: none;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 12px;
+      transform: translate(0, 0);
+      animation: fade-in 0.2s ease-out;
   }
 
-  .tooltip::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: .625rem;
-    background-color: var(--border-color);
+  .tooltip-header {
+      background-color: #f8fafc;
+      padding: 8px 12px;
+      border-top-right-radius: 4px;
+      border-bottom: 1px solid #e2e8f0;
   }
 
-  .tooltip-content {
-    margin-top: 4px;
+  .tooltip-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2d3748;
   }
 
-  h4 {
-    margin: 0 0 8px 0;
+  .tooltip-subtitle {
+      display: block;
+      font-size: 11px;
+      margin-top: 2px;
+      color: #4a5568;
+      font-style: italic;
   }
 
-  p {
-    margin: 1px 0;
+  .tooltip-body {
+      padding: 8px 12px;
   }
 
-  .therapeutic-area {
-    max-width: 100%;
-    text-transform: capitalize;
-    font-weight: 800;
+  .tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
   }
 
-  .entry-title {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
-    gap: 0.725rem;
-    margin-bottom: 1.15rem;
+  .tooltip-row:last-child {
+      margin-bottom: 0;
   }
 
-  .entry-bottom {
-    display: flex;
-    flex-direction: row;
-    gap: 0.725rem;
-    justify-content: left;
-    align-items: center;
-    margin-bottom: 0.425rem;
+  .label {
+      color: #718096;
+      font-weight: 500;
+      margin-right: 8px;
   }
 
-  .drugname {
-    line-height: 1.25rem;
-    font-weight: 400;
-    color: #2e2e2e;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
+  .value {
+      color: #4a5568;
+      font-weight: 600;
+      text-align: right;
+  }
+
+  @keyframes fade-in {
+      from {
+          opacity: 0;
+      }
+      to {
+          opacity: 1;
+      }
   }
 </style>

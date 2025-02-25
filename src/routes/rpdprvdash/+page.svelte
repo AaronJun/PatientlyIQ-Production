@@ -2,8 +2,9 @@
   import { onMount } from 'svelte';
 
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
-  import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
+  import RPDPRVVerticalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
+  import CompanyMetricsList from '$lib/rpdprvdash/CompanyMetricsList.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
@@ -18,7 +19,7 @@
 
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
-  import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
+  import rpdCompanyValues from '$lib/data/rpdprvdash/RPDCompanyValues.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
   interface DrawerProps {
@@ -49,6 +50,7 @@
   let currentArea: string | null = null;
   let currentView: string | null = null;
   let currentEntries: any[] = [];
+  let currentCompanyMetrics = null;
   let isDrawerOpen = false;
   let isDashboardOpen = false;
   let selectedYear = "2023"; // Default year
@@ -87,15 +89,50 @@
     color: '',
     companyUrl: ''
   };
-  
-  function handleCompanyHover(entries: any[]) {
-    currentEntries = entries;
-    currentView = 'Company View';
+
+  function handleCompanyHover(data) {
+    if (Array.isArray(data)) {
+      // Old format - just array of entries
+      currentEntries = data;
+      currentView = 'Company View';
+    } else {
+      // New format with additional metrics
+      currentEntries = data.entries;
+      currentCompanyMetrics = {
+        companyName: data.companyName || (data.entries.length > 0 ? data.entries[0].Company : 'Unknown'),
+        totalDrugs: data.totalDrugs || data.entries.length,
+        clinicalTrials: data.clinicalTrials || 0,
+        vouchersAwarded: data.vouchersAwarded || 0,
+        uniqueIndications: data.uniqueIndications || new Set(data.entries.map(d => d.Indication)).size,
+        uniqueAreas: data.uniqueAreas || new Set(data.entries.map(d => d.TherapeuticArea1)).size
+      };
+      currentView = 'Company View';
+    }
   }
 
-  function handleStageHover(entries: any[]) {
+  function handleStageHover(entries) {
     currentEntries = entries;
     currentView = 'Stage View';
+    // Reset company metrics when viewing stages
+    currentCompanyMetrics = null;
+  }
+
+  function getSummaryText() {
+    if (!currentView || !currentEntries.length) return '';
+    
+    if (currentView === 'Company View' && currentCompanyMetrics) {
+      // Return formatted metrics for company
+      return null; // Will use the list format component instead
+    } else if (currentView === 'Stage View') {
+      const stats = {
+        totalEntries: currentEntries.length,
+        uniqueCompanies: new Set(currentEntries.map(d => d.Company)).size,
+        uniqueIndications: new Set(currentEntries.map(d => d.Indication)).size
+      };
+      
+      return `This development stage includes ${stats.totalEntries} drugs from ${stats.uniqueCompanies} companies across ${stats.uniqueIndications} indications.`;
+    }
+    return '';
   }
 
   function handleLeave() {
@@ -144,25 +181,6 @@
 
   function handleDashboardClose() {
     isDashboardOpen = false;
-  }
-
-  function getSummaryText() {
-    if (!currentView || !currentEntries.length) return '';
-    
-    const stats = {
-      totalEntries: currentEntries.length,
-      companyName: currentEntries[0].Company,
-      uniqueCompanies: new Set(currentEntries.map(d => d.Company)).size,
-      uniqueIndications: new Set(currentEntries.map(d => d.Indication)).size,
-      uniqueAreas: new Set(currentEntries.map(d => d.TherapeuticArea1)).size
-    };
-    
-    if (currentView === 'Company View') {
-      return `This company has ${stats.totalEntries} drugs in development across ${stats.uniqueIndications} indications in ${stats.uniqueAreas} therapeutic areas.`;
-    } else if (currentView === 'Stage View') {
-      return `This development stage includes ${stats.totalEntries} drugs from ${stats.uniqueCompanies} companies across ${stats.uniqueIndications} indications.`;
-    }
-    return '';
   }
 
   const colorMap: Record<string, string> = {
@@ -254,129 +272,159 @@
           </button>
         </div>
       </div>
-      <div class="w-full max-w-5xl justify-start">
-        <RpdprvTimeline 
-          data={rpddData}
-          selectedYear="2023"
-          onYearSelect={handleYearSelect}
-        />
-      </div>    
     </nav>
   </div>
   
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pt-[calc(24vh)] pb-[4vh]">
-    <div class="tab-content w-full">
-      {#if activeTab === 'By Sponsor'}
-        <div class="flex flex-row flex-grow px-2 py-4">
-          <!-- Main visualization area -->
-          <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
-            <RpdprvCompanyTree 
-              data={filteredData}
-              onCompanyHover={handleCompanyHover}
-              onStageHover={handleStageHover}
-              onLeave={handleLeave}
-              onShowDrugDetail={handleShowDrugDetail}
-              onShowCompanyDetail={handleShowCompanyDetail}
-            />
-            <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-              <RPDRadialLegend 
-                items={processedData}
-                {colorScale}
-              />
-            </div>
-          </div>
+  <main class="flex-1 pt-[calc(10vh)] pb-[4vh]">
+    <div class="tab-content w-full h-full flex">
+      <!-- Vertical timeline on the right side -->
+      <div class="timeline-wrapper top-[calc(20vh) h-fit bg-slate-50 border-l border-slate-200 flex items-center justify-center pt-12 p-2">
+        <RPDPRVVerticalTimeline 
+          data={rpddData}
+          selectedYear={selectedYear}
+          onYearSelect={handleYearSelect}
+        />
+      </div>
 
-          <!-- Sticky sidebar -->
+      <!-- Main content area with adjusted width to accommodate the vertical timeline -->
+      <div class="w-[calc(100%-10rem)]">
+        {#if activeTab === 'By Sponsor'}
+          <div class="flex flex-row flex-grow px-2">
+            <!-- Main visualization area -->
+            <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
+              <RpdprvCompanyTree 
+                data={filteredData}
+                onCompanyHover={handleCompanyHover}
+                onStageHover={handleStageHover}
+                onLeave={handleLeave}
+                onShowDrugDetail={handleShowDrugDetail}
+                onShowCompanyDetail={handleShowCompanyDetail}
+              />
+              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+                <RPDRadialLegend 
+                  items={processedData}
+                  {colorScale}
+                />
+              </div>
+            </div>
+
+            <!-- Sticky sidebar -->
+                    
           <div class="w-1/6 max-w-[320px] mx-8">
-            <div class="sticky top-[calc(24vh+1rem)]">
+            <div class="sticky top-[calc(20vh)]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-              <div class="w-2 h-2 rounded-full bg-slate-600" />               
+                <div class="w-2 h-2 rounded-full bg-slate-600" />               
                 <h4 class="text-xs/snug uppercase font-base">              
                   {currentView || 'Overview by Sponsor'}
                 </h4>
               </div>
-              <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
-                <div class="space-y-6">
-                  {#if currentEntries.length > 0}
-                    <p class="text-sm/snug w-full pr-2 max-w-4xl text-slate-900">
-                      {getSummaryText()}
-                    </p>
-                  {/if}
-                  
-                  <div class="space-y-4">
-                {#each currentEntries as entry}
-                  <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
-                    <div class="flex flex-col gap-2">
-                      <div class="flex justify-between items-start">
-                        <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                        <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
-                          {entry["Current Development Stage"]}
-                        </span>
-                      </div>
-                      <div>
-                        <p class="text-sm text-slate-600">{entry.Candidate}</p>
-                        <p class="text-xs text-slate-400 mt-1">{entry.Indication}</p>
-                        <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-                  </div>
+          <!-- Updated sidebar implementation with clickable cards -->
+<div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
+  <div class="space-y-6">
+    {#if currentView === 'Company View' && currentCompanyMetrics}
+      <!-- Display company metrics in list format -->
+      <CompanyMetricsList metrics={currentCompanyMetrics} />
+    {:else if currentView === 'Stage View' && currentEntries.length > 0}
+      <!-- Display stage summary -->
+      <p class="text-sm/snug w-full pr-2 max-w-4xl text-slate-900">
+        This development stage includes {currentEntries.length} drugs from 
+        {new Set(currentEntries.map(d => d.Company)).size} companies across 
+        {new Set(currentEntries.map(d => d.Indication)).size} indications.
+      </p>
+    {/if}
+    
+    <div class="space-y-4">
+      {#each currentEntries as entry}
+        <!-- Added onClick handler to the card -->
+        <div 
+          class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+          on:click={() => handleShowDrugDetail({
+            drugName: entry.Candidate,
+            year: entry["RPDD Year"],
+            Company: entry.Company,
+            therapeuticArea: entry.TherapeuticArea1,
+            entries: currentEntries.filter(d => d.TherapeuticArea1 === entry.TherapeuticArea1),
+            color: colorMap[entry.TherapeuticArea1] || '#999999',
+            currentStage: entry["Current Development Stage"] || "TBD",
+            indication: entry.Indication || "",
+            rpddAwardDate: entry["RPDD Year"],
+            voucherAwardDate: entry["PRV Issue Year"] || "",
+            treatmentClass: entry.Class1 || "TBD",
+            mechanismOfAction: entry.MOA || "TBD",
+            companyUrl: entry["Link to CrunchBase"] || ""
+          })}
+        >
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-start">
+              <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
+              <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
+                {entry["Current Development Stage"]}
+              </span>
+            </div>
+            <div>
+              <p class="text-sm text-slate-600">{entry.Candidate}</p>
+              <p class="text-xs text-slate-400 mt-1">{entry.Indication}</p>
+              <p class="text-xs text-slate-400 mt-1">{entry.TherapeuticArea1}</p>
+            </div>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>
+              </div>
+            </div>
+          </div>
+
+        <!-- By Transactions Tab Layout -->
+        {:else if activeTab === 'By Transactions'}
+          <div class="flex flex-row">
+            <div class="w-5/6 bg-slate-50">
+              <SellerBuyerChord 
+                data={rpddData}
+                stockData={rpdCompanyValues}
+                {highlightedTransaction}
+                onShowDrugDetail={handleShowDrugDetail}
+                on:transactionHover={(event) => highlightedTransaction = event.detail}
+                on:transactionLeave={() => highlightedTransaction = null}
+              />
+              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+                <RPDRadialLegend 
+                  items={processedData}
+                  {colorScale}
+                />
+              </div>
+            </div>
+            
+            <div class="w-1/6 min-w-[300px]">
+              <div class="sticky top-[calc(20vh)]">
+                <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+                  <div class="w-2 h-2 rounded-full bg-slate-600" />               
+                  <h4 class="text-xs/snug uppercase font-base">                              
+                    Transaction Value Distribution</h4>
+                </div>
+                <div class="sidebar overflow-hidden py-12" style="height: calc(80vh - 2rem)">
+                  <VoucherBeeswarmPlot 
+                    data={rpddData}
+                    {highlightedTransaction}
+                    onPointClick={handleShowDrugDetail}
+                    on:transactionHover={(event) => highlightedTransaction = event.detail}
+                    on:transactionLeave={() => highlightedTransaction = null}
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-      <!-- By Transactions Tab Layout -->
-      {:else if activeTab === 'By Transactions'}
-        <div class="flex flex-row gap-8 px-4">
-          <div class="w-5/6 bg-slate-50 rounded-lg shadow-sm">
-            <SellerBuyerChord 
-              data={rpddData}
-              stockData={rpdCompanyValues}
-              {highlightedTransaction}
-              onShowDrugDetail={handleShowDrugDetail}
-              on:transactionHover={(event) => highlightedTransaction = event.detail}
-              on:transactionLeave={() => highlightedTransaction = null}
-            />
-            <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-              <RPDRadialLegend 
-                items={processedData}
-                {colorScale}
-              />
-            </div>
-          </div>
-          
-          <div class="w-1/6 min-w-[300px] mx-8">
-            <div class="sticky top-[calc(24vh+1rem)]">
-              <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                <div class="w-2 h-2 rounded-full bg-slate-600" />               
-                <h4 class="text-xs/snug uppercase font-base">                              
-                  Transaction Value Distribution</h4>
-              </div>
-              <div class="sidebar overflow-hidden py-12" style="height: calc(72vh - 2rem)">
-                <VoucherBeeswarmPlot 
-                  data={rpddData}
-                  {highlightedTransaction}
-                  onPointClick={handleShowDrugDetail}
-                  on:transactionHover={(event) => highlightedTransaction = event.detail}
-                  on:transactionLeave={() => highlightedTransaction = null}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <!-- Therapeutic Area Tab Layout -->  
-      {:else if activeTab === 'By Therapeutic Area'}
-        <div class="flex flex-col">
-          <!-- Main content area with visualization and sticky sidebar -->
-          <div class="flex flex-row flex-grow px-2 py-4">
-            <!-- Main visualization area -->
-            <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
-              <RPDDRadialYear 
+        <!-- Therapeutic Area Tab Layout -->  
+        {:else if activeTab === 'By Therapeutic Area'}
+          <div class="flex flex-col">
+            <!-- Main content area with visualization and sticky sidebar -->
+            <div class="flex flex-row flex-grow px-2">
+              <!-- Main visualization area -->
+              <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
+                <RPDDRadialYear 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
                 onStageHover={handleStageHover}
@@ -429,7 +477,12 @@
                             currentStage: entry["Current Development Stage"],
                             indication: entry.Indication,
                             entries: currentEntries,
-                            color: colorScale(entry.TherapeuticArea1)
+                            color: colorScale(entry.TherapeuticArea1),
+                            rpddAwardDate: entry["RPDD Year"],
+                            voucherAwardDate: entry["PRV Issue Year"] || "",
+                            treatmentClass: entry.Class1 || "TBD",
+                            mechanismOfAction: entry.MOA || "TBD",
+                            companyUrl: entry["Link to CrunchBase"] || ""
                           })}
                         >
                           <div class="flex justify-between items-start">

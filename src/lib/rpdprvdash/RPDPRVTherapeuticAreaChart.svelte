@@ -12,8 +12,8 @@
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 1200;
-    const height = 1200;
+    const width = 920;
+    const height = 920;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Stage-specific radii (from outer to inner)
@@ -37,7 +37,7 @@
 
     // Area-specific angles
     const labelRadius = radius * .9725;
-    const maxLabelWidth = 85;
+    const maxLabelWidth = 70;
     const ANGLE_BUFFER = Math.PI / 24;
 
     let tooltipVisible = false;
@@ -208,8 +208,8 @@
                 .attr("r", radius)
                 .attr("fill", "none")
                 .attr("stroke", stageColorScale(stage))
-                .attr("stroke-width", .5)
-                .attr("stroke-dasharray", "1,4")
+                .attr("stroke-width", 1.425)
+                .attr("stroke-dasharray", "2,5")
                 .attr("stroke-opacity", 1);
 
             // Stage label with background
@@ -278,8 +278,8 @@
                     linesGroup.append("path")
                         .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
                         .attr("stroke", "#37587e")
-                        .attr("stroke-width", .425)
-                        .attr("stroke-opacity", 0.525)
+                        .attr("stroke-width", .725)
+                        .attr("stroke-opacity", 0.825)
                         .attr("fill", "none");
                 });
         });

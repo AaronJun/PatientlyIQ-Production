@@ -1,4 +1,4 @@
-<!-- RPDTimeline.svelte -->
+<!-- RPDPRVVerticalTimeline.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -9,8 +9,8 @@
     
     let svg: SVGElement;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const height = 120;
-    const width = 1000;
+    const width = 150;
+    const height = 600;
 
     const therapeuticAreaColors = {
         'Neurology': '#FF6B6B',
@@ -44,7 +44,9 @@
             }
             acc[year].count += 1;
             const area = entry.TherapeuticArea1;
-            acc[year].areas[area] = (acc[year].areas[area] || 0) + 1;
+            if (area) {
+                acc[year].areas[area] = (acc[year].areas[area] || 0) + 1;
+            }
             return acc;
         }, {} as Record<string, { count: number; areas: Record<string, number> }>)
     )
@@ -74,17 +76,18 @@
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        const xScale = d3.scalePoint()
+        // Create y scale (reversed for top-to-bottom order)
+        const yScale = d3.scalePoint()
             .domain(yearData.map(d => d.year))
-            .range([0, innerWidth])
-            .padding(0);
+            .range([margin.top, innerHeight])
+            .padding(0.5);
 
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.count) || 0])
-            .range([4, 24]);
+            .range([4, 20]);
 
         const g = svgElement.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(${margin.left},0)`);
 
         // Create gradients
         const defs = svgElement.append("defs");
@@ -100,13 +103,13 @@
             yearEntry.areas.forEach(area => {
                 gradient.append("stop")
                     .attr("offset", `${currentPosition * 100}%`)
-                    .attr("stop-color", therapeuticAreaColors[area.area]);
+                    .attr("stop-color", therapeuticAreaColors[area.area] || "#999");
 
                 currentPosition += area.percentage;
 
                 gradient.append("stop")
                     .attr("offset", `${currentPosition * 100}%`)
-                    .attr("stop-color", therapeuticAreaColors[area.area]);
+                    .attr("stop-color", therapeuticAreaColors[area.area] || "#999");
             });
         });
 
@@ -130,19 +133,20 @@
 
         // Add connecting line
         g.append("line")
-            .attr("x1", 0)
-            .attr("x2", innerWidth)
-            .attr("y1", innerHeight / 2)
-            .attr("y2", innerHeight / 2)
+            .attr("x1", innerWidth / 2)
+            .attr("x2", innerWidth / 2)
+            .attr("y1", margin.top - 10)
+            .attr("y2", innerHeight + 10)
             .attr("stroke", "#666666")
-            .attr("stroke-width", .325);
+            .attr("stroke-width", 0.5)
+            .attr("stroke-dasharray", "3,3");
 
         // Create year groups
         const yearGroups = g.selectAll(".year-group")
             .data(yearData)
             .join("g")
             .attr("class", "year-group")
-            .attr("transform", d => `translate(${xScale(d.year)},${innerHeight / 2})`);
+            .attr("transform", d => `translate(${innerWidth / 2},${yScale(d.year)})`);
 
         // Add highlight circles
         yearGroups.append("circle")
@@ -186,6 +190,12 @@
                         .duration(200)
                         .attr("font-weight", "600")
                         .attr("fill", "#FF1515");
+                        
+                    d3.select(this.parentNode)
+                        .select(".count-label")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 1);
                 }
             })
             .on("mouseleave", function(event, d) {
@@ -208,26 +218,37 @@
                         .duration(200)
                         .attr("font-weight", "400")
                         .attr("fill", "#718096");
+                        
+                    d3.select(this.parentNode)
+                        .select(".count-label")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 0.6);
                 }
             });
 
         // Add year labels
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("y", d => radiusScale(d.count) + 20)
-            .attr("text-anchor", "middle")
+            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0) - 12)
+            .attr("y", 4) // Center vertically
+            .attr("text-anchor", "end")
             .attr("fill", "#718096")
             .attr("font-size", "12px")
+            .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
 
         // Add count labels
         yearGroups.append("text")
             .attr("class", "count-label")
-            .attr("y", d => -radiusScale(d.count) - 10)
-            .attr("text-anchor", "middle")
+            .attr("x", radiusScale(d3.max(yearData, d => d.count) || 0) + 12)
+            .attr("y", 4) // Center vertically
+            .attr("text-anchor", "start")
             .attr("fill", "#4a5568")
             .attr("font-size", "10px")
+            .attr("opacity", 0.6)
+            .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.count);
 
@@ -263,6 +284,7 @@
                 group.select(".count-label")
                     .transition()
                     .duration(300)
+                    .attr("opacity", isSelected ? 1 : 0.6)
                     .attr("fill", isSelected ? "#FF1010" : "#4a5568");
             });
     }
@@ -273,7 +295,13 @@
 </script>
 
 <div class="timeline-container">
-    <svg
+    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+        <div class="w-2 h-2 rounded-full bg-emerald-600" />               
+          <h4 class="text-xs/snug uppercase font-base">
+            Select Year              
+            </h4>
+    </div>    
+        <svg
         bind:this={svg}
         {width}
         {height}
@@ -282,12 +310,24 @@
     />
 </div>
 
+
 <style>
     .timeline-container {
+        height: 100%;
         width: 100%;
-        max-width: 1000px;
-        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
         position: relative;
+    }
+    
+    .timeline-header {
+        font-size: 12px;
+        font-weight: 600;
+        color: #4a5568;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        letter-spacing: 0.05em;
     }
 
     :global(.year-group) {

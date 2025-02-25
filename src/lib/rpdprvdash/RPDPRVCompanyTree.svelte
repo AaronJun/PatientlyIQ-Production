@@ -1,4 +1,4 @@
-<!-- RPDCompanyTree.svelte -->
+<!-- Enhanced RPDPRVCompanyTree.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -6,13 +6,14 @@
 
     export let data: any[] = [];
     export let onCompanyHover: (entries: any[]) => void = () => {};
+    export let onStageHover: (entries: any[]) => void = () => {};
     export let onLeave: () => void = () => {};
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 1200;
-    const height = 1200;
+    const width = 920;
+    const height = 920;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
@@ -59,6 +60,8 @@
     let tooltipBorderColor = '';
     let tooltipX = 0;
     let tooltipY = 0;
+    // Tooltip offset from cursor
+    const tooltipOffset = { x: 15, y: 15 };
 
     // Color scales
     const stageColorScale = d3.scaleOrdinal()
@@ -92,6 +95,10 @@
     const companyStatusColorScale = d3.scaleOrdinal()
         .domain(['Public', 'Private'])
         .range(['#4A90E2', '#F5A623']);
+
+    // Active selection tracking
+    let activeCompany = null;
+    let activeStage = null;
 
     function getLabelRadius(angle: number) {
         const normalizedAngle = ((angle + Math.PI/2) * 180 / Math.PI) % 360;
@@ -202,9 +209,9 @@
                 -(col * 10);
             
             dotsGroup.append("circle")
-                .attr("r", 4)
+                .attr("r", 0)
                 .attr("stroke", "#161616")
-                .attr("cx", x+5)
+                .attr("cx", x+10)
                 .attr("cy", row * labelConfig.dotRowHeight)
                 .attr("fill", company.status === 'Public' ? '#4A90E2' : '#F5A623')
                 .attr("opacity", 0.825);
@@ -224,7 +231,11 @@
                     status: entry['Public/Private'] || 'Private',
                     stages: new Map(),
                     totalDrugs: 0,
-                    entries: []
+                    entries: [],
+                    clinicalTrials: 0,
+                    vouchersAwarded: 0,
+                    uniqueIndications: new Set(),
+                    uniqueAreas: new Set()
                 });
             }
             
@@ -238,6 +249,25 @@
             companyData.stages.get(stage).push(entry);
             companyData.entries.push(entry);
             companyData.totalDrugs++;
+            
+            // Track indications and therapeutic areas
+            if (entry.Indication) {
+                companyData.uniqueIndications.add(entry.Indication);
+            }
+            if (entry.TherapeuticArea1) {
+                companyData.uniqueAreas.add(entry.TherapeuticArea1);
+            }
+            
+            // Count clinical trials (Phase 1-3)
+            const clinicalStages = ["P1", "P1/2", "P2", "P3"];
+            if (clinicalStages.includes(stage)) {
+                companyData.clinicalTrials++;
+            }
+            
+            // Count vouchers awarded
+            if (stage === "PRV" || entry["PRV Issue Year"]) {
+                companyData.vouchersAwarded++;
+            }
         });
 
         return Array.from(companiesMap.values())
@@ -270,8 +300,17 @@
 
     function showTooltip(event: MouseEvent, d: any, isCompany: boolean = false) {
         const containerRect = svg.getBoundingClientRect();
-        tooltipX = event.pageX - containerRect.left;
-        tooltipY = event.pageY - containerRect.top;
+        
+        // Position the tooltip next to the cursor with offsets
+        tooltipX = event.clientX - containerRect.left + tooltipOffset.x;
+        tooltipY = event.clientY - containerRect.top + tooltipOffset.y;
+        
+        // Check if tooltip would go outside right edge of container
+        const tooltipWidth = 200; // Approximate width of tooltip
+        if (tooltipX + tooltipWidth > containerRect.width) {
+            // Position tooltip to the left of cursor instead
+            tooltipX = event.clientX - containerRect.left - tooltipWidth - tooltipOffset.x;
+        }
         
         if (isCompany) {
             tooltipContent = {
@@ -297,6 +336,108 @@
     function hideTooltip() {
         tooltipVisible = false;
     }
+    
+    function setActiveCompany(company, entries) {
+        // Set the active company and clear active stage
+        activeCompany = company;
+        activeStage = null;
+        
+        // Reset all company nodes and labels to inactive state
+        d3.selectAll(".company-node rect")
+            .transition()
+            .duration(200)
+            .attr("width", "10.25")
+            .attr("height", "10.25")
+            .attr("transform", "translate(-5.125, -5.125)");
+            
+        d3.selectAll(".company-label text")
+            .transition()
+            .duration(500)
+            .attr("fill", "#4A5568")
+            .attr("font-size", "11.25px")
+            .attr("font-weight", "500");
+            
+        d3.selectAll(".pipeline-dots circle")
+            .transition()
+            .duration(200)
+            .attr("r", 0)
+            .attr("opacity", 0.7);
+            
+        // Highlight the active company
+        if (company) {
+            const companyId = company.replace(/\s+/g, '-').toLowerCase();
+            
+            d3.select(`#company-node-${companyId} rect`)
+                .transition()
+                .duration(200)
+                .attr("width", "14.25")
+                .attr("height", "14.25")
+                .attr("transform", "translate(-7.125, -7.125)");
+                
+            d3.select(`#company-label-${companyId} text`)
+                .transition()
+                .duration(500)
+                .attr("fill", "#FF4A4A")
+                .attr("font-size", "12px")
+                .attr("font-weight", "800");
+                
+            d3.select(`#company-label-${companyId} .pipeline-dots`)
+                .selectAll("circle")
+                .transition()
+                .duration(200)
+                .attr("r", 0)
+                .attr("opacity", 1);
+                
+            // Find company data for this company
+            const companyData = processDataForLayout(data).find(c => c.company === company);
+            if (companyData) {
+                // Pass additional metrics to onCompanyHover
+                onCompanyHover({
+                    entries: companyData.entries,
+                    companyName: companyData.company, 
+                    totalDrugs: companyData.totalDrugs,
+                    clinicalTrials: companyData.clinicalTrials,
+                    vouchersAwarded: companyData.vouchersAwarded,
+                    uniqueIndications: companyData.uniqueIndications.size,
+                    uniqueAreas: companyData.uniqueAreas.size
+                });
+            } else {
+                onCompanyHover(entries);
+            }
+        }
+    }
+    
+    function setActiveStage(stage, entries) {
+        // Set the active stage and clear active company
+        activeStage = stage;
+        activeCompany = null;
+        
+        // Reset all stage circles to inactive state
+        d3.selectAll(".stage-label rect")
+            .transition()
+            .duration(200)
+            .attr("fill", "#F8FAFC");
+            
+        d3.selectAll(".stage-label text")
+            .transition()
+            .duration(200)
+            .attr("font-weight", "400");
+            
+        // Highlight the active stage
+        if (stage) {
+            d3.select(`#stage-label-${stage} rect`)
+                .transition()
+                .duration(200)
+                .attr("fill", "#F1F5F9");
+                
+            d3.select(`#stage-label-${stage} text`)
+                .transition()
+                .duration(200)
+                .attr("font-weight", "700");
+                
+            onStageHover(entries);
+        }
+    }
 
     function createVisualization() {
     if (!svg) return;
@@ -317,16 +458,19 @@
             .attr("r", radius)
             .attr("fill", "none")
             .attr("stroke", stageColorScale(stage))
-            .attr("stroke-width", .5)
-            .attr("stroke-dasharray", "1,4")
+            .attr("stroke-width", 1.25)
+            .attr("stroke-dasharray", "2,5")
             .attr("stroke-opacity", 1);
 
-        const labelAngle = -Math.PI / 10;
+        const labelAngle = -Math.PI / 15;
         const labelX = radius * Math.cos(labelAngle) - 15;
         const labelY = radius * Math.sin(labelAngle) + 25;
 
         const labelGroup = stagesGroup.append("g")
-            .attr("transform", `translate(${labelX},${labelY})`);
+            .attr("transform", `translate(${labelX},${labelY})`)
+            .attr("class", "stage-label")
+            .attr("id", `stage-label-${stage}`)
+            .attr("cursor", "pointer");
 
         const tempText = labelGroup.append("text")
             .attr("opacity", 0)
@@ -350,6 +494,13 @@
             .attr("font-size", "10.25px")
             .attr("font-weight", "400")
             .text(stage);
+            
+        // Add click handler for stage label
+        labelGroup.on("click", (event) => {
+            event.stopPropagation();
+            const stageEntries = data.filter(entry => getStage(entry) === stage);
+            setActiveStage(stage, stageEntries);
+        });
     });
 
     const companies = processDataForLayout(data);
@@ -363,8 +514,11 @@
 
         const companyGroup = mainGroup.append("g");
 
+        // Create sanitized ID for the company
+        const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
+
         // Calculate node position (where lines connect)
-        const nodeRadius = radius * 0.9725;
+        const nodeRadius = radius * .9725;
         const nodeAngle = angle.center;
         const nodeX = nodeRadius * Math.cos(nodeAngle - Math.PI/2);
         const nodeY = nodeRadius * Math.sin(nodeAngle - Math.PI/2);
@@ -372,7 +526,9 @@
         // Create company node
         const nodeGroup = companyLabelsGroup.append("g")
             .attr("transform", `translate(${nodeX},${nodeY})`)
-            .attr("cursor", "pointer");
+            .attr("cursor", "pointer")
+            .attr("class", "company-node")
+            .attr("id", `company-node-${companyId}`);
 
         nodeGroup.append("rect")
             .attr("width", 10.25)
@@ -387,14 +543,16 @@
         linesGroup.append("path")
             .attr("d", `M${nodeX},${nodeY}L${labelPlacement.x},${labelPlacement.y}`)
             .attr("stroke", "#37587e")
-            .attr("stroke-width", 5)
+            .attr("stroke-width", .725)
             .attr("stroke-opacity", 0.825)
             .attr("fill", "none");
 
         // Create label group
         const labelGroup = companyLabelsGroup.append("g")
             .attr("transform", `translate(${labelPlacement.x},${labelPlacement.y})`)
-            .attr("cursor", "pointer");
+            .attr("cursor", "pointer")
+            .attr("class", "company-label")
+            .attr("id", `company-label-${companyId}`);
 
         const { textElement, dotsGroup } = createLabelGroup(labelGroup, company, labelPlacement);
 
@@ -456,6 +614,10 @@
 
                         showTooltip(event, drug);
                     })
+                    .on("mousemove", (event) => {
+                        // Update tooltip position when mouse moves
+                        showTooltip(event, drug);
+                    })
                     .on("mouseleave", () => {
                         drugGroup.select("circle")
                             .transition()
@@ -496,57 +658,22 @@
 
         // Add interaction handlers for both node and label
         const handleMouseEnter = (event: MouseEvent) => {
-            nodeGroup.select("rect")
-                .transition()
-                .duration(200)
-                .attr("width", 14.25)
-                .attr("height", 14.25);
-
-            textElement
-                .transition()
-                .duration(500)
-                .attr("font-weight", "800")
-                .attr("font-size", "12px")
-                .attr("fill", "#FF4A4A");
-
-            dotsGroup.selectAll("circle")
-                .transition()
-                .duration(200)
-                .attr("r", 5.25)
-                .attr("opacity", 1);
-
+            // Set this company as active
+            setActiveCompany(company.company, company.entries);
             showTooltip(event, {
                 company: company.company,
                 totalDrugs: company.totalDrugs,
                 status: company.status
             }, true);
-            onCompanyHover(company.entries);
         };
 
-        const handleMouseLeave = () => {
-            nodeGroup.select("rect")
-                .transition()
-                .duration(200)
-                .attr("height", "10.25")
-                .attr("width", "10.25");
-
-            textElement
-                .transition()
-                .duration(500)
-                .attr("fill", "#4A5568")
-                .attr("font-size", "11.25px")
-                .attr("font-weight", "500");
-
-            dotsGroup.selectAll("circle")
-                .transition()
-                .duration(200)
-                .attr("r", 4)
-                .attr("cx", x+5)
-                .attr("fill", companyStatusColorScale(company.status))
-                .attr("opacity", 0.7);
-
-            hideTooltip();
-            onLeave();
+        const handleMouseMove = (event: MouseEvent) => {
+            // Update tooltip position when mouse moves
+            showTooltip(event, {
+                company: company.company,
+                totalDrugs: company.totalDrugs,
+                status: company.status
+            }, true);
         };
 
         const handleClick = () => {
@@ -562,9 +689,19 @@
         [nodeGroup, labelGroup].forEach(group => {
             group
                 .on("mouseenter", handleMouseEnter)
-                .on("mouseleave", handleMouseLeave)
+                .on("mousemove", handleMouseMove)
                 .on("click", handleClick);
         });
+    });
+
+    // Add click handler to SVG background to clear selections
+    svgElement.on("click", (event) => {
+        // Check if click was directly on the SVG background
+        if (event.target === svg) {
+            activeCompany = null;
+            activeStage = null;
+            onLeave();
+        }
     });
 }
 

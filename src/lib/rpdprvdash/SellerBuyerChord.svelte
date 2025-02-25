@@ -42,11 +42,11 @@
   let isCompanyDrawerOpen = false;
   let selectedCompany = "";
 
-  const width = 982;
-  const height = 982;
+  const width = 920;
+  const height = 920;
   const labelConfig = {
     radius: Math.min(width, height) * 0.40,
-    padding: 15,
+    padding: 12,
     minAngleDiff: Math.PI / 32
   };
 
@@ -390,7 +390,7 @@
         .attr("y", labelY)
         .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
         .attr("text-anchor", "middle")
-        .style("font-size", "8.725px")
+        .style("font-size", "10.725px")
         .style("fill", "#4a5568")
         .text(company)
         .on("mouseenter", (event) => handleCompanyHover(event, company))
@@ -407,7 +407,7 @@
   });
 </script>
 
-<div class="chord-container relative bg-slate-50 mt-4 rounded-lg p-8">
+<div class="chord-container relative bg-slate-50">
   <svg
     bind:this={svg}
     {width}
@@ -427,14 +427,14 @@
         </div>
         
         <div class="flex gap-4 text-slate-600 items-baseline">
-          <Medication size="14" class="text-slate-600" />
+          <Medication size="16" class="text-slate-600" />
           <p class="font-semibold text-sm">
             {tooltipContent.Candidate}
           </p>
         </div>
 
         <div class="flex gap-4 items-baseline">
-          <Money size="14" class="text-gray-800" />
+          <Money size="16" class="text-gray-800" />
           <p class="text-sm">
             {#if tooltipContent.isUndisclosed}
               <span class="italic">Undisclosed</span>
@@ -445,7 +445,7 @@
         </div>
       
         <div class="flex gap-4 items-baseline">
-          <CalendarHeatMap size="14" class="text-gray-800" />
+          <CalendarHeatMap size="16" class="text-gray-800" />
           <p class="text-sm">
             {tooltipContent.date}
           </p>
@@ -456,14 +456,14 @@
         </div>
 
         <div class="flex gap-4 items-baseline mb-2">
-          <Money size="14" class="text-gray-800" />
+          <Money size="16" class="text-gray-800" />
           <p class="text-sm">
             Total Value: ${tooltipContent.totalValue?.toFixed(1)}M
           </p>
         </div>
 
         <div class="flex gap-4 items-baseline mb-2">
-          <Catalog size="14" class="text-gray-800" />
+          <Catalog size="16" class="text-gray-800" />
           <p class="text-sm">
             {tooltipContent.transactionCount} Transactions
           </p>
