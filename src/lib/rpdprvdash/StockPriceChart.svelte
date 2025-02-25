@@ -740,7 +740,7 @@
   
   .change-arrow {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
   }
   
   .change-value {
