@@ -375,7 +375,6 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
           </div>
 
           <div class="flex w-5/6 lg:w-5/6 sm:w-full min-[400px]:w-full timeline-container content-start">
-            <SentimentBars data={radialSampleData}/>
           </div>
         </div>
 
