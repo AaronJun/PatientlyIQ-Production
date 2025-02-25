@@ -172,7 +172,6 @@
       .attr("r", d => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
       );
-    // Bold the relevant company labels
 
   }
 
