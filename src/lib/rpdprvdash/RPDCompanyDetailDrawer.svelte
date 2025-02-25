@@ -135,7 +135,7 @@
       <section class="mb-8">
         <h3 class="section-title">
           <Chemistry size={16} />
-          Therapeutic Areas
+          Focus Therapeutic Areas
         </h3>
         <div class="chips-container">
           {#each companyProfile.therapyAreas as area}
@@ -158,7 +158,7 @@
               <div class="flex justify-between items-start">
                 <div>
                   <h4 class="candidate-name">{drug.Candidate}</h4>
-                  <p class="candidate-indication">{drug.Indication || 'Unknown Indication'}</p>
+                  <p class="candidate-indication capitalize">{drug.Indication || 'Unknown Indication'}</p>
                 </div>
                 <span class="candidate-stage">
                   {drug["Current Development Stage"] || 'Unknown Stage'}
@@ -278,7 +278,8 @@
   }
 
   .stat-label {
-    font-size: 0.875rem;
+    font-size: 0.725rem;
+    margin-top: 0.25rem;
     color: #4a5568;
   }
 
