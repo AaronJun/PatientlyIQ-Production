@@ -4,8 +4,6 @@
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import RpdprvTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
-  import { RadialTimeline, YearlySummary } from '$lib/componentStores';
-
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
@@ -13,14 +11,16 @@
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
-  import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
-
-  import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
-  import rpdPrvDataRaw from '../data/RPDPRVOverviewData.json';
-  import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
+  import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RpdCompanyDetailDrawer.svelte';
+  import StockPriceChart from '$lib/rpdprvdash/StockPriceChart.svelte';
 
   import { Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
+
+  // Import data sources
+  import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
+  import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
+  import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
   interface DrawerProps {
     isCompanyView?: boolean;
@@ -37,18 +37,15 @@
     treatmentClass?: string;
     mechanismOfAction?: string;
     companyUrl?: string;
-    // Add new company info properties
     country?: string;
     publicPrivate?: string;
     marketCap?: string;
   }
 
-
-  let activeTab = 'By Sponsor + Stage';
-  let processedRpdPrvData: rpddData[] = [];
+  let activeTab = 'By Sponsor';
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
-  let selectedData: ConstellationEntry | null = null;
-  let processedConstellationData: ConstellationEntry[] = [];
+  let selectedData: any | null = null;
+  let processedConstellationData: any[] = [];
   let selectedColor: string = "";
   let currentArea: string | null = null;
   let currentView: string | null = null;
@@ -56,9 +53,28 @@
   let isDrawerOpen = false;
   let isDashboardOpen = false;
   let selectedYear = "2023"; // Default year
+  let isCompanyDetailDrawerOpen = false;
+  let selectedCompany = "";
+  
+  // Process stock data and store by company
+  let stockDataByCompany: Record<string, any[]> = {};
   
   // Filter data based on selected year
   $: filteredData = rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
+  
+  // Process the stock data
+  function processStockData(stockData: any[]): Record<string, any[]> {
+    const companyMap: Record<string, any[]> = {};
+    
+    stockData.forEach(item => {
+      if (!companyMap[item.Company]) {
+        companyMap[item.Company] = [];
+      }
+      companyMap[item.Company].push(item);
+    });
+    
+    return companyMap;
+  }
   
   function handleYearSelect(year: string) {
     selectedYear = year;
@@ -72,26 +88,7 @@
     color: '',
     companyUrl: ''
   };
-
-  function getColorForTherapeuticArea(ta: string): string {
-    const colorMap = {
-    "Gastroenterology": "#a6cee3",
-    "Neurology": "#1f78b4",
-    "Ophthalmology": "#6C6C6C",
-    "Immunology": "#33a02c",
-    "Metabolic": "#fb9a99",
-    "Dermatology": "#fdbf6f",
-    "Hematology": "#e31a1c",
-    "Orthopedics": "#ff7f00",
-    "Pulmonology": "#cab2d6",
-    "Nephrology": "#6a3d9a",
-    "Oncology": "#ffff99",
-    "Endocrinology": "#b15928",
-    "Hepatology": "#8dd3c7",
-  };
-    return colorMap[ta] || "#000000";
-  }
-
+  
   function handleCompanyHover(entries: any[]) {
     currentEntries = entries;
     currentView = 'Company View';
@@ -113,18 +110,19 @@
 
   function handleShowCompanyDetail(detail: any) {
     const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
+    selectedCompany = detail.Company;
     drawerProps = {
       isCompanyView: true,
       Company: detail.Company,
       entries: companyEntries,
       color: '#37587e',
       companyUrl: detail.companyUrl,
-      // Add company info from the first entry
       country: companyEntries[0]?.COUNTRY || 'N/A',
       publicPrivate: companyEntries[0]?.['Public/Private'] || 'N/A',
       marketCap: companyEntries[0]?.MarketCap || 'N/A'
     };
     isDrawerOpen = true;
+    isCompanyDetailDrawerOpen = true;
   }
 
   function handleShowDrugDetail(detail: any) {
@@ -133,10 +131,12 @@
       ...detail
     };
     isDrawerOpen = true;
+    isCompanyDetailDrawerOpen = false;
   }
 
   function handleCloseDrawer() {
     isDrawerOpen = false;
+    isCompanyDetailDrawerOpen = false;
   }
 
   function handleDashboardClick() {
@@ -165,13 +165,6 @@
     }
     return '';
   }
-
-  const handleClusterElementClick = (event: CustomEvent) => {
-    const { entry, color } = event.detail;
-    selectedData = entry;
-    selectedColor = color;
-    isDrawerOpen = true;
-  };
 
   const colorMap: Record<string, string> = {
     'Neurology': '#FF6B6B',
@@ -202,10 +195,15 @@
     }, {} as Record<string, number>)
   ).map(([area, count]) => ({ area, count }));
 
-  onMount(async () => {
+  onMount(() => {
     try {
-      processedConstellationData = processConstellationData(constellationDataRaw as ConstellationEntry[]);
-            
+      // Process stock data on mount
+      stockDataByCompany = processStockData(rpdCompanyValues);
+      
+      // Other initialization logic
+      if (constellationDataRaw) {
+        processedConstellationData = constellationDataRaw;
+      }
     } catch (error) {
       console.error('Error initializing:', error);
     }
@@ -229,7 +227,7 @@
     <nav class="justify-stretch w-full bg-slate-50 border-b border-slate-200 shadow-sm">
       <div class="flex align-baseline place-items-baseline gap-12 justify-between px-4 min-w-full max-w-7xl mx-auto my-auto">
         <div class="flex mt-4 mb-2 space-x-4">
-          {#each ['By Sponsor + Stage', 'By Therapeutic Area', 'By Transactions'] as tab}
+          {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
               class="px-1 py-1 border-b-2 font-normal text-xs transition-colors
               {activeTab === tab ? 
@@ -241,7 +239,6 @@
             </button>
           {/each}
         </div>
-
 
         <div class="flex gap-4 min-w-96">
           <RpdprvSearch
@@ -271,7 +268,7 @@
   <!-- Main content area with proper spacing -->
   <main class="flex-1 pt-[calc(24vh)] pb-[4vh]">
     <div class="tab-content w-full">
-      {#if activeTab === 'By Sponsor + Stage'}
+      {#if activeTab === 'By Sponsor'}
         <div class="flex flex-row flex-grow px-2 py-4">
           <!-- Main visualization area -->
           <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
@@ -333,13 +330,13 @@
           </div>
         </div>
 
-
-    <!-- By Transactions Tab Layout -->
-        {:else if activeTab === 'By Transactions'}
+      <!-- By Transactions Tab Layout -->
+      {:else if activeTab === 'By Transactions'}
         <div class="flex flex-row gap-8 px-4">
           <div class="w-5/6 bg-slate-50 rounded-lg shadow-sm">
             <SellerBuyerChord 
               data={rpddData}
+              stockData={rpdCompanyValues}
               {highlightedTransaction}
               onShowDrugDetail={handleShowDrugDetail}
               on:transactionHover={(event) => highlightedTransaction = event.detail}
@@ -373,89 +370,88 @@
           </div>
         </div>
 
+      <!-- Therapeutic Area Tab Layout -->  
+      {:else if activeTab === 'By Therapeutic Area'}
+        <div class="flex flex-col">
+          <!-- Main content area with visualization and sticky sidebar -->
+          <div class="flex flex-row flex-grow px-2 py-4">
+            <!-- Main visualization area -->
+            <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
+              <RPDDRadialYear 
+                data={filteredData}
+                onCompanyHover={handleCompanyHover}
+                onStageHover={handleStageHover}
+                onLeave={handleLeave}
+                onShowDrugDetail={handleShowDrugDetail}
+                onShowCompanyDetail={handleShowCompanyDetail}
+              />
+              
+              <!-- Legend section -->
+              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+                <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
+                </div>
+              </div>
+            </div>
 
-<!-- Therapeutic Area Tab Layout -->  
-{:else if activeTab === 'By Therapeutic Area'}
-<div class="flex flex-col">
-  <!-- Main content area with visualization and sticky sidebar -->
-  <div class="flex flex-row flex-grow px-2 py-4">
-    <!-- Main visualization area -->
-    <div class="w-5/6 flex-col pb-18 pr-24 pl-8">
-      <RPDDRadialYear 
-        data={filteredData}
-        onCompanyHover={handleCompanyHover}
-        onStageHover={handleStageHover}
-        onLeave={handleLeave}
-        onShowDrugDetail={handleShowDrugDetail}
-        onShowCompanyDetail={handleShowCompanyDetail}
-      />
-      
-      <!-- Legend section -->
-      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-        <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
-          <RPDRadialLegend 
-            items={processedData}
-            {colorScale}
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Sticky sidebar -->
-    <div class="w-1/6 max-w-[350px] mx-8">
-      <div class="sticky top-[calc(24vh+1rem)]">
-        <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-          <div class="w-2 h-2 rounded-full bg-slate-600" />               
-          <h4 class="text-xs/snug uppercase font-base">              
-            {currentArea ? currentArea : 'Overview by Therapeutic Area'}
-          </h4>
-        </div>                
-        <div class="sidebar pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
-          <div class="space-y-6">
-            {#if currentEntries.length > 0}
-              <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
-                <span class="highlight">{currentArea}</span> represents 
-                <span class="highlight">{currentEntries.length}</span> RPDDs from
-                <span class="highlight">{new Set(currentEntries.map(d => d.Company)).size}</span> unique companies,
-                developing <span class="highlight">{new Set(currentEntries.map(d => d.Candidate)).size}</span> candidates.
-              </p>
-            {/if}
-            
-            <!-- Entries list -->
-            <div class="space-y-4">
-              {#each currentEntries as entry}
-                <div 
-                  class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
-                  on:click={() => handleShowDrugDetail({
-                    drugName: entry.Candidate,
-                    year: entry["RPDD Year"],
-                    Company: entry.Company,
-                    therapeuticArea: entry.TherapeuticArea1,
-                    currentStage: entry["Current Development Stage"],
-                    indication: entry.Indication,
-                    entries: currentEntries,
-                    color: colorScale(entry.TherapeuticArea1)
-                  })}
-                >
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <p class="text-xs capitalize text-slate-600 mt-1">{entry.Indication}</p>
-                      <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                      <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
+            <!-- Sticky sidebar -->
+            <div class="w-1/6 max-w-[350px] mx-8">
+              <div class="sticky top-[calc(24vh+1rem)]">
+                <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+                  <div class="w-2 h-2 rounded-full bg-slate-600" />               
+                  <h4 class="text-xs/snug uppercase font-base">              
+                    {currentArea ? currentArea : 'Overview by Therapeutic Area'}
+                  </h4>
+                </div>                
+                <div class="sidebar pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
+                  <div class="space-y-6">
+                    {#if currentEntries.length > 0}
+                      <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
+                        <span class="highlight">{currentArea}</span> represents 
+                        <span class="highlight">{currentEntries.length}</span> RPDDs from
+                        <span class="highlight">{new Set(currentEntries.map(d => d.Company)).size}</span> unique companies,
+                        developing <span class="highlight">{new Set(currentEntries.map(d => d.Candidate)).size}</span> candidates.
+                      </p>
+                    {/if}
+                    
+                    <!-- Entries list -->
+                    <div class="space-y-4">
+                      {#each currentEntries as entry}
+                        <div 
+                          class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+                          on:click={() => handleShowDrugDetail({
+                            drugName: entry.Candidate,
+                            year: entry["RPDD Year"],
+                            Company: entry.Company,
+                            therapeuticArea: entry.TherapeuticArea1,
+                            currentStage: entry["Current Development Stage"],
+                            indication: entry.Indication,
+                            entries: currentEntries,
+                            color: colorScale(entry.TherapeuticArea1)
+                          })}
+                        >
+                          <div class="flex justify-between items-start">
+                            <div>
+                              <p class="text-xs capitalize text-slate-600 mt-1">{entry.Indication}</p>
+                              <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
+                              <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
+                            </div>
+                            <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
+                              {entry["Current Development Stage"]}
+                            </span>
+                          </div>
+                        </div>
+                      {/each}
                     </div>
-                    <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
-                      {entry["Current Development Stage"]}
-                    </span>
                   </div>
                 </div>
-              {/each}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
       {/if}
     </div>
   </main>
@@ -470,14 +466,7 @@
 {/if}
 
 {#if isDrawerOpen}
-  {#if !drawerProps.isCompanyView}
-    <RPDPRVDrawer
-      {...drawerProps}
-      {isDrawerOpen}
-      onClose={handleCloseDrawer}
-      onShowCompanyDetail={handleShowCompanyDetail}
-    />
-    {:else}
+  {#if drawerProps.isCompanyView}
     <RpdprvCompanyDrawer
       Company={drawerProps.Company}
       entries={drawerProps.entries}
@@ -489,8 +478,27 @@
       {isDrawerOpen}
       onClose={handleCloseDrawer}
     />
+  {:else}
+    <RPDPRVDrawer
+      {...drawerProps}
+      {isDrawerOpen}
+      onClose={handleCloseDrawer}
+      onShowCompanyDetail={handleShowCompanyDetail}
+    />
   {/if}
-{/if}f
+{/if}
+
+{#if isCompanyDetailDrawerOpen}
+  <RpdCompanyDetailDrawer
+    isOpen={isCompanyDetailDrawerOpen}
+    companyName={selectedCompany}
+    allData={rpddData}
+    stockData={stockDataByCompany[selectedCompany] || []}
+    onClose={handleCloseDrawer}
+    onShowDrugDetail={handleShowDrugDetail}
+    color={drawerProps.color}
+  />
+{/if}
 
 <style>
   .sidebar {
@@ -499,8 +507,6 @@
     scrollbar-color: #e5e7eb #f9fafb;
     border-top: 0px;
     overflow-y: scroll;
-  }
-  .sidebar-header {
   }
 
   .legend {

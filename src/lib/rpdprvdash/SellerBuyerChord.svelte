@@ -1,10 +1,11 @@
-<!-- SellerBuyerChord.svelte -->
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
   import { CalendarHeatMap, Medication, Money, Catalog } from 'carbon-icons-svelte';
+  import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
 
   export let data: any[] = [];
+  export let stockData: any[] = [];
   export let highlightedTransaction: { seller: string, buyer: string } | null = null;
   export let onShowDrugDetail: (detail: any) => void;
 
@@ -36,6 +37,10 @@
   };
   let tooltipX = 0;
   let tooltipY = 0;
+
+  // Company drawer state
+  let isCompanyDrawerOpen = false;
+  let selectedCompany = "";
 
   const width = 982;
   const height = 982;
@@ -81,6 +86,7 @@
       indication: d.Indication || "",
       rpddAwardDate: d["RPDD Year"],
       voucherAwardDate: d["PRV Year"] || "",
+      voucherTransactionDate: d["Purchase Year"] || "",
       treatmentClass: d.Class1 || "TBD",
       mechanismOfAction: d.MOA || "TBD",
       companyUrl: d["Company URL"] || ""
@@ -113,6 +119,16 @@
     tooltipVisible = true;
   }
 
+  function handleCompanyClick(company: string) {
+    selectedCompany = company;
+    isCompanyDrawerOpen = true;
+    tooltipVisible = false;
+  }
+
+  function handleCloseCompanyDrawer() {
+    isCompanyDrawerOpen = false;
+  }
+
   function highlightRibbon(transaction: { seller: string, buyer: string }) {
     ribbons
       .style("opacity", d => {
@@ -134,12 +150,13 @@
       .attr("r", d => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
       );
+
   }
 
   function resetHighlight() {
     if (!ribbons) return;
     ribbons
-      .style("opacity", 0.25)
+      .style("opacity", 0.6)
       .attr("stroke-width", 0.5);
 
     d3.selectAll("circle.voucher-node")
@@ -226,10 +243,10 @@
       .join("path")
       .attr("d", d3.ribbon().radius(innerRadius))
       .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
-      .style("mix-blend-mode", "divide")
+      .style("mix-blend-mode", "multiply")
       .style("opacity", 0.6)
       .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
-      .attr("stroke-width", 2.5)
+      .attr("stroke-width", 0.5)
       .attr("stroke-dasharray", d => {
         const transaction = transactions.find(t => 
           t.Company === companies[d.source.index] && 
@@ -357,7 +374,8 @@
         .on("mouseenter", (event) => handleCompanyHover(event, company))
         .on("mouseleave", () => {
           tooltipVisible = false;
-        });
+        })
+        .on("click", () => handleCompanyClick(company));
     });
   }
 
@@ -421,27 +439,32 @@
           </p>
         </div>
 
-        <div class="flex gap-4 items-baseline mb-4">
+        <div class="flex gap-4 items-baseline mb-2">
           <Catalog size="14" class="text-gray-800" />
           <p class="text-sm">
             {tooltipContent.transactionCount} Transactions
           </p>
         </div>
 
-        {#if tooltipContent.candidates && tooltipContent.candidates.length > 0}
-          <div class="text-xs text-slate-600">
-            <div class="font-semibold mb-1">Drug Candidates:</div>
-            <ul class="list-disc pl-4 space-y-1 max-h-48 overflow-y-auto">
-              {#each tooltipContent.candidates as candidate}
-                <li>{candidate}</li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
+        <div class="text-xs text-slate-600 mt-2">
+          <p class="italic">Click for full details</p>
+        </div>
       {/if}
     </div>
   {/if}
 </div>
+
+{#if isCompanyDrawerOpen}
+  <RpdCompanyDetailDrawer
+    isOpen={isCompanyDrawerOpen}
+    companyName={selectedCompany}
+    allData={data}
+    stockData={stockData}
+    onClose={handleCloseCompanyDrawer}
+    onShowDrugDetail={onShowDrugDetail}
+    color="#37587e"
+  />
+{/if}
 
 <style>
   .chord-container {

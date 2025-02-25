@@ -278,7 +278,7 @@
                             </div>
                             <div class="flex justify-items-stretch w-8/12 gap-2">                    
                                 <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {'XYZ months' || 'Not Available'}
+                                    {'Not yet available' || 'Not Available'}
                                 </p>
                             </div>
                         </tr>
@@ -317,7 +317,7 @@
                             </div>
                             <div class="flex justify-items-stretch w-8/12 gap-2">                    
                                 <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {'XYZ months' || 'Not Available'}
+                                    {'Not yet available' || 'Not Available'}
                                 </p>
                             </div>
                         </tr>

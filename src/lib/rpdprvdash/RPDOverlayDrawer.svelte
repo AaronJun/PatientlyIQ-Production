@@ -44,7 +44,6 @@
             onDrugClick({
                 drugName: drugEntry.Candidate,
                 Company: drugEntry.Company,
-                year: drugEntry["RPDD Year"],
                 therapeuticArea: drugEntry.TherapeuticArea1,
                 currentStage: drugEntry["Current Development Stage"],
                 rpddAwardDate: drugEntry["RPDD Month"] + "/" + drugEntry["RPDD Year"],
@@ -156,7 +155,7 @@
                     <svelte:fragment slot="cell" let:row let:cell>
                         {#if cell.key === 'drugName'}
                             <button 
-                                class="flex items-center gap-2 text-[#37587e] hover:underline"
+                                class="flex items-center text-left w-full justify-stretch gap-2 text-[#37587e] hover:underline"
                                 on:click={() => handleDrugClick(row)}
                             >
                                 {cell.value}

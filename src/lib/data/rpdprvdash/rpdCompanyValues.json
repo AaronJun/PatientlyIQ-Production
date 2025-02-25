@@ -1,0 +1,722 @@
+[
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2015",
+      "Close/Price": "13.9"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2015",
+      "Close/Price": "13.28"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2015",
+      "Close/Price": "12.2"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2015",
+      "Close/Price": "25.62"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2015",
+      "Close/Price": "30.43"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2015",
+      "Close/Price": "31.92"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2015",
+      "Close/Price": "35.7"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2015",
+      "Close/Price": "32.11"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2015",
+      "Close/Price": "24.06"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2015",
+      "Close/Price": "36.76"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2015",
+      "Close/Price": "38.58"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2016",
+      "Close/Price": "11.88"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2016",
+      "Close/Price": "13.71"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2016",
+      "Close/Price": "19.52"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2016",
+      "Close/Price": "14.19"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2016",
+      "Close/Price": "20.93"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2016",
+      "Close/Price": "19.07"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2016",
+      "Close/Price": "25.28"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2016",
+      "Close/Price": "26.07"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2016",
+      "Close/Price": "61.41"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2016",
+      "Close/Price": "39.24"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2016",
+      "Close/Price": "34.26"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2016",
+      "Close/Price": "27.43"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2017",
+      "Close/Price": "31.06"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2017",
+      "Close/Price": "31.11"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2017",
+      "Close/Price": "29.6"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2017",
+      "Close/Price": "36.26"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2017",
+      "Close/Price": "29.84"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2017",
+      "Close/Price": "33.71"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2017",
+      "Close/Price": "38.58"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2017",
+      "Close/Price": "40.29"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2017",
+      "Close/Price": "45.36"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2017",
+      "Close/Price": "49.31"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2017",
+      "Close/Price": "55.67"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2017",
+      "Close/Price": "55.64"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2018",
+      "Close/Price": "65.54"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2018",
+      "Close/Price": "62.77"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2018",
+      "Close/Price": "74.09"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2018",
+      "Close/Price": "76.36"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2018",
+      "Close/Price": "93.85"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2018",
+      "Close/Price": "132.18"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2018",
+      "Close/Price": "116.24"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2018",
+      "Close/Price": "138.04"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2018",
+      "Close/Price": "161.51"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2018",
+      "Close/Price": "133.76"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2018",
+      "Close/Price": "129.47"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2018",
+      "Close/Price": "109.13"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2019",
+      "Close/Price": "139.71"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2019",
+      "Close/Price": "144.24"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2019",
+      "Close/Price": "119.19"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2019",
+      "Close/Price": "116.94"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2019",
+      "Close/Price": "113.85"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2019",
+      "Close/Price": "151.95"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2019",
+      "Close/Price": "148.85"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2019",
+      "Close/Price": "90.15"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2019",
+      "Close/Price": "75.32"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2019",
+      "Close/Price": "83.06"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2019",
+      "Close/Price": "112.49"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2019",
+      "Close/Price": "129.04"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2020",
+      "Close/Price": "115.96"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2020",
+      "Close/Price": "114.47"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2020",
+      "Close/Price": "97.82"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2020",
+      "Close/Price": "117.88"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2020",
+      "Close/Price": "152.27"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2020",
+      "Close/Price": "160.34"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2020",
+      "Close/Price": "153.52"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2020",
+      "Close/Price": "146.42"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2020",
+      "Close/Price": "140.43"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2020",
+      "Close/Price": "135.91"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2020",
+      "Close/Price": "140.86"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2020",
+      "Close/Price": "170.49"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2021",
+      "Close/Price": "89.4"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2021",
+      "Close/Price": "87.06"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2021",
+      "Close/Price": "74.53"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2021",
+      "Close/Price": "70.84"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2021",
+      "Close/Price": "75.65"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2021",
+      "Close/Price": "77.74"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2021",
+      "Close/Price": "67.78"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2021",
+      "Close/Price": "78.12"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2021",
+      "Close/Price": "92.48"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2021",
+      "Close/Price": "79.13"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2021",
+      "Close/Price": "80.81"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2021",
+      "Close/Price": "90.05"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2022",
+      "Close/Price": "71.57"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2022",
+      "Close/Price": "76.61"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2022",
+      "Close/Price": "78.12"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2022",
+      "Close/Price": "72.32"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2022",
+      "Close/Price": "72.82"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2022",
+      "Close/Price": "74.96"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2022",
+      "Close/Price": "92.95"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2022",
+      "Close/Price": "109.38"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2022",
+      "Close/Price": "110.54"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2022",
+      "Close/Price": "114.02"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2022",
+      "Close/Price": "122.81"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2022",
+      "Close/Price": "129.58"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2023",
+      "Close/Price": "124.97"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2023",
+      "Close/Price": "122.13"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2023",
+      "Close/Price": "137.83"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2023",
+      "Close/Price": "122.77"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2023",
+      "Close/Price": "123.6"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2023",
+      "Close/Price": "114.52"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2023",
+      "Close/Price": "108.39"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2023",
+      "Close/Price": "121.01"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2023",
+      "Close/Price": "121.22"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2023",
+      "Close/Price": "67.31"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2023",
+      "Close/Price": "81.28"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2023",
+      "Close/Price": "96.43"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2024",
+      "Close/Price": "118.99"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "2",
+      "StockPriceYear": "2024",
+      "Close/Price": "127.9"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "3",
+      "StockPriceYear": "2024",
+      "Close/Price": "129.46"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "4",
+      "StockPriceYear": "2024",
+      "Close/Price": "126.66"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "5",
+      "StockPriceYear": "2024",
+      "Close/Price": "129.86"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "6",
+      "StockPriceYear": "2024",
+      "Close/Price": "158"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "7",
+      "StockPriceYear": "2024",
+      "Close/Price": "142.24"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "8",
+      "StockPriceYear": "2024",
+      "Close/Price": "135.78"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "9",
+      "StockPriceYear": "2024",
+      "Close/Price": "124.89"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "10",
+      "StockPriceYear": "2024",
+      "Close/Price": "126"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "11",
+      "StockPriceYear": "2024",
+      "Close/Price": "133.34"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "12",
+      "StockPriceYear": "2024",
+      "Close/Price": "121.59"
+    },
+    {
+      "Company": "Sarepta",
+      "StockPriceMonth": "1",
+      "StockPriceYear": "2025",
+      "Close/Price": "113.72"
+    }
+  ]

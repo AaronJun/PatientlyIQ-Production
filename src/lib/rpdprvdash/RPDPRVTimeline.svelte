@@ -115,8 +115,8 @@
             .attr("id", "glow")
             .attr("x", "-50%")
             .attr("y", "-50%")
-            .attr("width", "200%")
-            .attr("height", "200%");
+            .attr("width", "400%")
+            .attr("height", "400%");
 
         filter.append("feGaussianBlur")
             .attr("stdDeviation", "2")
@@ -185,7 +185,7 @@
                         .transition()
                         .duration(200)
                         .attr("font-weight", "600")
-                        .attr("fill", "#2d3748");
+                        .attr("fill", "#FF1515");
                 }
             })
             .on("mouseleave", function(event, d) {
@@ -258,12 +258,12 @@
                     .transition()
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
-                    .attr("fill", isSelected ? "#2d3748" : "#718096");
+                    .attr("fill", isSelected ? "#FF1515" : "#718096");
 
                 group.select(".count-label")
                     .transition()
                     .duration(300)
-                    .attr("fill", isSelected ? "#2d3748" : "#4a5568");
+                    .attr("fill", isSelected ? "#FF1010" : "#4a5568");
             });
     }
 
