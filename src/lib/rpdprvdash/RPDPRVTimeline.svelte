@@ -155,7 +155,7 @@
             .attr("r", d => radiusScale(d.count) + 4)
             .attr("fill", "none")
             .attr("stroke", "#4fd1c5")
-            .attr("stroke-width", 3)
+            .attr("stroke-width", 5)
             .attr("opacity", 0);
 
         // Add main circles
