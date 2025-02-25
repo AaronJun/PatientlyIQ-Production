@@ -7,7 +7,7 @@
   import RPDDrawer from '$lib/RPDComponents/RPDDrawer.svelte';
   import TextDrawer from '$lib/RPDComponents/TextContentDrawer.svelte';
   import RPDHeader from '$lib/RPDComponents/RPDHeader.svelte';
-  import SaleBenchmarks from '$lib/rpdprvdash/SaleBenchmarks.svelte';
+  import SaleBenchmarks from '$lib/RPDComponents/SaleBenchmarks.svelte';
 
   import TAPageSummary from '$lib/RPDComponents/TASummary.svelte';
   import { RpdProgramInfoMd } from '$lib/content/RPDprogramInfo';
@@ -60,7 +60,7 @@
   let isMobileDevice = false;
   const MOBILE_BREAKPOINT = 520;
 
-const siteUrl = 'https://patientlyiq.com';
+  const siteUrl = 'https://patientlyiq.com';
 const pageTitle = "The FDA's Rare Disease Research Garden is Blooming";
 const pageDescription = "The FDA's Priority Review Voucher Program has planted the seeds for 56 new rare disease treatments, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.";
 const pageImage = `${siteUrl}/rpd-program-preview.png`; // Make image URL absolute
@@ -375,6 +375,7 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
           </div>
 
           <div class="flex w-5/6 lg:w-5/6 sm:w-full min-[400px]:w-full timeline-container content-start">
+            <SentimentBars data={radialSampleData}/>
           </div>
         </div>
 
@@ -390,39 +391,17 @@ const pageUrl = `${siteUrl}/rpd`; // Make page URL absolute
               </p>
             </div>
             <div class="w-5/6 max-w-[1520px] sm:w-full min-[400px]:w-full md:w-full timeline-container content-start align-top min-h-full">
-              <SaleBenchmarks 
-              constellationData={rpddData.map(d => ({
-                Purchased: d.Purchased,
-                "Sale Price (USD, Millions)": d["Sale Price (USD Millions)"],
-                Purchaser: d.Purchaser,
-                Sponsor: d.Company,
-                "Drug Name": d.Candidate,
-                Year: d["Purchase Year"],
-                id: d.Indication,
-                name: d.TherapeuticArea1,
-                TherapeuticArea1: d.TherapeuticArea1,
-                Company: d.Company,
-                Candidate: d.Candidate,
-                "Current Development Stage": d["Current Development Stage"]
-              }))}
+            <SaleBenchmarks 
+              constellationData={processedConstellationData} 
               onCompanySelect={(data, color) => {
-                const companyEntries = rpddData.filter(entry => entry.Company === data.Sponsor);
-                handleShowCompanyDetail({
-                  Company: data.Sponsor,
-                  entries: companyEntries,
-                  companyUrl: ""
-                });
+                selectedData = data;
+                selectedColor = color;
+                isDrawerOpen = true;
               }}
               onDrugClick={(drugData) => {
-                handleShowDrugDetail({
-                  Company: drugData.Company,
-                  drugName: drugData.Candidate,
-                  therapeuticArea: drugData.TherapeuticArea1,
-                  entries: [rpddData.find(d => d.Candidate === drugData.Candidate)],
-                  color: getColorForTherapeuticArea(drugData.TherapeuticArea1),
-                  currentStage: drugData["Current Development Stage"],
-                  indication: drugData.id
-                });
+                selectedData = drugData;
+                selectedColor = getColorForTherapeuticArea(drugData.name);
+                isDrawerOpen = true;
               }}
             />
             </div>
