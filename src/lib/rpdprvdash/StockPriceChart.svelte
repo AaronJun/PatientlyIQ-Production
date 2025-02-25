@@ -745,7 +745,7 @@
   
   .change-value {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 500;
   }
   
   .positive {
