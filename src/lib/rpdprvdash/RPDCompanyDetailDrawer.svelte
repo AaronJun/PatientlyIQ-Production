@@ -198,8 +198,8 @@
   }
 
   .drawer {
-    width: 50vw;
-    max-width: 700px;
+    width: 65vw;
+    max-width: 920px;
     height: 100%;
     background-color: white;
     overflow-y: auto;

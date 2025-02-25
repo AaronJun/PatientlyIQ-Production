@@ -5,6 +5,7 @@
   import RPDPRVVerticalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
   import CompanyMetricsList from '$lib/rpdprvdash/CompanyMetricsList.svelte';
+  import AreaMetricsList from '$lib/rpdprvdash/AreaMetricsList.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
@@ -51,6 +52,7 @@
   let currentView: string | null = null;
   let currentEntries: any[] = [];
   let currentCompanyMetrics = null;
+  let areaMetrics = null;
   let isDrawerOpen = false;
   let isDashboardOpen = false;
   let selectedYear = "2023"; // Default year
@@ -91,24 +93,40 @@
   };
 
   function handleCompanyHover(data) {
-    if (Array.isArray(data)) {
-      // Old format - just array of entries
-      currentEntries = data;
-      currentView = 'Company View';
-    } else {
-      // New format with additional metrics
-      currentEntries = data.entries;
-      currentCompanyMetrics = {
-        companyName: data.companyName || (data.entries.length > 0 ? data.entries[0].Company : 'Unknown'),
-        totalDrugs: data.totalDrugs || data.entries.length,
-        clinicalTrials: data.clinicalTrials || 0,
-        vouchersAwarded: data.vouchersAwarded || 0,
-        uniqueIndications: data.uniqueIndications || new Set(data.entries.map(d => d.Indication)).size,
-        uniqueAreas: data.uniqueAreas || new Set(data.entries.map(d => d.TherapeuticArea1)).size
-      };
-      currentView = 'Company View';
-    }
+  if (Array.isArray(data)) {
+    // Old format - just array of entries
+    currentEntries = data;
+    currentView = 'Company View';
+    currentCompanyMetrics = null;
+    currentArea = null;
+    areaMetrics = null;
+  } else if (data.entries && data.areaName) {
+    // New format with therapeutic area metrics
+    currentEntries = data.entries;
+    currentArea = data.areaName;
+    areaMetrics = {
+      totalDrugs: data.totalDrugs || data.entries.length,
+      uniqueCompanies: data.uniqueCompanies || new Set(data.entries.map(d => d.Company)).size,
+      uniqueCandidates: data.uniqueCandidates || new Set(data.entries.map(d => d.Candidate)).size
+    };
+    currentView = 'Area View';
+    currentCompanyMetrics = null;
+  } else if (data.entries) {
+    // Company format with additional metrics
+    currentEntries = data.entries;
+    currentCompanyMetrics = {
+      companyName: data.companyName || (data.entries.length > 0 ? data.entries[0].Company : 'Unknown'),
+      totalDrugs: data.totalDrugs || data.entries.length,
+      clinicalTrials: data.clinicalTrials || 0,
+      vouchersAwarded: data.vouchersAwarded || 0,
+      uniqueIndications: data.uniqueIndications || new Set(data.entries.map(d => d.Indication)).size,
+      uniqueAreas: data.uniqueAreas || new Set(data.entries.map(d => d.TherapeuticArea1)).size
+    };
+    currentView = 'Company View';
+    currentArea = null;
+    areaMetrics = null;
   }
+}
 
   function handleStageHover(entries) {
     currentEntries = entries;
@@ -185,6 +203,7 @@
 
   const colorMap: Record<string, string> = {
     'Neurology': '#FF6B6B',
+    'Neuromuscular': '#FF1010',
     'Oncology': '#4ECDC4',
     'Metabolic': '#45B7D1',
     'Ophthalmology': '#96CEB4',
@@ -241,15 +260,15 @@
       </div>
     </div>
     
-    <nav class="justify-stretch w-full bg-slate-50 border-b border-slate-200 shadow-sm">
+    <nav class="justify-stretch w-full rounded-full">
       <div class="flex align-baseline place-items-baseline gap-12 justify-between px-4 min-w-full max-w-7xl mx-auto my-auto">
         <div class="flex mt-4 mb-2 space-x-4">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="px-1 py-1 border-b-2 font-normal text-xs transition-colors
+              class="px-4 py-2 font-normal text-base transition-colors
               {activeTab === tab ? 
-                'border-orange-500 text-orange-600 font-semibold' : 
-                'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'}"
+                'bg-[#5946EB] text-slate-100 px-2 font-semibold rounded-full' : 
+                'text-slate-500 px-2 rounded-full hover:text-slate-700 hover:bg-slate-300'}"
               on:click={() => setActiveTab(tab)}
             >
               {tab}
@@ -444,64 +463,71 @@
               </div>
             </div>
 
-            <!-- Sticky sidebar -->
-            <div class="w-1/6 max-w-[350px] mx-8">
-              <div class="sticky top-[calc(24vh+1rem)]">
-                <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                  <div class="w-2 h-2 rounded-full bg-slate-600" />               
-                  <h4 class="text-xs/snug uppercase font-base">              
-                    {currentArea ? currentArea : 'Overview by Therapeutic Area'}
-                  </h4>
-                </div>                
-                <div class="sidebar pt-4 px-2 overflow-y-auto" style="max-height: calc(72vh - 2rem)">
-                  <div class="space-y-6">
-                    {#if currentEntries.length > 0}
-                      <p class="text-sm w-full pr-2 max-w-4xl text-slate-900">
-                        <span class="highlight">{currentArea}</span> represents 
-                        <span class="highlight">{currentEntries.length}</span> RPDDs from
-                        <span class="highlight">{new Set(currentEntries.map(d => d.Company)).size}</span> unique companies,
-                        developing <span class="highlight">{new Set(currentEntries.map(d => d.Candidate)).size}</span> candidates.
-                      </p>
-                    {/if}
-                    
-                    <!-- Entries list -->
-                    <div class="space-y-4">
-                      {#each currentEntries as entry}
-                        <div 
-                          class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
-                          on:click={() => handleShowDrugDetail({
-                            drugName: entry.Candidate,
-                            year: entry["RPDD Year"],
-                            Company: entry.Company,
-                            therapeuticArea: entry.TherapeuticArea1,
-                            currentStage: entry["Current Development Stage"],
-                            indication: entry.Indication,
-                            entries: currentEntries,
-                            color: colorScale(entry.TherapeuticArea1),
-                            rpddAwardDate: entry["RPDD Year"],
-                            voucherAwardDate: entry["PRV Issue Year"] || "",
-                            treatmentClass: entry.Class1 || "TBD",
-                            mechanismOfAction: entry.MOA || "TBD",
-                            companyUrl: entry["Link to CrunchBase"] || ""
-                          })}
-                        >
-                          <div class="flex justify-between items-start">
-                            <div>
-                              <p class="text-xs capitalize text-slate-600 mt-1">{entry.Indication}</p>
-                              <h3 class="text-sm font-semibold text-slate-900">{entry.Company}</h3>
-                              <p class="text-xs text-slate-600 mt-1">{entry.Candidate}</p>
-                            </div>
-                            <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
-                              {entry["Current Development Stage"]}
-                            </span>
-                          </div>
-                        </div>
-                      {/each}
-                    </div>
-                  </div>
+  <!-- Sticky sidebar -->
+   <!-- Updated Therapeutic Area tab sidebar with consistent styling -->
+<div class="w-1/6 max-w-[420px] align-top">
+  <div class="sticky top-[calc(20vh)]">
+    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+      <div class="w-2 h-2 rounded-full bg-slate-600" />               
+      <h4 class="text-xs/snug uppercase font-base">              
+        {currentArea ? currentArea : 'By Therapeutic Area'}
+      </h4>
+    </div>                
+    <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" 
+    style="max-height: calc(90vh - 2rem)">
+      <div class="space-y-2">
+        {#if currentEntries.length > 0 && currentArea && areaMetrics}
+          <AreaMetricsList 
+            metrics={{
+              areaName: currentArea,
+              totalDrugs: areaMetrics.totalDrugs,
+              uniqueCompanies: areaMetrics.uniqueCompanies,
+              uniqueCandidates: areaMetrics.uniqueCandidates
+            }}
+            color={colorMap[currentArea] || '#4ECDC4'}
+          />
+        {/if}
+        
+        <!-- Entries list -->
+        <div class="space-y-4">
+          {#each currentEntries as entry}
+            <div 
+              class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+              on:click={() => handleShowDrugDetail({
+                drugName: entry.Candidate,
+                year: entry["RPDD Year"],
+                Company: entry.Company,
+                therapeuticArea: entry.TherapeuticArea1,
+                currentStage: entry["Current Development Stage"],
+                indication: entry.Indication,
+                entries: currentEntries,
+                color: colorScale(entry.TherapeuticArea1),
+                rpddAwardDate: entry["RPDD Year"],
+                voucherAwardDate: entry["PRV Issue Year"] || "",
+                treatmentClass: entry.Class1 || "TBD",
+                mechanismOfAction: entry.MOA || "TBD",
+                companyUrl: entry["Link to CrunchBase"] || ""
+              })}
+            >
+              <div class="flex flex-col gap-2">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xs font-semibold capitalize text-slate-800">{entry.Company}</h3>
+                  <span class="text-[9.25px] bg-slate-200 text-slate-800 p-2 rounded-sm">
+                    {entry["Current Development Stage"]}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-800">{entry.Candidate}</p>
+                <div>
+                  <p class="text-xs capitalize text-slate-500">{entry.Indication}</p>
                 </div>
               </div>
             </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
           </div>
         </div>
       {/if}
@@ -571,7 +597,7 @@
   .header {
     min-height: 2vh;
     align-items: center;
-    border-bottom: .525px solid #565656;
+    border-bottom: .525px solid #4A90E2;
   }
 
   .highlight {
@@ -583,7 +609,7 @@
   }
 
   .card {
-    border-bottom: .5px dotted #969696;
+    border-bottom: .5px dotted #535353;
     padding: .25rem 1rem 1rem 0;
   }
 </style>

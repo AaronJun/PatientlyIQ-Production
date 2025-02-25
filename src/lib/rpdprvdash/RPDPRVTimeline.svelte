@@ -9,11 +9,12 @@
     
     let svg: SVGElement;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const width = 150;
+    const width = 120;
     const height = 600;
 
     const therapeuticAreaColors = {
         'Neurology': '#FF6B6B',
+        'Neuromuscular': '#FF1515',
         'Oncology': '#4ECDC4',
         'Metabolic': '#45B7D1',
         'Ophthalmology': '#96CEB4',

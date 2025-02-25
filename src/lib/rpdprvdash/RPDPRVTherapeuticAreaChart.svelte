@@ -1,4 +1,4 @@
-<!-- RPDPRVTherapeuticAreaTree.svelte -->
+<!-- Enhanced RPDPRVTherapeuticAreaChart.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -18,7 +18,7 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.925,
+        'PRE': radius * 0.9725,
         'P1': radius * 0.825,
         'P1/2': radius * 0.725,
         'P2': radius * 0.625,
@@ -36,10 +36,19 @@
     };
 
     // Area-specific angles
-    const labelRadius = radius * .9725;
+    const labelRadius = radius * 1.105;
     const maxLabelWidth = 70;
     const ANGLE_BUFFER = Math.PI / 24;
 
+    // Label positioning configuration
+    const labelConfig = {
+        minRadius: radius * 1.01,
+        maxRadius: radius * 1.1,
+        padding: 5,
+        minAngleDiff: Math.PI / 32
+    };
+
+    // Tooltip state
     let tooltipVisible = false;
     let tooltipContent = {
         sponsor: '',
@@ -50,6 +59,10 @@
     let tooltipBorderColor = '';
     let tooltipX = 0;
     let tooltipY = 0;
+    
+    // Track active selections
+    let activeArea = null;
+    let activeStage = null;
 
     // Stage color scale
     const stageColorScale = d3.scaleOrdinal()
@@ -67,21 +80,21 @@
     // Therapeutic area color scale
     const therapeuticAreaColorScale = d3.scaleOrdinal()
         .domain([
-            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology', 
-            'Cardiovascular', 'Pulmonology', 'Hematology', 
-            'Endocrinology', 'Genetic', 'Immunology', 
-            'Gastroenterology', 'Hepatology', 'Dermatology', 
+            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+            'Cardiovascular', 'Pulmonology', 'Hematology',
+            'Endocrinology', 'Genetic', 'Immunology',
+            'Gastroenterology', 'Hepatology', 'Dermatology',
             'Neonatology', 'Urology'
         ])
         .range([
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-            '#FFEEAD', '#D4A5A5', '#9DE0AD', 
-            '#FF9F1C', '#2EC4B6', '#E71D36', 
-            '#FDFFB6', '#CBE896', '#FFA07A', 
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+            '#FFEEAD', '#D4A5A5', '#9DE0AD',
+            '#FF9F1C', '#2EC4B6', '#E71D36',
+            '#FDFFB6', '#CBE896', '#FFA07A',
             '#98D8C8', '#B8B8D1'
         ]);
 
-        function getStage(entry: any) {
+    function getStage(entry: any) {
         // Check for PRV status first
         if (entry["PRV Year"]) {
             return "PRV";
@@ -115,6 +128,34 @@
         }
     }
 
+    function getLabelPosition(angle: number) {
+        // Calculate optimal position for labels based on their angle
+        const normalizedAngle = ((angle + Math.PI/2) * 180 / Math.PI) % 360;
+        
+        // Determine text-anchor based on angle
+        const textAnchor = (normalizedAngle > 90 && normalizedAngle < 270) ? "end" : "start";
+        
+        // Determine label offset direction
+        const dx = (normalizedAngle > 90 && normalizedAngle < 270) ? -15 : 15;
+        
+        // Calculate position on the circle
+        const x = labelRadius * Math.cos(angle - Math.PI/2);
+        const y = labelRadius * Math.sin(angle - Math.PI/2);
+        
+        // Calculate rotation to make labels more readable
+        let rotate = 0;
+        
+        if (normalizedAngle > 90 && normalizedAngle < 270) {
+            // Labels on the left side get rotated 180° to be readable
+            rotate = ((angle * 180 / Math.PI) + 180) % 360;
+        } else {
+            // Labels on the right side maintain their angle
+            rotate = (angle * 180 / Math.PI) % 360;
+        }
+        
+        return { x, y, textAnchor, dx, rotate };
+    }
+
     function showTooltip(event: MouseEvent, d: any) {
         const containerRect = svg.getBoundingClientRect();
         tooltipX = event.pageX - containerRect.left;
@@ -136,9 +177,82 @@
     function hideTooltip() {
         tooltipVisible = false;
     }
+    
+    function setActiveArea(area, entries) {
+        // Set active area and clear active stage
+        activeArea = area;
+        activeStage = null;
+        
+        // Reset all area nodes to inactive state
+        d3.selectAll(".area-node")
+            .transition()
+            .duration(200)
+            .attr("width", 7.725)
+            .attr("height", 7.725)
+            .attr("transform", "translate(-5.125, -5.125)");
+            
+        d3.selectAll(".area-label text")
+            .transition()
+            .duration(500)
+            .attr("fill", "#666666")
+            .attr("font-size", "10.25px")
+            .attr("font-weight", "500");
+            
+        // Highlight the active area
+        if (area) {
+            const areaId = area.replace(/\s+/g, '-').toLowerCase();
+            
+            d3.select(`#area-node-${areaId}`)
+                .transition()
+                .duration(200)
+                .attr("width", 10.25)
+                .attr("height", 10.25)
+                .attr("transform", "translate(-7, -7)");
+                
+            d3.select(`#area-label-${areaId} text`)
+                .transition()
+                .duration(500)
+                .attr("font-size", "11.25px")
+                .attr("font-weight", "800");
+                
+            onCompanyHover(entries);
+        }
+    }
+    
+    function setActiveStage(stage, entries) {
+        // Set active stage and clear active area
+        activeStage = stage;
+        activeArea = null;
+        
+        // Reset all stage labels to inactive state
+        d3.selectAll(".stage-label rect")
+            .transition()
+            .duration(200)
+            .attr("fill", "#F8FAFC");
+            
+        d3.selectAll(".stage-label text")
+            .transition()
+            .duration(200)
+            .attr("font-weight", "400");
+            
+        // Highlight the active stage
+        if (stage) {
+            d3.select(`#stage-label-${stage} rect`)
+                .transition()
+                .duration(200)
+                .attr("fill", "#F1F5F9");
+                
+            d3.select(`#stage-label-${stage} text`)
+                .transition()
+                .duration(200)
+                .attr("font-weight", "700");
+                
+            onStageHover(entries);
+        }
+    }
 
     function truncateText(text: string, maxWidth: number) {
-        if (text.length <= maxWidth / 8) return text;
+        if (text.length <= maxWidth ) return text;
         return text.slice(0, Math.floor(maxWidth / 8) - 3) + '...';
     }
 
@@ -153,7 +267,9 @@
                 areasMap.set(area, {
                     area,
                     stages: new Map(),
-                    totalDrugs: 0
+                    totalDrugs: 0,
+                    uniqueCompanies: new Set(),
+                    uniqueCandidates: new Set()
                 });
             }
             
@@ -164,9 +280,18 @@
             
             areaData.stages.get(stage).push(entry);
             areaData.totalDrugs++;
+            
+            // Track unique companies and candidates
+            if (entry.Company) {
+                areaData.uniqueCompanies.add(entry.Company);
+            }
+            if (entry.Candidate) {
+                areaData.uniqueCandidates.add(entry.Candidate);
+            }
         });
 
-        return Array.from(areasMap.values());
+        // Sort by total drugs count (descending) for better visualization
+        return Array.from(areasMap.values()).sort((a, b) => b.totalDrugs - a.totalDrugs);
     }
 
     function calculateAreaAngles(areas: any[]) {
@@ -186,6 +311,53 @@
         });
 
         return angles;
+    }
+
+    function calculateOptimalLabelPlacements(areas: any[], areaAngles: Map<string, any>) {
+        // Calculate initial positions
+        const labelPlacements = areas.map(area => {
+            const angles = areaAngles.get(area.area);
+            const { x, y, textAnchor, dx, rotate } = getLabelPosition(angles.center);
+            
+            return {
+                area: area.area,
+                x,
+                y,
+                textAnchor,
+                dx,
+                rotate,
+                angle: angles.center
+            };
+        });
+        
+        // Detect and resolve overlaps
+        resolveOverlaps(labelPlacements);
+        
+        return labelPlacements;
+    }
+    
+    function resolveOverlaps(placements) {
+        const sortedPlacements = [...placements].sort((a, b) => a.angle - b.angle);
+        
+        for (let i = 0; i < sortedPlacements.length; i++) {
+            const current = sortedPlacements[i];
+            const next = sortedPlacements[(i + 1) % sortedPlacements.length];
+            
+            // Check if labels are too close
+            const angleDiff = Math.abs(current.angle - next.angle);
+            if (angleDiff < labelConfig.minAngleDiff || (2 * Math.PI - angleDiff) < labelConfig.minAngleDiff) {
+                // Adjust label radius to avoid overlap
+                const currentIndex = placements.findIndex(p => p.area === current.area);
+                const nextIndex = placements.findIndex(p => p.area === next.area);
+                
+                // Push one label slightly outward
+                const adjustedRadius = labelRadius * 1.08;
+                const { x, y } = getLabelPosition(current.angle);
+                
+                placements[currentIndex].x = x * 1.08;
+                placements[currentIndex].y = y * 1.08;
+            }
+        }
     }
 
     function createVisualization() {
@@ -221,9 +393,7 @@
                 .attr("transform", `translate(${labelX},${labelY})`)
                 .attr("cursor", "pointer")
                 .attr("class", "stage-label")
-                .on("click", () => {
-                    onStageHover(data.filter(entry => getStage(entry) === stage));
-                });
+                .attr("id", `stage-label-${stage}`);
 
             // Calculate text width for background
             const tempText = labelGroup.append("text")
@@ -236,7 +406,7 @@
             labelGroup.append("rect")
                 .attr("x", -stageLabelConfig.padding.x)
                 .attr("y", -stageLabelConfig.height/2)
-                .attr("width", textWidth + stageLabelConfig.padding.x)
+                .attr("width", textWidth + stageLabelConfig.padding.x * 2)
                 .attr("height", stageLabelConfig.height)
                 .attr("rx", stageLabelConfig.cornerRadius)
                 .attr("fill", '#F8FAFC')
@@ -250,20 +420,33 @@
                 .attr("font-size", "10.25px")
                 .attr("font-weight", "400")
                 .text(stage);
+                
+            // Add click event to stage label
+            labelGroup.on("click", (event) => {
+                event.stopPropagation();
+                const stageEntries = data.filter(entry => getStage(entry) === stage);
+                setActiveStage(stage, stageEntries);
+            });
         });
 
         const areas = processDataForLayout(data);
         const areaAngles = calculateAreaAngles(areas);
+        const labelPlacements = calculateOptimalLabelPlacements(areas, areaAngles);
 
         // Draw therapeutic area sections
         areas.forEach(area => {
             const angle = areaAngles.get(area.area);
             const areaGroup = mainGroup.append("g");
-
-            // Calculate area label position
-            const labelAngle = angle.center;
-            const labelX = labelRadius * Math.cos(labelAngle - Math.PI/2);
-            const labelY = labelRadius * Math.sin(labelAngle - Math.PI/2);
+            
+            // Create sanitized ID for the area
+            const areaId = area.area.replace(/\s+/g, '-').toLowerCase();
+            
+            // Find label placement for this area
+            const labelPlacement = labelPlacements.find(p => p.area === area.area);
+            
+            if (!labelPlacement) return; // Skip if no placement found
+            
+            const { x: labelX, y: labelY, textAnchor, dx, rotate } = labelPlacement;
 
             // Draw connecting lines to drugs
             area.stages.forEach((drugs, stage) => {
@@ -282,73 +465,73 @@
                         .attr("stroke-opacity", 0.825)
                         .attr("fill", "none");
                 });
-        });
+            });
 
             // Area label group
             const labelGroup = areaLabelsGroup.append("g")
                 .attr("transform", `translate(${labelX},${labelY})`)
                 .attr("cursor", "pointer")
-                .on("click", () => {
-                    onCompanyHover(data.filter(entry => entry.TherapeuticArea1 === area.area));
-                })
-                .on("mouseenter", (event) => {
-                    labelGroup.select("rect")
-                        .transition()
-                        .duration(200)
-                        .attr("height", 12)
-                        .attr("width", 12)
-                        .attr("stroke-width", 2.725);
-
-                    labelGroup.select("text")
-                        .transition()
-                        .duration(500)
-                        .attr("font-weight", "800")
-                        .attr("font-size", "12px")
-                        .attr("fill", therapeuticAreaColorScale(area.area));
-
-                    onCompanyHover(data.filter(entry => entry.TherapeuticArea1 === area.area));
-                    showTooltip(event, { area: area.area, count: area.totalDrugs });
-                })
-                .on("mouseleave", () => {
-                    labelGroup.select("rect")
-                        .transition()
-                        .attr("height", 10.25)
-                        .attr("width", 10.25)
-                        .attr("stroke-width", 1.25)
-                        .attr("fill", therapeuticAreaColorScale(area.area));
-
-                    labelGroup.select("text")
-                        .transition()
-                        .duration(500)
-                        .attr("fill", "#666666")
-                        .attr("font-size", "11.25px")
-                        .attr("font-weight", "500");
-
-                    onLeave();
-                    hideTooltip();
-                });
+                .attr("class", "area-label")
+                .attr("id", `area-label-${areaId}`);
 
             // Area node rectangle
             labelGroup.append("rect")
-                .attr("width", 10.25)
-                .attr("height", 10.25)
-                .attr("transform", "translate(-3.625, -3.625)")
+                .attr("class", "area-node")
+                .attr("id", `area-node-${areaId}`)
+                .attr("width", 7.725)
+                .attr("height", 7.725)
+                .attr("transform", "translate(-5.125, -5.125)")
                 .attr("stroke", "#565656")
                 .attr("fill", therapeuticAreaColorScale(area.area))
                 .attr("stroke-width", 1.25);
 
-            // Area text label
-            const textAngle = labelAngle > Math.PI ? "end" : "start";
-            const dx = labelAngle > Math.PI ? -8 : 8;
-            
-            labelGroup.append("text")
-                .attr("text-anchor", textAngle)
+            // Area text label - with proper alignment and positioning
+            const textGroup = labelGroup.append("g")
+                .attr("transform", `rotate(${rotate})`);
+                
+            textGroup.append("text")
+                .attr("text-anchor", textAnchor)
                 .attr("dx", dx)
-                .attr("dy", "-1em")
-                .text(truncateText(area.area, maxLabelWidth+12))
+                .attr("dy", "0.35em")
+                .text(truncateText(area.area, maxLabelWidth))
                 .attr("fill", "#666666")
                 .attr("font-size", "11.25px")
                 .attr("font-weight", "500");
+                
+            // Event handlers with improved persistence behavior
+            const handleMouseEnter = (event) => {
+                // Update area details for the sidebar display
+                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
+                
+                // Set this area as active
+                setActiveArea(area.area, {
+                    entries: entries,
+                    areaName: area.area,
+                    totalDrugs: area.totalDrugs,
+                    uniqueCompanies: area.uniqueCompanies.size,
+                    uniqueCandidates: area.uniqueCandidates.size
+                });
+                
+                showTooltip(event, { area: area.area, count: area.totalDrugs });
+            };
+                
+            const handleClick = () => {
+                // Set this area as active when clicked
+                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
+                
+                setActiveArea(area.area, {
+                    entries: entries,
+                    areaName: area.area,
+                    totalDrugs: area.totalDrugs,
+                    uniqueCompanies: area.uniqueCompanies.size,
+                    uniqueCandidates: area.uniqueCandidates.size
+                });
+            };
+                
+            // Add event handlers to area label group
+            labelGroup
+                .on("mouseenter", handleMouseEnter)
+                .on("click", handleClick);
 
             // Draw drugs for each stage
             area.stages.forEach((drugs, stage) => {
@@ -362,32 +545,89 @@
 
                     const drugGroup = areaGroup.append("g")
                         .attr("transform", `translate(${x},${y})`)
-                        .attr("cursor", "pointer");
+                        .attr("cursor", "pointer")
+                        .attr("class", "drug-node");
 
                     // Drug circle
                     drugGroup.append("circle")
-                        .attr("r", 10.25)
+                        .attr("r", 7.725)
                         .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                         .attr("stroke", "#565656")
-                        .attr("stroke-width", "1.725px")
+                        .attr("stroke-width", "1.725px");
+                        
+                    // Add PRV indicator for PRV awarded drugs
+                    if (drug["PRV Issue Year"]) {
+                        drugGroup.append("circle")
+                            .attr("r", 10.25)
+                            .attr("fill", "none")
+                            .attr("stroke", "#976201")
+                            .attr("stroke-width", "2")
+                            .attr("stroke-dasharray", "2,2");
+                    }
+
+                    // Hidden label group (shown on hover)
+                    const labelGroup = drugGroup.append("g")
+                        .attr("opacity", 0)
+                        .attr("class", "drug-label");
+
+                    const labelX = drugAngle < Math.PI ? 12 : -12;
+                    
+                    labelGroup.append("text")
+                        .attr("x", labelX)
+                        .attr("y", 0)
+                        .attr("text-anchor", drugAngle < Math.PI ? "start" : "end")
+                        .attr("z-index", 999)
+                        .attr("dy", "1.425em")
+                        .attr("dx", "-.825em")
+                        .text(truncateText(drug.Candidate, maxLabelWidth))
+                        .attr("fill", "#565656")
+                        .attr("font-size", "11.25px")
+                        .style("text-transform", "uppercase");
+
+                    // Drug interactions
+                    drugGroup
                         .on("mouseenter", (event) => {
                             drugGroup.select("circle")
                                 .transition()
-                                .duration(200)
-                                .attr("r", 15.25)
-                                .attr("stroke-width", 4.25)
+                                .duration(350)
+                                .attr("r", 10.25)
+                                .attr("stroke-width", 5.25)
                                 .attr("stroke", "#375810")
                                 .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+                                
+                            if (drug["PRV Issue Year"]) {
+                                drugGroup.select("circle:nth-child(2)")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", 10.25)
+                                    .attr("stroke-width", 3);
+                            };
+                                
                             showTooltip(event, drug);
                         })
                         .on("mouseleave", () => {
                             drugGroup.select("circle")
                                 .transition()
-                                .attr("r", 10.25)
+                                .duration(200)
+                                .attr("r", 7.725)
                                 .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                                 .attr("stroke", "#565656")
                                 .attr("stroke-width", "1.725px")
-                                .duration(200);
+                                .style("filter", "none");
+                                
+                            if (drug["PRV Issue Year"]) {
+                                drugGroup.select("circle:nth-child(2)")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", 11.25)
+                                    .attr("stroke-width", "2");
+                            }
+                            
+                            drugGroup.select(".drug-label")
+                                .transition()
+                                .duration(200)
+                                .attr("opacity", 0);
+                                
                             hideTooltip();
                         })
                         .on("click", (event) => {
@@ -411,46 +651,18 @@
                                 companyUrl: drug["Link to CrunchBase"] || ""
                             });
                         });
-
-                    // Hidden label group (shown on hover)
-                    const labelGroup = drugGroup.append("g")
-                        .attr("opacity", 0)
-                        .attr("class", "drug-label");
-
-                    const labelX = drugAngle < Math.PI ? 12 : -12;
-                    
-                    labelGroup.append("text")
-                        .attr("x", labelX)
-                        .attr("y", 0)
-                        .attr("text-anchor", drugAngle < Math.PI ? "start" : "end")
-                        .attr("z-index", 999)
-                        .attr("dy", "1.425em")
-                        .attr("dx", "-.825em")
-                        .text(truncateText(drug.Candidate, maxLabelWidth))
-                        .attr("fill", "#565656")
-                        .attr("font-size", "11.25px")
-                        .style("text-transform", "uppercase");
-
-                    // Drug hover interactions
-                    drugGroup
-                        .on("mouseenter", (event) => {
-                            drugGroup.select(".drug-label")
-                                .transition()
-                                .duration(200)
-                                .attr("font-weight", "600")
-                                .attr("font-size", "11.25px")
-                                .attr("opacity", 1);
-                            showTooltip(event, drug);
-                        })
-                        .on("mouseleave", () => {
-                            drugGroup.select(".drug-label")
-                                .transition()
-                                .duration(200)
-                                .attr("opacity", 0);
-                            hideTooltip();
-                        });
                 });
             });
+        });
+        
+        // Add click handler to SVG background to clear selections
+        svgElement.on("click", (event) => {
+            // Check if click was directly on the SVG background
+            if (event.target === svg) {
+                activeArea = null;
+                activeStage = null;
+                onLeave();
+            }
         });
     }
 

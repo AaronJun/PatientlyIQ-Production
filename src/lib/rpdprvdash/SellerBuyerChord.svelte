@@ -3,6 +3,7 @@
   import * as d3 from 'd3';
   import { CalendarHeatMap, Medication, Money, Catalog } from 'carbon-icons-svelte';
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
+  import RPDTooltip from './RPDTooltip.svelte';
 
   export let data: any[] = [];
   export let stockData: any[] = [];
@@ -19,22 +20,16 @@
   let companies: string[] = [];
   let companyData: Map<string, any>;
   let transactions: any[];
+  
+  // RPDTooltip state
   let tooltipVisible = false;
-  let tooltipContent: {
-    type: 'transaction' | 'company';
-    seller?: string;
-    buyer?: string;
-    Candidate?: string;
-    amount?: string;
-    date?: string;
-    companyName?: string;
-    transactionCount?: number;
-    totalValue?: number;
-    candidates?: string[];
-    isUndisclosed?: boolean;
-  } = {
-    type: 'transaction'
+  let tooltipContent = {
+    sponsor: '',
+    drugName: '',
+    therapeuticArea: '',
+    id: ''
   };
+  let tooltipBorderColor = '';
   let tooltipX = 0;
   let tooltipY = 0;
 
@@ -52,14 +47,14 @@
 
   const therapeuticAreaColorScale = d3.scaleOrdinal()
     .domain([
-      'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+      'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',
       'Cardiovascular', 'Pulmonology', 'Hematology',
       'Endocrinology', 'Genetic', 'Immunology',
       'Gastroenterology', 'Hepatology', 'Dermatology',
       'Neonatology', 'Urology'
     ])
     .range([
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+      '#FF6B6B', '#FF1515', '#4ECDC4', '#45B7D1', '#96CEB4',
       '#FFEEAD', '#D4A5A5', '#9DE0AD',
       '#FF9F1C', '#2EC4B6', '#E71D36',
       '#FDFFB6', '#CBE896', '#FFA07A',
@@ -104,14 +99,18 @@
     }, 0);
 
     const candidates = [...new Set(companyTransactions.map(t => t.Candidate))];
+    
+    // Get primary therapeutic area for this company
+    const primaryArea = companyData.get(company)?.therapeuticArea || "";
 
+    // Update tooltip with company information
     tooltipContent = {
-      type: 'company',
-      companyName: company,
-      transactionCount: companyTransactions.length,
-      totalValue,
-      candidates
+      sponsor: company,
+      drugName: `$${totalValue.toFixed(1)}M total value`,
+      therapeuticArea: primaryArea,
+      id: `${companyTransactions.length} transactions`
     };
+    tooltipBorderColor = therapeuticAreaColorScale(primaryArea);
 
     // Highlight all ribbons involving this company
     ribbons
@@ -172,7 +171,6 @@
       .attr("r", d => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
       );
-
   }
 
   function resetHighlight() {
@@ -201,6 +199,27 @@
   function getTransactionValue(transaction: any): number {
     const price = transaction["Sale Price (USD Millions)"];
     return isUndisclosed(price) ? 0 : parseFloat(price);
+  }
+
+  // Get transaction for a chord
+  function getTransaction(source: number, target: number) {
+    return transactions.find(t => 
+      t.Company === companies[source] && 
+      t.Purchaser === companies[target]
+    );
+  }
+  
+  // Get therapeutic area color for a transaction
+  function getTransactionColor(source: number, target: number) {
+    const transaction = getTransaction(source, target);
+    if (transaction) {
+      return therapeuticAreaColorScale(transaction.TherapeuticArea1);
+    }
+    return "#cccccc"; // Default gray if no transaction found
+  }
+
+  function hideTooltip() {
+    tooltipVisible = false;
   }
 
   async function createVisualization() {
@@ -264,23 +283,26 @@
       .data(chords)
       .join("path")
       .attr("d", d3.ribbon().radius(innerRadius))
-      .style("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))
+      .style("fill", d => {
+        // Color based on the therapeutic area of the actual transaction
+        const transaction = getTransaction(d.source.index, d.target.index);
+        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
+      })
       .style("mix-blend-mode", "multiply")
       .style("opacity", 0.6)
-      .attr("stroke", d => d3.color(therapeuticAreaColorScale(companyData.get(companies[d.source.index]).therapeuticArea))?.darker(0.5))
+      .attr("stroke", d => {
+        // Darker stroke of the same therapeutic area color
+        const transaction = getTransaction(d.source.index, d.target.index);
+        const color = transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
+        return d3.color(color)?.darker(0.5);
+      })
       .attr("stroke-width", 0.5)
       .attr("stroke-dasharray", d => {
-        const transaction = transactions.find(t => 
-          t.Company === companies[d.source.index] && 
-          t.Purchaser === companies[d.target.index]
-        );
-        return isUndisclosed(transaction?.["Sale Price (USD Millions)"]) ? "4,4" : null;
+        const transaction = getTransaction(d.source.index, d.target.index);
+        return transaction && isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "4,4" : null;
       })
       .on("mouseenter", (event, d) => {
-        const transaction = transactions.find(t => 
-          t.Company === companies[d.source.index] && 
-          t.Purchaser === companies[d.target.index]
-        );
+        const transaction = getTransaction(d.source.index, d.target.index);
 
         if (transaction) {
           dispatch('transactionHover', {
@@ -288,15 +310,19 @@
             buyer: transaction.Purchaser
           });
 
+          // Format price display
+          const priceDisplay = isUndisclosed(transaction["Sale Price (USD Millions)"]) 
+            ? "Undisclosed" 
+            : `$${transaction["Sale Price (USD Millions)"]}M`;
+
+          // Update tooltip with transaction information
           tooltipContent = {
-            type: 'transaction',
-            seller: transaction.Company,
-            buyer: transaction.Purchaser,
-            Candidate: transaction.Candidate,
-            amount: transaction["Sale Price (USD Millions)"],
-            date: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]}`,
-            isUndisclosed: isUndisclosed(transaction["Sale Price (USD Millions)"])
+            sponsor: `${transaction.Company} → ${transaction.Purchaser}`,
+            drugName: transaction.Candidate,
+            therapeuticArea: transaction.TherapeuticArea1,
+            id: `${transaction["Purchase Month"]} ${transaction["Purchase Date"]}, ${transaction["Purchase Year"]} | ${priceDisplay}`
           };
+          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1);
 
           const rect = svg.getBoundingClientRect();
           tooltipX = event.clientX - rect.left;
@@ -315,9 +341,14 @@
       .data(chords.groups)
       .join("g");
 
-    // Add background arcs
+    // Add background arcs 
     group.append("path")
-      .attr("fill", d => therapeuticAreaColorScale(companyData.get(companies[d.index]).therapeuticArea))
+      .attr("fill", d => {
+        // Get company's primary therapeutic area color
+        const company = companies[d.index];
+        const companyInfo = companyData.get(company);
+        return therapeuticAreaColorScale(companyInfo.therapeuticArea);
+      })
       .attr("d", d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
@@ -327,7 +358,10 @@
     // Add voucher nodes
     group.each((d, i) => {
       const company = companies[i];
-      const companyTrans = companyData.get(company).transactions;
+      const companyTrans = companyData.get(company)?.transactions || [];
+      
+      if (companyTrans.length === 0) return;
+      
       const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
 
       companyTrans.forEach((transaction, idx) => {
@@ -352,15 +386,19 @@
               buyer: d.Purchaser
             });
 
+            // Format price display
+            const priceDisplay = isUndisclosed(d["Sale Price (USD Millions)"]) 
+              ? "Undisclosed" 
+              : `$${d["Sale Price (USD Millions)"]}M`;
+
+            // Update tooltip with transaction information
             tooltipContent = {
-              type: 'transaction',
-              seller: d.Company,
-              buyer: d.Purchaser,
-              Candidate: d.Candidate,
-              amount: d["Sale Price (USD Millions)"],
-              date: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]}`,
-              isUndisclosed: isUndisclosed(d["Sale Price (USD Millions)"])
+              sponsor: `${d.Company} → ${d.Purchaser}`,
+              drugName: d.Candidate,
+              therapeuticArea: d.TherapeuticArea1,
+              id: `${d["Purchase Month"]} ${d["Purchase Date"]}, ${d["Purchase Year"]} | ${priceDisplay}`
             };
+            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1);
 
             const rect = svg.getBoundingClientRect();
             tooltipX = event.clientX - rect.left;
@@ -416,65 +454,13 @@
     class="w-full h-auto"
   />
 
-  {#if tooltipVisible}
-    <div
-      class="absolute z-10 bg-white p-4 rounded shadow-lg text-sm border border-slate-200"
-      style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%)"
-    >
-      {#if tooltipContent.type === 'transaction'}
-        <div class="font-semibold text-base text-slate-800 mb-4">
-          <span class="font-bold">{tooltipContent.seller}</span> → <span class="font-bold">{tooltipContent.buyer}</span>
-        </div>
-        
-        <div class="flex gap-4 text-slate-600 items-baseline">
-          <Medication size="16" class="text-slate-600" />
-          <p class="font-semibold text-sm">
-            {tooltipContent.Candidate}
-          </p>
-        </div>
-
-        <div class="flex gap-4 items-baseline">
-          <Money size="16" class="text-gray-800" />
-          <p class="text-sm">
-            {#if tooltipContent.isUndisclosed}
-              <span class="italic">Undisclosed</span>
-            {:else}
-              ${tooltipContent.amount}M
-            {/if}
-          </p>
-        </div>
-      
-        <div class="flex gap-4 items-baseline">
-          <CalendarHeatMap size="16" class="text-gray-800" />
-          <p class="text-sm">
-            {tooltipContent.date}
-          </p>
-        </div>
-      {:else}
-        <div class="font-semibold text-base text-slate-800 mb-4">
-          {tooltipContent.companyName}
-        </div>
-
-        <div class="flex gap-4 items-baseline mb-2">
-          <Money size="16" class="text-gray-800" />
-          <p class="text-sm">
-            Total Value: ${tooltipContent.totalValue?.toFixed(1)}M
-          </p>
-        </div>
-
-        <div class="flex gap-4 items-baseline mb-2">
-          <Catalog size="16" class="text-gray-800" />
-          <p class="text-sm">
-            {tooltipContent.transactionCount} Transactions
-          </p>
-        </div>
-
-        <div class="text-xs text-slate-600 mt-2">
-          <p class="italic">Click for full details</p>
-        </div>
-      {/if}
-    </div>
-  {/if}
+  <RPDTooltip
+    visible={tooltipVisible}
+    content={tooltipContent}
+    borderColor={tooltipBorderColor}
+    x={tooltipX}
+    y={tooltipY}
+  />
 </div>
 
 {#if isCompanyDrawerOpen}

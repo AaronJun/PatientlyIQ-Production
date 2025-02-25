@@ -78,14 +78,14 @@
 
     const therapeuticAreaColorScale = d3.scaleOrdinal()
         .domain([
-            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
+            'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',
             'Cardiovascular', 'Pulmonology', 'Hematology',
             'Endocrinology', 'Genetic', 'Immunology',
             'Gastroenterology', 'Hepatology', 'Dermatology',
             'Neonatology', 'Urology'
         ])
         .range([
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+            '#FF6B6B', '#ff1010', '#4ECDC4', '#45B7D1', '#96CEB4',
             '#FFEEAD', '#D4A5A5', '#9DE0AD',
             '#FF9F1C', '#2EC4B6', '#E71D36',
             '#FDFFB6', '#CBE896', '#FFA07A',
@@ -189,7 +189,7 @@
             .attr("dy", "0.35em")
             .text(company.company)
             .attr("fill", "#4A5568")
-            .attr("font-size", "11.25px")
+            .attr("font-size", "10.25px")
             .attr("font-weight", "500");
 
         // Create dots group with improved positioning
@@ -346,8 +346,8 @@
         d3.selectAll(".company-node rect")
             .transition()
             .duration(200)
-            .attr("width", "10.25")
-            .attr("height", "10.25")
+            .attr("width", "9.25")
+            .attr("height", "9.25")
             .attr("transform", "translate(-5.125, -5.125)");
             
         d3.selectAll(".company-label text")
@@ -531,8 +531,8 @@
             .attr("id", `company-node-${companyId}`);
 
         nodeGroup.append("rect")
-            .attr("width", 10.25)
-            .attr("height", 10.25)
+            .attr("width", 7.725)
+            .attr("height", 7.725)
             .attr("transform", "translate(-5.125, -5.125)")
             .attr("fill", companyStatusColorScale(company.status))
             .attr("stroke", "#375810")
@@ -580,7 +580,7 @@
 
                 // Drug circle
                 drugGroup.append("circle")
-                    .attr("r", 10.25)
+                    .attr("r", 7.725)
                     .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
                     .attr("stroke", "#565656")
                     .attr("stroke-width", "1.7825px");
@@ -601,14 +601,14 @@
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
-                            .attr("r", 14.25)
+                            .attr("r", 10.25)
                             .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
 
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
                                 .transition()
                                 .duration(200)
-                                .attr("r", 14.25)
+                                .attr("r", 10.25)
                                 .attr("stroke-width", 4.725);
                         }
 
@@ -622,7 +622,7 @@
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
-                            .attr("r", 10.25)
+                            .attr("r", 7.725)
                             .attr("stroke-width", "1.7825px")
                             .attr("stroke", "#565656")
                             .style("filter", "none");
