@@ -31,4 +31,4 @@ const countryData: CountryData[] = [
 
 export function load() {
     return { countryData };
-}s
+}
