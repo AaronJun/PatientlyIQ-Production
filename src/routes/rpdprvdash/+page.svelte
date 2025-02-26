@@ -246,31 +246,31 @@
   });
 </script>
 
-<div class="flex flex-col min-h-screen bg-slate-50">
+<div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
-  <div class="fixed top-0 left-0 right-0 z-50 bg-slate-50">
-    <div class="header flex align-baseline justify-between font-sans bg-slate-100 text-slate-800 font-medium text-6xl px-4 py-4">
-      <div class="flex gap-12 align-middle justify-evenly items-center">
-        <Balanced class="p-1 mb-2 max-h-8 max-w-8 rounded-full bg-slate-700 text-slate-50" />
-        <h1 class="flex">
-          <span class="text-sm">
+  <div class="z-50">
+    <div class="header flex align-baseline font-sans shadow-md bg-slate-500 text-slate-50">
+      <div class="flex gap-2 align-middle justify-evenly items-center">
+        <Balanced class="p-2 max-h-12 max-w-12 bg-slate-600 text-slate-100" />
+        <h1 class="flex text-sm font-medium leading-relaxed">
             RPDD + PRV Constellation
-          </span>
         </h1>
       </div>
     </div>
     
-    <nav class="justify-stretch w-full rounded-full">
-      <div class="flex align-baseline place-items-baseline gap-12 justify-between px-4 min-w-full max-w-7xl mx-auto my-auto">
-        <div class="flex mt-4 mb-2 space-x-4">
+    <nav class="nav-bar justify-stretch bg-slate-100 w-full h-full">
+      <div class="flex align-baseline place-items-baseline gap-4 justify-between min-w-full mx-auto">
+        <div class="flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="px-4 py-2 font-normal text-base transition-colors
+              class="px-2 py-1 text-sm transition-colors duration-300 ease-in-out tracking-relaxed
               {activeTab === tab ? 
-                'bg-[#5946EB]  text-slate-100 px-2 font-semibold rounded-full' : 
-                'text-slate-500 px-2 rounded-full hover:text-slate-700 hover:bg-slate-300'}"
+                'bg-slate-700 shadow-sm text-slate-100 px-4 font-medium' : 
+                'bg-slate-200 text-slate-500 px-2 hover:text-slate-700 hover:px-4 hover:bg-slate-300'}"
               on:click={() => setActiveTab(tab)}
-            >
+              style = "border: .25px solid #5946EB;"
+            
+              >
               {tab}
             </button>
           {/each}
@@ -298,13 +298,15 @@
   <main class="flex-1 pt-[calc(10vh)] pb-[4vh]">
     <div class="tab-content w-full h-full flex">
       <!-- Vertical timeline on the right side -->
-      <div class="timeline-wrapper top-[calc(20vh) h-fit bg-slate-50 border-l border-slate-200 flex items-center justify-center pt-12 p-2">
+      <div class="sticky top-[calc(20vh)">
+      <div class="timeline-wrapper top-[calc(20vh) h-fit border-l border-slate-200 flex items-center justify-center pt-12 p-2">
         <RPDPRVVerticalTimeline 
           data={rpddData}
           selectedYear={selectedYear}
           onYearSelect={handleYearSelect}
         />
       </div>
+    </div>
 
       <!-- Main content area with adjusted width to accommodate the vertical timeline -->
       <div class="w-[calc(100%-5rem)]">
@@ -340,6 +342,7 @@
           <!-- Updated sidebar implementation with clickable cards -->
 <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
   <div class="space-y-6">
+    <div class="mb-12">
     {#if currentView === 'Company View' && currentCompanyMetrics}
       <!-- Display company metrics in list format -->
       <CompanyMetricsList metrics={currentCompanyMetrics} />
@@ -351,7 +354,7 @@
         {new Set(currentEntries.map(d => d.Indication)).size} indications.
       </p>
     {/if}
-    
+  </div>
     <div class="space-y-4">
       {#each currentEntries as entry}
         <!-- Added onClick handler to the card -->
@@ -595,7 +598,11 @@
   .header {
     min-height: 2vh;
     align-items: center;
-    border-bottom: .525px solid #4A90E2;
+  }
+
+  .nav-bar {
+    min-height: 2vh;
+    align-items: center;
   }
 
   .highlight {
