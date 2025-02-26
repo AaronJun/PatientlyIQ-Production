@@ -12,8 +12,8 @@
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 920;
-    const height = 920;
+    const width = 850;
+    const height = 850;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Stage-specific radii (from outer to inner)
@@ -694,7 +694,7 @@
 <style>
     .chart-container {
         width: 100%;
-        max-width: 1200px;
+        max-width: 925px;
         margin: 0 auto;
         position: relative;
     }

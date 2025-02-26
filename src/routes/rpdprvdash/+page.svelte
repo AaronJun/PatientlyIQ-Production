@@ -15,7 +15,7 @@
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
   import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
 
-  import { Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
+  import { ArrowUpRight, Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
 
   // Import data sources
@@ -263,7 +263,7 @@
         <div class="flex gap-2">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="tab-button px-4 py-2 text-xs shadow-md transition-colors duration-300 ease-in-out tracking-relaxed rounded-sm
+              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
               {activeTab === tab ? 
                 'bg-[#ff4a4a] shadow-lg text-slate-100 px-4 font-semibold' : 
                 'bg-slate-600 hover:bg-[#FF5501] text-slate-400 px-2 hover:text-slate-50 hover:px-4'}"
@@ -294,12 +294,6 @@
   
   <!-- Main content area with proper spacing -->
   <main class="flex-1 pb-[4vh]">
-      <div class="legend flex flex-row mx-auto w-full place-content-center">
-    <RPDRadialLegend 
-      items={processedData}
-      {colorScale}
-    />
-  </div>
     
     <div class="tab-content w-full h-full flex">
       <!-- Vertical timeline on the right side -->
@@ -311,6 +305,12 @@
           onYearSelect={handleYearSelect}
         />
       </div>
+      <div class="legend flex flex-row w-full">
+        <RPDRadialLegend 
+        items={processedData}
+        {colorScale}
+        />
+        </div>
     </div>
 
       <!-- Main content area with adjusted width to accommodate the vertical timeline -->
@@ -321,7 +321,7 @@
             <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
               <RpdprvCompanyTree 
                 data={filteredData}
-                onCompanyHover={handleCompanyHover}
+                onCompanyHover={handleCompanyHover}``
                 onStageHover={handleStageHover}
                 onLeave={handleLeave}
                 onShowDrugDetail={handleShowDrugDetail}
@@ -331,7 +331,7 @@
 
         <!-- Sticky sidebar -->
           <div class="w-1/6 max-w-[320px] mx-8">
-            <div class="sticky top-[calc(20vh)]">
+              <div class="sticky top-[calc(20vh)] max-h-[80vh]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
                 <div class="w-2 h-2 rounded-full bg-slate-600" />               
                 <h4 class="text-xs/snug uppercase font-base">              
@@ -378,13 +378,18 @@
           <div class="flex flex-col">
             <div class="flex justify-between items-start">
               <h3 class="text-sm font-semibold text-slate-900">{entry.Candidate}</h3>
-              <span class="text-[8.25px] bg-slate-200 text-slate-800 px-1 py-1 rounded-sm">
-                {entry["Current Development Stage"]}
-              </span>
+              <ArrowUpRight class="text-slate-500" size={16} />
             </div>
             <div>
               <p class="text-xs text-slate-500 capitalize mt-2">{entry.Indication}</p>
-              <p class="text-xs text-slate-500">{entry.TherapeuticArea1}</p>
+            </div>
+            <div class="flex gap-2">
+            <span class="text-[9.25px] w-fit mt-2 bg-slate-200 text-slate-800 px-2 py-1 rounded-lg" style="border: .5px solid #565656">
+              {entry["Current Development Stage"]}
+            </span>
+            <span class="text-[9.25px] w-fit mt-2 bg-slate-200 text-slate-800 px-2 py-1 rounded-lg" style=" background-color: {colorMap[entry.TherapeuticArea1] || '#999999'}">
+              {entry.TherapeuticArea1}
+            </span>
             </div>
           </div>
         </div>
@@ -412,7 +417,7 @@
     </div>
     
     <div class="w-1/6 min-w-[300px]">
-      <div class="sticky top-[calc(20vh)]">
+        <div class="sticky top-[calc(20vh)] max-h-[80vh]">
         <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
           <div class="w-2 h-2 rounded-full bg-slate-600" />               
           <h4 class="text-xs/snug uppercase font-base">                              
@@ -452,7 +457,7 @@
   <!-- Sticky sidebar -->
    <!-- Updated Therapeutic Area tab sidebar with consistent styling -->
 <div class="w-1/6 max-w-[420px] align-top">
-  <div class="sticky top-[calc(20vh)]">
+    <div class="sticky top-[calc(20vh)] max-h-[80vh]">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
       <div class="w-2 h-2 rounded-full bg-slate-600" />               
       <h4 class="text-xs/snug uppercase font-base">              
@@ -519,12 +524,6 @@
       {/if}
     </div>
   </main>
-  <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-    <RPDRadialLegend 
-      items={processedData}
-      {colorScale}
-    />
-  </div>
 </div>
 
 {#if isDashboardOpen}
