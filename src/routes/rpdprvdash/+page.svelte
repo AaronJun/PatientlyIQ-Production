@@ -258,17 +258,16 @@
       </div>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-100 w-full h-full">
-      <div class="flex align-baseline place-items-baseline gap-4 justify-between min-w-full mx-auto">
+    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
+      <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
         <div class="flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="px-2 py-1 text-sm transition-colors duration-300 ease-in-out tracking-relaxed
+              class="px-4 py-2 text-sm shadow-md transition-colors duration-300 ease-in-out tracking-relaxed
               {activeTab === tab ? 
-                'bg-slate-700 shadow-sm text-slate-100 px-4 font-medium' : 
+                'bg-slate-700 shadow-lg text-slate-100 px-4 font-medium' : 
                 'bg-slate-200 text-slate-500 px-2 hover:text-slate-700 hover:px-4 hover:bg-slate-300'}"
               on:click={() => setActiveTab(tab)}
-              style = "border: .25px solid #5946EB;"
             
               >
               {tab}
@@ -595,14 +594,8 @@
     padding-bottom: 2rem;
   }
 
-  .header {
-    min-height: 2vh;
-    align-items: center;
-  }
-
   .nav-bar {
-    min-height: 2vh;
-    align-items: center;
+    align-items: stretch;
   }
 
   .highlight {
