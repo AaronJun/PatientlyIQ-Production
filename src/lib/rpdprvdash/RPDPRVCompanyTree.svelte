@@ -12,24 +12,24 @@
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 820;
-    const height = 820;
+    const width = 850;
+    const height = 850;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
     const labelConfig = {
-        minRadius: radius * .9725,
-        maxRadius: radius * 1,
-        padding: 10,
+        minRadius: radius * .9825,
+        maxRadius: radius * 1.025,
+        padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
-        textHeight: 14,
+        textHeight: 12,
         dotRowHeight: 5,
         maxDotsPerRow: 12
     };
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.9025,
+        'PRE': radius * 0.925,
         'P1': radius * 0.8125,
         'P1/2': radius * 0.725,
         'P2': radius * 0.625,

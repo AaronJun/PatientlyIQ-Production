@@ -1,7 +1,8 @@
 <!-- RPDTooltip.svelte -->
 <script lang="ts">
 	import { back } from "@melt-ui/svelte/internal/helpers";
-
+  import { ArrowUpRight } from "carbon-icons-svelte";
+	import { ArrowUp } from "lucide-svelte";
   export let visible: boolean = false;
   export let content: {
       sponsor: string;
@@ -26,7 +27,7 @@
       <div class="tooltip-header">
           <h3 class="tooltip-title capitalize text-sm">{content.sponsor}</h3>
           {#if content.drugName}
-              <span class="tooltip-subtitle capitalize text-sm">{content.drugName}</span>
+          <span class="tooltip-subtitle capitalize text-sm">{content.drugName}</span>
           {/if}
       </div>
       <div class="tooltip-body">
@@ -38,10 +39,14 @@
           <div class="tooltip-row">
               <span class="font-normal text-xs">{content.id}</span>
           </div>
+        </div>
+        <div class="tooltip-detail bg-emerald-100 px-2 py-1">
+            <span class="label text-xs font-medium text-slate-900">Click for details</span>
+            <ArrowUpRight size="16" class="text-slate-900" />
+        </div>  
       </div>
-  </div>
-{/if}
-
+        {/if}
+        
 <style>
   .tooltip-container {
       position: absolute;
@@ -83,7 +88,15 @@
 
   .tooltip-row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+  }
+
+  .tooltip-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: .5425px solid #718096;
   }
 
   .tooltip-row:last-child {

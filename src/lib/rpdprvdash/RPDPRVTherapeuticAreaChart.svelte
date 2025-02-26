@@ -18,10 +18,10 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.9725,
-        'P1': radius * 0.825,
-        'P1/2': radius * 0.725,
-        'P2': radius * 0.625,
+        'PRE': radius * 0.98725,
+        'P1': radius * 0.8725,
+        'P1/2': radius * 0.7625,
+        'P2': radius * 0.6425,
         'P3': radius * 0.525,
         'FILED': radius * 0.4125,
         'APRV': radius * 0.285,
@@ -381,7 +381,7 @@
                 .attr("fill", "none")
                 .attr("stroke", stageColorScale(stage))
                 .attr("stroke-width", 1.425)
-                .attr("stroke-dasharray", "2,5")
+                .attr("stroke-dasharray", "1,5")
                 .attr("stroke-opacity", 1);
 
             // Stage label with background

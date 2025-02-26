@@ -321,7 +321,7 @@
             <div class="w-5/6 flex-col pb-18 pr-8 pl-8">
               <RpdprvCompanyTree 
                 data={filteredData}
-                onCompanyHover={handleCompanyHover}``
+                onCompanyHover={handleCompanyHover}
                 onStageHover={handleStageHover}
                 onLeave={handleLeave}
                 onShowDrugDetail={handleShowDrugDetail}
@@ -333,7 +333,7 @@
           <div class="w-1/6 max-w-[320px] mx-8">
               <div class="sticky top-[calc(20vh)] max-h-[80vh]">
               <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-                <div class="w-2 h-2 rounded-full bg-slate-600" />               
+                
                 <h4 class="text-xs/snug uppercase font-base">              
                   {currentView || 'Overview by Sponsor'}
                 </h4>
@@ -419,7 +419,7 @@
     <div class="w-1/6 min-w-[300px]">
         <div class="sticky top-[calc(20vh)] max-h-[80vh]">
         <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-          <div class="w-2 h-2 rounded-full bg-slate-600" />               
+          
           <h4 class="text-xs/snug uppercase font-base">                              
             Transaction Value Distribution</h4>
         </div>
@@ -456,16 +456,16 @@
 
   <!-- Sticky sidebar -->
    <!-- Updated Therapeutic Area tab sidebar with consistent styling -->
-<div class="w-1/6 max-w-[420px] align-top">
-    <div class="sticky top-[calc(20vh)] max-h-[80vh]">
+<div class="w-1/6 max-w-[345px] align-top">
+    <div class="sticky top-[calc(12.25vh)] max-h-[80vh]">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-      <div class="w-2 h-2 rounded-full bg-slate-600" />               
+      
       <h4 class="text-xs/snug uppercase font-base">              
-        {currentArea ? currentArea : 'By Therapeutic Area'}
+        By Therapeutic Area
       </h4>
   </div>                
     <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" 
-    style="max-height: calc(90vh - 2rem)">
+    style="max-height: calc(80vh - 2rem)">
       <div class="space-y-2">
         {#if currentEntries.length > 0 && currentArea && areaMetrics}
           <AreaMetricsList 
@@ -572,6 +572,11 @@
 <style>
 .tab-button {
   border-bottom: 2px solid #ff7373;
+}
+
+.sidebar-header {
+  padding: 0.5rem 0;
+  border-bottom: .525px solid #535353;
 }
 
   .sidebar {
