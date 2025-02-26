@@ -249,26 +249,25 @@
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
   <div class="z-50">
-    <div class="header flex align-baseline font-sans shadow-md bg-slate-800 text-slate-50">
-      <div class="flex gap-2 align-middle justify-evenly items-center">
-        <Balanced class="p-2 max-h-12 max-w-12 bg-slate-900 text-slate-300" />
+    <div class="header flex align-baseline font-sans shadow-md bg-slate-800 text-slate-50 px-8">
+      <div class="flex gap-2 justify-evenly items-center">
+        <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
         <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
             RPDD + PRV Constellation
         </h1>
       </div>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
+    <nav class="nav-bar justify-stretch bg-slate-800 w-full h-full py-4 px-8">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
         <div class="flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
               class="px-4 py-2 text-sm shadow-md transition-colors duration-300 ease-in-out tracking-relaxed
               {activeTab === tab ? 
-                'bg-slate-700 shadow-lg text-slate-100 px-4 font-medium' : 
-                'bg-slate-200 text-slate-500 px-2 hover:text-slate-700 hover:px-4 hover:bg-slate-300'}"
+                'bg-[#ff4a4a] shadow-lg text-slate-100 px-4 font-semibold' : 
+                'bg-slate-600 hover:bg-[#FF5501] text-slate-400 px-2 hover:text-slate-50 hover:px-4'}"
               on:click={() => setActiveTab(tab)}
-            
               >
               {tab}
             </button>
@@ -285,7 +284,7 @@
             class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
             on:click={handleDashboardClick}
           >
-            <DashboardReference size={14}/>
+            <DashboardReference size={16}/>
             Dashboard
           </button>
         </div>
@@ -294,7 +293,14 @@
   </div>
   
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pt-[calc(10vh)] pb-[4vh]">
+  <main class="flex-1 pb-[4vh]">
+      <div class="legend flex flex-row mx-auto w-full place-content-center">
+    <RPDRadialLegend 
+      items={processedData}
+      {colorScale}
+    />
+  </div>
+    
     <div class="tab-content w-full h-full flex">
       <!-- Vertical timeline on the right side -->
       <div class="sticky top-[calc(20vh)">
@@ -321,12 +327,6 @@
                 onShowDrugDetail={handleShowDrugDetail}
                 onShowCompanyDetail={handleShowCompanyDetail}
               />
-              <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-                <RPDRadialLegend 
-                  items={processedData}
-                  {colorScale}
-                />
-              </div>
             </div>
 
         <!-- Sticky sidebar -->
@@ -408,12 +408,7 @@
         on:transactionHover={(event) => highlightedTransaction = event.detail}
         on:transactionLeave={() => highlightedTransaction = null}
       />
-      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-        <RPDRadialLegend 
-          items={processedData}
-          {colorScale}
-        />
-      </div>
+
     </div>
     
     <div class="w-1/6 min-w-[300px]">
@@ -451,16 +446,7 @@
         onShowDrugDetail={handleShowDrugDetail}
         onShowCompanyDetail={handleShowCompanyDetail}
       />
-      
-      <!-- Legend section -->
-      <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
-        <div class="info-panel bg-slate-100/50 pt-4 px-4 w-full max-w-3xl">
-          <RPDRadialLegend 
-            items={processedData}
-            {colorScale}
-          />
-        </div>
-      </div>
+    
     </div>
 
   <!-- Sticky sidebar -->
@@ -533,6 +519,12 @@
       {/if}
     </div>
   </main>
+  <div class="legend flex flex-row mx-auto w-full place-content-center pt-8">
+    <RPDRadialLegend 
+      items={processedData}
+      {colorScale}
+    />
+  </div>
 </div>
 
 {#if isDashboardOpen}
@@ -585,13 +577,6 @@
     scrollbar-color: #e5e7eb #f9fafb;
     border-top: 0px;
     overflow-y: scroll;
-  }
-
-  .legend {
-    position: relative;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1rem;
-    padding-bottom: 2rem;
   }
 
   .nav-bar {

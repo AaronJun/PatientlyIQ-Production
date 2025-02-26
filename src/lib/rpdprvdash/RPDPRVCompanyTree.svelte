@@ -571,7 +571,7 @@
                     .attr("d", `M${nodeX},${nodeY}L${drugX},${drugY}`)
                     .attr("stroke", "#37587e")
                     .attr("stroke-width", .7625)
-                    .attr("stroke-opacity", 0.6725)
+                    .attr("stroke-opacity", 0.525)
                     .attr("fill", "none");
 
                 const drugGroup = companyGroup.append("g")
