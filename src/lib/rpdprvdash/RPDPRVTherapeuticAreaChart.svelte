@@ -36,7 +36,7 @@
     };
 
     // Area-specific angles
-    const labelRadius = radius * 1.105;
+    const labelRadius = radius * 1.0425;
     const maxLabelWidth = 70;
     const ANGLE_BUFFER = Math.PI / 24;
 
@@ -195,7 +195,7 @@
             .transition()
             .duration(500)
             .attr("fill", "#666666")
-            .attr("font-size", "10.25px")
+            .attr("font-size", "9.425px")
             .attr("font-weight", "500");
             
         // Highlight the active area
@@ -417,7 +417,7 @@
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.3em")
                 .attr("fill", stageColorScale(stage))
-                .attr("font-size", "10.25px")
+                .attr("font-size", "9.425px")
                 .attr("font-weight", "400")
                 .text(stage);
                 

@@ -214,7 +214,7 @@
     'Genetic': '#2EC4B6',
     'Immunology': '#E71D36',
     'Gastroenterology': '#FDFFB6',
-    'Hepatology': '#CBE896',
+  'Hepatology': '#CBE896',
     'Dermatology': '#FFA07A',
     'Neonatology': '#98D8C8',
     'Urology': '#B8B8D1'
@@ -260,10 +260,10 @@
     
     <nav class="nav-bar justify-stretch bg-slate-800 w-full h-full py-4 px-8">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
-        <div class="flex">
+        <div class="flex gap-2">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="px-4 py-2 text-sm shadow-md transition-colors duration-300 ease-in-out tracking-relaxed
+              class="tab-button px-4 py-2 text-xs shadow-md transition-colors duration-300 ease-in-out tracking-relaxed rounded-sm
               {activeTab === tab ? 
                 'bg-[#ff4a4a] shadow-lg text-slate-100 px-4 font-semibold' : 
                 'bg-slate-600 hover:bg-[#FF5501] text-slate-400 px-2 hover:text-slate-50 hover:px-4'}"
@@ -571,6 +571,10 @@
 {/if}
 
 <style>
+.tab-button {
+  border-bottom: 2px solid #ff7373;
+}
+
   .sidebar {
     max-height: 65vh;
     overflow-y: scroll;
