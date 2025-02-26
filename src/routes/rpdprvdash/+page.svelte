@@ -249,10 +249,10 @@
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
   <div class="z-50">
-    <div class="header flex align-baseline font-sans shadow-md bg-slate-500 text-slate-50">
+    <div class="header flex align-baseline font-sans shadow-md bg-slate-800 text-slate-50">
       <div class="flex gap-2 align-middle justify-evenly items-center">
-        <Balanced class="p-2 max-h-12 max-w-12 bg-slate-600 text-slate-100" />
-        <h1 class="flex text-sm font-medium leading-relaxed">
+        <Balanced class="p-2 max-h-12 max-w-12 bg-slate-900 text-slate-300" />
+        <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
             RPDD + PRV Constellation
         </h1>
       </div>
