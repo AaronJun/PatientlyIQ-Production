@@ -18,10 +18,10 @@
 
     // Improved label positioning configuration (matching company tree style)
     const labelConfig = {
-        minRadius: radius * .9825,
-        maxRadius: radius * 1.025,
+        minRadius: radius * 1.05, // Increased to be outside the outermost stage circle
+        maxRadius: radius * 1.2,  // Allow further positions to avoid overlaps
         padding: 8.25,
-        minAngleDiff: Math.PI / 32, // Minimum angle between labels
+        minAngleDiff: Math.PI / 18, // Minimum angle between labels
         textHeight: 12,
         dotRowHeight: 5,
         maxDotsPerRow: 12
@@ -229,6 +229,7 @@
         d3.selectAll(".area-label text")
             .transition()
             .duration(500)
+            .attr("text-anchor", "start")
             .attr("fill", "#4A5568")
             .attr("font-size", "10.25px")
             .attr("font-weight", "500");
