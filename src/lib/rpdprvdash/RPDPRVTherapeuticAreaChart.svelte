@@ -16,9 +16,20 @@
     const height = 850;
     const radius = Math.min(width, height) / 2 - 60;
 
+    // Improved label positioning configuration (matching company tree style)
+    const labelConfig = {
+        minRadius: radius * .9825,
+        maxRadius: radius * 1.025,
+        padding: 8.25,
+        minAngleDiff: Math.PI / 32, // Minimum angle between labels
+        textHeight: 12,
+        dotRowHeight: 5,
+        maxDotsPerRow: 12
+    };
+
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.98725,
+        'PRE': radius * 0.925,
         'P1': radius * 0.8725,
         'P1/2': radius * 0.7625,
         'P2': radius * 0.6425,
@@ -35,18 +46,8 @@
         cornerRadius: 10
     };
 
-    // Area-specific angles
-    const labelRadius = radius * 1.0425;
-    const maxLabelWidth = 70;
+    const maxLabelWidth = 85;
     const ANGLE_BUFFER = Math.PI / 24;
-
-    // Label positioning configuration
-    const labelConfig = {
-        minRadius: radius * 1.01,
-        maxRadius: radius * 1.1,
-        padding: 5,
-        minAngleDiff: Math.PI / 32
-    };
 
     // Tooltip state
     let tooltipVisible = false;
@@ -128,6 +129,50 @@
         }
     }
 
+    function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefined>, 
+                           area: any,
+                           labelPlacement: any) {
+        const { x, y, textAnchor, dx } = labelPlacement;
+        
+        // Create text element
+        const textElement = group.append("text")
+            .attr("text-anchor", textAnchor)
+            .attr("dx", dx)
+            .attr("dy", "0.35em")
+            .text(truncateText(area.area, maxLabelWidth))
+            .attr("fill", "#4A5568")
+            .attr("font-size", "10.25px")
+            .attr("font-weight", "500");
+
+        // Create dots group for drug counts (similar to company tree)
+        const dotsGroup = group.append("g")
+            .attr("class", "area-drugs")
+            .attr("transform", `translate(${dx}, ${labelConfig.textHeight})`);
+
+        const numDrugs = Math.min(area.totalDrugs, 20); // Limit to 20 dots max for visual clarity
+        const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDrugs);
+        const numRows = Math.ceil(numDrugs / dotsPerRow);
+
+        for (let i = 0; i < numDrugs; i++) {
+            const row = Math.floor(i / dotsPerRow);
+            const col = i % dotsPerRow;
+            const x = textAnchor === "start" ? 
+                col * 6 : 
+                -(col * 6);
+            
+            dotsGroup.append("circle")
+                .attr("r", 2)
+                .attr("stroke", "#161616")
+                .attr("stroke-width", 0.5)
+                .attr("cx", x + (textAnchor === "start" ? 3 : -3))
+                .attr("cy", row * labelConfig.dotRowHeight)
+                .attr("fill", therapeuticAreaColorScale(area.area))
+                .attr("opacity", 0.8);
+        }
+
+        return { textElement, dotsGroup };
+    }
+
     function getLabelPosition(angle: number) {
         // Calculate optimal position for labels based on their angle
         const normalizedAngle = ((angle + Math.PI/2) * 180 / Math.PI) % 360;
@@ -139,21 +184,11 @@
         const dx = (normalizedAngle > 90 && normalizedAngle < 270) ? -15 : 15;
         
         // Calculate position on the circle
+        const labelRadius = radius * 0.9825;
         const x = labelRadius * Math.cos(angle - Math.PI/2);
         const y = labelRadius * Math.sin(angle - Math.PI/2);
         
-        // Calculate rotation to make labels more readable
-        let rotate = 0;
-        
-        if (normalizedAngle > 90 && normalizedAngle < 270) {
-            // Labels on the left side get rotated 180° to be readable
-            rotate = ((angle * 180 / Math.PI) + 180) % 360;
-        } else {
-            // Labels on the right side maintain their angle
-            rotate = (angle * 180 / Math.PI) % 360;
-        }
-        
-        return { x, y, textAnchor, dx, rotate };
+        return { x, y, textAnchor, dx };
     }
 
     function showTooltip(event: MouseEvent, d: any) {
@@ -194,9 +229,15 @@
         d3.selectAll(".area-label text")
             .transition()
             .duration(500)
-            .attr("fill", "#666666")
-            .attr("font-size", "9.425px")
+            .attr("fill", "#4A5568")
+            .attr("font-size", "10.25px")
             .attr("font-weight", "500");
+            
+        d3.selectAll(".area-drugs circle")
+            .transition()
+            .duration(200)
+            .attr("r", 2)
+            .attr("opacity", 0.8);
             
         // Highlight the active area
         if (area) {
@@ -212,8 +253,16 @@
             d3.select(`#area-label-${areaId} text`)
                 .transition()
                 .duration(500)
-                .attr("font-size", "11.25px")
+                .attr("fill", "#FF4A4A")
+                .attr("font-size", "12px")
                 .attr("font-weight", "800");
+                
+            d3.select(`#area-label-${areaId} .area-drugs`)
+                .selectAll("circle")
+                .transition()
+                .duration(200)
+                .attr("r", 3)
+                .attr("opacity", 1);
                 
             onCompanyHover(entries);
         }
@@ -252,7 +301,7 @@
     }
 
     function truncateText(text: string, maxWidth: number) {
-        if (text.length <= maxWidth ) return text;
+        if (text.length <= maxWidth / 8) return text;
         return text.slice(0, Math.floor(maxWidth / 8) - 3) + '...';
     }
 
@@ -314,29 +363,36 @@
     }
 
     function calculateOptimalLabelPlacements(areas: any[], areaAngles: Map<string, any>) {
-        // Calculate initial positions
-        const labelPlacements = areas.map(area => {
-            const angles = areaAngles.get(area.area);
-            const { x, y, textAnchor, dx, rotate } = getLabelPosition(angles.center);
+        const labels = [];
+        
+        areas.forEach(area => {
+            const angle = areaAngles.get(area.area);
+            const centerAngle = angle.center;
             
-            return {
+            // Get label positioning
+            const { x, y, textAnchor, dx } = getLabelPosition(centerAngle);
+            
+            labels.push({
                 area: area.area,
                 x,
                 y,
                 textAnchor,
                 dx,
-                rotate,
-                angle: angles.center
-            };
+                angle: centerAngle
+            });
         });
         
         // Detect and resolve overlaps
-        resolveOverlaps(labelPlacements);
+        const labelHeight = labelConfig.textHeight + 
+            Math.ceil(Math.min(20, areas[0].totalDrugs) / labelConfig.maxDotsPerRow) * labelConfig.dotRowHeight;
+            
+        resolveOverlaps(labels, labelHeight);
         
-        return labelPlacements;
+        return labels;
     }
     
-    function resolveOverlaps(placements) {
+    function resolveOverlaps(placements, labelHeight) {
+        // Sort by angle for easier adjacent label detection
         const sortedPlacements = [...placements].sort((a, b) => a.angle - b.angle);
         
         for (let i = 0; i < sortedPlacements.length; i++) {
@@ -346,16 +402,24 @@
             // Check if labels are too close
             const angleDiff = Math.abs(current.angle - next.angle);
             if (angleDiff < labelConfig.minAngleDiff || (2 * Math.PI - angleDiff) < labelConfig.minAngleDiff) {
-                // Adjust label radius to avoid overlap
+                // Find the original indices
                 const currentIndex = placements.findIndex(p => p.area === current.area);
                 const nextIndex = placements.findIndex(p => p.area === next.area);
                 
-                // Push one label slightly outward
-                const adjustedRadius = labelRadius * 1.08;
-                const { x, y } = getLabelPosition(current.angle);
+                // Adjust position outward
+                const currentRadius = Math.sqrt(current.x * current.x + current.y * current.y);
+                const nextRadius = Math.sqrt(next.x * next.x + next.y * next.y);
                 
-                placements[currentIndex].x = x * 1.08;
-                placements[currentIndex].y = y * 1.08;
+                // Move the label with smaller radius outward
+                if (currentRadius <= nextRadius) {
+                    const newRadius = currentRadius * 1.08;
+                    placements[currentIndex].x = (current.x / currentRadius) * newRadius;
+                    placements[currentIndex].y = (current.y / currentRadius) * newRadius;
+                } else {
+                    const newRadius = nextRadius * 1.08;
+                    placements[nextIndex].x = (next.x / nextRadius) * newRadius;
+                    placements[nextIndex].y = (next.y / nextRadius) * newRadius;
+                }
             }
         }
     }
@@ -446,7 +510,28 @@
             
             if (!labelPlacement) return; // Skip if no placement found
             
-            const { x: labelX, y: labelY, textAnchor, dx, rotate } = labelPlacement;
+            const { x: labelX, y: labelY } = labelPlacement;
+
+            // Create area node
+            const nodeGroup = areaLabelsGroup.append("g")
+                .attr("transform", `translate(${labelX},${labelY})`)
+                .attr("cursor", "pointer")
+                .attr("class", "area-label")
+                .attr("id", `area-label-${areaId}`);
+
+            // Area node rectangle at label position
+            nodeGroup.append("rect")
+                .attr("class", "area-node")
+                .attr("id", `area-node-${areaId}`)
+                .attr("width", 7.725)
+                .attr("height", 7.725)
+                .attr("transform", "translate(-5.125, -5.125)")
+                .attr("stroke", "#565656")
+                .attr("fill", therapeuticAreaColorScale(area.area))
+                .attr("stroke-width", 1.25);
+
+            // Create the label group with text and dots
+            createLabelGroup(nodeGroup, area, labelPlacement);
 
             // Draw connecting lines to drugs
             area.stages.forEach((drugs, stage) => {
@@ -464,87 +549,10 @@
                         .attr("stroke-width", .725)
                         .attr("stroke-opacity", 0.825)
                         .attr("fill", "none");
-                });
-            });
-
-            // Area label group
-            const labelGroup = areaLabelsGroup.append("g")
-                .attr("transform", `translate(${labelX},${labelY})`)
-                .attr("cursor", "pointer")
-                .attr("class", "area-label")
-                .attr("id", `area-label-${areaId}`);
-
-            // Area node rectangle
-            labelGroup.append("rect")
-                .attr("class", "area-node")
-                .attr("id", `area-node-${areaId}`)
-                .attr("width", 7.725)
-                .attr("height", 7.725)
-                .attr("transform", "translate(-5.125, -5.125)")
-                .attr("stroke", "#565656")
-                .attr("fill", therapeuticAreaColorScale(area.area))
-                .attr("stroke-width", 1.25);
-
-            // Area text label - with proper alignment and positioning
-            const textGroup = labelGroup.append("g")
-                .attr("transform", `rotate(${rotate})`);
-                
-            textGroup.append("text")
-                .attr("text-anchor", textAnchor)
-                .attr("dx", dx)
-                .attr("dy", "0.35em")
-                .text(truncateText(area.area, maxLabelWidth))
-                .attr("fill", "#666666")
-                .attr("font-size", "11.25px")
-                .attr("font-weight", "500");
-                
-            // Event handlers with improved persistence behavior
-            const handleMouseEnter = (event) => {
-                // Update area details for the sidebar display
-                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
-                
-                // Set this area as active
-                setActiveArea(area.area, {
-                    entries: entries,
-                    areaName: area.area,
-                    totalDrugs: area.totalDrugs,
-                    uniqueCompanies: area.uniqueCompanies.size,
-                    uniqueCandidates: area.uniqueCandidates.size
-                });
-                
-                showTooltip(event, { area: area.area, count: area.totalDrugs });
-            };
-                
-            const handleClick = () => {
-                // Set this area as active when clicked
-                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
-                
-                setActiveArea(area.area, {
-                    entries: entries,
-                    areaName: area.area,
-                    totalDrugs: area.totalDrugs,
-                    uniqueCompanies: area.uniqueCompanies.size,
-                    uniqueCandidates: area.uniqueCandidates.size
-                });
-            };
-                
-            // Add event handlers to area label group
-            labelGroup
-                .on("mouseenter", handleMouseEnter)
-                .on("click", handleClick);
-
-            // Draw drugs for each stage
-            area.stages.forEach((drugs, stage) => {
-                const stageRadius = stageRadii[stage];
-                const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
-
-                drugs.forEach((drug, i) => {
-                    const drugAngle = angle.start + drugSpacing * (i + 1);
-                    const x = stageRadius * Math.cos(drugAngle - Math.PI/2);
-                    const y = stageRadius * Math.sin(drugAngle - Math.PI/2);
-
+                        
+                    // Add drug circles
                     const drugGroup = areaGroup.append("g")
-                        .attr("transform", `translate(${x},${y})`)
+                        .attr("transform", `translate(${drugX},${drugY})`)
                         .attr("cursor", "pointer")
                         .attr("class", "drug-node");
 
@@ -564,26 +572,7 @@
                             .attr("stroke-width", "2")
                             .attr("stroke-dasharray", "2,2");
                     }
-
-                    // Hidden label group (shown on hover)
-                    const labelGroup = drugGroup.append("g")
-                        .attr("opacity", 0)
-                        .attr("class", "drug-label");
-
-                    const labelX = drugAngle < Math.PI ? 12 : -12;
                     
-                    labelGroup.append("text")
-                        .attr("x", labelX)
-                        .attr("y", 0)
-                        .attr("text-anchor", drugAngle < Math.PI ? "start" : "end")
-                        .attr("z-index", 999)
-                        .attr("dy", "1.425em")
-                        .attr("dx", "-.825em")
-                        .text(truncateText(drug.Candidate, maxLabelWidth))
-                        .attr("fill", "#565656")
-                        .attr("font-size", "11.25px")
-                        .style("text-transform", "uppercase");
-
                     // Drug interactions
                     drugGroup
                         .on("mouseenter", (event) => {
@@ -623,11 +612,6 @@
                                     .attr("stroke-width", "2");
                             }
                             
-                            drugGroup.select(".drug-label")
-                                .transition()
-                                .duration(200)
-                                .attr("opacity", 0);
-                                
                             hideTooltip();
                         })
                         .on("click", (event) => {
@@ -653,6 +637,42 @@
                         });
                 });
             });
+            
+            // Event handlers for area label
+            const handleMouseEnter = (event) => {
+                // Update area details for the sidebar display
+                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
+                
+                // Set this area as active
+                setActiveArea(area.area, {
+                    entries: entries,
+                    areaName: area.area,
+                    totalDrugs: area.totalDrugs,
+                    uniqueCompanies: area.uniqueCompanies.size,
+                    uniqueCandidates: area.uniqueCandidates.size
+                });
+                
+                showTooltip(event, { area: area.area, count: area.totalDrugs });
+            };
+                
+            const handleClick = () => {
+                // Set this area as active when clicked
+                const entries = data.filter(entry => entry.TherapeuticArea1 === area.area);
+                
+                setActiveArea(area.area, {
+                    entries: entries,
+                    areaName: area.area,
+                    totalDrugs: area.totalDrugs,
+                    uniqueCompanies: area.uniqueCompanies.size,
+                    uniqueCandidates: area.uniqueCandidates.size
+                });
+            };
+                
+            // Add event handlers to area label group
+            nodeGroup
+                .on("mouseenter", handleMouseEnter)
+                .on("mouseleave", hideTooltip)
+                .on("click", handleClick);
         });
         
         // Add click handler to SVG background to clear selections

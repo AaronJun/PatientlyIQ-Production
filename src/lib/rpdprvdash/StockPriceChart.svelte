@@ -9,7 +9,9 @@
   export let color: string = '#37587e';
 
   let svgElement: SVGElement;
+  let brushSvgElement: SVGElement;
   let chart: d3.Selection<SVGElement, unknown, null, undefined>;
+  let brushChart: d3.Selection<SVGElement, unknown, null, undefined>;
   let chartData: { date: Date, price: number }[] = [];
   let milestones: {
     date: Date,
@@ -25,6 +27,7 @@
   let tooltipVisible = false;
   let tooltipData = { x: 0, y: 0, date: new Date(), price: 0, details: '' };
   let dimensions = { width: 0, height: 0, margin: { top: 30, right: 30, bottom: 50, left: 60 } };
+  let brushDimensions = { width: 0, height: 60, margin: { top: 5, right: 30, bottom: 20, left: 60 } };
   let impactAnalysis: {
     beforeAvg: number,
     afterAvg: number,
@@ -32,6 +35,9 @@
     beforeData: { date: Date, price: number }[],
     afterData: { date: Date, price: number }[]
   } | null = null;
+  
+  // Date range state for brush
+  let dateRange: [Date, Date] | null = null;
   
   // Find the closest stock price to a given date
   function findClosestStockPrice(stockData: any[], targetDate: Date) {
@@ -106,6 +112,14 @@
         .sort((a, b) => a.date.getTime() - b.date.getTime());
       
       noDataFound = chartData.length === 0;
+      
+      // Set initial date range to show all data
+      if (chartData.length > 0) {
+        dateRange = [
+          chartData[0].date,
+          chartData[chartData.length - 1].date
+        ];
+      }
       
       // Extract milestones from allData
       if (allData && allData.length > 0 && chartData.length > 0) {
@@ -216,13 +230,18 @@
     const innerWidth = width - dimensions.margin.left - dimensions.margin.right;
     const innerHeight = height - dimensions.margin.top - dimensions.margin.bottom;
     
+    // Filter data based on date range if set
+    const filteredData = dateRange 
+      ? chartData.filter(d => d.date >= dateRange[0] && d.date <= dateRange[1])
+      : chartData;
+    
     // Create scales
     const xScale = d3.scaleTime()
-      .domain(d3.extent(chartData, d => d.date) as [Date, Date])
+      .domain(dateRange || d3.extent(chartData, d => d.date) as [Date, Date])
       .range([0, innerWidth]);
     
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(chartData, d => d.price) as number * 1.1])
+      .domain([0, d3.max(filteredData, d => d.price) as number * 1.1])
       .range([innerHeight, 0]);
     
     // Create the line generator
@@ -231,9 +250,35 @@
       .y(d => yScale(d.price))
       .curve(d3.curveMonotoneX);
     
+    // Create area generator for shaded area
+    const area = d3.area<{date: Date, price: number}>()
+      .x(d => xScale(d.date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.price))
+      .curve(d3.curveMonotoneX);
+    
     // Create the main group element
     const g = chart.append("g")
       .attr("transform", `translate(${dimensions.margin.left},${dimensions.margin.top})`);
+    
+    // Add gradient definition
+    const gradient = chart.append("defs")
+      .append("linearGradient")
+      .attr("id", "area-gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "0%")
+      .attr("y2", "100%");
+    
+    gradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", color)
+      .attr("stop-opacity", 0.5);
+    
+    gradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", color)
+      .attr("stop-opacity", 0.1);
     
     // Add x-axis
     g.append("g")
@@ -268,9 +313,15 @@
       .attr("stroke", "#e2e8f0")
       .attr("stroke-dasharray", "2,2");
     
+    // Add the area path
+    g.append("path")
+      .datum(filteredData)
+      .attr("fill", "url(#area-gradient)")
+      .attr("d", area);
+    
     // Add the line path
     g.append("path")
-      .datum(chartData)
+      .datum(filteredData)
       .attr("fill", "none")
       .attr("stroke", color)
       .attr("stroke-width", 2)
@@ -329,12 +380,17 @@
       }
     }
     
+    // Filter milestones based on date range
+    const visibleMilestones = dateRange 
+      ? milestones.filter(m => m.date >= dateRange[0] && m.date <= dateRange[1])
+      : milestones;
+    
     // Add milestone markers
     const milestoneGroup = g.append("g")
       .attr("class", "milestones");
     
     milestoneGroup.selectAll(".milestone")
-      .data(milestones)
+      .data(visibleMilestones)
       .enter()
       .append("circle")
       .attr("class", "milestone")
@@ -430,16 +486,137 @@
     }
   }
 
-  function resizeChart() {
+  function drawBrushChart() {
+    if (!brushSvgElement || noDataFound || chartData.length === 0) return;
+    
+    // Clear previous chart if any
+    d3.select(brushSvgElement).selectAll("*").remove();
+    
+    // Get dimensions
+    const width = brushSvgElement.clientWidth;
+    const height = brushSvgElement.clientHeight;
+    brushDimensions = { 
+      width, 
+      height, 
+      margin: { top: 5, right: 30, bottom: 20, left: 60 } 
+    };
+    
+    // Create the SVG container
+    brushChart = d3.select(brushSvgElement)
+      .attr("width", width)
+      .attr("height", height);
+    
+    // Calculate inner dimensions
+    const innerWidth = width - brushDimensions.margin.left - brushDimensions.margin.right;
+    const innerHeight = height - brushDimensions.margin.top - brushDimensions.margin.bottom;
+    
+    // Create scales
+    const xScale = d3.scaleTime()
+      .domain(d3.extent(chartData, d => d.date) as [Date, Date])
+      .range([0, innerWidth]);
+    
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(chartData, d => d.price) as number * 1.1])
+      .range([innerHeight, 0]);
+    
+    // Create the line generator
+    const line = d3.line<{date: Date, price: number}>()
+      .x(d => xScale(d.date))
+      .y(d => yScale(d.price))
+      .curve(d3.curveMonotoneX);
+    
+    // Create area generator for shaded area
+    const area = d3.area<{date: Date, price: number}>()
+      .x(d => xScale(d.date))
+      .y0(innerHeight)
+      .y1(d => yScale(d.price))
+      .curve(d3.curveMonotoneX);
+    
+    // Create the main group element
+    const g = brushChart.append("g")
+      .attr("transform", `translate(${brushDimensions.margin.left},${brushDimensions.margin.top})`);
+    
+    // Add the area path
+    g.append("path")
+      .datum(chartData)
+      .attr("fill", `${color}33`) // Add transparency
+      .attr("d", area);
+    
+    // Add the line path
+    g.append("path")
+      .datum(chartData)
+      .attr("fill", "none")
+      .attr("stroke", color)
+      .attr("stroke-width", 1.5)
+      .attr("d", line);
+    
+    // Add x-axis
+    g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0,${innerHeight})`)
+      .call(d3.axisBottom(xScale)
+        .ticks(4)
+        .tickFormat(d => formatDate(d as Date, 'yyyy')));
+    
+    // Add brush
+    const brush = d3.brushX()
+      .extent([[0, 0], [innerWidth, innerHeight]])
+      .on("end", brushed);
+    
+    g.append("g")
+      .attr("class", "brush")
+      .call(brush);
+    
+    // Set initial brush position if date range is set
+    if (dateRange) {
+      g.select(".brush")
+        .call(brush.move, [
+          xScale(dateRange[0]),
+          xScale(dateRange[1])
+        ]);
+    }
+    
+    // Add milestone markers to brush chart
+    g.selectAll(".brush-milestone")
+      .data(milestones)
+      .enter()
+      .append("circle")
+      .attr("class", "brush-milestone")
+      .attr("cx", d => xScale(d.date))
+      .attr("cy", d => yScale(d.price))
+      .attr("r", 3)
+      .attr("fill", d => d.color)
+      .attr("stroke", "white")
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.8);
+    
+    function brushed(event) {
+      if (!event.selection) return;
+      
+      const [x0, x1] = event.selection.map(xScale.invert);
+      dateRange = [x0, x1];
+      
+      // Redraw the main chart with the new date range
+      drawChart();
+    }
+  }
+
+  function resizeCharts() {
     if (svgElement) {
       drawChart();
+    }
+    if (brushSvgElement) {
+      drawBrushChart();
     }
   }
 
   $: if (companyName || stockData || allData) {
     const hasData = processData();
     if (hasData) {
-      setTimeout(() => drawChart(), 0);
+      setTimeout(() => {
+        drawChart();
+        drawBrushChart();
+      }, 0);
     }
   }
 
@@ -447,20 +624,21 @@
     const hasData = processData();
     if (hasData) {
       drawChart();
+      drawBrushChart();
     }
     
     // Add resize listener
-    window.addEventListener('resize', resizeChart);
+    window.addEventListener('resize', resizeCharts);
   });
 
   onDestroy(() => {
-    window.removeEventListener('resize', resizeChart);
+    window.removeEventListener('resize', resizeCharts);
   });
 </script>
 
 <div class="stock-chart-container">
   <div class="chart-header">
-    <h3 class="text-sm font-semibold text-slate-800 mb-4">{companyName} Stock Price History</h3>
+    <h3 class="text-sm font-semibold text-slate-800 mb-2">{companyName} Stock Price History</h3>
   </div>
   
   {#if noDataFound}
@@ -484,6 +662,11 @@
           {/if}
         </div>
       {/if}
+    </div>
+    
+    <!-- Brush chart for date range selection -->
+    <div class="brush-area mt-1">
+      <svg bind:this={brushSvgElement}></svg>
     </div>
     
     <!-- Milestone Legend -->
@@ -589,6 +772,35 @@
   .chart-area svg {
     width: 100%;
     height: 100%;
+  }
+  
+  .brush-area {
+    height: 60px;
+    width: 100%;
+    position: relative;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .brush-area svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Style the brush */
+  :global(.brush rect.selection) {
+    fill: #37587e;
+    fill-opacity: 0.3;
+    stroke: #37587e;
+    stroke-width: 1px;
+  }
+  
+  :global(.brush rect.handle) {
+    fill: #37587e;
+    width: 5px;
+  }
+  
+  :global(.brush .overlay) {
+    cursor: crosshair;
   }
   
   .no-data-message {
@@ -772,5 +984,4 @@
   .after h5 {
     color: #E64A19;
   }
-
 </style>

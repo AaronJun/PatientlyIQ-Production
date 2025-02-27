@@ -9,7 +9,7 @@
     export let company: string = ""; // Company name
     export let color: string = "#37587e"; // Color for styling
 
-    let stockPriceData: any[] = [];
+let stockPriceData: any[] = [];
     let isLoading = true;
     let error: string | null = null;
     let showRPDD = true;
