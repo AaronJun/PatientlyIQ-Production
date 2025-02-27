@@ -16,36 +16,39 @@
     const height = 850;
     const radius = Math.min(width, height) / 2 - 60;
 
-    // Improved label positioning configuration (matching company tree style)
-    const labelConfig = {
-        minRadius: radius * 1.05, // Increased to be outside the outermost stage circle
-        maxRadius: radius * 1.2,  // Allow further positions to avoid overlaps
+  // Improved label positioning configuration
+  const labelConfig = {
+        minRadius: radius * .9825,
+        maxRadius: radius * 1.025,
         padding: 8.25,
-        minAngleDiff: Math.PI / 18, // Minimum angle between labels
+        minAngleDiff: Math.PI / 32, // Minimum angle between labels
         textHeight: 12,
         dotRowHeight: 5,
         maxDotsPerRow: 12
     };
 
+
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
         'PRE': radius * 0.925,
-        'P1': radius * 0.8725,
-        'P1/2': radius * 0.7625,
-        'P2': radius * 0.6425,
+        'P1': radius * 0.8125,
+        'P1/2': radius * 0.725,
+        'P2': radius * 0.625,
         'P3': radius * 0.525,
         'FILED': radius * 0.4125,
-        'APRV': radius * 0.285,
+        'APRV': radius * 0.295,
         'PRV': radius * 0.15
     };
 
     // Stage labels configuration
+
+    // UI Configuration
     const stageLabelConfig = {
-        padding: { x: 6, y: 4 },
-        height: 18,
+        padding: { x: 0, y: 1 },
+        height: 10,
         cornerRadius: 10
     };
-
+    
     const maxLabelWidth = 85;
     const ANGLE_BUFFER = Math.PI / 24;
 
@@ -129,67 +132,106 @@
         }
     }
 
-    function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefined>, 
-                           area: any,
-                           labelPlacement: any) {
-        const { x, y, textAnchor, dx } = labelPlacement;
-        
-        // Create text element
-        const textElement = group.append("text")
-            .attr("text-anchor", textAnchor)
-            .attr("dx", dx)
-            .attr("dy", "0.35em")
-            .text(truncateText(area.area, maxLabelWidth))
-            .attr("fill", "#4A5568")
-            .attr("font-size", "10.25px")
-            .attr("font-weight", "500");
 
-        // Create dots group for drug counts (similar to company tree)
-        const dotsGroup = group.append("g")
-            .attr("class", "area-drugs")
-            .attr("transform", `translate(${dx}, ${labelConfig.textHeight})`);
 
-        const numDrugs = Math.min(area.totalDrugs, 20); // Limit to 20 dots max for visual clarity
-        const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDrugs);
-        const numRows = Math.ceil(numDrugs / dotsPerRow);
+    function calculateOptimalLabelPlacements(areas: any[], areaAngles: Map<string, any>) {
+        const labels: any[] = [];
+        const labelHeight = labelConfig.textHeight + 
+                          Math.ceil(areas[0].totalDrugs / labelConfig.maxDotsPerRow) * labelConfig.dotRowHeight;
 
-        for (let i = 0; i < numDrugs; i++) {
-            const row = Math.floor(i / dotsPerRow);
-            const col = i % dotsPerRow;
-            const x = textAnchor === "start" ? 
-                col * 6 : 
-                -(col * 6);
+        areas.forEach(area => {
+            const angle = areaAngles.get(area.area);
+            const centerAngle = angle.center;
             
-            dotsGroup.append("circle")
-                .attr("r", 2)
-                .attr("stroke", "#161616")
-                .attr("stroke-width", 0.5)
-                .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-                .attr("cy", row * labelConfig.dotRowHeight)
-                .attr("fill", therapeuticAreaColorScale(area.area))
-                .attr("opacity", 0.8);
-        }
+            // Determine if label should be on left or right side
+            const isRightSide = Math.cos(centerAngle - Math.PI/2) > 0;
+            
+            // Calculate initial radius based on angle
+            let baseRadius = labelConfig.minRadius;
+            const labelAngle = centerAngle;
 
-        return { textElement, dotsGroup };
+            // Find a position that doesn't overlap with existing labels
+            let currentRadius = baseRadius;
+            let overlap = true;
+            
+            while (overlap && currentRadius <= labelConfig.maxRadius) {
+                const x = currentRadius * Math.cos(labelAngle - Math.PI/2);
+                const y = currentRadius * Math.sin(labelAngle - Math.PI/2);
+                
+                overlap = labels.some(label => {
+                    const dx = x - label.x;
+                    const dy = y - label.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    return distance < labelHeight * 2;
+                });
+                
+                if (!overlap) {
+                    labels.push({
+                        area: area.area,
+                        x,
+                        y,
+                        angle: labelAngle,
+                        isRightSide
+                    });
+                    break;
+                }
+                
+                currentRadius += labelConfig.padding;
+            }
+        });
+
+        return labels;
     }
 
-    function getLabelPosition(angle: number) {
-        // Calculate optimal position for labels based on their angle
-        const normalizedAngle = ((angle + Math.PI/2) * 180 / Math.PI) % 360;
+   
+
+// Update the createLabelGroup function to properly anchor the labels
+function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefined>, 
+                       area: any,
+                       labelPlacement: any) {
+    const textAnchor = labelPlacement.isRightSide ? "start" : "end";
+    const xOffset = labelPlacement.isRightSide ? 15 : -15;
+    
+    // Create text element
+    const textElement = group.append("text")
+        .attr("text-anchor", textAnchor)
+        .attr("dx", xOffset)
+        .attr("dy", "0.35em")
+        .text(truncateText(area.area, maxLabelWidth))
+        .attr("fill", "#4A5568")
+        .attr("font-size", "9.25px")
+        .attr("font-weight", "500")
+        // Add dominant-baseline for consistent vertical positioning
+        .attr("dominant-baseline", "middle");
+
+    // Create dots group for drug counts (similar to company tree)
+    const dotsGroup = group.append("g")
+        .attr("class", "area-drugs")
+        .attr("transform", `translate(${xOffset}, ${labelConfig.textHeight})`);
+
+    const numDrugs = Math.min(area.totalDrugs, 20); // Limit to 20 dots max for visual clarity
+    const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDrugs);
+    const numRows = Math.ceil(numDrugs / dotsPerRow);
+
+    for (let i = 0; i < numDrugs; i++) {
+        const row = Math.floor(i / dotsPerRow);
+        const col = i % dotsPerRow;
+        const x = textAnchor === "start" ? 
+            col * 6 : 
+            -(col * 6);
         
-        // Determine text-anchor based on angle
-        const textAnchor = (normalizedAngle > 90 && normalizedAngle < 270) ? "end" : "start";
-        
-        // Determine label offset direction
-        const dx = (normalizedAngle > 90 && normalizedAngle < 270) ? -15 : 15;
-        
-        // Calculate position on the circle
-        const labelRadius = radius * 0.9825;
-        const x = labelRadius * Math.cos(angle - Math.PI/2);
-        const y = labelRadius * Math.sin(angle - Math.PI/2);
-        
-        return { x, y, textAnchor, dx };
+        dotsGroup.append("circle")
+            .attr("r", 0)
+            .attr("stroke", "#161616")
+            .attr("stroke-width", 0.5)
+            .attr("cx", x + (textAnchor === "start" ? 3 : -3))
+            .attr("cy", row * labelConfig.dotRowHeight)
+            .attr("fill", therapeuticAreaColorScale(area.area))
+            .attr("opacity", 0.8);
     }
+
+    return { textElement, dotsGroup };
+}
 
     function showTooltip(event: MouseEvent, d: any) {
         const containerRect = svg.getBoundingClientRect();
@@ -214,60 +256,61 @@
     }
     
     function setActiveArea(area, entries) {
-        // Set active area and clear active stage
-        activeArea = area;
-        activeStage = null;
+    // Set active area and clear active stage
+    activeArea = area;
+    activeStage = null;
+    
+    // Reset all area nodes to inactive state
+    d3.selectAll(".area-node")
+        .transition()
+        .duration(200)
+        .attr("width", 7.725)
+        .attr("height", 7.725)
+        .attr("transform", "translate(-5.125, -5.125)");
         
-        // Reset all area nodes to inactive state
-        d3.selectAll(".area-node")
+    d3.selectAll(".area-label text")
+        .transition()
+        .duration(500)
+        .attr("fill", "#4A5568")
+        .attr("font-size", "9.25px")
+        .attr("font-weight", "500");
+        
+    d3.selectAll(".area-drugs circle")
+        .transition()
+        .duration(200)
+        .attr("r", 0)
+        .attr("opacity", 0.8);
+        
+    // Highlight the active area
+    if (area) {
+        const areaId = area.replace(/\s+/g, '-').toLowerCase();
+        
+        // Update node size but maintain center position with adjusted transform
+        d3.select(`#area-node-${areaId}`)
             .transition()
             .duration(200)
-            .attr("width", 7.725)
-            .attr("height", 7.725)
+            .attr("width", 10.25)
+            .attr("height", 10.25)
+            // Important: Adjust the transform to keep the node centered
             .attr("transform", "translate(-5.125, -5.125)");
             
-        d3.selectAll(".area-label text")
+        d3.select(`#area-label-${areaId} text`)
             .transition()
             .duration(500)
-            .attr("text-anchor", "start")
-            .attr("fill", "#4A5568")
-            .attr("font-size", "10.25px")
-            .attr("font-weight", "500");
+            .attr("fill", "#FF4A4A")
+            .attr("font-size", "11px")
+            .attr("font-weight", "800");
             
-        d3.selectAll(".area-drugs circle")
+        d3.select(`#area-label-${areaId} .area-drugs`)
+            .selectAll("circle")
             .transition()
             .duration(200)
-            .attr("r", 2)
-            .attr("opacity", 0.8);
+            .attr("r", 0)
+            .attr("opacity", 1);
             
-        // Highlight the active area
-        if (area) {
-            const areaId = area.replace(/\s+/g, '-').toLowerCase();
-            
-            d3.select(`#area-node-${areaId}`)
-                .transition()
-                .duration(200)
-                .attr("width", 10.25)
-                .attr("height", 10.25)
-                .attr("transform", "translate(-7, -7)");
-                
-            d3.select(`#area-label-${areaId} text`)
-                .transition()
-                .duration(500)
-                .attr("fill", "#FF4A4A")
-                .attr("font-size", "12px")
-                .attr("font-weight", "800");
-                
-            d3.select(`#area-label-${areaId} .area-drugs`)
-                .selectAll("circle")
-                .transition()
-                .duration(200)
-                .attr("r", 3)
-                .attr("opacity", 1);
-                
-            onCompanyHover(entries);
-        }
+        onCompanyHover(entries);
     }
+}
     
     function setActiveStage(stage, entries) {
         // Set active stage and clear active area
@@ -302,7 +345,7 @@
     }
 
     function truncateText(text: string, maxWidth: number) {
-        if (text.length <= maxWidth / 8) return text;
+        if (text.length <= maxWidth / 4) return text;
         return text.slice(0, Math.floor(maxWidth / 8) - 3) + '...';
     }
 
@@ -361,68 +404,6 @@
         });
 
         return angles;
-    }
-
-    function calculateOptimalLabelPlacements(areas: any[], areaAngles: Map<string, any>) {
-        const labels = [];
-        
-        areas.forEach(area => {
-            const angle = areaAngles.get(area.area);
-            const centerAngle = angle.center;
-            
-            // Get label positioning
-            const { x, y, textAnchor, dx } = getLabelPosition(centerAngle);
-            
-            labels.push({
-                area: area.area,
-                x,
-                y,
-                textAnchor,
-                dx,
-                angle: centerAngle
-            });
-        });
-        
-        // Detect and resolve overlaps
-        const labelHeight = labelConfig.textHeight + 
-            Math.ceil(Math.min(20, areas[0].totalDrugs) / labelConfig.maxDotsPerRow) * labelConfig.dotRowHeight;
-            
-        resolveOverlaps(labels, labelHeight);
-        
-        return labels;
-    }
-    
-    function resolveOverlaps(placements, labelHeight) {
-        // Sort by angle for easier adjacent label detection
-        const sortedPlacements = [...placements].sort((a, b) => a.angle - b.angle);
-        
-        for (let i = 0; i < sortedPlacements.length; i++) {
-            const current = sortedPlacements[i];
-            const next = sortedPlacements[(i + 1) % sortedPlacements.length];
-            
-            // Check if labels are too close
-            const angleDiff = Math.abs(current.angle - next.angle);
-            if (angleDiff < labelConfig.minAngleDiff || (2 * Math.PI - angleDiff) < labelConfig.minAngleDiff) {
-                // Find the original indices
-                const currentIndex = placements.findIndex(p => p.area === current.area);
-                const nextIndex = placements.findIndex(p => p.area === next.area);
-                
-                // Adjust position outward
-                const currentRadius = Math.sqrt(current.x * current.x + current.y * current.y);
-                const nextRadius = Math.sqrt(next.x * next.x + next.y * next.y);
-                
-                // Move the label with smaller radius outward
-                if (currentRadius <= nextRadius) {
-                    const newRadius = currentRadius * 1.08;
-                    placements[currentIndex].x = (current.x / currentRadius) * newRadius;
-                    placements[currentIndex].y = (current.y / currentRadius) * newRadius;
-                } else {
-                    const newRadius = nextRadius * 1.08;
-                    placements[nextIndex].x = (next.x / nextRadius) * newRadius;
-                    placements[nextIndex].y = (next.y / nextRadius) * newRadius;
-                }
-            }
-        }
     }
 
     function createVisualization() {
@@ -576,45 +557,45 @@
                     
                     // Drug interactions
                     drugGroup
-                        .on("mouseenter", (event) => {
-                            drugGroup.select("circle")
-                                .transition()
-                                .duration(350)
-                                .attr("r", 10.25)
-                                .attr("stroke-width", 5.25)
-                                .attr("stroke", "#375810")
-                                .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
-                                
-                            if (drug["PRV Issue Year"]) {
-                                drugGroup.select("circle:nth-child(2)")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", 10.25)
-                                    .attr("stroke-width", 3);
-                            };
-                                
-                            showTooltip(event, drug);
-                        })
-                        .on("mouseleave", () => {
-                            drugGroup.select("circle")
+                    .on("mouseenter", (event) => {
+                        drugGroup.select("circle")
+                            .transition()
+                            .duration(200)
+                            .attr("r", 10.25)
+                            .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+
+                        if (drug["PRV Issue Year"]) {
+                            drugGroup.select("circle:last-child")
                                 .transition()
                                 .duration(200)
-                                .attr("r", 7.725)
-                                .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
-                                .attr("stroke", "#565656")
-                                .attr("stroke-width", "1.725px")
-                                .style("filter", "none");
-                                
-                            if (drug["PRV Issue Year"]) {
-                                drugGroup.select("circle:nth-child(2)")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", 11.25)
-                                    .attr("stroke-width", "2");
-                            }
-                            
-                            hideTooltip();
-                        })
+                                .attr("r", 10.25)
+                                .attr("stroke-width", 4.725);
+                        }
+                        showTooltip(event, drug);
+                    })
+
+                    .on("mousemove", (event) => {
+                        // Update tooltip position when mouse moves
+                        showTooltip(event, drug);
+                    })
+                    .on("mouseleave", () => {
+                        drugGroup.select("circle")
+                            .transition()
+                            .duration(200)
+                            .attr("r", 7.725)
+                            .attr("stroke-width", "1.7825px")
+                            .attr("stroke", "#565656")
+                            .style("filter", "none");
+
+                        if (drug["PRV Issue Year"]) {
+                            drugGroup.select("circle:last-child")
+                                .transition()
+                                .duration(200)
+                                .attr("r", 11.25)
+                                .attr("stroke-width", "2px");
+                        }
+                        hideTooltip();
+                    })
                         .on("click", (event) => {
                             // Stop event propagation to prevent it from triggering parent handlers
                             event.stopPropagation();
@@ -715,7 +696,7 @@
 <style>
     .chart-container {
         width: 100%;
-        max-width: 925px;
+        max-width: 1200px;
         margin: 0 auto;
         position: relative;
     }

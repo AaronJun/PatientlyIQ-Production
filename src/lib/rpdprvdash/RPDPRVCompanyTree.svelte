@@ -733,7 +733,7 @@
 <style>
     .chart-container {
         width: 100%;
-        max-width: 925px;
+        max-width: 1200px;
         margin: 0 auto;
         position: relative;
     }
