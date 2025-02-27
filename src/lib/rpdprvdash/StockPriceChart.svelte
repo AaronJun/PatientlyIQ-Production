@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import * as d3 from 'd3';
-  import { format as formatDate } from 'date-fns';
+  import { format } from 'date-fns';
 
   export let companyName: string = '';
   export let stockData: any[] = [];
@@ -10,8 +10,6 @@
 
   let svgElement: SVGElement;
   let brushSvgElement: SVGElement;
-  let chart: d3.Selection<SVGElement, unknown, null, undefined>;
-  let brushChart: d3.Selection<SVGElement, unknown, null, undefined>;
   let chartData: { date: Date, price: number }[] = [];
   let milestones: {
     date: Date,
@@ -38,7 +36,21 @@
   
   // Date range state for brush
   let dateRange: [Date, Date] | null = null;
+  let brushStats: {
+    startDate: Date;
+    endDate: Date;
+    startPrice: number;
+    endPrice: number;
+    change: number;
+    percentChange: number;
+    timespan: { years: number; months: number; days: number; };
+  } | null = null;
   
+  // Format date using date-fns
+  function formatDateStr(date: Date, formatStr: string): string {
+    return format(date, formatStr);
+  }
+
   // Find the closest stock price to a given date
   function findClosestStockPrice(stockData: any[], targetDate: Date) {
     if (!stockData || stockData.length === 0) return null;
@@ -213,8 +225,8 @@
     d3.select(svgElement).selectAll("*").remove();
     
     // Get dimensions
-    const width = svgElement.clientWidth;
-    const height = svgElement.clientHeight;
+    const width = svgElement.clientWidth || 800;
+    const height = svgElement.clientHeight || 300;
     dimensions = { 
       width, 
       height, 
@@ -222,7 +234,7 @@
     };
     
     // Create the SVG container
-    chart = d3.select(svgElement)
+    const chart = d3.select(svgElement)
       .attr("width", width)
       .attr("height", height);
     
@@ -234,6 +246,8 @@
     const filteredData = dateRange 
       ? chartData.filter(d => d.date >= dateRange[0] && d.date <= dateRange[1])
       : chartData;
+    
+    if (filteredData.length === 0) return;
     
     // Create scales
     const xScale = d3.scaleTime()
@@ -286,7 +300,7 @@
       .attr("transform", `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale)
         .ticks(6)
-        .tickFormat(d => formatDate(d as Date, 'MMM yyyy')))
+        .tickFormat(d => formatDateStr(d as Date, 'MMM yyyy')))
       .selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
@@ -493,8 +507,8 @@
     d3.select(brushSvgElement).selectAll("*").remove();
     
     // Get dimensions
-    const width = brushSvgElement.clientWidth;
-    const height = brushSvgElement.clientHeight;
+    const width = brushSvgElement.clientWidth || 800;
+    const height = brushSvgElement.clientHeight || 60;
     brushDimensions = { 
       width, 
       height, 
@@ -502,7 +516,7 @@
     };
     
     // Create the SVG container
-    brushChart = d3.select(brushSvgElement)
+    const brushChart = d3.select(brushSvgElement)
       .attr("width", width)
       .attr("height", height);
     
@@ -556,7 +570,7 @@
       .attr("transform", `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale)
         .ticks(4)
-        .tickFormat(d => formatDate(d as Date, 'yyyy')));
+        .tickFormat(d => formatDateStr(d as Date, 'yyyy')));
     
     // Add brush
     const brush = d3.brushX()
@@ -596,9 +610,51 @@
       const [x0, x1] = event.selection.map(xScale.invert);
       dateRange = [x0, x1];
       
+      // Calculate stats for the brushed area
+      calculateBrushStats(x0, x1);
+      
       // Redraw the main chart with the new date range
       drawChart();
     }
+  }
+  
+  function calculateBrushStats(startDate: Date, endDate: Date) {
+    // Find closest data points to start and end dates
+    const filteredData = chartData.filter(d => d.date >= startDate && d.date <= endDate);
+    
+    if (filteredData.length < 2) {
+      brushStats = null;
+      return;
+    }
+    
+    // Sort by date to ensure correct order
+    filteredData.sort((a, b) => a.date.getTime() - b.date.getTime());
+    
+    const firstPoint = filteredData[0];
+    const lastPoint = filteredData[filteredData.length - 1];
+    
+    // Calculate price change
+    const priceChange = lastPoint.price - firstPoint.price;
+    const percentChange = (priceChange / firstPoint.price) * 100;
+    
+    // Calculate timespan
+    const diffTime = Math.abs(lastPoint.date.getTime() - firstPoint.date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const years = Math.floor(diffDays / 365);
+    const remainingDays = diffDays % 365;
+    const months = Math.floor(remainingDays / 30);
+    const days = remainingDays % 30;
+    
+    brushStats = {
+      startDate: firstPoint.date,
+      endDate: lastPoint.date,
+      startPrice: firstPoint.price,
+      endPrice: lastPoint.price,
+      change: priceChange,
+      percentChange: percentChange,
+      timespan: { years, months, days }
+    };
   }
 
   function resizeCharts() {
@@ -612,7 +668,10 @@
 
   $: if (companyName || stockData || allData) {
     const hasData = processData();
-    if (hasData) {
+    if (hasData && chartData.length >= 2) {
+      // Initialize brush stats with full date range
+      calculateBrushStats(chartData[0].date, chartData[chartData.length - 1].date);
+      
       setTimeout(() => {
         drawChart();
         drawBrushChart();
@@ -622,7 +681,10 @@
 
   onMount(() => {
     const hasData = processData();
-    if (hasData) {
+    if (hasData && chartData.length >= 2) {
+      // Initialize brush stats with full date range
+      calculateBrushStats(chartData[0].date, chartData[chartData.length - 1].date);
+      
       drawChart();
       drawBrushChart();
     }
@@ -655,7 +717,7 @@
           class="tooltip" 
           style="left: {tooltipData.x}px; top: {tooltipData.y}px;"
         >
-          <div class="tooltip-date">{formatDate(tooltipData.date, 'MMM yyyy')}</div>
+          <div class="tooltip-date">{formatDateStr(tooltipData.date, 'MMM yyyy')}</div>
           <div class="tooltip-price">${tooltipData.price.toFixed(2)}</div>
           {#if tooltipData.details}
             <div class="tooltip-details">{tooltipData.details}</div>
@@ -668,6 +730,50 @@
     <div class="brush-area mt-1">
       <svg bind:this={brushSvgElement}></svg>
     </div>
+    
+    <!-- Brush statistics display -->
+    {#if brushStats}
+      <div class="brush-stats">
+        <div class="stats-header">
+          <h3 class="text-xs mb-1 text-slate-500">Selected Period
+            </h3>
+            <h4>
+              <div class="flex w-full justify-between">
+              <span class="date-range">
+                {formatDateStr(brushStats.startDate, 'MMM yyyy')} - {formatDateStr(brushStats.endDate, 'MMM yyyy')}
+              </span>
+            <span class="timespan">
+              ({brushStats.timespan.years > 0 ? `${brushStats.timespan.years}YR ` : ''}
+              {brushStats.timespan.months > 0 ? `${brushStats.timespan.months}MO ` : ''}
+              {brushStats.timespan.days > 0 ? `${brushStats.timespan.days}D` : ''})
+            </span>
+          </div>
+          </h4>
+        </div>
+        <div class="stats-content">
+          <div class="stat-item">
+            <span class="stat-label">Start Price</span>
+            <span class="stat-value">${brushStats.startPrice.toFixed(2)}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">End Price</span>
+            <span class="stat-value">${brushStats.endPrice.toFixed(2)}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Change</span>
+            <span class="stat-value ${brushStats.change >= 0 ? 'positive' : 'negative'}">
+              {brushStats.change >= 0 ? '+' : ''}${brushStats.change.toFixed(2)}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">% Change</span>
+            <span class="stat-value ${brushStats.percentChange >= 0 ? 'positive' : 'negative'}">
+              {brushStats.percentChange >= 0 ? '+' : ''}${brushStats.percentChange.toFixed(2)}%
+            </span>
+          </div>
+        </div>
+      </div>
+    {/if}
     
     <!-- Milestone Legend -->
     {#if milestones.length > 0}
@@ -708,8 +814,8 @@
             <div class="analysis-value">${impactAnalysis.beforeAvg.toFixed(2)}</div>
             <div class="analysis-label">3-month Avg</div>
             <div class="analysis-range">
-              {impactAnalysis.beforeData.length > 0 ? formatDate(impactAnalysis.beforeData[0].date, 'MMM yyyy') : ''} - 
-              {formatDate(selectedMilestone.date, 'MMM yyyy')}
+              {impactAnalysis.beforeData.length > 0 ? formatDateStr(impactAnalysis.beforeData[0].date, 'MMM yyyy') : ''} - 
+              {formatDateStr(selectedMilestone.date, 'MMM yyyy')}
             </div>
           </div>
           
@@ -727,8 +833,8 @@
             <div class="analysis-value">${impactAnalysis.afterAvg.toFixed(2)}</div>
             <div class="analysis-label">3-month Avg</div>
             <div class="analysis-range">
-              {formatDate(selectedMilestone.date, 'MMM yyyy')} - 
-              {impactAnalysis.afterData.length > 0 ? formatDate(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM yyyy') : ''}
+              {formatDateStr(selectedMilestone.date, 'MMM yyyy')} - 
+              {impactAnalysis.afterData.length > 0 ? formatDateStr(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM yyyy') : ''}
             </div>
           </div>
         </div>
@@ -748,7 +854,7 @@
     <!-- Selected Milestone Details -->
     {#if selectedMilestone && !impactAnalysis}
       <div class="milestone-details" style="border-left-color: {selectedMilestone.color}">
-        <p>{formatDate(selectedMilestone.date, 'MMM yyyy')}: {selectedMilestone.details}</p>
+        <p>{formatDateStr(selectedMilestone.date, 'MMM yyyy')}: {selectedMilestone.details}</p>
       </div>
     {/if}
   {/if}
@@ -983,5 +1089,63 @@
   
   .after h5 {
     color: #E64A19;
+  }
+  
+  /* Brush stats styles */
+  .brush-stats {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .stats-header {
+    margin-bottom: 0.5rem;
+  }
+  
+  .stats-header h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  
+  .date-range {
+    font-weight: 700;
+    color: #0f172a;
+  }
+  
+  .timespan {
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-left: 0.25rem;
+  }
+  
+  .stats-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 80px;
+    padding: 0.5rem;
+    border-top: .425px solid #37587e;
+  }
+  
+  .stat-label {
+    font-size: 0.625rem;
+    color: #6b7280;
+    font-weight: 600;
+
+    margin-bottom: 0.25rem;
+  }
+  
+  .stat-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
   }
 </style>
