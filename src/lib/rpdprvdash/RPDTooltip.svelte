@@ -52,7 +52,7 @@
       position: absolute;
       z-index: 1000;
       min-width: 180px;
-      max-width: 280px;
+      max-width: 325px;
       background-color: white;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       border-left: 4.245px solid;

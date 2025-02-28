@@ -3,6 +3,15 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import RPDTooltip from './RPDTooltip.svelte';
+    // Import the color definitions
+    import { 
+        getTherapeuticAreaColor, 
+        getStageColor, 
+        getCompanyStatusColor,
+        therapeuticAreaColors,
+        stageColors,
+        companyStatusColors
+    } from './utils/colorDefinitions';
 
     export let data: any[] = [];
     export let onCompanyHover: (entries: any[]) => void = () => {};
@@ -19,7 +28,7 @@
     // Improved label positioning configuration
     const labelConfig = {
         minRadius: radius * .9825,
-        maxRadius: radius * 1.025,
+        maxRadius: radius * 1.25,
         padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
         textHeight: 12,
@@ -29,7 +38,7 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.925,
+        'PRE': radius * 0.9325,
         'P1': radius * 0.8125,
         'P1/2': radius * 0.725,
         'P2': radius * 0.625,
@@ -62,51 +71,24 @@
     let tooltipY = 0;
     // Tooltip offset from cursor
     const tooltipOffset = { x: 15, y: 15 };
+    // Tooltip timeout for handling stale tooltips
+    let tooltipTimeout = null;
 
-    // Color scales
-    const stageColorScale = d3.scaleOrdinal()
-        .domain(['PRE', 'P1', 'P1/2', 'P2', 'P3', 'APRV', 'PRV'])
-        .range([
-            '#4A5568', // Preclinical 
-            '#60ACA9', // Phase 1
-            '#2B6CB0', // Phase 1/2
-            '#2C5282', // Phase 2
-            '#1A365D', // Phase 3
-            '#48BB78', // Approved
-            '#2F855A'  // PRV
-        ]);
-
-    const therapeuticAreaColorScale = d3.scaleOrdinal()
-        .domain([
-            'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',
-            'Cardiovascular', 'Pulmonology', 'Hematology',
-            'Endocrinology', 'Genetic', 'Immunology',
-            'Gastroenterology', 'Hepatology', 'Dermatology',
-            'Neonatology', 'Urology'
-        ])
-        .range([
-            '#FF6B6B', '#ff1010', '#4ECDC4', '#45B7D1', '#96CEB4',
-            '#FFEEAD', '#D4A5A5', '#9DE0AD',
-            '#FF9F1C', '#2EC4B6', '#E71D36',
-            '#FDFFB6', '#CBE896', '#FFA07A',
-            '#98D8C8', '#B8B8D1'
-        ]);
-
-    const companyStatusColorScale = d3.scaleOrdinal()
-        .domain(['Public', 'Private'])
-        .range(['#4A90E2', '#F5A623']);
+    // Maps for stage and company status codes
+    const stageCodeMap = {
+        'PRE': 'Preclinical',
+        'P1': 'Phase 1',
+        'P1/2': 'Phase 1/2',
+        'P2': 'Phase 2',
+        'P3': 'Phase 3',
+        'FILED': 'Filed',
+        'APRV': 'Approved',
+        'PRV': 'PRV Awarded'
+    };
 
     // Active selection tracking
     let activeCompany = null;
     let activeStage = null;
-
-    function getLabelRadius(angle: number) {
-        const normalizedAngle = ((angle + Math.PI/2) * 180 / Math.PI) % 360;
-        if (normalizedAngle > 90 && normalizedAngle < 270) {
-            return radius * 1.1;
-        }
-        return radius * 0.9725;
-    }
 
     function getStage(entry: any) {
         if (entry["PRV Year"]) return "PRV";
@@ -125,6 +107,10 @@
             case "Approved": return "APRV";
             default: return "PRE";
         }
+    }
+
+    function getStageFullName(stageCode: string): string {
+        return stageCodeMap[stageCode] || stageCode;
     }
 
     function calculateOptimalLabelPlacement(companies: any[], companyAngles: Map<string, any>) {
@@ -201,6 +187,9 @@
         const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDots);
         const numRows = Math.ceil(numDots / dotsPerRow);
 
+        // Get company status color
+        const statusColor = getCompanyStatusColor(company.status);
+
         for (let i = 0; i < numDots; i++) {
             const row = Math.floor(i / dotsPerRow);
             const col = i % dotsPerRow;
@@ -213,7 +202,7 @@
                 .attr("stroke", "#161616")
                 .attr("cx", x+10)
                 .attr("cy", row * labelConfig.dotRowHeight)
-                .attr("fill", company.status === 'Public' ? '#4A90E2' : '#F5A623')
+                .attr("fill", statusColor.fill)
                 .attr("opacity", 0.825);
         }
 
@@ -299,6 +288,17 @@
     }
 
     function showTooltip(event: MouseEvent, d: any, isCompany: boolean = false) {
+        // Clear any existing tooltip timeout
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = null;
+        }
+        
+        // If SVG is not available, don't show tooltip
+        if (!svg) {
+            return;
+        }
+        
         const containerRect = svg.getBoundingClientRect();
         
         // Position the tooltip next to the cursor with offsets
@@ -312,6 +312,13 @@
             tooltipX = event.clientX - containerRect.left - tooltipWidth - tooltipOffset.x;
         }
         
+        // Check if tooltip would go outside bottom edge of container
+        const tooltipHeight = 100; // Approximate height of tooltip
+        if (tooltipY + tooltipHeight > containerRect.height) {
+            // Position tooltip above cursor instead
+            tooltipY = event.clientY - containerRect.top - tooltipHeight - tooltipOffset.y;
+        }
+        
         if (isCompany) {
             tooltipContent = {
                 sponsor: d.company,
@@ -319,22 +326,34 @@
                 therapeuticArea: '',
                 id: `${d.totalDrugs} drugs in pipeline`
             };
-            tooltipBorderColor = companyStatusColorScale(d.status);
+            const statusColor = getCompanyStatusColor(d.status);
+            tooltipBorderColor = statusColor.stroke;
         } else {
             tooltipContent = {
-                sponsor: d.Company,
-                drugName: d.Candidate,
-                therapeuticArea: d.TherapeuticArea1,
+                sponsor: d.Company || '',
+                drugName: d.Candidate || '',
+                therapeuticArea: d.TherapeuticArea1 || '',
                 id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
             };
-            tooltipBorderColor = stageColorScale(getStage(d));
+            const stageCode = getStage(d);
+            const stageFullName = getStageFullName(stageCode);
+            const stageColor = getStageColor(stageFullName);
+            tooltipBorderColor = stageColor.stroke;
         }
         
         tooltipVisible = true;
     }
 
     function hideTooltip() {
-        tooltipVisible = false;
+        // Use a small timeout to prevent the tooltip from flickering when moving between elements
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+        }
+        
+        tooltipTimeout = setTimeout(() => {
+            tooltipVisible = false;
+            tooltipTimeout = null;
+        }, 100);
     }
     
     function setActiveCompany(company, entries) {
@@ -454,10 +473,14 @@
 
     // Create stage circles and labels
     Object.entries(stageRadii).forEach(([stage, radius]) => {
+        // Get the stage color from our color definitions
+        const stageFullName = getStageFullName(stage);
+        const stageColor = getStageColor(stageFullName);
+        
         stagesGroup.append("circle")
             .attr("r", radius)
             .attr("fill", "none")
-            .attr("stroke", stageColorScale(stage))
+            .attr("stroke", stageColor.stroke)
             .attr("stroke-width", 1.425)
             .attr("stroke-dasharray", "1,5")
             .attr("stroke-opacity", 1);
@@ -490,7 +513,7 @@
         labelGroup.append("text")
             .attr("text-anchor", "middle")
             .attr("dy", "0.3em")
-            .attr("fill", stageColorScale(stage))
+            .attr("fill", stageColor.stroke)
             .attr("font-size", "10.25px")
             .attr("font-weight", "400")
             .text(stage);
@@ -498,6 +521,14 @@
         // Add click handler for stage label
         labelGroup.on("click", (event) => {
             event.stopPropagation();
+            
+            // Hide tooltip immediately
+            if (tooltipTimeout) {
+                clearTimeout(tooltipTimeout);
+                tooltipTimeout = null;
+            }
+            tooltipVisible = false;
+            
             const stageEntries = data.filter(entry => getStage(entry) === stage);
             setActiveStage(stage, stageEntries);
         });
@@ -523,6 +554,9 @@
         const nodeX = nodeRadius * Math.cos(nodeAngle - Math.PI/2);
         const nodeY = nodeRadius * Math.sin(nodeAngle - Math.PI/2);
 
+        // Get company status color
+        const statusColor = getCompanyStatusColor(company.status);
+
         // Create company node
         const nodeGroup = companyLabelsGroup.append("g")
             .attr("transform", `translate(${nodeX},${nodeY})`)
@@ -534,8 +568,8 @@
             .attr("width", 7.725)
             .attr("height", 7.725)
             .attr("transform", "translate(-5.125, -5.125)")
-            .attr("fill", companyStatusColorScale(company.status))
-            .attr("stroke", "#375810")
+            .attr("fill", statusColor.fill)
+            .attr("stroke", statusColor.stroke)
             .attr("stroke-width", 0.725)
             .attr("rx", 2);
 
@@ -578,11 +612,14 @@
                     .attr("transform", `translate(${drugX},${drugY})`)
                     .attr("cursor", "pointer");
 
+                // Get therapeutic area color
+                const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
+
                 // Drug circle
                 drugGroup.append("circle")
                     .attr("r", 7.725)
-                    .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
-                    .attr("stroke", "#565656")
+                    .attr("fill", areaColors.fill)
+                    .attr("stroke", areaColors.stroke)
                     .attr("stroke-width", "1.7825px");
 
                 // Add PRV indicator for PRV awarded drugs
@@ -623,7 +660,7 @@
                             .duration(200)
                             .attr("r", 7.725)
                             .attr("stroke-width", "1.7825px")
-                            .attr("stroke", "#565656")
+                            .attr("stroke", areaColors.stroke)
                             .style("filter", "none");
 
                         if (drug["PRV Issue Year"]) {
@@ -635,14 +672,24 @@
                         }
                         hideTooltip();
                     })
-                    .on("click", () => {
+                    .on("click", (event) => {
+                        event.stopPropagation();
+                        
+                        // Force immediate tooltip hiding without delay
+                        if (tooltipTimeout) {
+                            clearTimeout(tooltipTimeout);
+                            tooltipTimeout = null;
+                        }
+                        tooltipVisible = false;
+                        
                         onShowDrugDetail({
                             drugName: drug.Candidate,
                             year: drug["PRV Year"] || drug["RPDD Year"],
                             Company: drug.Company,
                             therapeuticArea: drug.TherapeuticArea1,
                             entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
-                            color: therapeuticAreaColorScale(drug.TherapeuticArea1),
+                            color: areaColors.fill,
+                            strokeColor: areaColors.stroke,
                             currentStage: drug["Current Development Stage"],
                             indication: drug.Indication || "",
                             rpddAwardDate: drug["RPDD Year"],
@@ -675,12 +722,22 @@
             }, true);
         };
 
-        const handleClick = () => {
-            hideTooltip();
+        const handleClick = (event) => {
+            // Stop event propagation to prevent background click handler from firing
+            event.stopPropagation();
+            
+            // Force immediate tooltip hiding without delay
+            if (tooltipTimeout) {
+                clearTimeout(tooltipTimeout);
+                tooltipTimeout = null;
+            }
+            tooltipVisible = false;
+            
             onShowCompanyDetail({
                 Company: company.company,
                 entries: company.entries,
-                color: '#37587e'
+                color: statusColor.fill,
+                strokeColor: statusColor.stroke
             });
         };
 
@@ -699,8 +756,14 @@
         if (event.target === svg) {
             activeCompany = null;
             activeStage = null;
+            hideTooltip(); // Ensure tooltip is hidden when clicking on background
             onLeave();
         }
+    });
+    
+    // Add event listeners to handle tooltip when mouse leaves SVG
+    svgElement.on("mouseleave", () => {
+        hideTooltip();
     });
 }
 
@@ -708,6 +771,16 @@
     $: if (data.length > 0 && svg) {
         createVisualization();
     }
+    
+    // Clean up tooltip when component is destroyed
+    onMount(() => {
+        return () => {
+            if (tooltipTimeout) {
+                clearTimeout(tooltipTimeout);
+                tooltipTimeout = null;
+            }
+        };
+    });
 </script>
 
 <div class="chart-container">

@@ -1,4 +1,4 @@
-<!-- CompanyMetricsList.svelte -->
+<!-- rpdprvdash/sidebarComponents/CompanyMetricsList.svelte -->
 <script>
     // Company metrics data
     import "carbon-components-svelte/css/all.css";

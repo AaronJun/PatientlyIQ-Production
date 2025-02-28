@@ -3,6 +3,18 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import RPDTooltip from './RPDTooltip.svelte';
+    
+    // Import color definitions from the centralized file
+    import { 
+        therapeuticAreaColors, 
+        stageColors, 
+        getTherapeuticAreaColor, 
+        getStageColor,
+        getTherapeuticAreaFill,
+        getTherapeuticAreaStroke,
+        getStageFill,
+        getStageStroke
+    } from './utils/colorDefinitions';
 
     export let data: any[] = [];
     export let onCompanyHover: (entries: any[]) => void = () => {};
@@ -16,10 +28,10 @@
     const height = 850;
     const radius = Math.min(width, height) / 2 - 60;
 
-  // Improved label positioning configuration
-  const labelConfig = {
+    // Improved label positioning configuration
+    const labelConfig = {
         minRadius: radius * .9825,
-        maxRadius: radius * 1.025,
+        maxRadius: radius * 1,
         padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
         textHeight: 12,
@@ -27,10 +39,9 @@
         maxDotsPerRow: 12
     };
 
-
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.925,
+        'PRE': radius * 0.9325,
         'P1': radius * 0.8125,
         'P1/2': radius * 0.725,
         'P2': radius * 0.625,
@@ -39,8 +50,6 @@
         'APRV': radius * 0.295,
         'PRV': radius * 0.15
     };
-
-    // Stage labels configuration
 
     // UI Configuration
     const stageLabelConfig = {
@@ -63,40 +72,12 @@
     let tooltipBorderColor = '';
     let tooltipX = 0;
     let tooltipY = 0;
+    // Tooltip offset from cursor
+    const tooltipOffset = { x: 15, y: 15 };
     
     // Track active selections
     let activeArea = null;
     let activeStage = null;
-
-    // Stage color scale
-    const stageColorScale = d3.scaleOrdinal()
-        .domain(['PRE', 'P1', 'P1/2', 'P2', 'P3', 'APRV', 'PRV'])
-        .range([
-            '#4A5568', // Preclinical - slate
-            '#60ACA9', // Phase 1 - blue
-            '#2B6CB0', // Phase 1/2 - darker blue
-            '#2C5282', // Phase 2 - even darker blue
-            '#1A365D', // Phase 3 - darkest blue
-            '#48BB78', // FDA Approved - green
-            '#2F855A'  // PRV Awarded - darker green
-        ]);
-
-    // Therapeutic area color scale
-    const therapeuticAreaColorScale = d3.scaleOrdinal()
-        .domain([
-            'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
-            'Cardiovascular', 'Pulmonology', 'Hematology',
-            'Endocrinology', 'Genetic', 'Immunology',
-            'Gastroenterology', 'Hepatology', 'Dermatology',
-            'Neonatology', 'Urology'
-        ])
-        .range([
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-            '#FFEEAD', '#D4A5A5', '#9DE0AD',
-            '#FF9F1C', '#2EC4B6', '#E71D36',
-            '#FDFFB6', '#CBE896', '#FFA07A',
-            '#98D8C8', '#B8B8D1'
-        ]);
 
     function getStage(entry: any) {
         // Check for PRV status first
@@ -131,8 +112,6 @@
                 return "PRE";
         }
     }
-
-
 
     function calculateOptimalLabelPlacements(areas: any[], areaAngles: Map<string, any>) {
         const labels: any[] = [];
@@ -183,70 +162,79 @@
         return labels;
     }
 
-   
-
-// Update the createLabelGroup function to properly anchor the labels
-function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefined>, 
-                       area: any,
-                       labelPlacement: any) {
-    const textAnchor = labelPlacement.isRightSide ? "start" : "end";
-    const xOffset = labelPlacement.isRightSide ? 15 : -15;
-    
-    // Create text element
-    const textElement = group.append("text")
-        .attr("text-anchor", textAnchor)
-        .attr("dx", xOffset)
-        .attr("dy", "0.35em")
-        .text(truncateText(area.area, maxLabelWidth))
-        .attr("fill", "#4A5568")
-        .attr("font-size", "9.25px")
-        .attr("font-weight", "500")
-        // Add dominant-baseline for consistent vertical positioning
-        .attr("dominant-baseline", "middle");
-
-    // Create dots group for drug counts (similar to company tree)
-    const dotsGroup = group.append("g")
-        .attr("class", "area-drugs")
-        .attr("transform", `translate(${xOffset}, ${labelConfig.textHeight})`);
-
-    const numDrugs = Math.min(area.totalDrugs, 20); // Limit to 20 dots max for visual clarity
-    const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDrugs);
-    const numRows = Math.ceil(numDrugs / dotsPerRow);
-
-    for (let i = 0; i < numDrugs; i++) {
-        const row = Math.floor(i / dotsPerRow);
-        const col = i % dotsPerRow;
-        const x = textAnchor === "start" ? 
-            col * 6 : 
-            -(col * 6);
+    // Update the createLabelGroup function to properly anchor the labels
+    function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefined>, 
+                           area: any,
+                           labelPlacement: any) {
+        const textAnchor = labelPlacement.isRightSide ? "start" : "end";
+        const xOffset = labelPlacement.isRightSide ? 15 : -15;
         
-        dotsGroup.append("circle")
-            .attr("r", 0)
-            .attr("stroke", "#161616")
-            .attr("stroke-width", 0.5)
-            .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-            .attr("cy", row * labelConfig.dotRowHeight)
-            .attr("fill", therapeuticAreaColorScale(area.area))
-            .attr("opacity", 0.8);
+        // Create text element
+        const textElement = group.append("text")
+            .attr("text-anchor", textAnchor)
+            .attr("dx", xOffset)
+            .attr("dy", "0.35em")
+            .text(truncateText(area.area, maxLabelWidth))
+            .attr("fill", "#4A5568")
+            .attr("font-size", "9.25px")
+            .attr("font-weight", "500")
+            // Add dominant-baseline for consistent vertical positioning
+            .attr("dominant-baseline", "middle");
+
+        // Create dots group for drug counts (similar to company tree)
+        const dotsGroup = group.append("g")
+            .attr("class", "area-drugs")
+            .attr("transform", `translate(${xOffset}, ${labelConfig.textHeight})`);
+
+        const numDrugs = Math.min(area.totalDrugs, 20); // Limit to 20 dots max for visual clarity
+        const dotsPerRow = Math.min(labelConfig.maxDotsPerRow, numDrugs);
+        const numRows = Math.ceil(numDrugs / dotsPerRow);
+
+        for (let i = 0; i < numDrugs; i++) {
+            const row = Math.floor(i / dotsPerRow);
+            const col = i % dotsPerRow;
+            const x = textAnchor === "start" ? 
+                col * 6 : 
+                -(col * 6);
+            
+            dotsGroup.append("circle")
+                .attr("r", 0)
+                .attr("stroke", "#161616")
+                .attr("stroke-width", 0.5)
+                .attr("cx", x + (textAnchor === "start" ? 3 : -3))
+                .attr("cy", row * labelConfig.dotRowHeight)
+                .attr("fill", getTherapeuticAreaFill(area.area))
+                .attr("stroke", getTherapeuticAreaStroke(area.area))
+                .attr("stroke-width", 1)
+                .attr("opacity", 0.8);
+        }
+
+        return { textElement, dotsGroup };
     }
 
-    return { textElement, dotsGroup };
-}
-
-    function showTooltip(event: MouseEvent, d: any) {
+    function showTooltip(event: MouseEvent, d: any, isCompany: boolean = false) {
         const containerRect = svg.getBoundingClientRect();
-        tooltipX = event.pageX - containerRect.left;
-        tooltipY = event.pageY - containerRect.top;
+        
+        // Position the tooltip next to the cursor with offsets
+        tooltipX = event.clientX - containerRect.left + tooltipOffset.x;
+        tooltipY = event.clientY - containerRect.top + tooltipOffset.y;
+        
+        // Check if tooltip would go outside right edge of container
+        const tooltipWidth = 200; // Approximate width of tooltip
+        if (tooltipX + tooltipWidth > containerRect.width) {
+            // Position tooltip to the left of cursor instead
+            tooltipX = event.clientX - containerRect.left - tooltipWidth - tooltipOffset.x;
+        }
         
         tooltipContent = {
-            sponsor: d.Company || "Overview",
+            sponsor: d.Company ||  d.TherapeuticArea1 || d.area,
             drugName: d.Candidate || `${d.count} drugs`,
             therapeuticArea: d.TherapeuticArea1 || d.area,
             id: d["Current Development Stage"] || "Various Stages"
         };
         tooltipBorderColor = d.Company ? 
-            stageColorScale(getStage(d)) : 
-            therapeuticAreaColorScale(d.area || d.TherapeuticArea1);
+            getStageStroke(getStage(d)) : 
+            getTherapeuticAreaStroke(d.area || d.TherapeuticArea1);
         
         tooltipVisible = true;
     }
@@ -256,61 +244,58 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
     }
     
     function setActiveArea(area, entries) {
-    // Set active area and clear active stage
-    activeArea = area;
-    activeStage = null;
-    
-    // Reset all area nodes to inactive state
-    d3.selectAll(".area-node")
-        .transition()
-        .duration(200)
-        .attr("width", 7.725)
-        .attr("height", 7.725)
-        .attr("transform", "translate(-5.125, -5.125)");
+        // Set active area and clear active stage
+        activeArea = area;
+        activeStage = null;
         
-    d3.selectAll(".area-label text")
-        .transition()
-        .duration(500)
-        .attr("fill", "#4A5568")
-        .attr("font-size", "9.25px")
-        .attr("font-weight", "500");
-        
-    d3.selectAll(".area-drugs circle")
-        .transition()
-        .duration(200)
-        .attr("r", 0)
-        .attr("opacity", 0.8);
-        
-    // Highlight the active area
-    if (area) {
-        const areaId = area.replace(/\s+/g, '-').toLowerCase();
-        
-        // Update node size but maintain center position with adjusted transform
-        d3.select(`#area-node-${areaId}`)
+        // Reset all area nodes to inactive state
+        d3.selectAll(".area-node")
             .transition()
             .duration(200)
-            .attr("width", 10.25)
-            .attr("height", 10.25)
-            // Important: Adjust the transform to keep the node centered
-            .attr("transform", "translate(-5.125, -5.125)");
+            .attr("width", 7.725)
+            .attr("height", 7.725);
             
-        d3.select(`#area-label-${areaId} text`)
+        d3.selectAll(".area-label text")
             .transition()
             .duration(500)
-            .attr("fill", "#FF4A4A")
-            .attr("font-size", "11px")
-            .attr("font-weight", "800");
+            .attr("fill", "#4A5568")
+            .attr("font-size", "9.25px")
+            .attr("font-weight", "500");
             
-        d3.select(`#area-label-${areaId} .area-drugs`)
-            .selectAll("circle")
+        d3.selectAll(".area-drugs circle")
             .transition()
             .duration(200)
             .attr("r", 0)
-            .attr("opacity", 1);
+            .attr("opacity", 0.8);
             
-        onCompanyHover(entries);
+        // Highlight the active area
+        if (area) {
+            const areaId = area.replace(/\s+/g, '-').toLowerCase();
+            
+            // Update node size but maintain center position with adjusted transform
+            d3.select(`#area-node-${areaId}`)
+                .transition()
+                .duration(200)
+                .attr("width", 10.25)
+                .attr("height", 10.25);
+                
+            d3.select(`#area-label-${areaId} text`)
+                .transition()
+                .duration(500)
+                .attr("fill", "#FF4A4A")
+                .attr("font-size", "11px")
+                .attr("font-weight", "800");
+                
+            d3.select(`#area-label-${areaId} .area-drugs`)
+                .selectAll("circle")
+                .transition()
+                .duration(200)
+                .attr("r", 0)
+                .attr("opacity", 1);
+                
+            onCompanyHover(entries);
+        }
     }
-}
     
     function setActiveStage(stage, entries) {
         // Set active stage and clear active area
@@ -425,7 +410,7 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
             stagesGroup.append("circle")
                 .attr("r", radius)
                 .attr("fill", "none")
-                .attr("stroke", stageColorScale(stage))
+                .attr("stroke", getStageStroke(stage))
                 .attr("stroke-width", 1.425)
                 .attr("stroke-dasharray", "1,5")
                 .attr("stroke-opacity", 1);
@@ -462,7 +447,7 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
             labelGroup.append("text")
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.3em")
-                .attr("fill", stageColorScale(stage))
+                .attr("fill", getStageStroke(stage))
                 .attr("font-size", "9.425px")
                 .attr("font-weight", "400")
                 .text(stage);
@@ -502,15 +487,14 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
                 .attr("id", `area-label-${areaId}`);
 
             // Area node rectangle at label position
-            nodeGroup.append("rect")
+            nodeGroup.append("circle")
                 .attr("class", "area-node")
                 .attr("id", `area-node-${areaId}`)
-                .attr("width", 7.725)
-                .attr("height", 7.725)
-                .attr("transform", "translate(-5.125, -5.125)")
+                .attr("r", 2.725)
                 .attr("stroke", "#565656")
-                .attr("fill", therapeuticAreaColorScale(area.area))
-                .attr("stroke-width", 1.25);
+                .attr("fill", getTherapeuticAreaFill(area.area))
+                .attr("stroke", getTherapeuticAreaStroke(area.area))
+                .attr("stroke-width", 1);
 
             // Create the label group with text and dots
             createLabelGroup(nodeGroup, area, labelPlacement);
@@ -528,7 +512,7 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
                     linesGroup.append("path")
                         .attr("d", `M${labelX},${labelY}L${drugX},${drugY}`)
                         .attr("stroke", "#37587e")
-                        .attr("stroke-width", .725)
+                        .attr("stroke-width", .425)
                         .attr("stroke-opacity", 0.825)
                         .attr("fill", "none");
                         
@@ -541,9 +525,9 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
                     // Drug circle
                     drugGroup.append("circle")
                         .attr("r", 7.725)
-                        .attr("fill", therapeuticAreaColorScale(drug.TherapeuticArea1))
-                        .attr("stroke", "#565656")
-                        .attr("stroke-width", "1.725px");
+                        .attr("fill", getTherapeuticAreaFill(drug.TherapeuticArea1))
+                        .attr("stroke", getTherapeuticAreaStroke(drug.TherapeuticArea1))
+                        .attr("stroke-width", 2.125);
                         
                     // Add PRV indicator for PRV awarded drugs
                     if (drug["PRV Issue Year"]) {
@@ -583,8 +567,8 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
                             .transition()
                             .duration(200)
                             .attr("r", 7.725)
-                            .attr("stroke-width", "1.7825px")
-                            .attr("stroke", "#565656")
+                            .attr("stroke-width", 2)
+                            .attr("stroke", getTherapeuticAreaStroke(drug.TherapeuticArea1))
                             .style("filter", "none");
 
                         if (drug["PRV Issue Year"]) {
@@ -607,7 +591,7 @@ function createLabelGroup(group: d3.Selection<SVGGElement, unknown, null, undefi
                                 Company: drug.Company,
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(entry => entry.TherapeuticArea1 === drug.TherapeuticArea1),
-                                color: therapeuticAreaColorScale(drug.TherapeuticArea1),
+                                color: getTherapeuticAreaStroke(drug.TherapeuticArea1),
                                 currentStage: drug["Current Development Stage"] || "TBD",
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
