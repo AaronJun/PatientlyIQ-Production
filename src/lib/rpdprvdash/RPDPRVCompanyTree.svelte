@@ -28,7 +28,7 @@
     // Improved label positioning configuration
     const labelConfig = {
         minRadius: radius * .9825,
-        maxRadius: radius * 1.25,
+        maxRadius: radius * 1,
         padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
         textHeight: 12,
@@ -175,7 +175,7 @@
             .attr("dy", "0.35em")
             .text(company.company)
             .attr("fill", "#4A5568")
-            .attr("font-size", "10.25px")
+            .attr("font-size", "9.25px")
             .attr("font-weight", "500");
 
         // Create dots group with improved positioning
@@ -373,7 +373,7 @@
             .transition()
             .duration(500)
             .attr("fill", "#4A5568")
-            .attr("font-size", "10.25px")
+            .attr("font-size", "9.25px")
             .attr("font-weight", "500");
             
         d3.selectAll(".pipeline-dots circle")
@@ -385,27 +385,12 @@
         // Highlight the active company
         if (company) {
             const companyId = company.replace(/\s+/g, '-').toLowerCase();
-            
-            d3.select(`#company-node-${companyId} rect`)
-                .transition()
-                .duration(200)
-                .attr("width", "14.25")
-                .attr("height", "14.25")
-                .attr("transform", "translate(-7.125, -7.125)");
                 
             d3.select(`#company-label-${companyId} text`)
                 .transition()
                 .duration(500)
-                .attr("fill", "#FF4A4A")
-                .attr("font-size", "12px")
                 .attr("font-weight", "800");
                 
-            d3.select(`#company-label-${companyId} .pipeline-dots`)
-                .selectAll("circle")
-                .transition()
-                .duration(200)
-                .attr("r", 0)
-                .attr("opacity", 1);
                 
             // Find company data for this company
             const companyData = processDataForLayout(data).find(c => c.company === company);
@@ -514,7 +499,7 @@
             .attr("text-anchor", "middle")
             .attr("dy", "0.3em")
             .attr("fill", stageColor.stroke)
-            .attr("font-size", "10.25px")
+            .attr("font-size", "9.25px")
             .attr("font-weight", "400")
             .text(stage);
             
