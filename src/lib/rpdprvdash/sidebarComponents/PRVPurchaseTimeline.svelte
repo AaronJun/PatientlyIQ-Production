@@ -1,52 +1,91 @@
-<!-- RPDPRVVerticalTimeline.svelte -->
+<!-- PRVPurchaseTimeline.svelte - Timeline focused on transaction values by year -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import { getTherapeuticAreaColor } from './utils/colorDefinitions';
+    import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string | null = null;
+export let transactionYearSelected: (year: string) => void = () => {};
     
     let svg: SVGElement;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const width = 120;
     const height = 600;
+
+    // Process data to filter for purchases with transaction values
+    $: purchaseData = data.filter(entry => entry.Purchased === "Y" && entry["Purchase Year"]);
     
+    // Process data to group by purchase year
     $: yearData = Object.entries(
-        data.reduce((acc, entry) => {
-            const year = entry["PRV Issue Year"] || entry["RPDD Year"];
+        purchaseData.reduce((acc, entry) => {
+            const year = entry["Purchase Year"];
             if (!year) return acc;
+            
+            // Parse sale price
+            let salePrice = 0;
+            if (entry["Sale Price (USD Millions)"] && entry["Sale Price (USD Millions)"] !== "Undisclosed") {
+                salePrice = parseFloat(entry["Sale Price (USD Millions)"]);
+            }
             
             if (!acc[year]) {
                 acc[year] = {
                     count: 0,
+                    totalValue: 0,
                     areas: {}
                 };
             }
             acc[year].count += 1;
+            acc[year].totalValue += salePrice;
+            
             const area = entry.TherapeuticArea1;
             if (area) {
-                acc[year].areas[area] = (acc[year].areas[area] || 0) + 1;
+                if (!acc[year].areas[area]) {
+                    acc[year].areas[area] = {
+                        count: 0,
+                        value: 0
+                    };
+                }
+                acc[year].areas[area].count += 1;
+                acc[year].areas[area].value += salePrice;
             }
             return acc;
-        }, {} as Record<string, { count: number; areas: Record<string, number> }>)
+        }, {} as Record<string, { 
+            count: number; 
+            totalValue: number;
+            areas: Record<string, { count: number; value: number }> 
+        }>)
     )
-    .map(([year, data]) => ({
-        year,
-        count: data.count,
-        areas: Object.entries(data.areas)
-            .map(([area, count]) => ({
+    .map(([year, data]) => {
+        // Calculate area percentages based on value
+        const areaEntries = Object.entries(data.areas)
+            .map(([area, stats]) => ({
                 area,
-                count,
-                percentage: count / data.count
+                count: stats.count,
+                value: stats.value,
+                percentage: data.totalValue > 0 ? stats.value / data.totalValue : stats.count / data.count
             }))
-            .sort((a, b) => b.percentage - a.percentage)
-    }))
+            .sort((a, b) => b.value - a.value);
+            
+        return {
+            year,
+            count: data.count,
+            totalValue: data.totalValue,
+            areas: areaEntries
+        };
+    })
     .sort((a, b) => a.year.localeCompare(b.year));
 
     function createGradientId(year: string): string {
-        return `gradient-${year}`;
+        return `purchase-gradient-${year}`;
+    }
+
+    function formatCurrency(value: number): string {
+        if (value >= 1000) {
+            return `$${(value / 1000).toFixed(1)}B`;
+        }
+        return `$${value.toFixed(0)}M`;
     }
 
     function createVisualization() {
@@ -64,9 +103,10 @@
             .range([margin.top, innerHeight])
             .padding(0.5);
 
+        // Scale for circle radius based on total transaction value
         const radiusScale = d3.scaleSqrt()
-            .domain([0, d3.max(yearData, d => d.count) || 0])
-        .range([4, 20]);
+            .domain([0, d3.max(yearData, d => d.totalValue) || 1])
+            .range([2, 16]);
 
         const g = svgElement.append("g")
             .attr("transform", `translate(${margin.left},0)`);
@@ -99,7 +139,7 @@
 
         // Create glow filter
         const filter = defs.append("filter")
-            .attr("id", "glow")
+            .attr("id", "purchase-glow")
             .attr("x", "-50%")
             .attr("y", "-50%")
             .attr("width", "400%")
@@ -135,23 +175,24 @@
         // Add highlight circles
         yearGroups.append("circle")
             .attr("class", "highlight-circle")
-            .attr("r", d => radiusScale(d.count) + 4)
+            .attr("r", d => radiusScale(d.totalValue) + 4)
             .attr("fill", "none")
-            .attr("stroke", "#4fd1c5")
+            .attr("stroke", "#FF9F1C") // Using orange for purchase highlight
             .attr("stroke-width", 5)
             .attr("opacity", 0);
 
         // Add main circles
         yearGroups.append("circle")
             .attr("class", "year-circle")
-            .attr("r", d => radiusScale(d.count))
+            .attr("r", d => radiusScale(d.totalValue))
             .attr("fill", d => `url(#${createGradientId(d.year)})`)
-            .attr("stroke", "#37587e")
+            .attr("stroke", "#565656")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
             .on("click", (event, d) => {
                 selectedYear = d.year;
                 onYearSelect(d.year);
+                transactionYearSelected(d.year);
                 updateSelection();
             })
             .on("mouseenter", function(event, d) {
@@ -166,20 +207,27 @@
                         .transition()
                         .duration(200)
                         .attr("stroke-width", 2)
-                        .style("filter", "url(#glow)");
+                        .style("filter", "url(#purchase-glow)");
 
                     d3.select(this.parentNode)
                         .select(".year-label")
                         .transition()
                         .duration(200)
                         .attr("font-weight", "600")
-                        .attr("fill", "#FF1515");
+                        .attr("fill", "#FF9F1C");
                         
                     d3.select(this.parentNode)
                         .select(".count-label")
                         .transition()
                         .duration(200)
                         .attr("opacity", 1);
+                        
+                    d3.select(this.parentNode)
+                        .select(".value-label")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 1)
+                        .attr("font-size", "8.725px");
                 }
             })
             .on("mouseleave", function(event, d) {
@@ -208,13 +256,20 @@
                         .transition()
                         .duration(200)
                         .attr("opacity", 0.6);
+                        
+                    d3.select(this.parentNode)
+                        .select(".value-label")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 0.6)
+                        .attr("font-size", "0px");
                 }
             });
 
         // Add year labels
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0) - 12)
+            .attr("x", -radiusScale(d3.max(yearData, d => d.totalValue) || 0) - 12)
             .attr("y", 4) // Center vertically
             .attr("text-anchor", "end")
             .attr("fill", "#718096")
@@ -223,18 +278,31 @@
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
 
-        // Add count labels
+        // Add count labels (showing number of transactions)
         yearGroups.append("text")
             .attr("class", "count-label")
-            .attr("x", radiusScale(d3.max(yearData, d => d.count) || 0) + 12)
-            .attr("y", 4) // Center vertically
+            .attr("x", radiusScale(d3.max(yearData, d => d.totalValue) || 0) + 12)
+            .attr("y", 0) // Center vertically
             .attr("text-anchor", "start")
             .attr("fill", "#4a5568")
-            .attr("font-size", "0px")
+            .attr("font-size", "10px")
             .attr("opacity", 0.6)
             .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")
-            .text(d => d.count);
+            .text(d => `${d.count} PRV${d.count > 1 ? 's' : ''}`);
+            
+        // Add value labels (showing transaction value)
+        yearGroups.append("text")
+            .attr("class", "value-label")
+            .attr("x", radiusScale(d3.max(yearData, d => d.totalValue) || 0) + 12)
+            .attr("y", 12) // Below the count label
+            .attr("text-anchor", "start")
+            .attr("fill", "#FF9F1C")
+            .attr("font-size", "0px") // Start with size 0, will grow on hover
+            .attr("opacity", 0.6)
+            .style("dominant-baseline", "middle")
+            .style("font-family", "'IBM Plex Mono', monospace")
+            .text(d => formatCurrency(d.totalValue));
 
         updateSelection();
     }
@@ -257,19 +325,26 @@
                     .transition()
                     .duration(300)
                     .attr("stroke-width", isSelected ? 3 : 1.5)
-                    .style("filter", isSelected ? "url(#glow)" : "none");
+                    .style("filter", isSelected ? "url(#purchase-glow)" : "none");
 
                 group.select(".year-label")
                     .transition()
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
-                    .attr("fill", isSelected ? "#FF1515" : "#718096");
+                    .attr("fill", isSelected ? "#FF9F1C" : "#718096");
 
                 group.select(".count-label")
                     .transition()
                     .duration(300)
                     .attr("opacity", isSelected ? 1 : 0.6)
-                    .attr("fill", isSelected ? "#FF1010" : "#4a5568");
+                    .attr("fill", isSelected ? "#4a5568" : "#4a5568");
+                    
+                group.select(".value-label")
+                    .transition()
+                    .duration(300)
+                    .attr("opacity", isSelected ? 1 : 0.6)
+                    .attr("font-size", isSelected ? "9px" : "0px")
+                    .attr("fill", isSelected ? "#FF9F1C" : "#FF9F1C");
             });
     }
 
@@ -280,12 +355,12 @@
 
 <div class="timeline-container">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-        <div class="w-2 h-2 rounded-full bg-emerald-600" />               
+        <div class="w-2 h-2 rounded-full bg-amber-500" />               
           <h4 class="text-xs/snug uppercase font-base">
-            Select Year              
+            Voucher Purchases by Year             
             </h4>
     </div>    
-        <svg
+    <svg
         bind:this={svg}
         {width}
         {height}
@@ -304,16 +379,6 @@
         position: relative;
     }
     
-    .timeline-header {
-        font-size: 12px;
-        font-weight: 600;
-        color: #4a5568;
-        text-transform: uppercase;
-        margin-bottom: 0.5rem;
-        text-align: center;
-        letter-spacing: 0.05em;
-    }
-
     :global(.year-group) {
         transition: all 0.3s ease;
     }

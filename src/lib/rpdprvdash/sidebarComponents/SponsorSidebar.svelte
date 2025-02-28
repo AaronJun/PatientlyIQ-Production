@@ -2,6 +2,7 @@
 <script lang="ts">
     import DrugEntryCard from './DrugEntryCard.svelte';
     import CompanyMetricsList from './CompanyMetricsList.svelte';
+    import RPDSummaryView from './RPDSummaryView.svelte';
     import { getTherapeuticAreaStroke } from '../utils/colorDefinitions';
     
     export let currentView = null;
@@ -9,6 +10,8 @@
     export let currentCompanyMetrics = null;
     export let colorMap = {}; // Kept for backward compatibility
     export let onShowDrugDetail = (details) => {};
+    export let fullYearData = []; // All data for the selected year
+    export let selectedYear = "";
     
     // Handle drug card click by formulating the appropriate detail object
     function handleDrugClick(entry) {
@@ -57,6 +60,9 @@
               {getStageSummary()}
             </p>
           </div>
+        {:else if fullYearData.length > 0}
+          <!-- Display year summary when no specific selection is made -->
+          <RPDSummaryView data={fullYearData} year={selectedYear} />
         {/if}
       </div>
       
@@ -70,7 +76,7 @@
               {colorMap}
             />
           {/each}
-        {:else}
+        {:else if fullYearData.length === 0}
           <div class="text-center py-8 text-slate-500">
             <p>Select a company or stage to view drugs</p>
             <p class="text-xs mt-2">Hover over elements in the visualization</p>

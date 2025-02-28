@@ -449,8 +449,46 @@
     const svgElement = d3.select(svg);
     svgElement.selectAll("*").remove();
 
-    const mainGroup = svgElement.append("g")
-        .attr("transform", `translate(${width/2},${height/2})`);
+          // Create drop shadow filter
+          const defs = svgElement.append("defs");
+        
+        // Create drop shadow filter with proper rounded edges
+        const dropShadow = defs.append("filter")
+            .attr("id", "dropshadow")
+            .attr("width", "200%")
+            .attr("height", "200%")
+            .attr("x", "-100%")
+            .attr("y", "-100%")
+            .attr("filterUnits", "userSpaceOnUse");
+        
+        // Create a shadow using blur and offset
+        dropShadow.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 2.5)
+            .attr("result", "blur");
+            
+        dropShadow.append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 1.25)
+            .attr("dy", 1.5)
+            .attr("result", "offsetBlur");
+            
+        // Apply color to the shadow
+        dropShadow.append("feColorMatrix")
+            .attr("in", "offsetBlur")
+            .attr("type", "matrix")
+            .attr("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0")
+            .attr("result", "shadowMatrixOut");
+        
+        // Create a composite of the original shape for proper rounded edges
+        const feMerge = dropShadow.append("feMerge");
+        feMerge.append("feMergeNode")
+            .attr("in", "shadowMatrixOut");
+        feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+
+        const mainGroup = svgElement.append("g")
+            .attr("transform", `translate(${width/2},${height/2})`);
 
     const linesGroup = mainGroup.append("g").attr("class", "connecting-lines");
     const stagesGroup = mainGroup.append("g").attr("class", "stage-circles");
@@ -605,7 +643,8 @@
                     .attr("r", 7.725)
                     .attr("fill", areaColors.fill)
                     .attr("stroke", areaColors.stroke)
-                    .attr("stroke-width", "1.7825px");
+                    .attr("stroke-width", 3.125)
+                    .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
 
                 // Add PRV indicator for PRV awarded drugs
                 if (drug["PRV Issue Year"]) {
@@ -624,7 +663,7 @@
                             .transition()
                             .duration(200)
                             .attr("r", 10.25)
-                            .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+                            .style("filter","url(#dropshadow)");
 
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
@@ -644,9 +683,9 @@
                             .transition()
                             .duration(200)
                             .attr("r", 7.725)
-                            .attr("stroke-width", "1.7825px")
+                            .attr("stroke-width", 3.125)
                             .attr("stroke", areaColors.stroke)
-                            .style("filter", "none");
+                            .style("filter","url(#dropshadow)");
 
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")

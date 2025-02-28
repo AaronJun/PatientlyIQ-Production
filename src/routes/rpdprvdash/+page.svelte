@@ -4,16 +4,18 @@
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   
   import RPDPRVVerticalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
+  import PRVPurchaseTimeline from '$lib/rpdprvdash/sidebarComponents/PRVPurchaseTimeline.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   
-
+  
   import SponsorSidebar from '$lib/rpdprvdash/sidebarComponents/SponsorSidebar.svelte';
   import TherapeuticAreaSidebar from '$lib/rpdprvdash/sidebarComponents/TherapeuticAreaSidebar.svelte';
   
+  import RPDTransactionSummaryView from '$lib/rpdprvdash/sidebarComponents/RPDTransactionsSummary.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
   
   import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
@@ -29,7 +31,6 @@
   import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
-  
   // Interface definitions
   interface DrawerProps {
     isCompanyView?: boolean;
@@ -65,14 +66,20 @@
   let isDrawerOpen = false;
   let isDashboardOpen = false;
   let selectedYear = "2023"; // Default year
+  let selectedTransactionYear = "2023"; // Default transaction year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
   
-  // Filter data based on selected year
+  // Filter data based on selected year (for non-transaction tabs)
   $: filteredData = rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
+  
+  // Filter transaction data based on selected transaction year (for transaction tab)
+  $: filteredTransactionData = rpddData.filter(entry => 
+    entry.Purchased === "Y" && entry["Purchase Year"] === selectedTransactionYear
+  );
   
   // Define the therapeutic area color map
   const colorMap = {
@@ -110,6 +117,10 @@
   
   function handleYearSelect(year: string) {
     selectedYear = year;
+  }
+  
+  function handleTransactionYearSelect(year: string) {
+    selectedTransactionYear = year;
   }
   
   let drawerProps: DrawerProps = {
@@ -175,11 +186,31 @@
   function setActiveTab(tab: string) {
     activeTab = tab;
     // Reset views when changing tabs
+    resetSidebarView();
+  }
+  
+  // New function to reset the sidebar to default view
+  function resetSidebarView() {
     currentEntries = [];
     currentView = null;
     currentCompanyMetrics = null;
     currentArea = null;
     areaMetrics = null;
+    highlightedTransaction = null;
+  }
+  
+  // Window click handler to reset sidebar
+  function handleWindowClick(event) {
+    // Check if click was on an interactive element
+    const isInteractiveElement = event.target.closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
+    
+    // Skip if click was on an interactive element or sidebar
+    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
+      return;
+    }
+    
+    // Reset sidebar view
+    resetSidebarView();
   }
 
   function handleShowCompanyDetail(detail: any) {
@@ -241,12 +272,21 @@
       if (constellationDataRaw) {
         processedConstellationData = constellationDataRaw;
       }
+      
+      // Add window click event listener
+      window.addEventListener('click', handleWindowClick);
+      
+      // Clean up on component destruction
+      return () => {
+        window.removeEventListener('click', handleWindowClick);
+      };
     } catch (error) {
       console.error('Error initializing:', error);
     }
   });
 </script>
 
+<!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
   <div class="sticky top-0 left-0 right-0 z-50 shadow-md">
@@ -254,8 +294,7 @@
       <div class="flex gap-2 justify-evenly items-center">
         <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
         <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
-            RPD PRV 
-            <span class="font-bold pl-1">Constellation</span>
+            RPDD + PRV Constellation
         </h1>
       </div>
     </div>
@@ -265,7 +304,7 @@
         <div class="flex gap-2">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
+              class="interactive-element tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
               {activeTab === tab ? 
                 'bg-[#ff4a4a] shadow-lg text-slate-100 px-4 font-semibold' : 
                 'bg-slate-600 hover:bg-[#FF5501] text-slate-400 px-2 hover:text-slate-50 hover:px-4'}"
@@ -283,7 +322,7 @@
             onShowCompanyDetail={handleShowCompanyDetail}
           />
           <button 
-            class="flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
             on:click={handleDashboardClick}
           >
             <DashboardReference size={16}/>
@@ -298,13 +337,22 @@
   <main class="flex-1 mt-4 pb-8">
     
     <div class="tab-content w-full h-full flex px-4">
-      <!-- Vertical timeline on the left -->
+      <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
       <div class="timeline-wrapper h-full border-r border-slate-200 pr-4">
-        <RPDPRVVerticalTimeline 
-          data={rpddData}
-          selectedYear={selectedYear}
-          onYearSelect={handleYearSelect}
-        />
+        {#if activeTab === 'By Transactions'}
+          <PRVPurchaseTimeline 
+            data={rpddData}
+            selectedYear={selectedTransactionYear}
+            onYearSelect={handleTransactionYearSelect}
+            transactionYearSelected={handleTransactionYearSelect}
+          />
+        {:else}
+          <RPDPRVVerticalTimeline 
+            data={rpddData}
+            selectedYear={selectedYear}
+            onYearSelect={handleYearSelect}
+          />
+        {/if}
         
         <div class="mt-6">
           <RPDRadialLegend 
@@ -335,17 +383,19 @@
               <div class="sticky top-32">
                 <div class="sidebar-header mb-2">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">              
-                    {currentView || 'Select a Company or Stage'}
+                    {currentView || 'Overview'}
                   </h4>
                 </div>
                 
-                <!-- Use the new sidebar component -->
+                <!-- Use the updated sidebar component -->
                 <SponsorSidebar
                   {currentView}
                   {currentEntries}
                   {currentCompanyMetrics}
                   colorMap={colorMap}
                   onShowDrugDetail={handleShowDrugDetail}
+                  fullYearData={filteredData}
+                  selectedYear={selectedYear}
                 />
               </div>
             </div>
@@ -353,6 +403,7 @@
 
         <!-- By Transactions Tab Layout -->
         {:else if activeTab === 'By Transactions'}
+         <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row">
             <div class="w-3/4 pr-6">
               <SellerBuyerChord 
@@ -365,22 +416,33 @@
               />
             </div>
             
-            <div class="w-1/6 min-w-[300px]">
-              <div class="sticky top-[calc(20vh)] max-h-[80vh]">      
-                <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
+            <div class="w-1/4 max-w-xs">
+              <div class="sticky top-32">
+                <div class="sidebar-header mb-4">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">                              
-                    Transaction Value Distribution
+                    {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
                   </h4>
                 </div>
-                
-                <div class="sidebar overflow-hidden py-12" style="height: calc(75vh - 2rem)">
-                  <VoucherBeeswarmPlot 
-                    data={rpddData}
-                    {highlightedTransaction}
-                    onPointClick={handleShowDrugDetail}
-                    on:transactionHover={(event) => highlightedTransaction = event.detail}
-                    on:transactionLeave={() => highlightedTransaction = null}
-                  />
+
+                <!-- Show transaction summary when no transaction is selected -->
+                <div class="flex flex-col gap-4">
+                  <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
+                    <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+                    <VoucherBeeswarmPlot 
+                      data={rpddData}
+                      {highlightedTransaction}
+                      onPointClick={handleShowDrugDetail}
+                      on:transactionHover={(event) => highlightedTransaction = event.detail}
+                      on:transactionLeave={() => highlightedTransaction = null}
+                    />
+                  </div>
+                  <div class="bg-white rounded-lg shadow-sm p-4">
+                    <RPDTransactionSummaryView 
+                      data={rpddData}
+                      year={selectedTransactionYear}
+                    />
+                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -406,17 +468,19 @@
               <div class="sticky top-32">
                 <div class="sidebar-header mb-2">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">              
-                    {currentArea ? `${currentArea}` : 'Select a Therapeutic Area'}
+                    {currentArea ? `${currentArea}` : 'Overview'}
                   </h4>
                 </div>
                 
-                <!-- Use the therapeutic area sidebar component -->
+                <!-- Use the updated therapeutic area sidebar component -->
                 <TherapeuticAreaSidebar
                   {currentEntries}
                   {currentArea}
                   {areaMetrics}
                   colorMap={colorMap}
                   onShowDrugDetail={handleShowDrugDetail}
+                  fullYearData={filteredData}
+                  selectedYear={selectedYear}
                 />
               </div>
             </div>
@@ -453,10 +517,10 @@
       {...drawerProps}
       {isDrawerOpen}
       onClose={handleCloseDrawer}
-    onShowDrugDetail={handleShowDrugDetail}
-    color={drawerProps.color}
-  />
-{/if}
+      onShowDrugDetail={handleShowDrugDetail}
+      color={drawerProps.color}
+    />
+  {/if}
 {/if}
 
 <style>

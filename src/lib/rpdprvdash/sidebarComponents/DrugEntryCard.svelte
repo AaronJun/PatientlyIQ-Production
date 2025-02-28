@@ -20,7 +20,7 @@
     <div class="flex justify-between items-start">
       <div class="flex align-baseline gap-2">
       <Medication class="text-slate-500" size={16} />      
-      <h3 class="text-sm font-semibold text-slate-900">{entry.Candidate}</h3>
+      <h3 class="text-sm font-semibold text-slate-900 capitalize">{entry.Candidate}</h3>
       </div>
       <div class="bg-slate-200 p-1 rounded-full"><ArrowUpRight class="text-slate-600" size={16} />
     </div>

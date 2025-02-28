@@ -25,7 +25,7 @@
 <div class="legend-container flex-row flex-wrap align-middle justify-left gap-4 px-2 py-1 w-full bg-slate-100/20">
     <h3 class="text-xs font-medium text-slate-500 uppercase mb-2">Therapeutic Area</h3>
     {#each displayItems as d}
-        <div class="flex flex-row justify-start align-middle legend-item">
+        <div class="legend-row flex flex-row justify-start align-middle legend-item">
             <div class="legend-color w-3 h-3 rounded-full relative overflow-hidden">
                 <div class="absolute inset-0 right-1/2 bg-left-half" 
                      style="background-color: {colorScale(d.area)};">
@@ -40,6 +40,12 @@
 </div>
 
 <style>
+    .legend-row {
+        margin-bottom: 0.425rem;
+        padding-bottom: .25rem;
+        border-bottom: .25px solid #a0aec0;
+    }
+
     .legend-item {
         display: flex;
         align-items: center;
@@ -47,7 +53,9 @@
     }
 
     .legend-color {
+        border: 1px solid #161616;
         display: flex;
+        filter:drop-shadow(0 0 1px rgba(0, 1, 0, .515));
     }
     
     .bg-left-half {

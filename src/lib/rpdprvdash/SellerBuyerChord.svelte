@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import * as d3 from 'd3';
-  import { CalendarHeatMap, Medication, Money, Catalog } from 'carbon-icons-svelte';
+
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
 
   export let data: any[] = [];
   export let stockData: any[] = [];
   export let highlightedTransaction: { seller: string, buyer: string } | null = null;
+  export let selectedYear: string = ""; // Add the selectedYear prop
   export let onShowDrugDetail: (detail: any) => void;
 
   const dispatch = createEventDispatcher<{
@@ -20,6 +21,7 @@
   let companies: string[] = [];
   let companyData: Map<string, any>;
   let transactions: any[];
+  let yearFilteredTransactions: any[] = []; // Add filtered transactions
   
   // RPDTooltip state
   let tooltipVisible = false;
@@ -61,9 +63,15 @@
       '#98D8C8', '#B8B8D1'
     ]);
 
+  // Update visualizations when the selected year changes
+  $: if (selectedYear && transactions) {
+    yearFilteredTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
+    highlightTransactionsForYear();
+  }
+
   $: if (highlightedTransaction && ribbons) {
     highlightRibbon(highlightedTransaction);
-  } else if (ribbons) {
+  } else if (ribbons && !selectedYear) {
     resetHighlight();
   }
 
@@ -173,6 +181,44 @@
       );
   }
 
+  // New function to highlight transactions for the selected year
+  function highlightTransactionsForYear() {
+    if (!ribbons || !yearFilteredTransactions.length) return;
+    
+    // Create a map of relevant transactions for faster lookup
+    const relevantTransactions = new Map();
+    yearFilteredTransactions.forEach(t => {
+      const key = `${t.Company}-${t.Purchaser}`;
+      relevantTransactions.set(key, true);
+    });
+    
+    // Highlight the relevant ribbons
+    ribbons
+      .style("opacity", d => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        const key = `${sourceCompany}-${targetCompany}`;
+        return relevantTransactions.has(key) ? 1 : 0.2;
+      })
+      .attr("stroke-width", d => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        const key = `${sourceCompany}-${targetCompany}`;
+        return relevantTransactions.has(key) ? 2 : 0.25;
+      });
+      
+    // Highlight relevant nodes
+    d3.selectAll("circle.voucher-node")
+      .style("opacity", d => {
+        const key = `${d.Company}-${d.Purchaser}`;
+        return relevantTransactions.has(key) ? 1 : 0.2;
+      })
+      .attr("r", d => {
+        const key = `${d.Company}-${d.Purchaser}`;
+        return relevantTransactions.has(key) ? 12 : 8;
+      });
+  }
+
   function resetHighlight() {
     if (!ribbons) return;
     ribbons
@@ -225,6 +271,11 @@
   async function createVisualization() {
     // Filter only purchased vouchers with known purchasers
     transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
+    
+    // Initialize year filtered transactions
+    if (selectedYear) {
+      yearFilteredTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
+    }
     
     // Get unique companies
     companies = [...new Set([
@@ -434,25 +485,54 @@
         .on("mouseenter", (event) => handleCompanyHover(event, company))
         .on("mouseleave", () => {
           tooltipVisible = false;
-          resetHighlight();
+          // Only reset highlight if we're not filtering by year
+          if (!selectedYear) {
+            resetHighlight();
+          } else {
+            highlightTransactionsForYear();
+          }
         })
         .on("click", () => handleCompanyClick(company));
     });
+    
+    // Apply year filtering if a year is selected
+    if (selectedYear && yearFilteredTransactions.length > 0) {
+      highlightTransactionsForYear();
+    }
   }
 
   onMount(() => {
     createVisualization();
   });
+  
+  // Re-render visualization when selectedYear changes
+  afterUpdate(() => {
+    if (selectedYear && yearFilteredTransactions) {
+      highlightTransactionsForYear();
+    }
+  });
 </script>
 
-<div class="chord-container relative bg-slate-50">
-  <svg
-    bind:this={svg}
-    {width}
-    {height}
-    viewBox="0 0 {width} {height}"
-    class="w-full h-auto"
-  />
+<div class="chord-container relative">
+  <div class="py-2 px-4 flex justify-between items-center">
+    <h3 class="text-sm font-medium text-slate-700">Transaction Network</h3>
+    {#if selectedYear}
+    <div class="bg-slate-100 px-3 py-1 rounded-full text-xs font-medium text-slate-700 flex items-center">
+      <span>Showing transactions for</span>
+      <span class="ml-1 text-red-500 font-semibold">{selectedYear}</span>
+    </div>
+    {/if}
+  </div>
+
+  <div class="bg-slate-50 rounded-lg shadow-sm p-2">
+    <svg
+      bind:this={svg}
+      {width}
+      {height}
+      viewBox="0 0 {width} {height}"
+      class="w-full h-auto"
+    />
+  </div>
 
   <RPDTooltip
     visible={tooltipVisible}

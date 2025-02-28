@@ -9,16 +9,16 @@ export interface ColorCombo {
   // Therapeutic area color map with fill and stroke combinations
   export const therapeuticAreaColors: Record<string, ColorCombo> = {
     'Neurology': {
-      fill: '#B2F5EA',    // Lighter red
-      stroke: '#4C51BF'   // Darker red
+      fill: '#ff1515',    
+      stroke: '#FEB2B2'   
     },
     'Neuromuscular': {
-      fill: '#FED7D7',    // Lighter red
-      stroke: '#9B2C2C'   // Even darker red
+        fill: '#2F855A',    // Lighter green
+        stroke: '#C6F6D5'   // Darker green
     },
     'Oncology': {
       fill: '#B2F5EA',    // Lighter teal
-      stroke: '#2C7A7B'   // Darker teal
+      stroke: '#5CC988'   // Darker teal
     },
     'Metabolic': {
       fill: '#C3DAFE',    // Lighter purple-blue
@@ -41,8 +41,8 @@ export interface ColorCombo {
       stroke: '#6B46C1'   // Darker lavender
     },
     'Hematology': {
-      fill: '#C6F6D5',    // Lighter green
-      stroke: '#2F855A'   // Darker green
+       fill: '#FEB299',    // Lighter red  
+       stroke: '#ff1515'   // Even darker red 
     },
     'Endocrinology': {
       fill: '#FEFCBF',    // Lighter amber
@@ -121,8 +121,8 @@ export interface ColorCombo {
       stroke: '#1A365D'    // Navy blue
     },
     'FDA Approved': {
-      fill: '#9AE6B4',     // Light green
-      stroke: '#2F855A'    // Darker green
+      fill: '#2F855A',     // Light green
+      stroke: '#9AE6B4'    // Darker green
     },
     'PRV Awarded': {
       fill: '#68D391',     // Medium green

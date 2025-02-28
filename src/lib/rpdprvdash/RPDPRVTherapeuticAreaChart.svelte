@@ -206,6 +206,7 @@
                 .attr("fill", getTherapeuticAreaFill(area.area))
                 .attr("stroke", getTherapeuticAreaStroke(area.area))
                 .attr("stroke-width", 1)
+                .style("filter", "url(#dropshadow)")
                 .attr("opacity", 0.8);
         }
 
@@ -252,8 +253,7 @@
         d3.selectAll(".area-node")
             .transition()
             .duration(200)
-            .attr("width", 7.725)
-            .attr("height", 7.725);
+            .attr("r", 2.725);
             
         d3.selectAll(".area-label text")
             .transition()
@@ -276,8 +276,7 @@
             d3.select(`#area-node-${areaId}`)
                 .transition()
                 .duration(200)
-                .attr("width", 10.25)
-                .attr("height", 10.25);
+                .attr("r", 4);
                 
             d3.select(`#area-label-${areaId} text`)
                 .transition()
@@ -396,6 +395,44 @@
 
         const svgElement = d3.select(svg);
         svgElement.selectAll("*").remove();
+
+        // Create drop shadow filter
+        const defs = svgElement.append("defs");
+        
+        // Create drop shadow filter with proper rounded edges
+        const dropShadow = defs.append("filter")
+            .attr("id", "dropshadow")
+            .attr("width", "300%")
+            .attr("height", "300%")
+            .attr("x", "-100%")
+            .attr("y", "-100%")
+            .attr("filterUnits", "userSpaceOnUse");
+        
+        // Create a shadow using blur and offset
+        dropShadow.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 2.5)
+            .attr("result", "blur");
+            
+        dropShadow.append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 0.5)
+            .attr("dy", 1.5)
+            .attr("result", "offsetBlur");
+            
+        // Apply color to the shadow
+        dropShadow.append("feColorMatrix")
+            .attr("in", "offsetBlur")
+            .attr("type", "matrix")
+            .attr("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0")
+            .attr("result", "shadowMatrixOut");
+        
+        // Create a composite of the original shape for proper rounded edges
+        const feMerge = dropShadow.append("feMerge");
+        feMerge.append("feMergeNode")
+            .attr("in", "shadowMatrixOut");
+        feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
 
         const mainGroup = svgElement.append("g")
             .attr("transform", `translate(${width/2},${height/2})`);
@@ -527,7 +564,8 @@
                         .attr("r", 7.725)
                         .attr("fill", getTherapeuticAreaFill(drug.TherapeuticArea1))
                         .attr("stroke", getTherapeuticAreaStroke(drug.TherapeuticArea1))
-                        .attr("stroke-width", 2.125);
+                        .attr("stroke-width", 3.125)
+                        .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
                         
                     // Add PRV indicator for PRV awarded drugs
                     if (drug["PRV Issue Year"]) {
@@ -546,14 +584,14 @@
                             .transition()
                             .duration(200)
                             .attr("r", 10.25)
-                            .style("filter", "drop-shadow(0 2px 2px rgba(0,0,0,0.1))");
+                            .attr("stroke-width", 2.5);
 
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
                                 .transition()
                                 .duration(200)
-                                .attr("r", 10.25)
-                                .attr("stroke-width", 4.725);
+                                .attr("r", 12.5)
+                                .attr("stroke-width", 2.5);
                         }
                         showTooltip(event, drug);
                     })
@@ -567,16 +605,15 @@
                             .transition()
                             .duration(200)
                             .attr("r", 7.725)
-                            .attr("stroke-width", 2)
-                            .attr("stroke", getTherapeuticAreaStroke(drug.TherapeuticArea1))
-                            .style("filter", "none");
+                            .attr("stroke-width", 3.125)                            
+                            .attr("stroke", getTherapeuticAreaStroke(drug.TherapeuticArea1));
 
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
                                 .transition()
                                 .duration(200)
-                                .attr("r", 11.25)
-                                .attr("stroke-width", "2px");
+                                .attr("r", 10.25)
+                                .attr("stroke-width", "2");
                         }
                         hideTooltip();
                     })

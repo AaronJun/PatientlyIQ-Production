@@ -2,6 +2,7 @@
 <script lang="ts">
     import DrugEntryCard from './DrugEntryCard.svelte';
     import AreaMetricsList from './AreaMetricsList.svelte';
+    import RPDSummaryView from './RPDSummaryView.svelte';
     import { getTherapeuticAreaFill, getTherapeuticAreaStroke } from '../utils/colorDefinitions';
     
     export let currentEntries = [];
@@ -9,6 +10,8 @@
     export let areaMetrics = null;
     export let colorMap = {}; // Kept for backward compatibility
     export let onShowDrugDetail = (details) => {};
+    export let fullYearData = []; // All data for the selected year
+    export let selectedYear = "";
     
     // Handle drug card click
     function handleDrugClick(entry) {
@@ -43,6 +46,9 @@
           }}
           color={getTherapeuticAreaStroke(currentArea)}
         />
+      {:else if fullYearData.length > 0}
+        <!-- Display year summary when no specific selection is made -->
+        <RPDSummaryView data={fullYearData} year={selectedYear} />
       {:else if currentEntries.length === 0}
         <div class="text-left py-8 text-slate-500">
           <p>Select a therapeutic area to view drugs</p>
