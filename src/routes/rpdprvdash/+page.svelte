@@ -54,6 +54,7 @@
 
   // State variables
   let activeTab = 'By Sponsor';
+  let selectedTransactionYear = "2023"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: any | null = null;
   let processedConstellationData: any[] = [];
@@ -66,7 +67,6 @@
   let isDrawerOpen = false;
   let isDashboardOpen = false;
   let selectedYear = "2023"; // Default year
-  let selectedTransactionYear = "2023"; // Default transaction year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   
@@ -340,12 +340,12 @@
       <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
       <div class="timeline-wrapper h-full border-r border-slate-200 pr-4">
         {#if activeTab === 'By Transactions'}
-          <PRVPurchaseTimeline 
-            data={rpddData}
-            selectedYear={selectedTransactionYear}
-            onYearSelect={handleTransactionYearSelect}
-            transactionYearSelected={handleTransactionYearSelect}
-          />
+        <PRVPurchaseTimeline 
+        data={rpddData}
+        selectedYear={selectedTransactionYear}
+        onYearSelect={handleTransactionYearSelect}
+        transactionYearSelected={handleTransactionYearSelect}
+      />
         {:else}
           <RPDPRVVerticalTimeline 
             data={rpddData}
@@ -407,13 +407,15 @@
           <div class="flex flex-row">
             <div class="w-3/4 pr-6">
               <SellerBuyerChord 
-                data={rpddData}
-                stockData={rpdCompanyValues}
-                {highlightedTransaction}
-                onShowDrugDetail={handleShowDrugDetail}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
-              />
+              data={rpddData}
+              stockData={rpdCompanyValues}
+              selectedYear={selectedTransactionYear}
+              {highlightedTransaction}
+              onShowDrugDetail={handleShowDrugDetail}
+              on:transactionHover={(event) => highlightedTransaction = event.detail}
+              on:transactionLeave={() => highlightedTransaction = null}
+            />
+            
             </div>
             
             <div class="w-1/4 max-w-xs">
@@ -438,9 +440,9 @@
                   </div>
                   <div class="bg-white rounded-lg shadow-sm p-4">
                     <RPDTransactionSummaryView 
-                      data={rpddData}
-                      year={selectedTransactionYear}
-                    />
+                    data={rpddData}
+                    year={selectedTransactionYear}
+                  />
                   </div>
                   
                 </div>

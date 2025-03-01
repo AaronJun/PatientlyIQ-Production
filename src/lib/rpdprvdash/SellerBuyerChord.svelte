@@ -1,3 +1,4 @@
+<!-- SellerBuyerChord.svelte -->
 <script lang="ts">
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import * as d3 from 'd3';
@@ -68,6 +69,9 @@
     yearFilteredTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
     highlightTransactionsForYear();
   }
+  
+  // Watch selectedYear with an explicit statement to trigger the highlight
+  $: selectedYear, selectedYear && transactions && highlightTransactionsForYear();
 
   $: if (highlightedTransaction && ribbons) {
     highlightRibbon(highlightedTransaction);
@@ -183,11 +187,22 @@
 
   // New function to highlight transactions for the selected year
   function highlightTransactionsForYear() {
-    if (!ribbons || !yearFilteredTransactions.length) return;
+    if (!ribbons || !selectedYear) return;
     
     // Create a map of relevant transactions for faster lookup
     const relevantTransactions = new Map();
-    yearFilteredTransactions.forEach(t => {
+    
+    // Filter transactions for the selected year
+    const relevantYearTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
+    
+    // If no transactions for this year, don't highlight anything special
+    if (relevantYearTransactions.length === 0) {
+      resetHighlight();
+      return;
+    }
+    
+    // Map transactions for quick lookup
+    relevantYearTransactions.forEach(t => {
       const key = `${t.Company}-${t.Purchaser}`;
       relevantTransactions.set(key, true);
     });
@@ -198,24 +213,53 @@
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         const key = `${sourceCompany}-${targetCompany}`;
-        return relevantTransactions.has(key) ? 1 : 0.2;
+        return relevantTransactions.has(key) ? 1 : 0.15;
       })
       .attr("stroke-width", d => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         const key = `${sourceCompany}-${targetCompany}`;
-        return relevantTransactions.has(key) ? 2 : 0.25;
+        return relevantTransactions.has(key) ? 2.5 : 0.25;
       });
       
     // Highlight relevant nodes
     d3.selectAll("circle.voucher-node")
       .style("opacity", d => {
         const key = `${d.Company}-${d.Purchaser}`;
-        return relevantTransactions.has(key) ? 1 : 0.2;
+        return relevantTransactions.has(key) ? 1 : 0.15;
       })
       .attr("r", d => {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key) ? 12 : 8;
+      });
+      
+    // Add a pulsating effect to the highlighted nodes
+    d3.selectAll("circle.voucher-node")
+      .filter(d => {
+        const key = `${d.Company}-${d.Purchaser}`;
+        return relevantTransactions.has(key);
+      })
+      .transition()
+      .duration(800)
+      .attr("stroke-width", 3)
+      .attr("stroke", "#FF9F1C")
+      .transition()
+      .duration(800)
+      .attr("stroke-width", 1.5)
+      .attr("stroke", "#565656")
+      .on("end", function() {
+        // Only continue animation if still filtered by year
+        if (selectedYear) {
+          d3.select(this)
+            .transition()
+            .duration(800)
+            .attr("stroke-width", 3)
+            .attr("stroke", "#FF9F1C")
+            .transition()
+            .duration(800)
+            .attr("stroke-width", 1.5)
+            .attr("stroke", "#565656");
+        }
       });
   }
 
@@ -496,7 +540,7 @@
     });
     
     // Apply year filtering if a year is selected
-    if (selectedYear && yearFilteredTransactions.length > 0) {
+    if (selectedYear) {
       highlightTransactionsForYear();
     }
   }
@@ -507,7 +551,7 @@
   
   // Re-render visualization when selectedYear changes
   afterUpdate(() => {
-    if (selectedYear && yearFilteredTransactions) {
+    if (selectedYear) {
       highlightTransactionsForYear();
     }
   });
