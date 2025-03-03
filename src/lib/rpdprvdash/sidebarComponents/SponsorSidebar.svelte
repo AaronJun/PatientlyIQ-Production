@@ -46,7 +46,7 @@
     }
   </script>
   
-  <div class="sidebar bg-slate-50/50 pt-4 px-2 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
+  <div class="sidebar bg-slate-50/50 pt-4 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
     <div class="space-y-6">
       <div class="mb-6">
         {#if currentView === 'Company View' && currentCompanyMetrics}
@@ -54,7 +54,7 @@
           <CompanyMetricsList metrics={currentCompanyMetrics} />
         {:else if currentView === 'Stage View' && currentEntries.length > 0}
           <!-- Display stage summary -->
-          <div class="bg-slate-100 p-4 rounded-md shadow-sm border border-slate-200 mb-4">
+          <div class="bg-slate-100 p-4 border border-late-200 mb-4">
             <h3 class="text-sm font-semibold text-slate-800 mb-2">{currentView}</h3>
             <p class="text-sm text-slate-700">
               {getStageSummary()}
@@ -103,6 +103,5 @@
     
     .sidebar::-webkit-scrollbar-thumb {
       background-color: #e5e7eb;
-      border-radius: 6px;
     }
   </style>

@@ -7,11 +7,11 @@
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string | null = null;
-export let transactionYearSelected: (year: string) => void = () => {};
+    export let transactionYearSelected: (year: string) => void = () => {};
     
     let svg: SVGElement;
-    const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const width = 120;
+    const margin = { top: 20, right: 0, bottom: 0, left: 0 };
+    const width = 150;
     const height = 600;
 
     // Process data to filter for purchases with transaction values
@@ -81,13 +81,6 @@ export let transactionYearSelected: (year: string) => void = () => {};
         return `purchase-gradient-${year}`;
     }
 
-    function formatCurrency(value: number): string {
-        if (value >= 1000) {
-            return `$${(value / 1000).toFixed(1)}B`;
-        }
-        return `$${value.toFixed(0)}M`;
-    }
-
     function createVisualization() {
         if (!svg || !yearData.length) return;
 
@@ -105,8 +98,8 @@ export let transactionYearSelected: (year: string) => void = () => {};
 
         // Scale for circle radius based on total transaction value
         const radiusScale = d3.scaleSqrt()
-            .domain([0, d3.max(yearData, d => d.totalValue) || 1])
-            .range([2, 16]);
+            .domain([0, d3.max(yearData, d => d.totalValue) || 0])
+            .range([1, 14]);
 
         const g = svgElement.append("g")
             .attr("transform", `translate(${margin.left},0)`);
@@ -177,7 +170,7 @@ export let transactionYearSelected: (year: string) => void = () => {};
             .attr("class", "highlight-circle")
             .attr("r", d => radiusScale(d.totalValue) + 4)
             .attr("fill", "none")
-            .attr("stroke", "#FF9F1C") // Using orange for purchase highlight
+            .attr("stroke", "#") // Using orange for purchase highlight
             .attr("stroke-width", 5)
             .attr("opacity", 0);
 
@@ -215,19 +208,6 @@ export let transactionYearSelected: (year: string) => void = () => {};
                         .duration(200)
                         .attr("font-weight", "600")
                         .attr("fill", "#FF9F1C");
-                        
-                    d3.select(this.parentNode)
-                        .select(".count-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 1);
-                        
-                    d3.select(this.parentNode)
-                        .select(".value-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 1)
-                        .attr("font-size", "8.725px");
                 }
             })
             .on("mouseleave", function(event, d) {
@@ -250,59 +230,20 @@ export let transactionYearSelected: (year: string) => void = () => {};
                         .duration(200)
                         .attr("font-weight", "400")
                         .attr("fill", "#718096");
-                        
-                    d3.select(this.parentNode)
-                        .select(".count-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0.6);
-                        
-                    d3.select(this.parentNode)
-                        .select(".value-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0.6)
-                        .attr("font-size", "0px");
                 }
             });
 
         // Add year labels
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", -radiusScale(d3.max(yearData, d => d.totalValue) || 0) - 12)
-            .attr("y", 4) // Center vertically
+            .attr("x", -radiusScale(d3.max(yearData, d => d.totalValue) || 0) - 10)
+            .attr("y", 2) // Center vertically
             .attr("text-anchor", "end")
             .attr("fill", "#718096")
-            .attr("font-size", "12px")
+            .attr("font-size", "9.75px")
             .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
-
-        // Add count labels (showing number of transactions)
-        yearGroups.append("text")
-            .attr("class", "count-label")
-            .attr("x", radiusScale(d3.max(yearData, d => d.totalValue) || 0) + 12)
-            .attr("y", 0) // Center vertically
-            .attr("text-anchor", "start")
-            .attr("fill", "#4a5568")
-            .attr("font-size", "10px")
-            .attr("opacity", 0.6)
-            .style("dominant-baseline", "middle")
-            .style("font-family", "'IBM Plex Mono', monospace")
-            .text(d => `${d.count} PRV${d.count > 1 ? 's' : ''}`);
-            
-        // Add value labels (showing transaction value)
-        yearGroups.append("text")
-            .attr("class", "value-label")
-            .attr("x", radiusScale(d3.max(yearData, d => d.totalValue) || 0) + 12)
-            .attr("y", 12) // Below the count label
-            .attr("text-anchor", "start")
-            .attr("fill", "#FF9F1C")
-            .attr("font-size", "0px") // Start with size 0, will grow on hover
-            .attr("opacity", 0.6)
-            .style("dominant-baseline", "middle")
-            .style("font-family", "'IBM Plex Mono', monospace")
-            .text(d => formatCurrency(d.totalValue));
 
         updateSelection();
     }
@@ -331,20 +272,7 @@ export let transactionYearSelected: (year: string) => void = () => {};
                     .transition()
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
-                    .attr("fill", isSelected ? "#FF9F1C" : "#718096");
-
-                group.select(".count-label")
-                    .transition()
-                    .duration(300)
-                    .attr("opacity", isSelected ? 1 : 0.6)
-                    .attr("fill", isSelected ? "#4a5568" : "#4a5568");
-                    
-                group.select(".value-label")
-                    .transition()
-                    .duration(300)
-                    .attr("opacity", isSelected ? 1 : 0.6)
-                    .attr("font-size", isSelected ? "9px" : "0px")
-                    .attr("fill", isSelected ? "#FF9F1C" : "#FF9F1C");
+                    .attr("fill", isSelected ? "#FF1515" : "#718096");
             });
     }
 

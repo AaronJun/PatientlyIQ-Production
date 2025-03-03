@@ -289,8 +289,8 @@
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
-  <div class="sticky top-0 left-0 right-0 z-50 shadow-md">
-    <div class="header flex align-baseline font-sans bg-slate-800 text-slate-50 px-8">
+  <div class="sticky top-0 left-0 right-0 z-50">
+    <div class="header flex align-baseline font-sans bg-slate-900 text-slate-50 px-8">
       <div class="flex gap-2 justify-evenly items-center">
         <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
         <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
@@ -299,15 +299,15 @@
       </div>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-800 w-full h-full py-4 px-8">
+    <nav class="nav-bar justify-stretch bg-white w-full h-full py-2 px-8">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
-        <div class="flex gap-2">
+        <div class="flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
             <button
-              class="interactive-element tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
+              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
               {activeTab === tab ? 
-                'bg-[#ff4a4a] shadow-lg text-slate-100 px-4 font-semibold' : 
-                'bg-slate-600 hover:bg-[#FF5501] text-slate-400 px-2 hover:text-slate-50 hover:px-4'}"
+                'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501]' : 
+                'hover:text-[#e05501] text-slate-400 px-2 hover:text-slate-50'}"
               on:click={() => setActiveTab(tab)}
               >
               {tab}
@@ -433,6 +433,7 @@
                     <VoucherBeeswarmPlot 
                       data={rpddData}
                       {highlightedTransaction}
+                      selectedYear={selectedTransactionYear}
                       onPointClick={handleShowDrugDetail}
                       on:transactionHover={(event) => highlightedTransaction = event.detail}
                       on:transactionLeave={() => highlightedTransaction = null}
@@ -527,6 +528,22 @@
 
 <style>
 .tab-button {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-button:active {
+border-bottom: 2px solid #ff7373;
+}
+
+.interactive-element:hover {
+  border-bottom: 2px solid #ff7373;
+}
+
+.interactive-element:focus {
+  outline: 1px solid #ff7373;
+}
+
+.interactive-element:active {
   border-bottom: 2px solid #ff7373;
 }
 

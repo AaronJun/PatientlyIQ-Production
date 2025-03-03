@@ -3,10 +3,12 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
   import { Medication, Money, CalendarHeatMap } from 'carbon-icons-svelte';
-
+  import { getTherapeuticAreaColor, getTherapeuticAreaFill, getTherapeuticAreaStroke } from './utils/colorDefinitions';
+  
   export let data: any[];
   export let onPointClick: (detail: any) => void;
   export let highlightedTransaction: { seller: string, buyer: string } | null = null;
+  export let selectedYear: string | null = null;
   
   const dispatch = createEventDispatcher<{
     transactionHover: { seller: string, buyer: string };
@@ -33,22 +35,6 @@
   let width: number;
   let height: number;
 
-  const therapeuticAreaColorScale = d3.scaleOrdinal()
-    .domain([
-        'Neurology', 'Oncology', 'Metabolic', 'Ophthalmology',
-        'Cardiovascular', 'Pulmonology', 'Hematology',
-        'Endocrinology', 'Genetic', 'Immunology',
-        'Gastroenterology', 'Hepatology', 'Dermatology',
-        'Neonatology', 'Urology'
-    ])
-    .range([
-        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-        '#FFEEAD', '#D4A5A5', '#9DE0AD',
-        '#FF9F1C', '#2EC4B6', '#E71D36',
-        '#FDFFB6', '#CBE896', '#FFA07A',
-        '#98D8C8', '#B8B8D1'
-    ]);
-
   function getPrice(d: any): number {
     const price = d["Sale Price (USD Millions)"];
     return price === "Undisclosed" ? 0 : parseFloat(price);
@@ -69,7 +55,7 @@
         Company: d.Company,
         therapeuticArea: d.TherapeuticArea1,
         entries: data.filter(entry => entry.TherapeuticArea1 === d.TherapeuticArea1),
-        color: therapeuticAreaColorScale(d.TherapeuticArea1),
+        color: getTherapeuticAreaStroke(d.TherapeuticArea1),
         currentStage: d["Current Development Stage"] || "TBD",
         indication: d.Indication || "",
         rpddAwardDate: d["RPDD Year"],
@@ -81,19 +67,40 @@
     }, 0);
   }
 
-  $: if (highlightedTransaction && circles) {
-    highlightPoints(highlightedTransaction);
-  } else if (circles) {
-    resetHighlight();
+  // Watch for changes in the highlighted transaction or selected year
+  $: if (circles) {
+    if (highlightedTransaction) {
+      highlightTransaction(highlightedTransaction);
+    } else if (selectedYear) {
+      highlightYear(selectedYear);
+    } else {
+      resetHighlight();
+    }
   }
 
-  function highlightPoints(transaction: { seller: string, buyer: string }) {
+  function highlightTransaction(transaction: { seller: string, buyer: string }) {
     circles
       .style("opacity", d => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2
       )
       .attr("r", d => 
-        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 6 : 5
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 7 : 5
+      )
+      .style("filter", d => 
+        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? "drop-shadow(0 0 3px rgba(0,0,0,0.3))" : "none"
+      );
+  }
+
+  function highlightYear(year: string) {
+    circles
+      .style("opacity", d => 
+        d["Purchase Year"] === year ? 1 : 0.2
+      )
+      .attr("r", d => 
+        d["Purchase Year"] === year ? 7 : 5
+      )
+      .style("filter", d => 
+        d["Purchase Year"] === year ? "drop-shadow(0 0 3px rgba(0,0,0,0.3))" : "none"
       );
   }
 
@@ -101,7 +108,8 @@
     if (!circles) return;
     circles
       .style("opacity", 0.8)
-      .attr("r", 5);
+      .attr("r", 5)
+      .style("filter", "none");
   }
   
   function updateDimensions() {
@@ -119,6 +127,11 @@
     }
   }
   
+  function createGradientId(d: any): string {
+    // Create a unique ID for each point's gradient based on its data
+    return `beeswarm-gradient-${d.Company}-${d.Candidate}`.replace(/\s+/g, '-').toLowerCase();
+  }
+  
   function createVisualization() {
     // Filter and sort the data
     const purchasedVouchers = data
@@ -129,6 +142,68 @@
     
     // Clear previous content
     svg.selectAll("*").remove();
+    
+    // Create defs for gradients
+    const defs = svg.append("defs");
+    
+    // Create a gradient for each point
+    purchasedVouchers.forEach(d => {
+      const gradientId = createGradientId(d);
+      const gradient = defs.append("linearGradient")
+        .attr("id", gradientId)
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+      
+      // First half - fill color
+      gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", getTherapeuticAreaFill(d.TherapeuticArea1));
+      
+      gradient.append("stop")
+        .attr("offset", "50%")
+        .attr("stop-color", getTherapeuticAreaFill(d.TherapeuticArea1));
+      
+      // Second half - stroke color
+      gradient.append("stop")
+        .attr("offset", "50%")
+        .attr("stop-color", getTherapeuticAreaStroke(d.TherapeuticArea1));
+      
+      gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", getTherapeuticAreaStroke(d.TherapeuticArea1));
+    });
+    
+    // Create drop shadow filter
+    const filter = defs.append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+    
+    filter.append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 3)
+      .attr("result", "blur");
+    
+    filter.append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("result", "offsetBlur");
+    
+    const feComponentTransfer = filter.append("feComponentTransfer")
+      .attr("in", "offsetBlur")
+      .attr("result", "filteredBlur");
+    
+    feComponentTransfer.append("feFuncA")
+      .attr("type", "linear")
+      .attr("slope", 0.5);
+    
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode")
+      .attr("in", "filteredBlur");
+    feMerge.append("feMergeNode")
+      .attr("in", "SourceGraphic");
     
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -155,7 +230,7 @@
     // Create simulation
     const simulation = d3.forceSimulation(purchasedVouchers)
       .force("y", d3.forceY(d => y(getPrice(d))).strength(1))
-      .force("x", d3.forceX(width/2).strength(0.1))
+      .force("x", d3.forceX(width/2).strength(0.025))
       .force("collide", d3.forceCollide(6))
       .alphaDecay(0.1)
       .alpha(0.5)
@@ -171,12 +246,14 @@
       .attr("cx", d => Math.max(0, Math.min(width, d.x)))
       .attr("cy", d => Math.max(0, Math.min(height, d.y)))
       .attr("r", 5)
-      .attr("fill", d => therapeuticAreaColorScale(d.TherapeuticArea1))
+      .attr("fill", d => `url(#${createGradientId(d)})`)
+      .attr("data-year", d => d["Purchase Year"])
       .style("opacity", 0.8)
       .attr("cursor", "pointer")
       .style("stroke", "#565656")
       .style("stroke-width", 1)
-      .style("stroke-dasharray", d => isUndisclosed(d) ? "2,2" : "none");
+      .style("stroke-dasharray", d => isUndisclosed(d) ? "2,2" : "none")
+      .style("transition", "opacity 0.3s ease, r 0.3s ease");
 
     // Add event listeners with debouncing
     let hoverTimeout: number;
@@ -211,6 +288,13 @@
         tooltipVisible = false;
       })
       .on("click", handlePointClick);
+      
+    // If we have an active filter (selected year or transaction), apply it
+    if (highlightedTransaction) {
+      highlightTransaction(highlightedTransaction);
+    } else if (selectedYear) {
+      highlightYear(selectedYear);
+    }
   }
 
   onMount(() => {

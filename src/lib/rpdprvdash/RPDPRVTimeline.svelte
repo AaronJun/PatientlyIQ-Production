@@ -65,7 +65,7 @@
             .padding(0.5);
 
         const radiusScale = d3.scaleSqrt()
-            .domain([0, d3.max(yearData, d => d.count) || 0])
+        .domain([0, d3.max(yearData, d => d.count) || 0])
         .range([4, 20]);
 
         const g = svgElement.append("g")
@@ -215,26 +215,13 @@
         yearGroups.append("text")
             .attr("class", "year-label")
             .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0) - 12)
-            .attr("y", 4) // Center vertically
+            .attr("y", 2) // Center vertically
             .attr("text-anchor", "end")
             .attr("fill", "#718096")
-            .attr("font-size", "12px")
+            .attr("font-size", "9.75px")
             .style("dominant-baseline", "middle")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
-
-        // Add count labels
-        yearGroups.append("text")
-            .attr("class", "count-label")
-            .attr("x", radiusScale(d3.max(yearData, d => d.count) || 0) + 12)
-            .attr("y", 4) // Center vertically
-            .attr("text-anchor", "start")
-            .attr("fill", "#4a5568")
-            .attr("font-size", "0px")
-            .attr("opacity", 0.6)
-            .style("dominant-baseline", "middle")
-            .style("font-family", "'IBM Plex Mono', monospace")
-            .text(d => d.count);
 
         updateSelection();
     }
@@ -264,12 +251,6 @@
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
                     .attr("fill", isSelected ? "#FF1515" : "#718096");
-
-                group.select(".count-label")
-                    .transition()
-                    .duration(300)
-                    .attr("opacity", isSelected ? 1 : 0.6)
-                    .attr("fill", isSelected ? "#FF1010" : "#4a5568");
             });
     }
 
