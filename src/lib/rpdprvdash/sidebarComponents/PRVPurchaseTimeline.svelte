@@ -99,7 +99,7 @@
         // Scale for circle radius based on total transaction value
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.totalValue) || 0])
-            .range([1, 14]);
+            .range([4, 20]);
 
         const g = svgElement.append("g")
             .attr("transform", `translate(${margin.left},0)`);
@@ -285,7 +285,7 @@
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
         <div class="w-2 h-2 rounded-full bg-amber-500" />               
           <h4 class="text-xs/snug uppercase font-base">
-            Voucher Purchases by Year             
+            Select Year             
             </h4>
     </div>    
     <svg

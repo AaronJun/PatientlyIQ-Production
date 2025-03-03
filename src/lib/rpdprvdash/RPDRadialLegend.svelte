@@ -22,8 +22,8 @@
     $: displayItems = showOnlyWithCounts ? items.filter(item => item.count > 0) : items;
 </script>
 
-<div class="legend-container flex-row flex-wrap align-middle justify-left gap-4 px-2 py-1 w-full bg-slate-100/20">
-    <h3 class="text-xs font-medium text-slate-500 uppercase mb-2">Therapeutic Area</h3>
+<div class="legend-container grid grid-cols-3 flex-wrap align-middle justify-left w-full bg-slate-100/20">
+    <h3 class="text-xs font-semibold text-slate-500 uppercase col-span-3 mb-4">Therapeutic Area</h3>
     {#each displayItems as d}
         <div class="legend-row flex flex-row justify-start align-middle legend-item">
             <div class="legend-color w-3 h-3 rounded-full relative overflow-hidden">
@@ -34,7 +34,7 @@
                      style="background-color: {getTherapeuticAreaColor(d.area).stroke};">
                 </div>
             </div>
-            <span class="text-xs text-slate-800 font-sans font-base">{d.area}</span>
+            <span class="text-[9.725px] text-slate-800 font-sans font-base">{d.area}</span>
         </div>
     {/each}
 </div>
@@ -43,7 +43,6 @@
     .legend-row {
         margin-bottom: 0.425rem;
         padding-bottom: .25rem;
-        border-bottom: .25px solid #a0aec0;
     }
 
     .legend-item {

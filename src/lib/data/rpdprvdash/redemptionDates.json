@@ -1,0 +1,102 @@
+[
+  {
+    "drug": "VEOZAH",
+    "approval_date": "5/12/2023",
+    "sponsor": "Astellas"
+  },
+  {
+    "drug": "COSENTYX",
+    "approval_date": "6/16/2020",
+    "sponsor": "Novartis"
+  },
+  {
+    "drug": "ZEPOSIA",
+    "approval_date": "5/27/2021",
+    "sponsor": "Bristol-Myers Squibb"
+  },
+  {
+    "drug": "XYWAV",
+    "approval_date": "7/21/2020",
+    "sponsor": "Jazz Pharmaceuticals"
+  },
+  {
+    "drug": "TYVASO DPI",
+    "approval_date": "5/23/2022",
+    "sponsor": "United Therapeutics"
+  },
+  {
+    "drug": "IMJUDO",
+    "approval_date": "10/23/2022",
+    "sponsor": "AstraZeneca"
+  },
+  {
+    "drug": "SKYRIZI",
+    "approval_date": "6/16/2022",
+    "sponsor": "AbbVie"
+  },
+  {
+    "drug": "VABYSMO",
+    "approval_date": "1/28/2022",
+    "sponsor": "Genentech"
+  },
+  {
+    "drug": "ULTOMIRIS",
+    "approval_date": "4/27/2022",
+    "sponsor": "Alexion"
+  },
+  {
+    "drug": "",
+    "approval_date": "",
+    "sponsor": ""
+  },
+  {
+    "drug": "BEOVU",
+    "approval_date": "10/7/2019",
+    "sponsor": "Novartis"
+  },
+  {
+    "drug": "DESCOVY",
+    "approval_date": "10/3/2019",
+    "sponsor": "Gilead"
+  },
+  {
+    "drug": "RINVOQ",
+    "approval_date": "8/16/2019",
+    "sponsor": "AbbVie"
+  },
+  {
+    "drug": "MAYZENT",
+    "approval_date": "3/26/2019",
+    "sponsor": "Novartis"
+  },
+  {
+    "drug": "ULTOMIRIS",
+    "approval_date": "12/21/2018",
+    "sponsor": "Alexion"
+  },
+  {
+    "drug": "ALYFTREK",
+    "approval_date": "12/20/2024",
+    "sponsor": "Vertex"
+  },
+  {
+    "drug": "KISQALI",
+    "approval_date": "9/17/2024",
+    "sponsor": "Novartis"
+  },
+  {
+    "drug": "OPZELURA",
+    "approval_date": "9/21/2021",
+    "sponsor": "Incyte"
+  },
+  {
+    "drug": "TREMFYA",
+    "approval_date": "9/11/2024",
+    "sponsor": "Janssen"
+  },
+  {
+    "drug": "VYVGART HYTRULO",
+    "approval_date": "6/21/2024",
+    "sponsor": "argenx"
+  }
+]

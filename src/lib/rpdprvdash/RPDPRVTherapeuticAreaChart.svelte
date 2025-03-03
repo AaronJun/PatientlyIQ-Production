@@ -24,8 +24,8 @@
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 850;
-    const height = 850;
+    const width = 920;
+    const height = 920;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
@@ -41,14 +41,14 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.9325,
-        'P1': radius * 0.8125,
-        'P1/2': radius * 0.725,
+        'PRE': radius * 0.95875,
+        'P1': radius * 0.8425,
+        'P1/2': radius * 0.73725,
         'P2': radius * 0.625,
-        'P3': radius * 0.525,
-        'FILED': radius * 0.4125,
-        'APRV': radius * 0.295,
-        'PRV': radius * 0.15
+        'P3': radius * 0.5125,
+        'FILED': radius * 0.3925,
+        'APRV': radius * 0.2725,
+        'PRV': radius * 0.13525
     };
 
     // UI Configuration

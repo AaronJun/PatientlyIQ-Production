@@ -338,7 +338,7 @@
     
     <div class="tab-content w-full h-full flex px-4">
       <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
-      <div class="timeline-wrapper h-full border-r border-slate-200 pr-4">
+      <div class="timeline-wrapper h-full pr-4">
         {#if activeTab === 'By Transactions'}
         <PRVPurchaseTimeline 
         data={rpddData}
@@ -354,12 +354,6 @@
           />
         {/if}
         
-        <div class="mt-6">
-          <RPDRadialLegend 
-            items={processedData}
-            {colorScale}
-          />
-        </div>
       </div>
 
       <!-- Main content area with adjusted width to accommodate the vertical timeline -->
@@ -386,7 +380,6 @@
                     {currentView || 'Overview'}
                   </h4>
                 </div>
-                
                 <!-- Use the updated sidebar component -->
                 <SponsorSidebar
                   {currentView}
@@ -397,6 +390,12 @@
                   fullYearData={filteredData}
                   selectedYear={selectedYear}
                 />
+                <div class="mt-6">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -447,6 +446,12 @@
                   </div>
                   
                 </div>
+                <div class="mt-6">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -485,6 +490,12 @@
                   fullYearData={filteredData}
                   selectedYear={selectedYear}
                 />
+                <div class="mt-6">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
+                </div>
               </div>
             </div>
           </div>

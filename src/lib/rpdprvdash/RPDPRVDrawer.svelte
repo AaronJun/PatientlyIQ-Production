@@ -274,21 +274,11 @@
                         </tr>
                         <tr class="flex w-full align-baseline">
                             <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Est. Next Milestone</p>
-                            </div>
-                            <div class="flex justify-items-stretch w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {'Not yet available' || 'Not Available'}
-                                </p>
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
                                 <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline text-left uppercase">Voucher Award Date</p>
                             </div>
                             <div class="flex justify-between w-8/12 gap-2">                    
                                 <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {voucherAwardDate || 'Not yet applicable'}
+                                    {voucherAwardDate || 'Not yet awarded'}
                                 </p>
                            
                                 {#if voucherAwardDate !== "" && voucherAwardDate !== "Not yet applicable"}
@@ -307,17 +297,7 @@
                             </div>
                             <div class="flex justify-items-stretch w-8/12 gap-2">                    
                                 <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {voucherTransactionDate || 'Not yet applicable'}
-                                </p>
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Est. Approval</p>
-                            </div>
-                            <div class="flex justify-items-stretch w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {'Not yet available' || 'Not Available'}
+                                    {voucherTransactionDate || 'N/A'}
                                 </p>
                             </div>
                         </tr>

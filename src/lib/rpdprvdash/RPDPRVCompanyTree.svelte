@@ -21,13 +21,13 @@
     export let onShowCompanyDetail: (detail: any) => void = () => {};
 
     let svg: SVGElement;
-    const width = 850;
-    const height = 850;
+    const width = 920;
+    const height = 920;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
     const labelConfig = {
-        minRadius: radius * .9825,
+        minRadius: radius * .98725,
         maxRadius: radius * 1,
         padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
@@ -38,14 +38,13 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.9325,
-        'P1': radius * 0.8125,
-        'P1/2': radius * 0.725,
-        'P2': radius * 0.625,
-        'P3': radius * 0.525,
-        'FILED': radius * 0.4125,
-        'APRV': radius * 0.295,
-        'PRV': radius * 0.15
+        'PRE': radius * 0.93725,
+        'P1': radius * 0.7825,
+        'P1/2': radius * 0.6825,
+        'P2': radius * 0.525,
+        'P3': radius * 0.3825,
+        'FILED': radius * 0.2825,
+        'PRV': radius * 0.1725
     };
 
     // UI Configuration
@@ -113,6 +112,57 @@
         return stageCodeMap[stageCode] || stageCode;
     }
 
+    // Function to format company names by removing industry terms
+function formatCompanyName(companyName) {
+  // If no company name, return empty string
+  if (!companyName) return '';
+  
+  // List of words/phrases to remove - sort longer phrases first
+  const phrasesToRemove = [
+    'Life Sciences',
+    'Life Science',
+    'Pharmaceuticals',
+    'Biotechnology',
+    'Therapeutics',
+    'Biometrics',
+    'Partners',
+    'Science',
+    'Pharma',
+    'Biotech',
+    'Bio',
+    'Biosciences'
+  ];
+  
+  let formattedName = companyName;
+  
+  // Replace each phrase individually to handle multi-word phrases better
+  phrasesToRemove.forEach(phrase => {
+    const pattern = new RegExp(`\\b${phrase}\\b`, 'gi');
+    formattedName = formattedName.replace(pattern, '');
+  });
+  
+  // Clean up extra spaces, commas and other punctuation
+  formattedName = formattedName.replace(/\s+/g, ' ').trim();
+  formattedName = formattedName.replace(/,\s*$/, '').replace(/^\s*,/, '');
+  formattedName = formattedName.replace(/,\s*,/g, ',');
+  
+  // Fix cases where we removed all words or only punctuation remains
+  if (!formattedName.trim() || formattedName.trim().match(/^[,.\s-]+$/)) {
+    return companyName; // Return original if nothing meaningful remains
+  }
+  
+  // Fix cases with trailing/leading commas or just punctuation
+  formattedName = formattedName.replace(/^\s*[,.-]\s*/, '').replace(/\s*[,.-]\s*$/, '');
+  
+  // Fix inconsistencies with Inc, Inc., Corporation, etc.
+  formattedName = formattedName.replace(/\s*,\s*Inc\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*LLC\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Ltd\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Corporation\.?$/i, '');
+  
+  return formattedName;
+}
+
     function calculateOptimalLabelPlacement(companies: any[], companyAngles: Map<string, any>) {
         const labels: any[] = [];
         const labelHeight = labelConfig.textHeight + 
@@ -167,13 +217,13 @@
                             labelPlacement: any) {
         const textAnchor = labelPlacement.isRightSide ? "start" : "end";
         const xOffset = labelPlacement.isRightSide ? 15 : -15;
-        
-        // Create text element
+                
+        // Create text element with formatted company name
         const textElement = group.append("text")
             .attr("text-anchor", textAnchor)
             .attr("dx", xOffset)
             .attr("dy", "0.35em")
-            .text(company.company)
+            .text(formatCompanyName(company.company))
             .attr("fill", "#4A5568")
             .attr("font-size", "9.25px")
             .attr("font-weight", "500");
@@ -588,11 +638,11 @@
             .attr("id", `company-node-${companyId}`);
 
         nodeGroup.append("rect")
-            .attr("width", 7.725)
-            .attr("height", 7.725)
-            .attr("transform", "translate(-5.125, -5.125)")
+            .attr("width", 9.725)
+            .attr("height", 9.725)
             .attr("fill", statusColor.fill)
             .attr("stroke", statusColor.stroke)
+            .attr("transform", "translate(-5.125, -5.125)")
             .attr("stroke-width", 0.725)
             .attr("rx", 2);
 

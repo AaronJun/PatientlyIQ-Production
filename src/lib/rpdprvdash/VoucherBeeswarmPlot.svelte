@@ -230,7 +230,7 @@
     // Create simulation
     const simulation = d3.forceSimulation(purchasedVouchers)
       .force("y", d3.forceY(d => y(getPrice(d))).strength(1))
-      .force("x", d3.forceX(width/2).strength(0.025))
+      .force("x", d3.forceX(width/2).strength(0.2))
       .force("collide", d3.forceCollide(6))
       .alphaDecay(0.1)
       .alpha(0.5)

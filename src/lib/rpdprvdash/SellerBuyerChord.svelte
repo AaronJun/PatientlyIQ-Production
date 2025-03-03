@@ -4,6 +4,7 @@
   import * as d3 from 'd3';
 
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
+  import TransactionDetails from '$lib/RPDComponents/TransactionDetails.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
 
   export let data: any[] = [];
@@ -561,7 +562,7 @@
   <div class="py-2 px-4 flex justify-between items-center">
     <h3 class="text-sm font-medium text-slate-700">Transaction Network</h3>
     {#if selectedYear}
-    <div class="bg-slate-100 px-3 py-1 rounded-full text-xs font-medium text-slate-700 flex items-center">
+    <div class="text-xs font-medium text-slate-800 flex items-left">
       <span>Showing transactions for</span>
       <span class="ml-1 text-red-500 font-semibold">{selectedYear}</span>
     </div>
