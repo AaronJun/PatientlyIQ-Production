@@ -33,13 +33,13 @@
       .map(([area, count]) => ({ area, count }));
   </script>
   
-  <div class="summary-view bg-white rounded-lg shadow-sm p-4 mb-4">
+  <div class="summary-view rounded-lg shadow-sm p-4 mb-4">
     <h3 class="text-base font-medium text-slate-800 mb-3">
       {year} Year Summary
     </h3>
     
     <div class="grid grid-cols-2 gap-4 mb-4">
-      <div class="stat-card bg-slate-50 p-3 rounded-lg">
+      <div class="stat-card">
         <span class="text-3xl font-bold text-slate-700">{totalRPDDs}</span>
         <p class="text-xs text-slate-500 mt-1">Total RPDDs</p>
       </div>
@@ -91,8 +91,8 @@
       </div>
     {/if}
     
-    <div class="text-xs text-slate-500 mt-4">
-      <p>Select elements in the visualization to see details</p>
+    <div class="text-xs text-slate-500 mt-8">
+      <p class="text-xs font-semibold">Select elements in the visualization to see details</p>
     </div>
   </div>
   
@@ -104,7 +104,7 @@
     .stat-card {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: start;
       justify-content: center;
       text-align: center;
       transition: all 0.2s ease;

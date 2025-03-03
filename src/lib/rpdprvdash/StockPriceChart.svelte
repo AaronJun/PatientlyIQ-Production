@@ -51,6 +51,12 @@
     return format(date, formatStr);
   }
 
+  // Parse date from MM/DD/YYYY format
+  function parseDate(dateStr: string): Date {
+    const [month, day, year] = dateStr.split('/').map(part => parseInt(part));
+    return new Date(year, month - 1, day);
+  }
+
   // Find the closest stock price to a given date
   function findClosestStockPrice(stockData: any[], targetDate: Date) {
     if (!stockData || stockData.length === 0) return null;
@@ -64,7 +70,7 @@
     return sortedByDateDiff[0];
   }
 
-  // Calculate impact of milestone on stock price (3-month before/after average)
+  // Calculate impact of milestone on stock price (30-day before/after average)
   function calculateImpact(milestone: any) {
     // Sort data by date
     const sortedData = [...chartData].sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -72,16 +78,16 @@
     // Get milestone date
     const milestoneDate = milestone.date;
     
-    // Find data points within 3 months before the milestone
+    // Find data points within 30 days before the milestone
     const beforeData = sortedData.filter(d => {
-      const diffMonths = (milestoneDate.getTime() - d.date.getTime()) / (1000 * 60 * 60 * 24 * 30);
-      return diffMonths >= 0 && diffMonths <= 3;
+      const diffDays = (milestoneDate.getTime() - d.date.getTime()) / (1000 * 60 * 60 * 24);
+      return diffDays >= 0 && diffDays <= 30;
     });
     
-    // Find data points within 3 months after the milestone
+    // Find data points within 30 days after the milestone
     const afterData = sortedData.filter(d => {
-      const diffMonths = (d.date.getTime() - milestoneDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
-      return diffMonths > 0 && diffMonths <= 3;
+      const diffDays = (d.date.getTime() - milestoneDate.getTime()) / (1000 * 60 * 60 * 24);
+      return diffDays > 0 && diffDays <= 30;
     });
     
     // Calculate average prices
@@ -113,12 +119,11 @@
       chartData = stockData
         .filter(d => d.Company === companyName)
         .map(d => {
-          const month = parseInt(d.StockPriceMonth) - 1;
-          const year = parseInt(d.StockPriceYear);
+          const date = parseDate(d.Date);
           const price = parseFloat(d["Close/Price"]);
           return {
-            date: new Date(year, month, 1),
-            price: price
+            date,
+            price
           };
         })
         .sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -717,7 +722,7 @@
           class="tooltip" 
           style="left: {tooltipData.x}px; top: {tooltipData.y}px;"
         >
-          <div class="tooltip-date">{formatDateStr(tooltipData.date, 'MMM yyyy')}</div>
+          <div class="tooltip-date">{formatDateStr(tooltipData.date, 'MMM d, yyyy')}</div>
           <div class="tooltip-price">${tooltipData.price.toFixed(2)}</div>
           {#if tooltipData.details}
             <div class="tooltip-details">{tooltipData.details}</div>
@@ -740,7 +745,7 @@
             <h4>
               <div class="flex w-full justify-between">
               <span class="date-range">
-                {formatDateStr(brushStats.startDate, 'MMM yyyy')} - {formatDateStr(brushStats.endDate, 'MMM yyyy')}
+                {formatDateStr(brushStats.startDate, 'MMM d, yyyy')} - {formatDateStr(brushStats.endDate, 'MMM d, yyyy')}
               </span>
             <span class="timespan">
               ({brushStats.timespan.years > 0 ? `${brushStats.timespan.years}YR ` : ''}
@@ -807,15 +812,15 @@
     <!-- Impact Analysis Details -->
     {#if selectedMilestone && impactAnalysis}
       <div class="impact-analysis">
-        <h4 class="analysis-title">3-Month Impact Analysis: {selectedMilestone.type}</h4>
+        <h4 class="analysis-title">30-Day Impact Analysis: {selectedMilestone.type}</h4>
         <div class="analysis-content">
           <div class="analysis-period before">
             <h5>Before Event</h5>
             <div class="analysis-value">${impactAnalysis.beforeAvg.toFixed(2)}</div>
-            <div class="analysis-label">3-month Avg</div>
+            <div class="analysis-label">30-day Avg</div>
             <div class="analysis-range">
-              {impactAnalysis.beforeData.length > 0 ? formatDateStr(impactAnalysis.beforeData[0].date, 'MMM yyyy') : ''} - 
-              {formatDateStr(selectedMilestone.date, 'MMM yyyy')}
+              {impactAnalysis.beforeData.length > 0 ? formatDateStr(impactAnalysis.beforeData[0].date, 'MMM d, yyyy') : ''} - 
+              {formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}
             </div>
           </div>
           
@@ -831,10 +836,10 @@
           <div class="analysis-period after">
             <h5>After Event</h5>
             <div class="analysis-value">${impactAnalysis.afterAvg.toFixed(2)}</div>
-            <div class="analysis-label">3-month Avg</div>
+            <div class="analysis-label">30-day Avg</div>
             <div class="analysis-range">
-              {formatDateStr(selectedMilestone.date, 'MMM yyyy')} - 
-              {impactAnalysis.afterData.length > 0 ? formatDateStr(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM yyyy') : ''}
+              {formatDateStr(selectedMilestone.date, 'MMM d, yyyy')} - 
+              {impactAnalysis.afterData.length > 0 ? formatDateStr(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM d, yyyy') : ''}
             </div>
           </div>
         </div>
@@ -854,7 +859,7 @@
     <!-- Selected Milestone Details -->
     {#if selectedMilestone && !impactAnalysis}
       <div class="milestone-details" style="border-left-color: {selectedMilestone.color}">
-        <p>{formatDateStr(selectedMilestone.date, 'MMM yyyy')}: {selectedMilestone.details}</p>
+        <p>{formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}: {selectedMilestone.details}</p>
       </div>
     {/if}
   {/if}
@@ -1139,7 +1144,6 @@
     font-size: 0.625rem;
     color: #6b7280;
     font-weight: 600;
-
     margin-bottom: 0.25rem;
   }
   

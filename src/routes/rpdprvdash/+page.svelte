@@ -338,7 +338,7 @@
     
     <div class="tab-content w-full h-full flex px-4">
       <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
-      <div class="timeline-wrapper h-full pr-4">
+      <div class="timeline-wrapper h-lvh mt-12 pr-4">
         {#if activeTab === 'By Transactions'}
         <PRVPurchaseTimeline 
         data={rpddData}
@@ -361,7 +361,7 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
-            <div class="w-3/4 pr-6">
+            <div class="w-3/4 px-12">
               <RpdprvCompanyTree 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
@@ -390,7 +390,7 @@
                   fullYearData={filteredData}
                   selectedYear={selectedYear}
                 />
-                <div class="mt-6">
+                <div class="mt-12">
                   <RPDRadialLegend 
                     items={processedData}
                     {colorScale}
@@ -404,7 +404,7 @@
         {:else if activeTab === 'By Transactions'}
          <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row">
-            <div class="w-3/4 pr-6">
+            <div class="w-3/4 px-12">
               <SellerBuyerChord 
               data={rpddData}
               stockData={rpdCompanyValues}
@@ -446,7 +446,7 @@
                   </div>
                   
                 </div>
-                <div class="mt-6">
+                <div class="mt-12">
                   <RPDRadialLegend 
                     items={processedData}
                     {colorScale}
@@ -460,7 +460,7 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row">
             <!-- Main visualization area -->
-            <div class="w-3/4 pr-6">
+            <div class="w-3/4 px-6">
               <RPDDRadialYear 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
@@ -490,7 +490,7 @@
                   fullYearData={filteredData}
                   selectedYear={selectedYear}
                 />
-                <div class="mt-6">
+                <div class="mt-12">
                   <RPDRadialLegend 
                     items={processedData}
                     {colorScale}

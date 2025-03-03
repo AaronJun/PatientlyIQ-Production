@@ -13,7 +13,7 @@
     };
   </script>
   
-  <div class="company-metrics pt-0">
+  <div class="company-metrics">
     <h3 class="text-base font-semibold text-slate-800 mb-3">{metrics.companyName}</h3>
     
     <div class="metrics-list space-y-2">
@@ -23,7 +23,7 @@
       </div>
       
       <div class="metric-item flex justify-between">
-        <span class="text-xs text-slate-600 font-medium">In Trials</span>
+        <span class="text-xs text-slate-600 font-medium">In clinical trials</span>
         <span class="text-sm font-medium text-slate-800">{metrics.clinicalTrials}</span>
       </div>
       
@@ -37,8 +37,6 @@
   </div>
   
   <style>
-    .company-metrics {
-    }
     
     .metric-item {
       border-bottom: .25px solid #4A90E2;

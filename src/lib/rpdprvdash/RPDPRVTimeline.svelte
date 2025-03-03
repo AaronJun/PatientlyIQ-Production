@@ -226,7 +226,7 @@
         updateSelection();
     }
 
-    function updateSelection() {
+function updateSelection() {
         if (!svg) return;
 
         d3.select(svg)
@@ -260,9 +260,8 @@
 </script>
 
 <div class="timeline-container">
-    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-        <div class="w-2 h-2 rounded-full bg-emerald-600" />               
-          <h4 class="text-xs/snug uppercase font-base">
+    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
+        <h4 class="text-xs/snug uppercase font-bold">
             Select Year              
             </h4>
     </div>    

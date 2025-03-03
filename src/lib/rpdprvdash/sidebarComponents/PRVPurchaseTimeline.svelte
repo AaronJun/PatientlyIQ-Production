@@ -99,7 +99,7 @@
         // Scale for circle radius based on total transaction value
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.totalValue) || 0])
-            .range([4, 20]);
+            .range([2, 20]);
 
         const g = svgElement.append("g")
             .attr("transform", `translate(${margin.left},0)`);
@@ -170,7 +170,7 @@
             .attr("class", "highlight-circle")
             .attr("r", d => radiusScale(d.totalValue) + 4)
             .attr("fill", "none")
-            .attr("stroke", "#") // Using orange for purchase highlight
+            .attr("stroke", "#55D88E") // Using orange for purchase highlight
             .attr("stroke-width", 5)
             .attr("opacity", 0);
 
@@ -282,9 +282,8 @@
 </script>
 
 <div class="timeline-container">
-    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">
-        <div class="w-2 h-2 rounded-full bg-amber-500" />               
-          <h4 class="text-xs/snug uppercase font-base">
+    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">        
+          <h4 class="text-xs/snug uppercase font-bold">
             Select Year             
             </h4>
     </div>    
