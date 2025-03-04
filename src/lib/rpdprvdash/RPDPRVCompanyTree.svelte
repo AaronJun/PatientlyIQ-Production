@@ -492,7 +492,7 @@ function formatCompanyName(companyName) {
             d3.select(`#stage-label-${stage} text`)
                 .transition()
                 .duration(200)
-                .attr("font-weight", "700");
+                .attr("font-weight", "800");
                 
             onStageHover(entries);
         }

@@ -1,5 +1,6 @@
 <!-- RPDRadialLegend.svelte -->
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { getTherapeuticAreaColor, therapeuticAreaColors } from './utils/colorDefinitions';
     
     interface LegendItem {
@@ -19,11 +20,57 @@
     // colorScale is now optional since we'll use the imported color function by default
     export let colorScale: (area: string) => string = (area) => getTherapeuticAreaColor(area).fill;
     
+    // Responsive layout variables
+    let containerWidth = 0;
+    let legendContainer: HTMLElement;
+    let columns = 3;
+
+    // Watch container size and update columns
+    function updateColumns() {
+        if (!legendContainer) return;
+        
+        const width = legendContainer.offsetWidth;
+        
+        if (width < 250) {
+            columns = 1;
+        } else if (width < 450) {
+            columns = 2;
+        } else {
+            columns = 3;
+        }
+        
+        containerWidth = width;
+    }
+
+    onMount(() => {
+        updateColumns();
+        
+        // Set up resize observer to monitor container width changes
+        const resizeObserver = new ResizeObserver(() => {
+            updateColumns();
+        });
+        
+        if (legendContainer) {
+            resizeObserver.observe(legendContainer);
+        }
+        
+        return () => {
+            if (legendContainer) {
+                resizeObserver.disconnect();
+            }
+        };
+    });
+
+    // Filtered items
     $: displayItems = showOnlyWithCounts ? items.filter(item => item.count > 0) : items;
 </script>
 
-<div class="legend-container grid grid-cols-3 flex-wrap align-middle justify-left w-full bg-slate-100/20">
-    <h3 class="text-xs font-semibold text-slate-500 uppercase col-span-3 mb-4">Therapeutic Area</h3>
+<div 
+    class="legend-container grid flex-wrap align-middle justify-left w-ful gap-x-4" 
+    style="grid-template-columns: repeat({columns}, minmax(0, 1fr));"
+    bind:this={legendContainer}
+>
+    <h3 class="text-xs font-semibold text-slate-800 capitalize mb-4" style="grid-column: span {columns};">Therapeutic Areas</h3>
     {#each displayItems as d}
         <div class="legend-row flex flex-row justify-start align-middle legend-item">
             <div class="legend-color w-3 h-3 rounded-full relative overflow-hidden">
@@ -34,7 +81,9 @@
                      style="background-color: {getTherapeuticAreaColor(d.area).stroke};">
                 </div>
             </div>
-            <span class="text-[9.725px] text-slate-800 font-sans font-base">{d.area}</span>
+            <span class="text-[9.725px] text-slate-800 font-sans font-base">
+                {d.area}{d.count > 0 ? ` | ${d.count}` : ''}
+            </span>
         </div>
     {/each}
 </div>
@@ -48,26 +97,17 @@
     .legend-item {
         display: flex;
         align-items: center;
-        gap: 0.45725rem;
+        gap: 0.32725rem;
     }
 
     .legend-color {
         border: 1px solid #161616;
         display: flex;
-        filter:drop-shadow(0 0 1px rgba(0, 1, 0, .515));
-    }
-    
-    .bg-left-half {
-        border-top-left-radius: 50%;
-        border-bottom-left-radius: 50%;
-    }
-    
-    .bg-right-half {
-        border-top-right-radius: 50%;
-        border-bottom-right-radius: 50%;
-    }
 
+    }
+   
     .legend-container {
-        border-bottom: 1px solid #e2e8f0;
+        border-top: .325px solid #161616;
+        padding-top: .5625rem;
     }
 </style>

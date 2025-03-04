@@ -33,7 +33,7 @@
       .map(([area, count]) => ({ area, count }));
   </script>
   
-  <div class="summary-view rounded-lg shadow-sm p-4 mb-4">
+  <div class="summary-view">
     <h3 class="text-base font-medium text-slate-800 mb-3">
       {year} Year Summary
     </h3>

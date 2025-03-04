@@ -315,7 +315,7 @@
           {/each}
         </div>
 
-        <div class="flex gap-4 min-w-96">
+        <div class="flex w-1/5 gap-4">
           <RpdprvSearch
             data={rpddData}
             onShowDrugDetail={handleShowDrugDetail}
@@ -336,9 +336,9 @@
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8">
     
-    <div class="tab-content w-full h-full flex px-4">
+    <div class="tab-content w-full h-full flex">
       <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
-      <div class="timeline-wrapper h-lvh mt-12 pr-4">
+      <div class="timeline-wrapper max-w-1/5 min-h-full">
         {#if activeTab === 'By Transactions'}
         <PRVPurchaseTimeline 
         data={rpddData}
@@ -361,7 +361,7 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
-            <div class="w-3/4 pr-8 pl-2">
+            <div class="w-4/5 pr-8 pl-2">
               <RpdprvCompanyTree 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
@@ -373,13 +373,8 @@
             </div>
 
             <!-- Sticky sidebar -->
-            <div class="w-1/4 max-w-xs">
+            <div class="w-1/5 px-8">
               <div class="sticky top-32">
-                <div class="sidebar-header mb-2">
-                  <h4 class="text-xs uppercase font-semibold text-slate-600">              
-                    {currentView || 'Overview'}
-                  </h4>
-                </div>
                 <!-- Use the updated sidebar component -->
                 <SponsorSidebar
                   {currentView}
@@ -404,7 +399,7 @@
         {:else if activeTab === 'By Transactions'}
          <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row">
-            <div class="w-3/4 px-12">
+            <div class="w-4/5 px-12">
               <SellerBuyerChord 
               data={rpddData}
               stockData={rpdCompanyValues}
@@ -417,7 +412,7 @@
             
             </div>
             
-            <div class="w-1/4 max-w-xs">
+            <div class="w-1/5 px-8">
               <div class="sticky top-32">
                 <div class="sidebar-header mb-4">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">                              
@@ -455,8 +450,8 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row">
             <!-- Main visualization area -->
-            <div class="w-3/4 px-6">
-              <RPDDRadialYear 
+            <div class="w-4/5 px-6">
+            <RPDDRadialYear 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
                 onStageHover={handleStageHover}
@@ -467,7 +462,7 @@
             </div>
 
             <!-- Sticky sidebar -->
-            <div class="w-1/4 max-w-xs">
+            <div class="w-1/5 px-8">
               <div class="sticky top-32">
                 <div class="sidebar-header mb-2">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">              
