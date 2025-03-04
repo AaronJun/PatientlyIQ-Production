@@ -74,7 +74,9 @@
   let stockDataByCompany: Record<string, any[]> = {};
   
   // Filter data based on selected year (for non-transaction tabs)
-  $: filteredData = rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
+  $: filteredData = selectedYear === "All" 
+    ? rpddData // Use all data when "All" is selected
+    : rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
   
   // Filter transaction data based on selected transaction year (for transaction tab)
   $: filteredTransactionData = rpddData.filter(entry => 

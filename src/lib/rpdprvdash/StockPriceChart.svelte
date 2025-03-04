@@ -26,6 +26,10 @@
   let tooltipData = { x: 0, y: 0, date: new Date(), price: 0, details: '' };
   let dimensions = { width: 0, height: 0, margin: { top: 30, right: 30, bottom: 50, left: 60 } };
   let brushDimensions = { width: 0, height: 60, margin: { top: 5, right: 30, bottom: 20, left: 60 } };
+  
+  // Added periods for impact analysis
+  let impactPeriod: '3' | '7' | '14' | '30' = '14';
+  
   let impactAnalysis: {
     beforeAvg: number,
     afterAvg: number,
@@ -70,24 +74,24 @@
     return sortedByDateDiff[0];
   }
 
-  // Calculate impact of milestone on stock price (30-day before/after average)
-  function calculateImpact(milestone: any) {
+  // Calculate impact of milestone on stock price (with variable day periods)
+  function calculateImpact(milestone: any, days: number) {
     // Sort data by date
     const sortedData = [...chartData].sort((a, b) => a.date.getTime() - b.date.getTime());
     
     // Get milestone date
     const milestoneDate = milestone.date;
     
-    // Find data points within 30 days before the milestone
+    // Find data points within specified days before the milestone
     const beforeData = sortedData.filter(d => {
       const diffDays = (milestoneDate.getTime() - d.date.getTime()) / (1000 * 60 * 60 * 24);
-      return diffDays >= 0 && diffDays <= 30;
+      return diffDays >= 0 && diffDays <= days;
     });
     
-    // Find data points within 30 days after the milestone
+    // Find data points within specified days after the milestone
     const afterData = sortedData.filter(d => {
       const diffDays = (d.date.getTime() - milestoneDate.getTime()) / (1000 * 60 * 60 * 24);
-      return diffDays > 0 && diffDays <= 30;
+      return diffDays > 0 && diffDays <= days;
     });
     
     // Calculate average prices
@@ -230,8 +234,8 @@
     d3.select(svgElement).selectAll("*").remove();
     
     // Get dimensions
-    const width = svgElement.clientWidth || 800;
-    const height = svgElement.clientHeight || 300;
+    const width = svgElement.clientWidth || 920;
+    const height = svgElement.clientHeight || 720;
     dimensions = { 
       width, 
       height, 
@@ -308,9 +312,9 @@
         .tickFormat(d => formatDateStr(d as Date, 'MMM yyyy')))
       .selectAll("text")
         .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-45)");
+        .attr("dx", "0em")
+        .attr("dy", ".715em")
+        .attr("transform", "rotate(0)");
     
     // Add y-axis
     g.append("g")
@@ -343,7 +347,7 @@
       .datum(filteredData)
       .attr("fill", "none")
       .attr("stroke", color)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", 1.25)
       .attr("d", line);
     
     // Draw impact analysis if we have a selected milestone
@@ -425,7 +429,7 @@
       .on("mouseover", function(event, d) {
         d3.select(this)
           .attr("opacity", 1)
-          .attr("r", 8);
+          .attr("r", 10);
         
         // Show tooltip
         tooltipData = {
@@ -457,15 +461,16 @@
           // Reset all milestones
           milestoneGroup.selectAll(".milestone")
             .attr("opacity", 0.8)
-            .attr("r", 6);
+            .attr("r", 10);
             
           // Redraw the chart without impact analysis
           drawChart();
         } else {
           selectedMilestone = d;
           
-          // Calculate impact
-          impactAnalysis = calculateImpact(d);
+          // Calculate impact using the selected period
+          const days = parseInt(impactPeriod);
+          impactAnalysis = calculateImpact(d, days);
           
           tooltipVisible = true;
           tooltipData = {
@@ -479,12 +484,12 @@
           // Reset all milestones
           milestoneGroup.selectAll(".milestone")
             .attr("opacity", 0.8)
-            .attr("r", 6);
+            .attr("r", 10);
           
           // Highlight selected milestone
           d3.select(this)
             .attr("opacity", 1)
-            .attr("r", 8);
+            .attr("r", 12);
             
           // Redraw the chart with impact analysis
           drawChart();
@@ -512,8 +517,8 @@
     d3.select(brushSvgElement).selectAll("*").remove();
     
     // Get dimensions
-    const width = brushSvgElement.clientWidth || 800;
-    const height = brushSvgElement.clientHeight || 60;
+    const width = brushSvgElement.clientWidth || 920;
+    const height = brushSvgElement.clientHeight || 100;
     brushDimensions = { 
       width, 
       height, 
@@ -575,7 +580,7 @@
       .attr("transform", `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale)
         .ticks(4)
-        .tickFormat(d => formatDateStr(d as Date, 'yyyy')));
+        .tickFormat(d => formatDateStr(d as Date, 'MMM yyyy')));
     
     // Add brush
     const brush = d3.brushX()
@@ -662,6 +667,20 @@
     };
   }
 
+  // Function to change the impact period and recalculate
+  function changeImpactPeriod(period: '3' | '7' | '14' | '30') {
+    impactPeriod = period;
+    
+    if (selectedMilestone) {
+      // Recalculate impact analysis with new period
+      const days = parseInt(period);
+      impactAnalysis = calculateImpact(selectedMilestone, days);
+      
+      // Redraw chart with new analysis
+      drawChart();
+    }
+  }
+
   function resizeCharts() {
     if (svgElement) {
       drawChart();
@@ -703,7 +722,7 @@
   });
 </script>
 
-<div class="stock-chart-container">
+<div class="stock-chart-container h-full w-full">
   <div class="chart-header">
     <h3 class="text-sm font-semibold text-slate-800 mb-2">{companyName} Stock Price History</h3>
   </div>
@@ -745,411 +764,465 @@
             <h4>
               <div class="flex w-full justify-between">
               <span class="date-range">
-                {formatDateStr(brushStats.startDate, 'MMM d, yyyy')} - {formatDateStr(brushStats.endDate, 'MMM d, yyyy')}
-              </span>
-            <span class="timespan">
-              ({brushStats.timespan.years > 0 ? `${brushStats.timespan.years}YR ` : ''}
-              {brushStats.timespan.months > 0 ? `${brushStats.timespan.months}MO ` : ''}
-              {brushStats.timespan.days > 0 ? `${brushStats.timespan.days}D` : ''})
-            </span>
-          </div>
-          </h4>
-        </div>
-        <div class="stats-content">
-          <div class="stat-item">
-            <span class="stat-label">Start Price</span>
-            <span class="stat-value">${brushStats.startPrice.toFixed(2)}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">End Price</span>
-            <span class="stat-value">${brushStats.endPrice.toFixed(2)}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Change</span>
-            <span class="stat-value ${brushStats.change >= 0 ? 'positive' : 'negative'}">
-              {brushStats.change >= 0 ? '+' : ''}${brushStats.change.toFixed(2)}
-            </span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">% Change</span>
-            <span class="stat-value ${brushStats.percentChange >= 0 ? 'positive' : 'negative'}">
-              {brushStats.percentChange >= 0 ? '+' : ''}${brushStats.percentChange.toFixed(2)}%
-            </span>
-          </div>
-        </div>
-      </div>
-    {/if}
-    
-    <!-- Milestone Legend -->
-    {#if milestones.length > 0}
-      <div class="milestone-legend">
-        <h4 class="text-xs font-semibold mb-2">Event Milestones (Click for impact analysis)</h4>
-        <div class="legend-items">
-          {#if milestones.some(m => m.type === 'RPDD')}
-            <div class="legend-item">
-              <span class="legend-dot" style="background-color: #4CAF50;"></span>
-              <span class="legend-label">RPDD Grant ({milestones.filter(m => m.type === 'RPDD').length})</span>
-            </div>
-          {/if}
-          
-          {#if milestones.some(m => m.type === 'PRV')}
-            <div class="legend-item">
-              <span class="legend-dot" style="background-color: #FF9800;"></span>
-              <span class="legend-label">PRV Award ({milestones.filter(m => m.type === 'PRV').length})</span>
-            </div>
-          {/if}
-          
-          {#if milestones.some(m => m.type === 'SALE')}
-            <div class="legend-item">
-              <span class="legend-dot" style="background-color: #9C27B0;"></span>
-              <span class="legend-label">PRV Sale ({milestones.filter(m => m.type === 'SALE').length})</span>
-            </div>
-          {/if}
-        </div>
-      </div>
-    {/if}
-    
-    <!-- Impact Analysis Details -->
-    {#if selectedMilestone && impactAnalysis}
-      <div class="impact-analysis">
-        <h4 class="analysis-title">30-Day Impact Analysis: {selectedMilestone.type}</h4>
-        <div class="analysis-content">
-          <div class="analysis-period before">
-            <h5>Before Event</h5>
-            <div class="analysis-value">${impactAnalysis.beforeAvg.toFixed(2)}</div>
-            <div class="analysis-label">30-day Avg</div>
-            <div class="analysis-range">
-              {impactAnalysis.beforeData.length > 0 ? formatDateStr(impactAnalysis.beforeData[0].date, 'MMM d, yyyy') : ''} - 
-              {formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}
-            </div>
-          </div>
-          
-          <div class="analysis-change">
-            <div class="change-arrow {impactAnalysis.percentChange >= 0 ? 'positive' : 'negative'}">
-              {impactAnalysis.percentChange >= 0 ? '↑' : '↓'}
-            </div>
-            <div class="change-value {impactAnalysis.percentChange >= 0 ? 'positive' : 'negative'}">
-              {Math.abs(impactAnalysis.percentChange).toFixed(2)}%
-            </div>
-          </div>
-          
-          <div class="analysis-period after">
-            <h5>After Event</h5>
-            <div class="analysis-value">${impactAnalysis.afterAvg.toFixed(2)}</div>
-            <div class="analysis-label">30-day Avg</div>
-            <div class="analysis-range">
-              {formatDateStr(selectedMilestone.date, 'MMM d, yyyy')} - 
-              {impactAnalysis.afterData.length > 0 ? formatDateStr(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM d, yyyy') : ''}
-            </div>
-          </div>
-        </div>
-        <div class="analysis-legend">
-          <div class="legend-item">
-            <span class="legend-line" style="background-color: #4CAF50;"></span>
-            <span class="legend-label">Before Avg</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-line" style="background-color: #FF5722;"></span>
-            <span class="legend-label">After Avg</span>
-          </div>
-        </div>
-      </div>
-    {/if}
-    
-    <!-- Selected Milestone Details -->
-    {#if selectedMilestone && !impactAnalysis}
-      <div class="milestone-details" style="border-left-color: {selectedMilestone.color}">
-        <p>{formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}: {selectedMilestone.details}</p>
-      </div>
-    {/if}
-  {/if}
+    {formatDateStr(brushStats.startDate, 'MMM d, yyyy')} - {formatDateStr(brushStats.endDate, 'MMM d, yyyy')}
+  </span>
+<span class="timespan">
+  ({brushStats.timespan.years > 0 ? `${brushStats.timespan.years}YR ` : ''}
+  {brushStats.timespan.months > 0 ? `${brushStats.timespan.months}MO ` : ''}
+  {brushStats.timespan.days > 0 ? `${brushStats.timespan.days}D` : ''})
+</span>
+</div>
+</h4>
+</div>
+<div class="stats-content">
+<div class="stat-item">
+<span class="stat-label">Start Price</span>
+<span class="stat-value">${brushStats.startPrice.toFixed(2)}</span>
+</div>
+<div class="stat-item">
+<span class="stat-label">End Price</span>
+<span class="stat-value">${brushStats.endPrice.toFixed(2)}</span>
+</div>
+<div class="stat-item">
+<span class="stat-label">Change</span>
+<span class="stat-value ${brushStats.change >= 0 ? 'positive' : 'negative'}">
+  {brushStats.change >= 0 ? '+' : ''}${brushStats.change.toFixed(2)}
+</span>
+</div>
+<div class="stat-item">
+<span class="stat-label">% Change</span>
+<span class="stat-value ${brushStats.percentChange >= 0 ? 'positive' : 'negative'}">
+  {brushStats.percentChange >= 0 ? '+' : ''}${brushStats.percentChange.toFixed(2)}%
+</span>
+</div>
+</div>
+</div>
+{/if}
+
+<!-- Milestone Legend -->
+{#if milestones.length > 0}
+<div class="milestone-legend">
+<h4 class="text-xs font-semibold mb-2">Event Milestones (Click for impact analysis)</h4>
+<div class="legend-items">
+{#if milestones.some(m => m.type === 'RPDD')}
+<div class="legend-item">
+  <span class="legend-dot" style="background-color: #4CAF50;"></span>
+  <span class="legend-label">RPDD Grant ({milestones.filter(m => m.type === 'RPDD').length})</span>
+</div>
+{/if}
+
+{#if milestones.some(m => m.type === 'PRV')}
+<div class="legend-item">
+  <span class="legend-dot" style="background-color: #FF9800;"></span>
+  <span class="legend-label">PRV Award ({milestones.filter(m => m.type === 'PRV').length})</span>
+</div>
+{/if}
+
+{#if milestones.some(m => m.type === 'SALE')}
+<div class="legend-item">
+  <span class="legend-dot" style="background-color: #9C27B0;"></span>
+  <span class="legend-label">PRV Sale ({milestones.filter(m => m.type === 'SALE').length})</span>
+</div>
+{/if}
+</div>
+</div>
+{/if}
+
+<!-- Impact Analysis Details -->
+{#if selectedMilestone && impactAnalysis}
+<div class="impact-analysis">
+<div class="analysis-header">
+<h4 class="analysis-title">{selectedMilestone.type} Impact Analysis</h4>
+<div class="period-selector">
+<button 
+class="period-button {impactPeriod === '3' ? 'active' : ''}" 
+on:click={() => changeImpactPeriod('3')}
+>
+3d
+</button>
+<button 
+class="period-button {impactPeriod === '7' ? 'active' : ''}" 
+on:click={() => changeImpactPeriod('7')}
+>
+7d
+</button>
+<button 
+class="period-button {impactPeriod === '14' ? 'active' : ''}" 
+on:click={() => changeImpactPeriod('14')}
+>
+14d
+</button>
+<button 
+class="period-button {impactPeriod === '30' ? 'active' : ''}" 
+on:click={() => changeImpactPeriod('30')}
+>
+30d
+</button>
+</div>
+</div>
+<div class="analysis-content">
+<div class="analysis-period before">
+<h5>Before Event</h5>
+<div class="analysis-value">${impactAnalysis.beforeAvg.toFixed(2)}</div>
+<div class="analysis-label">{impactPeriod}-day Avg</div>
+<div class="analysis-range">
+{impactAnalysis.beforeData.length > 0 ? formatDateStr(impactAnalysis.beforeData[0].date, 'MMM d, yyyy') : ''} - 
+{formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}
+</div>
+</div>
+
+<div class="analysis-change">
+<div class="change-arrow {impactAnalysis.percentChange >= 0 ? 'positive' : 'negative'}">
+{impactAnalysis.percentChange >= 0 ? '↑' : '↓'}
+</div>
+<div class="change-value {impactAnalysis.percentChange >= 0 ? 'positive' : 'negative'}">
+{Math.abs(impactAnalysis.percentChange).toFixed(2)}%
+</div>
+</div>
+
+<div class="analysis-period after">
+<h5>After Event</h5>
+<div class="analysis-value">${impactAnalysis.afterAvg.toFixed(2)}</div>
+<div class="analysis-label">{impactPeriod}-day Avg</div>
+<div class="analysis-range">
+{formatDateStr(selectedMilestone.date, 'MMM d, yyyy')} - 
+{impactAnalysis.afterData.length > 0 ? formatDateStr(impactAnalysis.afterData[impactAnalysis.afterData.length - 1].date, 'MMM d, yyyy') : ''}
+</div>
+</div>
+</div>
+<div class="analysis-legend">
+<div class="legend-item">
+<span class="legend-line" style="background-color: #4CAF50;"></span>
+<span class="legend-label">Before Avg</span>
+</div>
+<div class="legend-item">
+<span class="legend-line" style="background-color: #FF5722;"></span>
+<span class="legend-label">After Avg</span>
+</div>
+</div>
+</div>
+{/if}
+
+
+<!-- Selected Milestone Details -->
+{#if selectedMilestone && !impactAnalysis}
+<div class="milestone-details" style="border-left-color: {selectedMilestone.color}">
+<p>{formatDateStr(selectedMilestone.date, 'MMM d, yyyy')}: {selectedMilestone.details}</p>
+</div>
+{/if}
+{/if}
 </div>
 
 <style>
-  .stock-chart-container {
-    width: 100%;
-    background-color: white;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .chart-area {
-    height: 300px;
-    width: 100%;
-    position: relative;
-  }
-  
-  .chart-area svg {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .brush-area {
-    height: 60px;
-    width: 100%;
-    position: relative;
-    border-top: 1px solid #e2e8f0;
-  }
-  
-  .brush-area svg {
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* Style the brush */
-  :global(.brush rect.selection) {
-    fill: #37587e;
-    fill-opacity: 0.3;
-    stroke: #37587e;
-    stroke-width: 1px;
-  }
-  
-  :global(.brush rect.handle) {
-    fill: #37587e;
-    width: 5px;
-  }
-  
-  :global(.brush .overlay) {
-    cursor: crosshair;
-  }
-  
-  .no-data-message {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 250px;
-    width: 100%;
-    color: #64748b;
-    font-style: italic;
-    background-color: #f8fafc;
-    border-radius: 0.25rem;
-    border: 1px dashed #cbd5e1;
-  }
-  
-  .tooltip {
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.95);
-    border: 1px solid #e2e8f0;
-    border-radius: 0.25rem;
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    pointer-events: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transform: translate(-50%, -100%);
-    z-index: 10;
-    min-width: 120px;
-  }
-  
-  .tooltip-date {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  .tooltip-price {
-    color: #4b5563;
-  }
-  
-  .tooltip-details {
-    margin-top: 0.25rem;
-    padding-top: 0.25rem;
-    border-top: 1px dashed #e2e8f0;
-    white-space: normal;
-    max-width: 200px;
-  }
-  
-  .milestone-legend {
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #e2e8f0;
-  }
-  
-  .legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-  }
-  
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  
-  .legend-line {
-    width: 16px;
-    height: 2px;
-    display: inline-block;
-  }
-  
-  .legend-label {
-    color: #4b5563;
-  }
-  
-  .milestone-details {
-    margin-top: 0.75rem;
-    padding: 0.75rem;
-    background-color: #f8fafc;
-    border-radius: 0.25rem;
-    border-left: 3px solid #4b5563;
-    font-size: 0.75rem;
-  }
-  
-  .impact-analysis {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f8fafc;
-    border-radius: 0.5rem;
-    border: 1px solid #e2e8f0;
-  }
-  
-  .analysis-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #4b5563;
-    text-align: center;
-  }
-  
-  .analysis-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .analysis-period {
-    text-align: center;
-    flex: 1;
-  }
-  
-  .analysis-period h5 {
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: #4b5563;
-  }
-  
-  .analysis-value {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1e293b;
-  }
-  
-  .analysis-label {
-    font-size: 0.625rem;
-    color: #6b7280;
-  }
-  
-  .analysis-range {
-    font-size: 0.625rem;
-    color: #6b7280;
-    margin-top: 0.25rem;
-  }
-  
-  .analysis-change {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 1rem;
-  }
-  
-  .change-arrow {
-    font-size: 1.25rem;
-    font-weight: 800;
-  }
-  
-  .change-value {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  .positive {
-    color: #4CAF50;
-  }
-  
-  .negative {
-    color: #F44336;
-  }
-  
-  .analysis-legend {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px dashed #e2e8f0;
-  }
-  
-  .before h5 {
-    color: #388E3C;
-  }
-  
-  .after h5 {
-    color: #E64A19;
-  }
-  
-  /* Brush stats styles */
-  .brush-stats {
-    margin-top: 0.75rem;
-    padding: 0.75rem;
-  }
-  
-  .stats-header {
-    margin-bottom: 0.5rem;
-  }
-  
-  .stats-header h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #1e293b;
-  }
-  
-  .date-range {
-    font-weight: 700;
-    color: #0f172a;
-  }
-  
-  .timespan {
-    font-weight: 400;
-    font-size: 0.75rem;
-    color: #64748b;
-    margin-left: 0.25rem;
-  }
-  
-  .stats-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
-  }
-  
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 80px;
-    padding: 0.5rem;
-    border-top: .425px solid #37587e;
-  }
-  
-  .stat-label {
-    font-size: 0.625rem;
-    color: #6b7280;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  .stat-value {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #0f172a;
-  }
+.stock-chart-container {
+width: 100%;
+}
+
+.chart-area {
+height: 400px;
+width: 100%;
+position: relative;
+}
+
+.brush-area {
+height: 60px;
+width: 100%;
+position: relative;
+border-top: 1px solid #e2e8f0;
+}
+
+.brush-area svg {
+width: 100%;
+height: 100%;
+}
+
+/* Style the brush */
+:global(.brush rect.selection) {
+fill: #37587e;
+fill-opacity: 0.3;
+stroke: #37587e;
+stroke-width: 1px;
+}
+
+:global(.brush rect.handle) {
+fill: #37587e;
+width: 5px;
+}
+
+:global(.brush .overlay) {
+cursor: crosshair;
+}
+
+.no-data-message {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 250px;
+width: 100%;
+color: #64748b;
+font-style: italic;
+background-color: #f8fafc;
+border-radius: 0.25rem;
+border: 1px dashed #cbd5e1;
+}
+
+.tooltip {
+position: absolute;
+background-color: rgba(255, 255, 255, 0.95);
+border: 1px solid #e2e8f0;
+border-radius: 0.25rem;
+padding: 0.5rem;
+font-size: 0.75rem;
+pointer-events: none;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+transform: translate(-50%, -100%);
+z-index: 10;
+min-width: 120px;
+}
+
+.tooltip-date {
+font-weight: 600;
+margin-bottom: 0.25rem;
+}
+
+.tooltip-price {
+color: #4b5563;
+}
+
+.tooltip-details {
+margin-top: 0.25rem;
+padding-top: 0.25rem;
+border-top: 1px dashed #e2e8f0;
+white-space: normal;
+max-width: 200px;
+}
+
+.milestone-legend {
+margin-top: 0.5rem;
+padding-top: 0.5rem;
+border-top: 1px solid #e2e8f0;
+}
+
+.legend-items {
+display: flex;
+flex-wrap: wrap;
+gap: 1rem;
+}
+
+.legend-item {
+display: flex;
+align-items: center;
+gap: 0.25rem;
+font-size: 0.75rem;
+}
+
+.legend-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+display: inline-block;
+}
+
+.legend-line {
+width: 16px;
+height: 2px;
+display: inline-block;
+}
+
+.legend-label {
+color: #4b5563;
+}
+
+.milestone-details {
+margin-top: 0.75rem;
+padding: 0.75rem;
+background-color: #f8fafc;
+border-radius: 0.25rem;
+border-left: 3px solid #4b5563;
+font-size: 0.75rem;
+}
+
+.impact-analysis {
+margin-top: 1rem;
+padding: 1rem;
+background-color: #f8fafc;
+border-radius: 0.5rem;
+border: 1px solid #e2e8f0;
+}
+
+.analysis-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 0.75rem;
+}
+
+.analysis-title {
+font-size: 0.875rem;
+font-weight: 600;
+margin-bottom: 0.75rem;
+color: #4b5563;
+text-align: center;
+}
+
+.period-selector {
+display: flex;
+gap: 0.5rem;
+}
+
+.period-button {
+background-color: #f1f5f9;
+color: #64748b;
+border: none;
+border-radius: 9999px;
+padding: 0.25rem 0.75rem;
+font-size: 0.75rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.period-button:hover {
+background-color: #e2e8f0;
+color: #0f172a;
+}
+
+.period-button.active {
+background-color: #37587e;
+color: white;
+}
+
+.analysis-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.analysis-period {
+text-align: center;
+flex: 1;
+}
+
+.analysis-period h5 {
+font-size: 0.75rem;
+font-weight: 600;
+margin-bottom: 0.25rem;
+color: #4b5563;
+}
+
+.analysis-value {
+font-size: 1rem;
+font-weight: 700;
+color: #1e293b;
+}
+
+.analysis-label {
+font-size: 0.625rem;
+color: #6b7280;
+}
+
+.analysis-range {
+font-size: 0.625rem;
+color: #6b7280;
+margin-top: 0.25rem;
+}
+
+.analysis-change {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 0 1rem;
+}
+
+.change-arrow {
+font-size: 1.25rem;
+font-weight: 800;
+}
+
+.change-value {
+font-size: 0.875rem;
+font-weight: 500;
+}
+
+.positive {
+color: #4CAF50;
+}
+
+.negative {
+color: #F44336;
+}
+
+.analysis-legend {
+display: flex;
+justify-content: center;
+gap: 1rem;
+margin-top: 0.75rem;
+padding-top: 0.75rem;
+border-top: 1px dashed #e2e8f0;
+}
+
+.before h5 {
+color: #388E3C;
+}
+
+.after h5 {
+color: #E64A19;
+}
+
+/* Brush stats styles */
+.brush-stats {
+margin-top: 0.75rem;
+padding: 0.75rem;
+}
+
+.stats-header {
+margin-bottom: 0.5rem;
+}
+
+.stats-header h4 {
+font-size: 0.875rem;
+font-weight: 600;
+color: #1e293b;
+}
+
+.date-range {
+font-weight: 700;
+color: #0f172a;
+}
+
+.timespan {
+font-weight: 400;
+font-size: 0.75rem;
+color: #64748b;
+margin-left: 0.25rem;
+}
+
+.stats-content {
+display: flex;
+flex-wrap: wrap;
+gap: 1rem;
+justify-content: space-between;
+}
+
+.stat-item {
+display: flex;
+flex-direction: column;
+flex: 1;
+min-width: 80px;
+padding: 0.5rem;
+border-top: .425px solid #37587e;
+}
+
+.stat-label {
+font-size: 0.625rem;
+color: #6b7280;
+font-weight: 600;
+margin-bottom: 0.25rem;
+}
+
+.stat-value {
+font-size: 0.875rem;
+font-weight: 600;
+color: #0f172a;
+}
 </style>
