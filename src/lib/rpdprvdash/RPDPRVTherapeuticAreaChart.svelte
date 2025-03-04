@@ -41,14 +41,13 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.95875,
-        'P1': radius * 0.8425,
-        'P1/2': radius * 0.73725,
-        'P2': radius * 0.625,
-        'P3': radius * 0.5125,
-        'FILED': radius * 0.3925,
-        'APRV': radius * 0.2725,
-        'PRV': radius * 0.13525
+        'PRE': radius * 0.8925,
+        'P1': radius * 0.7825,
+        'P1/2': radius * 0.6725,
+        'P2': radius * 0.5425,
+        'P3': radius * 0.4325,
+        'FILED': radius * 0.3125,
+        'PRV': radius * 0.18725
     };
 
     // UI Configuration

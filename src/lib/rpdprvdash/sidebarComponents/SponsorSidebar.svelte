@@ -54,7 +54,7 @@
           <CompanyMetricsList metrics={currentCompanyMetrics} />
         {:else if currentView === 'Stage View' && currentEntries.length > 0}
           <!-- Display stage summary -->
-          <div class="p-4 border border-late-200 mb-4">
+          <div class="border border-late-200 mb-4">
             <h3 class="text-sm font-semibold text-slate-800 mb-2">{currentView}</h3>
             <p class="text-sm text-slate-700">
               {getStageSummary()}

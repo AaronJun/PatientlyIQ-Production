@@ -4,6 +4,7 @@
     import { ArrowLeft, ArrowUpRight, BookmarkAdd, BookmarkFilled } from 'carbon-icons-svelte';
     import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
     import RPDDrugStatusBar from './RPDDrugStatusBar.svelte';
+    import RegulatoryTimeline from './DrawerComponents/RegulatoryTimeline.svelte';
     import { trackedDrugs } from '$lib/trackingStores';
     import RPDOverlayDrawer from './RPDOverlayDrawer.svelte';
 
@@ -36,9 +37,11 @@
         color: ''
     };
 
-        // Track the actual PRV award status
-        $: hasPRV = entries.find(e => e["Candidate"] === drugName)?.["PRV Year"];
-
+    // Track the actual PRV award status
+    $: hasPRV = entries.find(e => e["Candidate"] === drugName)?.["PRV Year"];
+    
+    // Get the drug data for the timeline
+    $: drugData = entries.find(e => e["Candidate"] === drugName);
 
     function toggleTracking() {
         if (isTracked) {
@@ -118,7 +121,6 @@
             };
         }
     }
-
 
     function showTherapeuticAreaView(area: string) {
         if (area !== "TBD" && area !== "N/A") {
@@ -236,6 +238,10 @@
     hasTransaction={voucherTransactionDate !== "" && voucherTransactionDate !== "Not yet applicable"}
 />
         
+            <!-- Regulatory Timeline Component -->
+            {#if drugData}
+            <RegulatoryTimeline {drugData} />
+            {/if}
 
             <!-- Timeline Information Section -->
             <section class="main-section mb-8">
@@ -271,15 +277,15 @@
                                     {rpddAwardDate || 'Not Available'}
                                 </p>
                             </div>
-                        </tr>
+                    </tr>
                         <tr class="flex w-full align-baseline">
                             <div class="flex align-baseline w-5/12 gap-2">                    
                                 <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline text-left uppercase">Voucher Award Date</p>
                             </div>
                             <div class="flex justify-between w-8/12 gap-2">                    
                                 <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {voucherAwardDate || 'Not yet awarded'}
-                                </p>
+                                        {voucherAwardDate || 'Not yet awarded'}
+                                    </p>
                            
                                 {#if voucherAwardDate !== "" && voucherAwardDate !== "Not yet applicable"}
                                 <button 
@@ -471,7 +477,7 @@
 />
 
 <style>
-    .drawer-content {
+.drawer-content {
         padding: 1rem 1.5rem;
     }
 

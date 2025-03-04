@@ -223,7 +223,7 @@
       color: '#37587e',
       companyUrl: detail.companyUrl,
       country: companyEntries[0]?.COUNTRY || 'N/A',
-      publicPrivate: companyEntries[0]?.['Public/Private'] || 'N/A',
+      publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
       marketCap: companyEntries[0]?.MarketCap || 'N/A'
     };
     isDrawerOpen = true;
@@ -299,7 +299,7 @@
       </div>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-white w-full h-full py-2 px-8">
+    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
         <div class="flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
@@ -361,7 +361,7 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
-            <div class="w-3/4 px-12">
+            <div class="w-3/4 pr-8 pl-2">
               <RpdprvCompanyTree 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
@@ -446,12 +446,7 @@
                   </div>
                   
                 </div>
-                <div class="mt-12">
-                  <RPDRadialLegend 
-                    items={processedData}
-                    {colorScale}
-                  />
-                </div>
+          
               </div>
             </div>
           </div>

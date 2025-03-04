@@ -48,6 +48,58 @@
     minAngleDiff: Math.PI / 32
   };
 
+  function formatCompanyName(companyName) {
+  // If no company name, return empty string
+  if (!companyName) return '';
+  
+    // List of words/phrases to remove - sort longer phrases first
+    const phrasesToRemove = [
+    'Life Sciences',
+    'Life Science',
+    'Pharmaceuticals',
+    'Biotechnology',
+    'Therapeutics',
+    'Biometrics',
+    'Partners',
+    'Science',
+    'Pharma',
+    'Biotech',
+    'Genetic',
+    'Bio',
+    'Biosciences'
+  ];
+    
+  let formattedName = companyName;
+  
+  // Replace each phrase individually to handle multi-word phrases better
+  phrasesToRemove.forEach(phrase => {
+    const pattern = new RegExp(`\\b${phrase}\\b`, 'gi');
+    formattedName = formattedName.replace(pattern, '');
+  });
+  
+  // Clean up extra spaces, commas and other punctuation
+  formattedName = formattedName.replace(/\s+/g, ' ').trim();
+  formattedName = formattedName.replace(/,\s*$/, '').replace(/^\s*,/, '');
+  formattedName = formattedName.replace(/,\s*,/g, ',');
+  
+  // Fix cases where we removed all words or only punctuation remains
+  if (!formattedName.trim() || formattedName.trim().match(/^[,.\s-]+$/)) {
+    return companyName; // Return original if nothing meaningful remains
+  }
+  
+  // Fix cases with trailing/leading commas or just punctuation
+  formattedName = formattedName.replace(/^\s*[,.-]\s*/, '').replace(/\s*[,.-]\s*$/, '');
+  
+  // Fix inconsistencies with Inc, Inc., Corporation, etc.
+  formattedName = formattedName.replace(/\s*,\s*Inc\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*LLC\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Ltd\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Corporation\.?$/i, '');
+  
+  return formattedName;
+}
+
+
   const therapeuticAreaColorScale = d3.scaleOrdinal()
     .domain([
       'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',

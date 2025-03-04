@@ -38,13 +38,13 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.93725,
+        'PRE': radius * 0.8925,
         'P1': radius * 0.7825,
-        'P1/2': radius * 0.6825,
-        'P2': radius * 0.525,
-        'P3': radius * 0.3825,
-        'FILED': radius * 0.2825,
-        'PRV': radius * 0.1725
+        'P1/2': radius * 0.6725,
+        'P2': radius * 0.5425,
+        'P3': radius * 0.4325,
+        'FILED': radius * 0.3125,
+        'PRV': radius * 0.18725
     };
 
     // UI Configuration
@@ -53,6 +53,10 @@
         height: 10,
         cornerRadius: 10
     };
+
+    // Connection highlight color
+    const highlightColor = "#FFD700"; // Gold color for highlighted connections
+    const highlightWidth = 2.25; // Width for highlighted connections
 
     const maxLabelWidth = 85;
     const ANGLE_BUFFER = Math.PI / 24;
@@ -129,6 +133,7 @@ function formatCompanyName(companyName) {
     'Science',
     'Pharma',
     'Biotech',
+    'Genetic',
     'Bio',
     'Biosciences'
   ];
@@ -493,6 +498,61 @@ function formatCompanyName(companyName) {
         }
     }
 
+    // Highlight company connections
+    function highlightCompanyConnections(companyName) {
+        // Reset all connections first
+        d3.selectAll("path.company-path, path.drug-path")
+            .transition()
+            .duration(300)
+            .attr("stroke", "#37587e")
+            .attr("stroke-width", 0.7625)
+            .attr("stroke-opacity", 0.525);
+        
+        // Highlight connections for this company
+        d3.selectAll(`path.company-path[data-company="${companyName}"]`)
+            .transition()
+            .duration(300)
+            .attr("stroke", highlightColor)
+            .attr("stroke-width", highlightWidth)
+            .attr("stroke-opacity", 1);
+            
+        d3.selectAll(`path.drug-path[data-company="${companyName}"]`)
+            .transition()
+            .duration(300)
+            .attr("stroke", highlightColor)
+            .attr("stroke-width", highlightWidth)
+            .attr("stroke-opacity", 1);
+    }
+    
+    // Highlight drug connections
+    function highlightDrugConnections(drugId) {
+        // Reset all connections first
+        d3.selectAll("path.company-path, path.drug-path")
+            .transition()
+            .duration(300)
+            .attr("stroke", "#37587e")
+            .attr("stroke-width", 0.7625)
+            .attr("stroke-opacity", 0.525);
+            
+        // Highlight the specific path for this drug
+        d3.select(`path.drug-path[data-drug="${drugId}"]`)
+            .transition()
+            .duration(300)
+            .attr("stroke", highlightColor)
+            .attr("stroke-width", highlightWidth)
+            .attr("stroke-opacity", 1);
+    }
+    
+    // Reset highlight connections
+    function resetConnectionHighlights() {
+        d3.selectAll("path.company-path, path.drug-path")
+            .transition()
+            .duration(300)
+            .attr("stroke", "#37587e")
+            .attr("stroke-width", 0.7625)
+            .attr("stroke-opacity", 0.525);
+    }
+
     function createVisualization() {
     if (!svg) return;
 
@@ -646,8 +706,10 @@ function formatCompanyName(companyName) {
             .attr("stroke-width", 0.725)
             .attr("rx", 2);
 
-        // Add connecting line from node to label
+        // Add connecting line from node to label with data attribute for company
         linesGroup.append("path")
+            .attr("class", "company-path")
+            .attr("data-company", company.company)
             .attr("d", `M${nodeX},${nodeY}L${labelPlacement.x},${labelPlacement.y}`)
             .attr("stroke", "#37587e")
             .attr("stroke-width", .725)
@@ -673,8 +735,14 @@ function formatCompanyName(companyName) {
                 const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                 const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
 
-                // Add connecting line from node to drug
+                // Create unique ID for drug
+                const drugId = `${company.company}-${drug.Candidate}-${i}`.replace(/\s+/g, '-').toLowerCase();
+
+                // Add connecting line from node to drug with data attributes for company and drug
                 linesGroup.append("path")
+                    .attr("class", "drug-path")
+                    .attr("data-company", company.company)
+                    .attr("data-drug", drugId)
                     .attr("d", `M${nodeX},${nodeY}L${drugX},${drugY}`)
                     .attr("stroke", "#37587e")
                     .attr("stroke-width", .7625)
@@ -683,7 +751,9 @@ function formatCompanyName(companyName) {
 
                 const drugGroup = companyGroup.append("g")
                     .attr("transform", `translate(${drugX},${drugY})`)
-                    .attr("cursor", "pointer");
+                    .attr("cursor", "pointer")
+                    .attr("class", "drug-node")
+                    .attr("id", drugId);
 
                 // Get therapeutic area color
                 const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
@@ -709,12 +779,14 @@ function formatCompanyName(companyName) {
                 // Drug interactions
                 drugGroup
                     .on("mouseenter", (event) => {
+                        // Highlight the drug node
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
                             .attr("r", 10.25)
                             .style("filter","url(#dropshadow)");
 
+                        // Highlight PRV indicator if present
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
                                 .transition()
@@ -722,6 +794,10 @@ function formatCompanyName(companyName) {
                                 .attr("r", 10.25)
                                 .attr("stroke-width", 4.725);
                         }
+                        
+                        // Highlight the connection line for this drug
+                        highlightDrugConnections(drugId);
+                        
                         showTooltip(event, drug);
                     })
                     .on("mousemove", (event) => {
@@ -729,6 +805,7 @@ function formatCompanyName(companyName) {
                         showTooltip(event, drug);
                     })
                     .on("mouseleave", () => {
+                        // Reset drug node appearance
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
@@ -737,6 +814,7 @@ function formatCompanyName(companyName) {
                             .attr("stroke", areaColors.stroke)
                             .style("filter","url(#dropshadow)");
 
+                        // Reset PRV indicator if present
                         if (drug["PRV Issue Year"]) {
                             drugGroup.select("circle:last-child")
                                 .transition()
@@ -744,6 +822,10 @@ function formatCompanyName(companyName) {
                                 .attr("r", 11.25)
                                 .attr("stroke-width", "2px");
                         }
+                        
+                        // Reset connection highlights
+                        resetConnectionHighlights();
+                        
                         hideTooltip();
                     })
                     .on("click", (event) => {
@@ -780,6 +862,10 @@ function formatCompanyName(companyName) {
         const handleMouseEnter = (event: MouseEvent) => {
             // Set this company as active
             setActiveCompany(company.company, company.entries);
+            
+            // Highlight all connections for this company
+            highlightCompanyConnections(company.company);
+            
             showTooltip(event, {
                 company: company.company,
                 totalDrugs: company.totalDrugs,
@@ -794,6 +880,13 @@ function formatCompanyName(companyName) {
                 totalDrugs: company.totalDrugs,
                 status: company.status
             }, true);
+        };
+        
+        const handleMouseLeave = () => {
+            // Reset connection highlights
+            resetConnectionHighlights();
+            
+            hideTooltip();
         };
 
         const handleClick = (event) => {
@@ -820,6 +913,7 @@ function formatCompanyName(companyName) {
             group
                 .on("mouseenter", handleMouseEnter)
                 .on("mousemove", handleMouseMove)
+                .on("mouseleave", handleMouseLeave)
                 .on("click", handleClick);
         });
     });
@@ -830,6 +924,7 @@ function formatCompanyName(companyName) {
         if (event.target === svg) {
             activeCompany = null;
             activeStage = null;
+            resetConnectionHighlights();
             hideTooltip(); // Ensure tooltip is hidden when clicking on background
             onLeave();
         }
@@ -837,6 +932,7 @@ function formatCompanyName(companyName) {
     
     // Add event listeners to handle tooltip when mouse leaves SVG
     svgElement.on("mouseleave", () => {
+        resetConnectionHighlights();
         hideTooltip();
     });
 }
