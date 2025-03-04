@@ -25,12 +25,12 @@
 
     let svg: SVGElement;
     const width = 920;
-    const height = 920;
+    const height = width;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
     const labelConfig = {
-        minRadius: radius * .9825,
+        minRadius: radius * .98725,
         maxRadius: radius * 1,
         padding: 8.25,
         minAngleDiff: Math.PI / 32, // Minimum angle between labels
@@ -41,13 +41,13 @@
 
     // Stage-specific radii (from outer to inner)
     const stageRadii = {
-        'PRE': radius * 0.8925,
-        'P1': radius * 0.7825,
-        'P1/2': radius * 0.6725,
-        'P2': radius * 0.5425,
-        'P3': radius * 0.4325,
-        'FILED': radius * 0.3125,
-        'PRV': radius * 0.18725
+        'PRE': radius * 0.9525,
+        'P1': radius * 0.825,
+        'P1/2': radius * 0.7025,
+        'P2': radius * 0.5725,
+        'P3': radius * 0.4525,
+        'FILED': radius * 0.325,
+        'PRV': radius * 0.1825
     };
 
     // UI Configuration

@@ -51,38 +51,36 @@
     </div>
     
     <div class="metrics-list space-y-2 mb-4">
-      <div class="metric-item flex justify-between py-1 border-b border-slate-200">
+      <div class="metric-item flex justify-between  border-b border-slate-200">
         <span class="text-xs text-slate-600">Unique Companies</span>
         <span class="text-sm font-medium text-slate-800">{uniqueCompanies}</span>
       </div>
       
-      <div class="metric-item flex justify-between py-1 border-b border-slate-200">
+      <div class="metric-item flex justify-between  border-b border-slate-200">
         <span class="text-xs text-slate-600">Unique Candidates</span>
         <span class="text-sm font-medium text-slate-800">{uniqueCandidates}</span>
       </div>
       
-      <div class="metric-item flex justify-between py-1 border-b border-slate-200">
+      <div class="metric-item flex justify-between  border-b border-slate-200">
         <span class="text-xs text-slate-600">Therapeutic Areas</span>
         <span class="text-sm font-medium text-slate-800">{uniqueAreas}</span>
       </div>
       
-      <div class="metric-item flex justify-between py-1 border-b border-slate-200">
-        <span class="text-xs text-slate-600">Avg. Years to Voucher</span>
-        <span class="text-sm font-medium text-slate-800">{avgYearsToVoucher}</span>
-      </div>
+
     </div>
     
     {#if topAreas.length > 0}
       <div>
-        <h4 class="text-xs font-medium text-slate-600 mb-2">Top Therapeutic Areas</h4>
+        <h4 class="text-xs font-medium text-slate-600 mb-2">Most Active Therapeutic Areas</h4>
         <div class="space-y-2">
           {#each topAreas as area}
-            <div class="flex justify-between items-center">
-              <span class="text-xs text-slate-700">{area.area}</span>
-              <div class="flex items-center">
-                <span class="text-xs font-medium text-slate-800 mr-2">{area.count}</span>
-                <div class="w-16 bg-slate-200 rounded-full h-1.5">
-                  <div class="bg-blue-500 h-1.5 rounded-full" style="width: {(area.count / totalRPDDs) * 100}%"></div>
+            <div class="flex-row gap-2">
+              <span class="text-[9.275px] text-slate-800">{area.area}</span>
+              <span class="text-[9.275px] font-mono text-slate-600 ml-4"> | {area.count}</span>
+              <div class="flex items-center align-middle pb-1">
+                
+                <div class="w-full mt-1 bg-slate-200 h-2.5">
+                  <div class="bg-orange-600 h-2.5" style="width: {(area.count / totalRPDDs) * 100}%"></div>
                 </div>
               </div>
             </div>
@@ -108,6 +106,13 @@
       justify-content: center;
       text-align: center;
       transition: all 0.2s ease;
+    }
+
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: .25px dotted #969696;
     }
     
     .stat-card:hover {

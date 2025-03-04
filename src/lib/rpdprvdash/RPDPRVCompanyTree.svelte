@@ -22,7 +22,7 @@
 
     let svg: SVGElement;
     const width = 920;
-    const height = 920;
+    const height = width;
     const radius = Math.min(width, height) / 2 - 60;
 
     // Improved label positioning configuration
@@ -44,7 +44,7 @@
         'P2': radius * 0.5425,
         'P3': radius * 0.4325,
         'FILED': radius * 0.3125,
-        'PRV': radius * 0.18725
+        'PRV': radius * 0.1725
     };
 
     // UI Configuration
@@ -131,6 +131,7 @@ function formatCompanyName(companyName) {
     'Biometrics',
     'Partners',
     'Science',
+    'Biologics',
     'Pharma',
     'Biotech',
     'Genetic',

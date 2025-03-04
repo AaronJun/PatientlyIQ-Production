@@ -214,21 +214,21 @@
   }
 
   function handleShowCompanyDetail(detail: any) {
-    const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
-    selectedCompany = detail.Company;
-    drawerProps = {
-      isCompanyView: true,
-      Company: detail.Company,
-      entries: companyEntries,
-      color: '#37587e',
-      companyUrl: detail.companyUrl,
-      country: companyEntries[0]?.COUNTRY || 'N/A',
-      publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
-      marketCap: companyEntries[0]?.MarketCap || 'N/A'
-    };
-    isDrawerOpen = true;
-    isCompanyDetailDrawerOpen = true;
-  }
+  const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
+  selectedCompany = detail.Company;
+  drawerProps = {
+    isCompanyView: true,
+    Company: detail.Company,
+    entries: companyEntries,
+    color: '#37587e',
+    companyUrl: detail.companyUrl,
+    country: companyEntries[0]?.COUNTRY || 'N/A',
+    publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
+    marketCap: companyEntries[0]?.MarketCap || 'N/A'
+  };
+  isDrawerOpen = true;
+  isCompanyDetailDrawerOpen = true;
+}
 
   function handleShowDrugDetail(detail: any) {
     drawerProps = {
@@ -373,7 +373,7 @@
             </div>
 
             <!-- Sticky sidebar -->
-            <div class="w-1/5 px-8">
+            <div class="w-1/5 pr-8 pl-12">
               <div class="sticky top-32">
                 <!-- Use the updated sidebar component -->
                 <SponsorSidebar
@@ -412,7 +412,7 @@
             
             </div>
             
-            <div class="w-1/5 px-8">
+            <div class="w-1/5 pr-8 pl-12">
               <div class="sticky top-32">
                 <div class="sidebar-header mb-4">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">                              
@@ -462,7 +462,7 @@
             </div>
 
             <!-- Sticky sidebar -->
-            <div class="w-1/5 px-8">
+            <div class="w-1/5 pr-8 pl-12">
               <div class="sticky top-32">
                 <div class="sidebar-header mb-2">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">              
@@ -502,19 +502,16 @@
     onShowDrugDetail={handleShowDrugDetail}
   />
 {/if}
-
 {#if isDrawerOpen}
   {#if drawerProps.isCompanyView}
-    <RpdprvCompanyDrawer
-      Company={drawerProps.Company}
-      entries={drawerProps.entries}
-      color={drawerProps.color}
-      companyUrl={drawerProps.companyUrl}
-      country={drawerProps.country}
-      publicPrivate={drawerProps.publicPrivate}
-      marketCap={drawerProps.marketCap}
-      {isDrawerOpen}
+    <RpdCompanyDetailDrawer
+      companyName={drawerProps.Company}
+      allData={rpddData}
+      stockData={rpdCompanyValues}
+      isOpen={isDrawerOpen}
       onClose={handleCloseDrawer}
+      onShowDrugDetail={handleShowDrugDetail}
+      color={drawerProps.color}
     />
   {:else}
     <RPDPRVDrawer

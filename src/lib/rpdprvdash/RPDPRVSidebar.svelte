@@ -10,7 +10,7 @@
         [key: string]: string;
     }
 
-    export let currentArea: string | null = null;
+export let currentArea: string | null = null;
     export let entries: RPDDEntry[] = [];
 
     $: summaryStats = entries.length > 0 ? {

@@ -11,7 +11,7 @@
     let svg: SVGElement;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const width = 120;
-    const height = 600;
+    const height = 800;
     
     $: yearData = Object.entries(
         data.reduce((acc, entry) => {
@@ -214,12 +214,13 @@
         // Add year labels
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0) - 12)
-            .attr("y", 2) // Center vertically
-            .attr("text-anchor", "end")
+            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0))
+            .attr("y", -42) // Center vertically
+            .attr("text-anchor", "start")
+            .attr("transform", "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", "middle")
+            .style("dominant-baseline", "end")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
 
@@ -261,9 +262,9 @@ function updateSelection() {
 
 <div class="timeline-container">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
-        <h4 class="text-xs/snug uppercase font-bold">
+        <h4 class="text-xs capitalize font-medium text-slate-600">
             Select Year              
-            </h4>
+         </h4>
     </div>    
         <svg
         bind:this={svg}
@@ -285,10 +286,6 @@ function updateSelection() {
     }
     
     .timeline-header {
-        font-size: 12px;
-        font-weight: 600;
-        color: #4a5568;
-        text-transform: uppercase;
         margin-bottom: 0.5rem;
         text-align: center;
         letter-spacing: 0.05em;

@@ -12,7 +12,7 @@
     let svg: SVGElement;
     const margin = { top: 20, right: 0, bottom: 0, left: 0 };
     const width = 150;
-    const height = 600;
+    const height = 800;
 
     // Process data to filter for purchases with transaction values
     $: purchaseData = data.filter(entry => entry.Purchased === "Y" && entry["Purchase Year"]);
@@ -99,7 +99,7 @@
         // Scale for circle radius based on total transaction value
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.totalValue) || 0])
-            .range([2, 20]);
+            .range([1, 20]);
 
         const g = svgElement.append("g")
             .attr("transform", `translate(${margin.left},0)`);
@@ -235,13 +235,14 @@
 
         // Add year labels
         yearGroups.append("text")
-            .attr("class", "year-label")
-            .attr("x", -radiusScale(d3.max(yearData, d => d.totalValue) || 0) - 10)
-            .attr("y", 2) // Center vertically
-            .attr("text-anchor", "end")
+        .attr("class", "year-label")
+            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0))
+            .attr("y", -42) // Center vertically
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", "middle")
+            .style("dominant-baseline", "end")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
 
@@ -282,8 +283,8 @@
 </script>
 
 <div class="timeline-container">
-    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">        
-          <h4 class="text-xs/snug uppercase font-bold">
+    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
+        <h4 class="text-xs capitalize font-medium text-slate-600">
             Select Year             
             </h4>
     </div>    
@@ -306,6 +307,13 @@
         position: relative;
     }
     
+
+    .timeline-header {
+        margin-bottom: 0.5rem;
+        text-align: center;
+        letter-spacing: 0.05em;
+    }
+
     :global(.year-group) {
         transition: all 0.3s ease;
     }

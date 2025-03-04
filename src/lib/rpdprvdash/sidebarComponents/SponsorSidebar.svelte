@@ -81,7 +81,7 @@
             <p>Select a company or stage to view drugs</p>
             <p class="text-xs mt-2">Hover over elements in the visualization</p>
           </div>
-        {/if}
+      {/if}
       </div>
     </div>
   </div>

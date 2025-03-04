@@ -21,11 +21,11 @@ export interface ColorCombo {
       stroke: '#5CC988'   // Darker teal
     },
     'Metabolic': {
-      fill: '#C3DAFE',    // Lighter purple-blue
-      stroke: '#4C51BF'   // Darker purple-blue
+      fill: '#4C51BF',    // Lighter purple-blue
+      stroke: '#B2F5EA'   // Darker purple-blue
     },
     'Ophthalmology': {
-      fill: '#C6F6D5',    // Lighter green
+      fill: '#FFF',    // Lighter green
       stroke: '#38A169'   // Darker green
     },
     'Cardiovascular': {
@@ -33,7 +33,7 @@ export interface ColorCombo {
       stroke: '#C05621'   // Darker orange
     },
     'Cardiology': {
-      fill: '#FEB2B2',    // Lighter red-orange
+      fill: '#fff',    // Lighter red-orange
       stroke: '#DD6B20'   // Darker red-orange
     },
     'Pulmonology': {
