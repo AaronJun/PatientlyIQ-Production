@@ -1,9 +1,15 @@
-<!-- RPDDashboard.svelte -->
+<!-- RPDPRVAnalytics.svelte -->
 <script>
     import { onMount } from 'svelte';
-    import StageBeeswarmPlot from './SankeyFlow.svelte';
+    import ProgramSankey from './SankeyFlow.svelte';
+    import PRVAwardCount from './PRVAwardCount.svelte';
+    import PRVValueTimeline from './PRVValueTimeline.svelte';
+    import TherapeuticAreaDistribution from './TherapeuticAreaDistribution.svelte';
+    import CompanyLeaderboard from './CompanyLeaderboard.svelte';
+    import { Report, Money, ChartParallel, CicsTransactionServerZos } from 'carbon-icons-svelte';
     
     export let data = [];
+    export let onEntrySelect = (entry) => {};
     
     // Statistics
     let totalEntries = 0;
@@ -14,10 +20,25 @@
     let topCompany = { name: '', count: 0 };
     let topArea = { name: '', count: 0 };
     let topIndication = { name: '', count: 0 };
+    let yearlyPRVs = [];
     
-    // Drawer state
-    let isDrawerOpen = false;
-    let selectedEntry = null;
+    // Track the state of each collapsible section
+    let expandedSections = {
+      overview: true,
+      sankey: true,
+      valueTrends: false,
+      topPerformers: false
+    };
+    
+    function toggleSection(section) {
+      expandedSections[section] = !expandedSections[section];
+    }
+    
+    // Handle the selection of an entry from the Sankey diagram
+    function handleEntrySelect(entry) {
+      // Pass the selected entry to the parent component
+      onEntrySelect(entry);
+    }
     
     function calculateStats() {
       if (!data || data.length === 0) return;
@@ -37,7 +58,20 @@
         .map(d => parseFloat(d["Sale Price (USD Millions)"]));
         
       totalValue = valuedSales.reduce((sum, val) => sum + val, 0);
-      avgSalePrice = totalValue / valuedSales.length;
+      avgSalePrice = valuedSales.length > 0 ? totalValue / valuedSales.length : 0;
+      
+      // Calculate yearly PRV distribution
+      const prvsGroupedByYear = {};
+      prvData.forEach(d => {
+        const year = d["PRV Year"];
+        if (year) {
+          prvsGroupedByYear[year] = (prvsGroupedByYear[year] || 0) + 1;
+        }
+      });
+      
+      yearlyPRVs = Object.entries(prvsGroupedByYear)
+        .map(([year, count]) => ({ year, count }))
+        .sort((a, b) => a.year.localeCompare(b.year));
       
       // Find top company by entries
       const companyCounts = new Map();
@@ -80,15 +114,6 @@
       }
     }
     
-    function handleEntrySelect(entry) {
-      selectedEntry = entry;
-      isDrawerOpen = true;
-    }
-    
-    function handleCloseDrawer() {
-      isDrawerOpen = false;
-    }
-    
     $: if (data) {
       calculateStats();
     }
@@ -100,84 +125,200 @@
     });
   </script>
   
-  <div class="dashboard bg-slate-50 min-h-screen p-4">
-    <header class="mb-6">
-      <h1 class="text-2xl font-bold text-center text-gray-800">
-        Rare Pediatric Disease Priority Review Voucher (PRV) Dashboard
-      </h1>
-      <p class="text-center text-gray-600 mt-1">
-        Analysis of {totalEntries} drug candidates with {totalPRVs} PRVs awarded
-      </p>
-    </header>
-    
-    <!-- Stats cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">Total Drug Candidates</h3>
-        <p class="text-2xl font-bold text-gray-800">{totalEntries}</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">PRVs Awarded</h3>
-        <p class="text-2xl font-bold text-gray-800">{totalPRVs}</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">PRVs Sold</h3>
-        <p class="text-2xl font-bold text-gray-800">{totalSold} ({Math.round(totalSold/totalPRVs*100) || 0}%)</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">Avg Sale Price</h3>
-        <p class="text-2xl font-bold text-gray-800">${Math.round(avgSalePrice).toLocaleString() || 0} million</p>
-      </div>
-    </div>
-    
-    <!-- Additional summary cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">Top Company</h3>
-        <p class="text-xl font-bold text-gray-800">{topCompany.name || 'N/A'}</p>
-        <p class="text-sm text-gray-500">{topCompany.count || 0} drug candidates</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">Top Therapeutic Area</h3>
-        <p class="text-xl font-bold text-gray-800">{topArea.name || 'N/A'}</p>
-        <p class="text-sm text-gray-500">{topArea.count || 0} drug candidates</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-500 text-sm font-medium">Top Indication</h3>
-        <p class="text-xl font-bold text-gray-800">{topIndication.name || 'N/A'}</p>
-        <p class="text-sm text-gray-500">{topIndication.count || 0} drug candidates</p>
-      </div>
-    </div>
-    
-    <!-- Beeswarm Plot -->
-    <div class="bg-white p-4 rounded-lg shadow mb-8">
-      <StageBeeswarmPlot {data} width={1100} height={600} onEntrySelect={handleEntrySelect} />
-    </div>
-    
-    <!-- PRV Value Distribution -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-700 text-base font-medium mb-4">Total PRV Sales Value</h3>
-        <p class="text-5xl font-bold text-blue-600 text-center my-8">${totalValue.toLocaleString()} million</p>
-      </div>
-      
-      <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-gray-700 text-base font-medium mb-4">PRV Sale Price Trends</h3>
-        <div class="flex items-center justify-center h-32">
-          <!-- Placeholder for future chart -->
-          <p class="text-gray-500 italic">PRV values range from $67.5M to $350M with recent average of ~$110M</p>
+  <div class="program-analytics">
+    <!-- Section 1: Program Overview Stats -->
+    <section class="mb-6">
+      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+           on:click={() => toggleSection('overview')}>
+        <div class="flex items-center gap-2">
+          <Report size={20} class="text-orange-500" />
+          <h2 class="text-lg font-semibold text-slate-700">Program Overview</h2>
+        </div>
+        <div class="text-slate-400">
+          {expandedSections.overview ? '−' : '+'}
         </div>
       </div>
-    </div>
+      
+      {#if expandedSections.overview}
+        <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div class="stat-card bg-gradient-to-br from-blue-50 to-slate-50 p-4  border border-blue-100">
+              <h3 class="text-sm font-medium text-slate-500">Total Drug Candidates</h3>
+              <p class="text-2xl font-bold text-slate-800">{totalEntries}</p>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-green-50 to-slate-50 p-4  border border-green-100">
+              <h3 class="text-sm font-medium text-slate-500">PRVs Awarded</h3>
+              <p class="text-2xl font-bold text-green-700">{totalPRVs}</p>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-purple-50 to-slate-50 p-4  border border-purple-100">
+              <h3 class="text-sm font-medium text-slate-500">PRVs Sold</h3>
+              <p class="text-2xl font-bold text-purple-700">{totalSold} <span class="text-sm text-slate-500">({Math.round(totalSold/totalPRVs*100) || 0}%)</span></p>
+            </div>
+            
+            <div class="stat-card bg-gradient-to-br from-amber-50 to-slate-50 p-4  border border-amber-100">
+              <h3 class="text-sm font-medium text-slate-500">Avg Sale Price</h3>
+              <p class="text-2xl font-bold text-amber-700">${Math.round(avgSalePrice).toLocaleString() || 0}M</p>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4  border border-slate-200">
+              <h3 class="text-sm font-medium text-slate-500">Top Company</h3>
+              <p class="text-xl font-semibold text-slate-800">{topCompany.name || 'N/A'}</p>
+              <p class="text-sm text-slate-500">{topCompany.count || 0} drug candidates</p>
+            </div>
+            
+            <div class="bg-white p-4  border border-slate-200">
+              <h3 class="text-sm font-medium text-slate-500">Top Therapeutic Area</h3>
+              <p class="text-xl font-semibold text-slate-800">{topArea.name || 'N/A'}</p>
+              <p class="text-sm text-slate-500">{topArea.count || 0} drug candidates</p>
+            </div>
+            
+            <div class="bg-white p-4  border border-slate-200">
+              <h3 class="text-sm font-medium text-slate-500">Top Indication</h3>
+              <p class="text-xl font-semibold text-slate-800">{topIndication.name || 'N/A'}</p>
+              <p class="text-sm text-slate-500">{topIndication.count || 0} drug candidates</p>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-center text-sm text-slate-500">
+            <p>The Rare Pediatric Disease Priority Review Voucher (PRV) Program has facilitated the development of
+              {totalPRVs} approved treatments for rare pediatric diseases since its inception.</p>
+          </div>
+        </div>
+      {/if}
+    </section>
     
-    <footer class="mt-8 text-center text-gray-500 text-sm">
-      <p>Data analysis of Rare Pediatric Disease Priority Review Vouchers (PRVs)</p>
-      <p class="text-xs mt-1">Click on any circle in the visualization for detailed information</p>
+    <!-- Section 2: PRV Program Flow (Sankey Diagram) -->
+    <section class="mb-6">
+      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+           on:click={() => toggleSection('sankey')}>
+        <div class="flex items-center gap-2">
+          <ChartParallel size={20} class="text-blue-500" />
+          <h2 class="text-lg font-semibold text-slate-700">Program Flow Visualization</h2>
+        </div>
+        <div class="text-slate-400">
+          {expandedSections.sankey ? '−' : '+'}
+        </div>
+      </div>
+      
+      {#if expandedSections.sankey}
+        <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+          <div class="flex justify-center">
+            <ProgramSankey 
+              {data} 
+              width={1000} 
+              height={500} 
+              onEntrySelect={handleEntrySelect} 
+            />
+          </div>
+        </div>
+      {/if}
+    </section>
+    
+    <!-- Section 3: PRV Value Trends -->
+    <section class="mb-6">
+      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+           on:click={() => toggleSection('valueTrends')}>
+        <div class="flex items-center gap-2">
+          <Money size={20} class="text-green-500" />
+          <h2 class="text-lg font-semibold text-slate-700">Value & Distribution Trends</h2>
+        </div>
+        <div class="text-slate-400">
+          {expandedSections.valueTrends ? '−' : '+'}
+        </div>
+      </div>
+      
+      {#if expandedSections.valueTrends}
+        <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- PRV Value Timeline -->
+            <div class="p-4 border border-slate-200 ">
+              <h3 class="text-base font-semibold text-slate-700 mb-3">PRV Value Timeline</h3>
+              <PRVValueTimeline {data} />
+              <p class="text-sm text-slate-500 mt-3">PRV values have ranged from $68M to $350M since program inception, with recent stabilization around $110M.</p>
+            </div>
+            
+            <!-- PRV Award Count by Year -->
+            <div class="p-4 border border-slate-200 ">
+              <h3 class="text-base font-semibold text-slate-700 mb-3">PRV Awards by Year</h3>
+              <PRVAwardCount yearlyData={yearlyPRVs} />
+              <p class="text-sm text-slate-500 mt-3">The number of PRVs awarded has increased in recent years, with {yearlyPRVs[yearlyPRVs.length-1]?.count || 0} vouchers in {yearlyPRVs[yearlyPRVs.length-1]?.year || 'the latest year'}.</p>
+            </div>
+            
+            <!-- Total PRV Value -->
+            <div class="p-4 border border-slate-200  bg-gradient-to-br from-blue-50 to-slate-50">
+              <h3 class="text-base font-semibold text-slate-700 mb-2">Total PRV Sales Value</h3>
+              <p class="text-5xl font-bold text-blue-600 text-center my-4">${totalValue.toLocaleString()}M</p>
+              <p class="text-sm text-slate-500 text-center">Cumulative value of sold PRVs to date</p>
+            </div>
+            
+            <!-- Therapeutic Area Distribution -->
+            <div class="p-4 border border-slate-200 ">
+              <h3 class="text-base font-semibold text-slate-700 mb-3">Therapeutic Area Distribution</h3>
+              <TherapeuticAreaDistribution {data} />
+              <p class="text-sm text-slate-500 mt-3">Therapeutic areas with the most PRVs awarded include neuromuscular disorders, metabolic diseases, and rare cancers.</p>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </section>
+    
+    <!-- Section 4: Top Performers -->
+    <section class="mb-6">
+      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+           on:click={() => toggleSection('topPerformers')}>
+        <div class="flex items-center gap-2">
+          <CicsTransactionServerZos size={20} class="text-amber-500" />
+          <h2 class="text-lg font-semibold text-slate-700">Program Leaders</h2>
+        </div>
+        <div class="text-slate-400">
+          {expandedSections.topPerformers ? '−' : '+'}
+        </div>
+      </div>
+      
+      {#if expandedSections.topPerformers}
+        <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+          <div class="mb-4">
+            <CompanyLeaderboard {data} />
+          </div>
+          
+          <div class="text-left mt-6">
+            <p class="text-sm text-slate-600">The RPDD Program has generated significant returns for companies investing in rare pediatric disease research.</p>
+            <p class="text-sm text-slate-600 mt-2">Companies like Sarepta and BioMarin have leveraged the program most successfully.</p>
+          </div>
+        </div>
+      {/if}
+    </section>
+    
+    <footer class="text-slate-500 text-xs mt-6 pb-4">
+      <p>Rare Pediatric Disease Priority Review Voucher (PRV) Program Analysis</p>
+      <p class="mt-1">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
     </footer>
-    
   </div>
+  
+  <style>
+    .section-content {
+      max-height: 2000px;
+      overflow: hidden;
+    }
+    
+    .section-header {
+      transition: background-color 0.2s ease;
+    }
+    
+    .section-header:hover {
+      background-color: #f1f5f9;
+    }
+    
+    .stat-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>

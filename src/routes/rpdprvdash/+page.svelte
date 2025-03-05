@@ -69,7 +69,6 @@
   let areaMetrics = null;
   let isDrawerOpen = false;
   let isDashboardOpen = false;
-  let isAnalyticsOpen = false;
   let selectedYear = "2024"; // Default year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
@@ -211,7 +210,7 @@
     const isInteractiveElement = event.target.closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
     
     // Skip if click was on an interactive element or sidebar
-    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen || isAnalyticsOpen) {
+    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
       return;
     }
     
@@ -256,14 +255,6 @@
 
   function handleDashboardClose() {
     isDashboardOpen = false;
-  }
-  
-  function handleAnalyticsClick() {
-    isAnalyticsOpen = true;
-  }
-
-  function handleAnalyticsClose() {
-    isAnalyticsOpen = false;
   }
 
   const processedData = Object.entries(
@@ -316,15 +307,15 @@
     <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
         <div class="flex">
-          {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions'] as tab}
-            <button
-              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
-              {activeTab === tab ? 
-                'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501]' : 
-                'hover:text-[#e05501] text-slate-400 px-2 hover:text-slate-50'}"
-              on:click={() => setActiveTab(tab)}
-              >
-              {tab}
+          {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions', 'Program Overview'] as tab}
+          <button
+          class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
+          {activeTab === tab ? 
+            'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501] active-tab' : 
+            'hover:text-[#e05501] text-slate-400 px-2 hover:text-slate-50'}"
+          on:click={() => setActiveTab(tab)}
+        >
+          {tab}
             </button>
           {/each}
         </div>
@@ -341,13 +332,6 @@
           >
             <DashboardReference size={16}/>
             Dashboard
-          </button>
-          <button 
-            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-            on:click={handleAnalyticsClick}
-          >
-            <Analytics size={16}/>
-            Analytics
           </button>
         </div>
       </div>
@@ -367,7 +351,7 @@
         onYearSelect={handleTransactionYearSelect}
         transactionYearSelected={handleTransactionYearSelect}
       />
-        {:else}
+        {:else if activeTab !== 'Program Overview'}
           <RPDPRVVerticalTimeline 
             data={rpddData}
             selectedYear={selectedYear}
@@ -378,7 +362,7 @@
       </div>
 
       <!-- Main content area with adjusted width to accommodate the vertical timeline -->
-      <div class="flex-1 ml-4">
+      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'flex-1 ml-4'}">
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
@@ -510,6 +494,31 @@
               </div>
             </div>
           </div>
+          
+        <!-- Program Overview (Analytics) Tab Layout -->
+        {:else if activeTab === 'Program Overview'}
+          <div class="w-full">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <h2 class="text-xl font-semibold text-slate-800 mb-4">RPDD + PRV Program Analytics</h2>
+              <p class="text-slate-600 mb-6">Comprehensive analysis of the Rare Pediatric Disease Priority Review Voucher program performance and impact.</p>
+              
+              <RPDPRVAnalytics 
+              data={rpddData} 
+              onEntrySelect={(entry) => handleShowDrugDetail({
+                Company: entry.Company,
+                drugName: entry.Candidate,
+                therapeuticArea: entry.TherapeuticArea1,
+                year: entry["RPDD Year"],
+                color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
+                entries: [entry],
+                // Add other properties needed for your drug detail drawer
+                currentStage: entry["Current Development Stage"],
+                rpddAwardDate: entry["RPDD Date"],
+                voucherAwardDate: entry["PRV Date"],
+                indication: entry.Indication
+              })}
+            />            </div>
+          </div>
         {/if}
       </div>
     </div>
@@ -522,27 +531,6 @@
     onClose={handleDashboardClose}
     onShowDrugDetail={handleShowDrugDetail}
   />
-{/if}
-
-{#if isAnalyticsOpen}
-  <div class="fixed inset-0 w-full min-w-[400px] h-full bg-black/60 z-[1000] flex justify-center items-center cursor-pointer"
-    on:click|self={handleAnalyticsClose}
-    transition:fly={{duration: 300, y: 20}}
-  >
-    <div class="relative w-11/12 h-5/6 bg-white shadow-lg z-[1000] overflow-y-auto rounded-lg cursor-default">
-      <div class="flex justify-end p-4">
-        <button 
-          class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded"
-          on:click={handleAnalyticsClose}
-        >
-          Close
-        </button>
-      </div>
-      <div class="p-4">
-        <RPDPRVAnalytics data={rpddData} />
-      </div>
-    </div>
-  </div>
 {/if}
 
 {#if isDrawerOpen}
@@ -568,31 +556,49 @@
 {/if}
 
 <style>
-.tab-button {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.tab-button:active {
-border-bottom: 2px solid #ff7373;
-}
-
-.interactive-element:hover {
-  border-bottom: 2px solid #ff7373;
-}
-
-.interactive-element:focus {
-  outline: 1px solid #ff7373;
-}
-
-.interactive-element:active {
-  border-bottom: 2px solid #ff7373;
-}
-
-.sidebar-header {
-  padding: 0.5rem 0;
-  border-bottom: .525px solid #535353;
-}
-
+  .tab-button {
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .tab-button:active {
+    border-bottom: 2px solid #ff7373;
+  }
+  
+  .active-tab {
+    border-bottom: 2px solid #FF5501 !important;
+    position: relative;
+  }
+  
+  .active-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #FF5501;
+  }
+  
+  /* Keep your other existing styles */
+  .interactive-element:hover {
+    border-bottom: 2px solid #ff7373;
+  }
+  
+  .interactive-element:focus {
+    outline: 1px solid #ff7373;
+  }
+  
+  .interactive-element:active {
+    border-bottom: 2px solid #ff7373;
+  }
+  
+  .sidebar-header {
+    padding: 0.5rem 0;
+    border-bottom: .525px solid #535353;
+  }
+  
   .sidebar {
     max-height: 65vh;
     overflow-y: scroll;
@@ -600,11 +606,11 @@ border-bottom: 2px solid #ff7373;
     border-top: 0px;
     overflow-y: scroll;
   }
-
+  
   .nav-bar {
     align-items: stretch;
   }
-
+  
   .highlight {
     color: #549E7D;
     font-family: 'IBM Plex Mono', monospace;
@@ -612,9 +618,9 @@ border-bottom: 2px solid #ff7373;
     text-decoration: underline dotted;
     padding: 0 0.15rem;
   }
-
+  
   .card {
     border-bottom: .5px dotted #535353;
     padding: .25rem 1rem 1rem 0;
   }
-</style>
+  </style>

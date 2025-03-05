@@ -1,49 +1,30 @@
-<!-- StageBeeswarmPlot.svelte -->
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import RPDTooltip from '../RPDTooltip.svelte';
+    import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
+    import RPDTooltip from '$lib/rpdprvdash/RPDTooltip.svelte';
+    import { getTherapeuticAreaColor, therapeuticAreaColors } from '$lib/rpdprvdash/utils/colorDefinitions';
+    import { ArrowUpRight } from "carbon-icons-svelte";
     
     export let data = [];
-    export let width = 1100;
+    export let width = 1200;
     export let height = 600;
-    export let onEntrySelect = () => {};
+    export let onEntrySelect = (entry) => {};
     
     let svg;
+    
+    // Tooltip state
     let tooltipVisible = false;
-    let tooltipContent = {
-      sponsor: '',
-      drugName: '',
-      therapeuticArea: '',
-      id: ''
-    };
-    let tooltipBorderColor = '';
+    let tooltipData = {};
     let tooltipX = 0;
     let tooltipY = 0;
+    let tooltipBorderColor = '#4a5568';
     
-    // Use color definitions from colorDefinitions.ts
-    const therapeuticAreaColors = {
-      'Neurology': { fill: '#ff1515', stroke: '#FEB2B2' },
-      'Neuromuscular': { fill: '#2F855A', stroke: '#C6F6D5' },
-      'Oncology': { fill: '#B2F5EA', stroke: '#5CC988' },
-      'Metabolic': { fill: '#4C51BF', stroke: '#B2F5EA' },
-      'Ophthalmology': { fill: '#FFF', stroke: '#38A169' },
-      'Cardiovascular': { fill: '#FEEBC8', stroke: '#C05621' },
-      'Cardiology': { fill: '#fff', stroke: '#DD6B20' },
-      'Pulmonology': { fill: '#E9D8FD', stroke: '#6B46C1' },
-      'Hematology': { fill: '#FEB299', stroke: '#ff1515' },
-      'Endocrinology': { fill: '#FEFCBF', stroke: '#B7791F' },
-      'Genetic': { fill: '#BEE3F8', stroke: '#2B6CB0' },
-      'Immunology': { fill: '#FED7D7', stroke: '#9B2C2C' },
-      'Gastroenterology': { fill: '#FAF089', stroke: '#975A16' },
-      'Hepatology': { fill: '#C6F6D5', stroke: '#2F855A' },
-      'Nephrology': { fill: '#90CDF4', stroke: '#2C5282' },
-      'Orthopedics': { fill: '#E9D8FD', stroke: '#805AD5' },
-      'Dermatology': { fill: '#FEB2B2', stroke: '#E53E3E' },
-      'Neonatology': { fill: '#BEE3F8', stroke: '#3182CE' },
-      'Urology': { fill: '#D6BCFA', stroke: '#6B46C1' },
-      'Rheumatology': { fill: '#FEEBC8', stroke: '#9C4221' }
-    };
+    // Highlighted circle
+    let hoveredCircleId = null;
+    
+    // Highlighted stage
+    let hoveredStage = null;
     
     const stageColors = {
       'Preclinical': { fill: '#E2E8F0', stroke: '#4A5568' },
@@ -55,6 +36,7 @@
       'Phase 3': { fill: '#63B3ED', stroke: '#1A365D' },
       'FDA Approved': { fill: '#2F855A', stroke: '#9AE6B4' },
       'PRV Awarded': { fill: '#68D391', stroke: '#276749' },
+      'PRV Transacted': { fill: '#F6AD55', stroke: '#C05621' },
       'Filed': { fill: '#FEB2B2', stroke: '#7B341E' },
       'Approved': { fill: '#9AE6B4', stroke: '#2F855A' }
     };
@@ -63,13 +45,48 @@
     const developmentStages = [
       'Preclinical', 'Phase 1', 'Phase 1/2', 'Phase 2', 
       'Phase 2a', 'Phase 2b', 'Phase 3', 'Filed', 
-      'FDA Approved', 'PRV Awarded'
+      'FDA Approved', 'PRV Awarded', 'PRV Transacted'
     ];
+  
+    // Prepare data for the legend
+    let legendItems = [];
+    
+    function updateLegendItems() {
+      if (!data || data.length === 0) return;
+      
+      // Count occurrences of each therapeutic area
+      const areaCounts = {};
+      data.forEach(d => {
+        const area = d.TherapeuticArea1;
+        if (area) {
+          areaCounts[area] = (areaCounts[area] || 0) + 1;
+        }
+      });
+      
+      // Create legend items
+      legendItems = Object.keys(areaCounts)
+        .sort()
+        .map(area => ({
+          area,
+          count: areaCounts[area]
+        }));
+    }
+    
+    // Function to determine the proper development stage
+    function getDevelopmentStage(entry) {
+      // Check if it has a Purchase Year and is not NA
+      if (entry["Purchase Year"] && entry["Purchase Year"] !== "NA" && entry["Purchase Year"] !== "") {
+        return "PRV Transacted";
+      }
+      return entry["Current Development Stage"];
+    }
     
     function createVisualization() {
       if (!svg || !data || data.length === 0) return;
       
-      const margin = { top: 40, right: 40, bottom: 60, left: 40 };
+      updateLegendItems();
+      
+      const margin = { top: 40, right: 20, bottom: 60, left: 20 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
       
@@ -84,9 +101,18 @@
       const g = svgEl.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
       
+      // Process and filter data
+      const processedData = data.map(d => {
+        // Create a copy of the original data
+        const entry = {...d};
+        // Set the effective development stage
+        entry.effectiveStage = getDevelopmentStage(entry);
+        return entry;
+      });
+      
       // Filter out entries with missing or unknown development stages
-      const validData = data.filter(d => d["Current Development Stage"] && 
-                                  developmentStages.includes(d["Current Development Stage"]));
+      const validData = processedData.filter(d => d.effectiveStage && 
+                                  developmentStages.includes(d.effectiveStage));
       
       // Create x scale for development stages
       const x = d3.scaleBand()
@@ -95,47 +121,44 @@
         .padding(0.1);
       
       // Add X axis
-      g.append("g")
+      const xAxis = g.append("g")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickSizeOuter(0))
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .style("font-size", "12px");
+        .call(d3.axisBottom(x).tickSizeOuter(0));
       
-      // Add X axis label
-      g.append("text")
-        .attr("class", "x-label")
-        .attr("text-anchor", "middle")
-        .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + margin.bottom - 5)
-        .text("Development Stage")
-        .attr("fill", "#666")
-        .style("font-size", "14px");
+      // Customize axis text
+      xAxis.selectAll("text")
+        .attr("class", "stage-label")
+        .attr("transform", "rotate(0)")
+        .style("text-anchor", "end")
+        .attr("dx", "-.25em")
+        .attr("dy", ".725em")
+        .style("font-size", "9.725px");
       
       // Group data by development stage
-      const nestedData = d3.group(validData, d => d["Current Development Stage"]);
+      const nestedData = d3.group(validData, d => d.effectiveStage);
       
       // Create force simulation for each development stage
       nestedData.forEach((stageEntries, stage) => {
         const stageX = x(stage) + x.bandwidth() / 2;
         
-        // Set up force simulation
+        // Set up force simulation - MODIFIED FOR BOTTOM ALIGNMENT
         const simulation = d3.forceSimulation(stageEntries)
-          .force("x", d3.forceX(stageX).strength(0.2))
-          .force("y", d3.forceY(innerHeight / 2).strength(0.1))
-          .force("collide", d3.forceCollide(8))
+          .force("x", d3.forceX(stageX).strength(0.5))
+          .force("y", d3.forceY(innerHeight - 85).strength(0.15)) // Position near bottom
+          .force("collide", d3.forceCollide(8.25))
           .stop();
         
         // Run the simulation
         for (let i = 0; i < 120; ++i) simulation.tick();
         
-        // Keep circles within bounds
+        // Keep circles within bounds - MODIFIED FOR BOTTOM ALIGNMENT
         stageEntries.forEach(d => {
           d.x = Math.max(stageX - x.bandwidth() / 2 + 10, Math.min(stageX + x.bandwidth() / 2 - 10, d.x));
-          d.y = Math.max(10, Math.min(innerHeight - 10, d.y));
+          // Allow circles to stack upward from the bottom, but not past the top
+          // The minimum y value (highest position) is now relative to column density
+          const columnHeight = Math.min(innerHeight - 30, stageEntries.length * 12);
+          d.y = Math.max(innerHeight - columnHeight, Math.min(innerHeight - 10, d.y));
         });
       });
       
@@ -145,142 +168,173 @@
       // Combine all entries for rendering
       const allSimulatedData = Array.from(nestedData.values()).flat();
       
+      // Create a container for circles
+      const circlesContainer = g.append("g")
+        .attr("class", "circles-container");
+        
       // Create circles for each entry
-      const circles = g.selectAll("circle")
+      const circles = circlesContainer.selectAll(".drug-circle")
         .data(allSimulatedData)
-        .join("circle")
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", 5) // Reduced circle size
-        .attr("fill", d => therapeuticAreaColors[d.TherapeuticArea1]?.fill || '#CBD5E0')
-        .attr("stroke", d => hasPRV(d) ? "#FFC107" : (therapeuticAreaColors[d.TherapeuticArea1]?.stroke || '#4A5568'))
-        .attr("stroke-width", d => hasPRV(d) ? 2 : 1)
-        .attr("opacity", 0.9)
+        .join("g")
+        .attr("class", d => `drug-circle interactive-element stage-${d.effectiveStage.replace(/\s+/g, '-').replace(/\//g, '-')}`)
+        .attr("transform", d => `translate(${d.x}, ${d.y})`)
         .attr("cursor", "pointer")
+        .attr("data-id", (d, i) => `circle-${i}`)
+        .attr("data-stage", d => d.effectiveStage)
+        .style("opacity", 1) // Default opacity
         .on("mouseover", (event, d) => {
-          // Show tooltip with RPDTooltip component format
-          tooltipContent = {
-            sponsor: d.Company || 'Unknown',
-            drugName: d.Candidate || '',
-            therapeuticArea: d.TherapeuticArea1 || '',
-            id: d["Current Development Stage"] || 'Unknown Stage'
+          // Set hovered circle ID to expand it
+          hoveredCircleId = event.currentTarget.getAttribute("data-id");
+          d3.select(event.currentTarget).select("circle")
+            .transition()
+            .duration(100)
+            .attr("r", 8);
+          
+          // Show tooltip with transaction information if available
+          tooltipData = {
+            sponsor: d.Company || "Unknown",
+            drugName: d.Candidate,
+            therapeuticArea: d.TherapeuticArea1,
+            id: d.Indication || "Not specified"
           };
           
-          tooltipBorderColor = therapeuticAreaColors[d.TherapeuticArea1]?.stroke || '#4A5568';
-          tooltipX = event.pageX;
-          tooltipY = event.pageY - 40;
+          // Add transaction details to tooltip if available
+          if (d["Purchase Year"] && d["Purchase Year"] !== "NA" && d["Purchase Year"] !== "") {
+            tooltipData.transaction = {
+              purchaser: d.Purchaser || "Undisclosed",
+              price: d["Sale Price (USD Millions)"] || "Undisclosed",
+              year: d["Purchase Year"]
+            };
+          }
           
+          // Position tooltip next to the cursor
+          const mouseX = event.clientX;
+          const mouseY = event.clientY;
+          tooltipX = mouseX + 5;
+          tooltipY = mouseY - 5;
+          
+          tooltipBorderColor = getTherapeuticAreaColor(d.TherapeuticArea1).stroke;
           tooltipVisible = true;
         })
-        .on("mousemove", (event) => {
-          // Update tooltip position when mouse moves
-          tooltipX = event.pageX;
-          tooltipY = event.pageY - 40;
-        })
-        .on("mouseout", () => {
+        .on("mouseout", (event) => {
+          // Reset circle size
+          d3.select(event.currentTarget).select("circle")
+            .transition()
+            .duration(100)
+            .attr("r", 5);
+          
+          hoveredCircleId = null;
           tooltipVisible = false;
         })
         .on("click", (event, d) => {
+          // Trigger the onEntrySelect function with the clicked entry data
           onEntrySelect(d);
         });
-      
-      // Add legend for therapeutic areas
-      const legendData = Array.from(new Set(validData.map(d => d.TherapeuticArea1)))
-        .filter(d => d) // Filter out undefined/null
-        .sort();
-      
-      const legendItemHeight = 20;
-      const legendItemsPerColumn = 10;
-      const legendWidth = 200;
-      
-      const legend = svgEl.append("g")
-        .attr("transform", `translate(${width - margin.right - legendWidth}, ${margin.top})`);
-      
-      legend.append("rect")
-        .attr("width", legendWidth)
-        .attr("height", Math.ceil(legendData.length / legendItemsPerColumn) * legendItemHeight + 30)
-        .attr("fill", "#f8f9fa")
-        .attr("stroke", "#dee2e6")
-        .attr("rx", 4);
-      
-      legend.append("text")
-        .attr("x", 10)
-        .attr("y", 20)
-        .text("Therapeutic Areas")
-        .style("font-weight", "bold")
-        .style("font-size", "12px");
-      
-      const legendItems = legend.selectAll(".legend-item")
-        .data(legendData)
-        .join("g")
-        .attr("class", "legend-item")
-        .attr("transform", (d, i) => {
-          const column = Math.floor(i / legendItemsPerColumn);
-          const row = i % legendItemsPerColumn;
-          return `translate(${column * 100 + 10}, ${row * legendItemHeight + 40})`;
-        });
-      
-      legendItems.append("circle")
+        
+      // Add the circle with split fill similar to the legend
+      circles.append("circle")
         .attr("r", 5)
-        .attr("fill", d => therapeuticAreaColors[d]?.fill || '#CBD5E0')
-        .attr("stroke", d => therapeuticAreaColors[d]?.stroke || '#4A5568')
-        .attr("stroke-width", 1)
-        .attr("opacity", 0.9);
-      
-      legendItems.append("text")
-        .attr("x", 12)
-        .attr("y", 4)
-        .text(d => d.length > 14 ? d.substring(0, 12) + "..." : d)
-        .style("font-size", "10px");
-      
-      // Add PRV indicator in legend
-      const prvLegend = svgEl.append("g")
-        .attr("transform", `translate(${width - margin.right - legendWidth}, ${margin.top + Math.ceil(legendData.length / legendItemsPerColumn) * legendItemHeight + 50})`);
-      
-      prvLegend.append("rect")
-        .attr("width", legendWidth)
-        .attr("height", 40)
-        .attr("fill", "#f8f9fa")
-        .attr("stroke", "#dee2e6")
-        .attr("rx", 4);
-      
-      prvLegend.append("circle")
-        .attr("cx", 16)
-        .attr("cy", 20)
-        .attr("r", 5)
-        .attr("fill", stageColors['PRV Awarded'].fill)
-        .attr("stroke", "#FFC107")
-        .attr("stroke-width", 2);
-      
-      prvLegend.append("text")
-        .attr("x", 28)
-        .attr("y", 24)
-        .text("PRV Awarded")
-        .style("font-size", "10px");
-      
-      // Add title
-      svgEl.append("text")
-        .attr("x", width / 2)
-        .attr("y", 20)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .style("font-weight", "bold")
-        .text("Drug Candidates by Development Stage");
+        .attr("stroke", "#161616")
+        .attr("stroke-width", d => 
+          (hasPRV(d) || d.effectiveStage === "PRV Transacted") ? 2 : 1);
+        
+      // Add left half of the circle (fill color)
+      circles.append("path")
+        .attr("d", d3.arc()
+          .innerRadius(0)
+          .outerRadius(5)
+          .startAngle(-Math.PI / 2)
+          .endAngle(Math.PI / 2))
+        .attr("fill", d => getTherapeuticAreaColor(d.TherapeuticArea1).fill);
+        
+      // Add right half of the circle (stroke color)
+      circles.append("path")
+        .attr("d", d3.arc()
+          .innerRadius(0)
+          .outerRadius(5)
+          .startAngle(Math.PI / 2)
+          .endAngle(3 * Math.PI / 2))
+        .attr("fill", d => getTherapeuticAreaColor(d.TherapeuticArea1).stroke);
+    
       
       // Add counter for each stage
-      g.append("g")
+      const stageCounts = g.append("g")
         .selectAll("text")
         .data(developmentStages)
         .join("text")
-        .attr("class", "stage-count")
+        .attr("class", d => `stage-count count-${d.replace(/\s+/g, '-').replace(/\//g, '-')}`)
         .attr("x", d => x(d) + x.bandwidth() / 2)
-        .attr("y", -5)
+        .attr("y", 20)
         .attr("text-anchor", "middle")
         .style("font-size", "12px")
         .style("font-weight", "bold")
+        .style("opacity", 0) // Initially hidden
         .text(d => {
           const count = nestedData.get(d)?.length || 0;
-          return `n=${count}`;
+          return `${count}`;
+        });
+      
+      // Add invisible rectangles for mouseover effects
+      const stageRects = g.append("g")
+        .selectAll("rect")
+        .data(developmentStages)
+        .join("rect")
+        .attr("class", "stage-rect")
+        .attr("x", d => x(d))
+        .attr("y", 0)
+        .attr("width", x.bandwidth())
+        .attr("height", innerHeight)
+        .attr("fill", "transparent")
+        .attr("cursor", "pointer")
+        .on("mouseover", (event, stage) => {
+          hoveredStage = stage;
+          
+          // Highlight this stage
+          d3.select(`.count-${stage.replace(/\s+/g, '-').replace(/\//g, '-')}`)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+            
+          // Highlight the circles for this stage
+          circlesContainer.selectAll(".drug-circle")
+            .transition()
+            .duration(200)
+            .style("opacity", d => d.effectiveStage === stage ? 1 : 0.2);
+            
+          // Highlight the axis label
+          xAxis.selectAll("text")
+            .transition()
+            .duration(200)
+            .style("font-weight", function() {
+              const tickValue = d3.select(this).text();
+              return tickValue === stage ? "bold" : "normal";
+            })
+            .style("font-size", function() {
+              const tickValue = d3.select(this).text();
+              return tickValue === stage ? "11px" : "9.725px";
+            });
+        })
+        .on("mouseout", () => {
+          hoveredStage = null;
+          
+          // Reset all stage counts
+          g.selectAll(".stage-count")
+            .transition()
+            .duration(200)
+            .style("opacity", 0);
+            
+          // Reset all circles
+          circlesContainer.selectAll(".drug-circle")
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+            
+          // Reset axis labels
+          xAxis.selectAll("text")
+            .transition()
+            .duration(200)
+            .style("font-weight", "normal")
+            .style("font-size", "9.725px");
         });
     }
     
@@ -291,24 +345,30 @@
     $: if (data && svg) {
       createVisualization();
     }
-  </script>
+</script>
   
-  <div class="beeswarm-container relative">
-    <svg bind:this={svg} {width} {height}></svg>
+<div class="flex flex-row w-full">
+    <div class="relative w-4/5 beeswarm-container">
+      <svg bind:this={svg} {width} {height}></svg>
+      
+      <!-- External tooltip component -->
+      {#if tooltipVisible}
+        <RPDTooltip 
+          visible={true}
+          content={tooltipData}
+          borderColor={tooltipBorderColor}
+          x={tooltipX}
+          y={tooltipY}
+        />
+      {/if}
+    </div>
     
-    <!-- RPDTooltip Component -->
-    <RPDTooltip
-      visible={tooltipVisible}
-      content={tooltipContent}
-      borderColor={tooltipBorderColor}
-      x={tooltipX}
-      y={tooltipY}
-    />
-  </div>
-  
-  <style>
-    .beeswarm-container {
-      width: 100%;
-      overflow: visible;
-    }
-  </style>
+    <!-- External legend component -->
+    <div class="mt-4 w-1/5 w-full">
+      <RPDRadialLegend 
+        items={legendItems} 
+        showOnlyWithCounts={true}
+        colorScale={(area) => getTherapeuticAreaColor(area).fill}
+      />
+    </div>
+</div>

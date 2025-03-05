@@ -44,7 +44,7 @@
         <p class="text-xs text-slate-500 mt-1">Total RPDDs</p>
       </div>
       
-      <div class="stat-card bg-slate-50 p-3 rounded-lg">
+      <div class="stat-card">
         <span class="text-3xl font-bold text-slate-700">{prvsAwarded}</span>
         <p class="text-xs text-slate-500 mt-1">PRVs Awarded</p>
       </div>
@@ -103,8 +103,7 @@
       display: flex;
       flex-direction: column;
       align-items: start;
-      justify-content: center;
-      text-align: center;
+      text-align: left;
       transition: all 0.2s ease;
     }
 

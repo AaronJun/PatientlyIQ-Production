@@ -186,7 +186,7 @@
             .attr("x1", innerWidth / 2)
             .attr("x2", innerWidth / 2)
             .attr("y1", margin.top - 10)
-            .attr("y2", innerHeight + 10)
+            .attr("y2", innerHeight - 10)
             .attr("stroke", "#666666")
             .attr("stroke-width", 0.5)
             .attr("stroke-dasharray", "3,3");
