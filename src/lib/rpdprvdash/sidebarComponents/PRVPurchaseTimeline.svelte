@@ -10,8 +10,8 @@
     export let transactionYearSelected: (year: string) => void = () => {};
     
     let svg: SVGElement;
-    const margin = { top: 20, right: 0, bottom: 0, left: 0 };
-    const width = 150;
+    const margin = { top: 20, right: 20, bottom: 20, left: 40 };
+    const width = 125;
     const height = 800;
 
     // Process data to filter for purchases with transaction values
@@ -93,7 +93,7 @@
         // Create y scale (reversed for top-to-bottom order)
         const yScale = d3.scalePoint()
             .domain(yearData.map(d => d.year))
-            .range([margin.top, innerHeight])
+            .range([margin.top, innerHeight - 60]) // Leave space at bottom for "All Years"
             .padding(0.5);
 
         // Scale for circle radius based on total transaction value
@@ -128,6 +128,39 @@
                     .attr("offset", `${currentPosition * 100}%`)
                     .attr("stop-color", colorCombo.fill);
             });
+        });
+        
+        // Create a special gradient for "All Years"
+        const allYearsGradient = defs.append("linearGradient")
+            .attr("id", "purchase-gradient-all-years")
+            .attr("x1", "10%")
+            .attr("y1", "20%")
+            .attr("x2", "100%")
+            .attr("y2", "100%");
+            
+        // Get all unique therapeutic areas
+        const allAreas = new Set();
+        yearData.forEach(yearEntry => {
+            yearEntry.areas.forEach(area => {
+                allAreas.add(area.area);
+            });
+        });
+        
+        // Add all therapeutic areas to the gradient
+        const uniqueAreas = Array.from(allAreas);
+        uniqueAreas.forEach((area, index) => {
+            const colorCombo = getTherapeuticAreaColor(area);
+            const position = index / uniqueAreas.length;
+            
+            allYearsGradient.append("stop")
+                .attr("offset", `${position * 100}%`)
+                .attr("stop-color", colorCombo.fill);
+                
+            if (index < uniqueAreas.length - 1) {
+                allYearsGradient.append("stop")
+                    .attr("offset", `${(position + 1/uniqueAreas.length) * 100}%`)
+                    .attr("stop-color", colorCombo.fill);
+            }
         });
 
         // Create glow filter
@@ -235,7 +268,7 @@
 
         // Add year labels
         yearGroups.append("text")
-        .attr("class", "year-label")
+            .attr("class", "year-label")
             .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0))
             .attr("y", -42) // Center vertically
             .attr("text-anchor", "middle")
@@ -245,6 +278,89 @@
             .style("dominant-baseline", "end")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
+            
+        // Create "All Years" circle at the bottom
+        const allYearsGroup = g.append("g")
+            .attr("class", "all-years-group")
+            .attr("transform", `translate(${innerWidth / 2}, ${innerHeight + 10})`)
+            .attr("cursor", "pointer");
+            
+        // Create highlight circle for "All Years"
+        allYearsGroup.append("circle")
+            .attr("class", "highlight-circle")
+            .attr("r", 25) // Larger than regular circles
+            .attr("fill", "none")
+            .attr("stroke", "#55D88E")
+            .attr("stroke-width", 5)
+            .attr("opacity", selectedYear === "All" ? 0.5 : 0);
+            
+        // Create main circle for "All Years"
+        allYearsGroup.append("circle")
+            .attr("class", "year-circle")
+            .attr("r", 22) // Larger than regular circles
+            .attr("fill", "url(#purchase-gradient-all-years)")
+            .attr("stroke", "#BC9533")
+            .attr("stroke-width", selectedYear === "All" ? 4 : 2.5)
+            .style("filter", selectedYear === "All" ? "url(#purchase-glow)" : "none")
+            .style("cursor", "pointer")
+            .on("click", () => {
+                selectedYear = "All";
+                onYearSelect("All");
+                transactionYearSelected("All");
+                updateSelection();
+            })
+            .on("mouseenter", function() {
+                if (selectedYear !== "All") {
+                    allYearsGroup.select(".highlight-circle")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 0.325);
+                        
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("stroke-width", 2)
+                        .style("filter", "url(#purchase-glow)");
+                        
+                    allYearsGroup.select(".year-label")
+                        .transition()
+                        .duration(200)
+                        .attr("font-weight", "600")
+                        .attr("fill", "#FF9F1C");
+                }
+            })
+            .on("mouseleave", function() {
+                if (selectedYear !== "All") {
+                    allYearsGroup.select(".highlight-circle")
+                        .transition()
+                        .duration(200)
+                        .attr("opacity", 0);
+                        
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("stroke-width", 1.5)
+                        .style("filter", "none");
+                        
+                    allYearsGroup.select(".year-label")
+                        .transition()
+                        .duration(200)
+                        .attr("font-weight", "400")
+                        .attr("fill", "#718096");
+                }
+            });
+            
+        // Add "All Years" label
+        allYearsGroup.append("text")
+            .attr("class", "year-label")
+            .attr("y", -42) // Center vertically
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .attr("fill", "#718096")
+            .attr("font-size", "9.75px")
+            .style("dominant-baseline", "end")
+            .style("font-family", "'IBM Plex Mono', monospace")
+            .text("All");
 
         updateSelection();
     }
@@ -252,6 +368,28 @@
     function updateSelection() {
         if (!svg) return;
 
+        // Update "All Years" circle state
+        const allYearsGroup = d3.select(svg).select(".all-years-group");
+        if (!allYearsGroup.empty()) {
+            allYearsGroup.select(".highlight-circle")
+                .transition()
+                .duration(300)
+                .attr("opacity", selectedYear === "All" ? 0.5 : 0);
+                
+            allYearsGroup.select(".year-circle")
+                .transition()
+                .duration(300)
+                .attr("stroke-width", selectedYear === "All" ? 3 : 1.5)
+                .style("filter", selectedYear === "All" ? "url(#purchase-glow)" : "none");
+                
+            allYearsGroup.select(".year-label")
+                .transition()
+                .duration(300)
+                .attr("font-weight", selectedYear === "All" ? "600" : "400")
+                .attr("fill", selectedYear === "All" ? "#FF1515" : "#718096");
+        }
+
+        // Update year circles state
         d3.select(svg)
             .selectAll(".year-group")
             .each(function(d: any) {
@@ -284,7 +422,7 @@
 
 <div class="timeline-container">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
-        <h4 class="text-xs capitalize font-medium text-slate-600">
+        <h4 class="text-sm capitalize font-medium text-slate-800">
             Select Year             
             </h4>
     </div>    

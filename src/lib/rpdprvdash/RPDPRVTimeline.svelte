@@ -10,7 +10,7 @@
     
     let svg: SVGElement;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const width = 120;
+    const width = 125;
     const height = 800;
     
     $: yearData = Object.entries(
@@ -399,7 +399,7 @@ function updateSelection() {
 
 <div class="timeline-container">
     <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
-        <h4 class="text-xs capitalize font-medium text-slate-600">
+        <h4 class="text-sm capitalize font-medium text-slate-800">
             Select Year              
          </h4>
     </div>    

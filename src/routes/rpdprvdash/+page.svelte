@@ -10,7 +10,7 @@
   import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
-  
+  import { getTherapeuticAreaColor } from '$lib/rpdprvdash/utils/colorDefinitions';
   
   import SponsorSidebar from '$lib/rpdprvdash/sidebarComponents/SponsorSidebar.svelte';
   import TherapeuticAreaSidebar from '$lib/rpdprvdash/sidebarComponents/TherapeuticAreaSidebar.svelte';
@@ -23,7 +23,10 @@
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
   import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
 
-  import { ArrowUpRight, Bee, DashboardReference, Globe } from 'carbon-icons-svelte';
+  // New PRV Analytics Components
+  import RPDPRVAnalytics from '$lib/rpdprvdash/AllView/SankeyWrapper.svelte';
+
+  import { ArrowUpRight, Bee, DashboardReference, Globe, Analytics } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
 
   // Import data sources
@@ -54,7 +57,7 @@
 
   // State variables
   let activeTab = 'By Sponsor';
-  let selectedTransactionYear = "2023"; // Default transaction year
+  let selectedTransactionYear = "2024"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: any | null = null;
   let processedConstellationData: any[] = [];
@@ -66,7 +69,8 @@
   let areaMetrics = null;
   let isDrawerOpen = false;
   let isDashboardOpen = false;
-  let selectedYear = "2023"; // Default year
+  let isAnalyticsOpen = false;
+  let selectedYear = "2024"; // Default year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   
@@ -207,7 +211,7 @@
     const isInteractiveElement = event.target.closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
     
     // Skip if click was on an interactive element or sidebar
-    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
+    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen || isAnalyticsOpen) {
       return;
     }
     
@@ -216,21 +220,21 @@
   }
 
   function handleShowCompanyDetail(detail: any) {
-  const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
-  selectedCompany = detail.Company;
-  drawerProps = {
-    isCompanyView: true,
-    Company: detail.Company,
-    entries: companyEntries,
-    color: '#37587e',
-    companyUrl: detail.companyUrl,
-    country: companyEntries[0]?.COUNTRY || 'N/A',
-    publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
-    marketCap: companyEntries[0]?.MarketCap || 'N/A'
-  };
-  isDrawerOpen = true;
-  isCompanyDetailDrawerOpen = true;
-}
+    const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
+    selectedCompany = detail.Company;
+    drawerProps = {
+      isCompanyView: true,
+      Company: detail.Company,
+      entries: companyEntries,
+      color: '#37587e',
+      companyUrl: detail.companyUrl,
+      country: companyEntries[0]?.COUNTRY || 'N/A',
+      publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
+      marketCap: companyEntries[0]?.MarketCap || 'N/A'
+    };
+    isDrawerOpen = true;
+    isCompanyDetailDrawerOpen = true;
+  }
 
   function handleShowDrugDetail(detail: any) {
     drawerProps = {
@@ -252,6 +256,14 @@
 
   function handleDashboardClose() {
     isDashboardOpen = false;
+  }
+  
+  function handleAnalyticsClick() {
+    isAnalyticsOpen = true;
+  }
+
+  function handleAnalyticsClose() {
+    isAnalyticsOpen = false;
   }
 
   const processedData = Object.entries(
@@ -317,18 +329,25 @@
           {/each}
         </div>
 
-        <div class="flex w-1/5 gap-4">
+        <div class="flex w-1/5 gap-2">
           <RpdprvSearch
             data={rpddData}
             onShowDrugDetail={handleShowDrugDetail}
             onShowCompanyDetail={handleShowCompanyDetail}
           />
           <button 
-            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-2 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
             on:click={handleDashboardClick}
           >
             <DashboardReference size={16}/>
             Dashboard
+          </button>
+          <button 
+            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+            on:click={handleAnalyticsClick}
+          >
+            <Analytics size={16}/>
+            Analytics
           </button>
         </div>
       </div>
@@ -504,6 +523,28 @@
     onShowDrugDetail={handleShowDrugDetail}
   />
 {/if}
+
+{#if isAnalyticsOpen}
+  <div class="fixed inset-0 w-full min-w-[400px] h-full bg-black/60 z-[1000] flex justify-center items-center cursor-pointer"
+    on:click|self={handleAnalyticsClose}
+    transition:fly={{duration: 300, y: 20}}
+  >
+    <div class="relative w-11/12 h-5/6 bg-white shadow-lg z-[1000] overflow-y-auto rounded-lg cursor-default">
+      <div class="flex justify-end p-4">
+        <button 
+          class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded"
+          on:click={handleAnalyticsClose}
+        >
+          Close
+        </button>
+      </div>
+      <div class="p-4">
+        <RPDPRVAnalytics data={rpddData} />
+      </div>
+    </div>
+  </div>
+{/if}
+
 {#if isDrawerOpen}
   {#if drawerProps.isCompanyView}
     <RpdCompanyDetailDrawer
