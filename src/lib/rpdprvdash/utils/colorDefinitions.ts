@@ -25,15 +25,15 @@ export interface ColorCombo {
       stroke: '#B2F5EA'   // Darker purple-blue
     },
     'Ophthalmology': {
-      fill: '#FFF',    // Lighter green
-      stroke: '#38A169'   // Darker green
+      fill: '#A8ABC5',    // Lighter green
+      stroke: '#4C51BF'   // Darker green
     },
     'Cardiovascular': {
       fill: '#FEEBC8',    // Lighter orange
       stroke: '#C05621'   // Darker orange
     },
     'Cardiology': {
-      fill: '#fff',    // Lighter red-orange
+      fill: '#38A169',    // Lighter red-orange
       stroke: '#DD6B20'   // Darker red-orange
     },
     'Pulmonology': {
@@ -81,8 +81,8 @@ export interface ColorCombo {
       stroke: '#3182CE'   // Darker blue
     },
     'Urology': {
-      fill: '#D6BCFA',    // Lighter purple
-      stroke: '#6B46C1'   // Darker purple
+      fill: '#E7FEC4',    // Lighter purple
+      stroke: '#C4904D'   // Darker purple
     },
     'Rheumatology': {
       fill: '#FEEBC8',    // Lighter amber-orange

@@ -7,7 +7,7 @@
   import PRVPurchaseTimeline from '$lib/rpdprvdash/sidebarComponents/PRVPurchaseTimeline.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
-  import RpdprvCompanyTree from '$lib/rpdprvdash/RPDPRVCompanyTree.svelte';
+  import RpdprvCompanyTree from '$lib/rpdprvdash/RadialComponents/RPDPRVCompanyTree.svelte';
   import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import { getTherapeuticAreaColor } from '$lib/rpdprvdash/utils/colorDefinitions';
@@ -369,6 +369,7 @@
             <div class="w-4/5 pr-8 pl-2">
               <RpdprvCompanyTree 
                 data={filteredData}
+                isAllYearView={selectedYear === "All"}
                 onCompanyHover={handleCompanyHover}
                 onStageHover={handleStageHover}
                 onLeave={handleLeave}
@@ -504,6 +505,7 @@
               
               <RPDPRVAnalytics 
               data={rpddData} 
+              isAllYearView={selectedYear === "All"}
               onEntrySelect={(entry) => handleShowDrugDetail({
                 Company: entry.Company,
                 drugName: entry.Candidate,
@@ -615,8 +617,6 @@
     color: #549E7D;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 800;
-    text-decoration: underline dotted;
-    padding: 0 0.15rem;
   }
   
   .card {

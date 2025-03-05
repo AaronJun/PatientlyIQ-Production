@@ -37,11 +37,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Aardvark",
@@ -81,11 +81,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Acadia",
@@ -125,11 +125,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "4/1/21",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "2/1/22",
+    "BLA submission": "8/1/22"
   },
   {
     "Company": "Actio Biosciences",
@@ -169,11 +169,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Actuate Therapeutics",
@@ -213,11 +213,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Advent",
@@ -257,11 +257,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Albireo AB",
@@ -301,11 +301,11 @@
     "Acq date": "9",
     "Acq year": "2023",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "10/1/18",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "8/1/20",
+    "BLA submission": "1/1/21"
   },
   {
     "Company": "Alexion",
@@ -345,11 +345,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "7/1/12",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "5/1/14",
+    "BLA submission": "9/1/15"
   },
   {
     "Company": "Alexion",
@@ -389,11 +389,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "11/1/10",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "3/1/13",
+    "BLA submission": "6/1/14"
   },
   {
     "Company": "Alkeus Pharmaceuticals",
@@ -433,11 +433,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Alnylym",
@@ -477,11 +477,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Alnylym",
@@ -521,11 +521,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "5/1/17",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "7/1/19",
+    "BLA submission": "10/1/20"
   },
   {
     "Company": "AlveoGene",
@@ -565,14 +565,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "Amryt",
+    "Company": "Amryt Pharmaceuticals",
     "Candidate": "FILSUVEZ",
     "COUNTRY": "IE",
     "Public/Private": "Public",
@@ -609,17 +609,17 @@
     "Acq date": "9",
     "Acq year": "2023",
     "Acq notes": "Under the deal, Chiesi will pay $1.25 billion upfront for Amryt plus up to $225 million more if Amryt's rare skin disease drug Filsuvez can gain an FDA approval and wins a priority review voucher as a result of that nod.",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Amryt Pharmaceuticals",
     "Candidate": "FILSUVEZ",
-    "COUNTRY": "",
-    "Public/Private": "",
+    "COUNTRY": "US",
+    "Public/Private": "Private",
     "MarketCap": "",
     "RPDD Month": "",
     "RPDD Date": "",
@@ -653,11 +653,11 @@
     "Acq date": "2023",
     "Acq year": "Under the deal, Chiesi will pay $1.25 billion upfront for Amryt plus up to $225 million more if Amryt's rare skin disease drug Filsuvez can gain an FDA approval and wins a priority review voucher as a result of that nod.",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Aptacure Therapeutics",
@@ -697,11 +697,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "9-28-2012",
-    "ODD granted": "9-5-2008",
-    "FTD granted": "2-17-2017",
-    "RPDD granted": "3-3-2023",
-    "BLA submission": "3-17-2023"
+    "IND submission ": "#N/A",
+    "ODD granted": "9/5/08",
+    "FTD granted": "2/17/17",
+    "RPDD granted": "3/3/23",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Arcturus",
@@ -741,11 +741,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Arcturus",
@@ -785,11 +785,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Argenica Therapeutics",
@@ -829,11 +829,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Argenica Therapeutics",
@@ -873,11 +873,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "ARTHex Biotech",
@@ -917,11 +917,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ascidian Therapeutics",
@@ -961,11 +961,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "āshibio",
@@ -1005,11 +1005,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "AskBio (Bayer)",
@@ -1049,11 +1049,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "AstraZeneca",
@@ -1093,11 +1093,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "9/1/16",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "11/1/18",
+    "BLA submission": "3/1/19"
   },
   {
     "Company": "Atamyo Therapeutics",
@@ -1137,11 +1137,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Atsena Therapeutics",
@@ -1181,11 +1181,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Atsena Therapeutics",
@@ -1225,11 +1225,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "AUM",
@@ -1269,11 +1269,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Avidity Biosciences",
@@ -1313,11 +1313,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Biogen",
@@ -1357,11 +1357,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "1/1/13",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "12/1/15",
+    "BLA submission": "7/1/16"
   },
   {
     "Company": "Biohaven",
@@ -1401,11 +1401,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "BioMarin",
@@ -1445,11 +1445,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "8/1/11",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "6/1/14",
+    "BLA submission": "2/1/17"
   },
   {
     "Company": "BioMarin",
@@ -1489,11 +1489,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "7/1/09",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "9/1/12",
+    "BLA submission": "12/1/12"
   },
   {
     "Company": "BioMarin",
@@ -1533,11 +1533,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "11/1/15",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "10/1/19",
+    "BLA submission": "1/1/21"
   },
   {
     "Company": "Bloom Science",
@@ -1577,11 +1577,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Bloomsbury Genetic",
@@ -1621,11 +1621,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Bloomsbury Genetic",
@@ -1665,11 +1665,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Bloomsbury Genetic",
@@ -1709,11 +1709,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Bloomsbury Genetic",
@@ -1753,11 +1753,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "bluebird Bio",
@@ -1797,11 +1797,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "3/1/16",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "1/1/20",
+    "BLA submission": "4/1/21"
   },
   {
     "Company": "bluebird Bio",
@@ -1841,11 +1841,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "2/1/14",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "4/1/17",
+    "BLA submission": "7/1/21"
   },
   {
     "Company": "BPGbio",
@@ -1885,11 +1885,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "BPGbio",
@@ -1929,11 +1929,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "BridgeBio",
@@ -1973,11 +1973,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Cabaletta Bio",
@@ -2017,11 +2017,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "CAMP4 Therapeutics",
@@ -2061,11 +2061,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Cartesian Therapeutics",
@@ -2105,11 +2105,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Cellectis",
@@ -2149,11 +2149,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Chiesi Farmaceutici S.p.A.",
@@ -2193,11 +2193,11 @@
     "Acq date": "Na",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "10/1/13",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "3/1/16",
+    "BLA submission": "12/1/17"
   },
   {
     "Company": "ChromaDex",
@@ -2237,11 +2237,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Coave Therapeutics",
@@ -2281,11 +2281,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "ConSynance Therapeutics",
@@ -2325,11 +2325,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Cumberland Pharmaceuticals",
@@ -2369,11 +2369,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Daiichi Sankyo",
@@ -2413,11 +2413,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Day One",
@@ -2457,11 +2457,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Day One",
@@ -2501,11 +2501,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Disc Medicine",
@@ -2545,11 +2545,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Dr. Noah Biotech",
@@ -2589,11 +2589,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Drug Farm",
@@ -2633,11 +2633,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Dyne",
@@ -2677,11 +2677,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Edgewise",
@@ -2721,11 +2721,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Eiger",
@@ -2765,11 +2765,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Eiger",
@@ -2809,11 +2809,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "Progeria Research Foundation receives 50% under Collaboration Agreement",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Elastrin",
@@ -2853,11 +2853,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Elixirgen Therapeutics",
@@ -2897,11 +2897,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Elpida Therapeutics",
@@ -2941,11 +2941,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Enterprise Therapeutics",
@@ -2985,11 +2985,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Enzyvant",
@@ -3029,11 +3029,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Enzyvant",
@@ -3073,11 +3073,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "5/1/15",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "7/1/18",
+    "BLA submission": "8/1/20"
   },
   {
     "Company": "FLAG",
@@ -3117,11 +3117,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "GC",
@@ -3161,11 +3161,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Genentech",
@@ -3205,11 +3205,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Genentech",
@@ -3249,11 +3249,11 @@
     "Acq date": "Na",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "6/1/14",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "9/1/18",
+    "BLA submission": "10/1/19"
   },
   {
     "Company": "GN Corporation",
@@ -3293,11 +3293,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Gut-Brain-Axis",
@@ -3337,11 +3337,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "GW Research",
@@ -3381,11 +3381,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "7/1/13",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "11/1/16",
+    "BLA submission": "5/1/18"
   },
   {
     "Company": "GW Research",
@@ -3425,11 +3425,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Hollenbeck Pharmaceuticals",
@@ -3469,11 +3469,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "HuidaGene",
@@ -3513,11 +3513,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "HuidaGene",
@@ -3557,11 +3557,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "HuidaGene",
@@ -3601,11 +3601,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ilya Pharma",
@@ -3645,11 +3645,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Imaging Biometrics",
@@ -3689,11 +3689,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Imaging Biometrics",
@@ -3733,11 +3733,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "ImmuneSensor Therapeutics",
@@ -3777,11 +3777,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "INmune Bio",
@@ -3821,11 +3821,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Innorna",
@@ -3865,11 +3865,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Invenra",
@@ -3909,11 +3909,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ionis",
@@ -3953,11 +3953,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ipsen Bio",
@@ -3997,11 +3997,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ipsen Bio",
@@ -4041,11 +4041,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Italfarmaco S.p.A.",
@@ -4085,11 +4085,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Italfarmaco S.p.A.",
@@ -4129,11 +4129,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Jaguar Gene Therapies",
@@ -4173,11 +4173,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "JCR",
@@ -4217,14 +4217,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "Krystal",
+    "Company": "Krystal Biotech",
     "Candidate": "HG302",
     "COUNTRY": "US",
     "Public/Private": "Public",
@@ -4261,14 +4261,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "Krystal",
+    "Company": "Krystal Biotech",
     "Candidate": "VYJUVEK",
     "COUNTRY": "US",
     "Public/Private": "Public",
@@ -4305,11 +4305,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Krystal Biotech",
@@ -4349,11 +4349,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Lactiga",
@@ -4393,11 +4393,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Laminar",
@@ -4437,11 +4437,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Lantern Pharma",
@@ -4481,11 +4481,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Lantern Pharma",
@@ -4525,11 +4525,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Leadiant Bioscience",
@@ -4569,11 +4569,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Leadiant Bioscience",
@@ -4613,11 +4613,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Lisata Therapeutics",
@@ -4657,11 +4657,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Lundbeck Pharma",
@@ -4701,11 +4701,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MAIA Biotechnology",
@@ -4745,11 +4745,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Marathon",
@@ -4789,11 +4789,11 @@
     "Acq date": "16",
     "Acq year": "2017",
     "Acq notes": "Sold off Emflaza",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Marathon",
@@ -4833,11 +4833,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Marinus",
@@ -4877,11 +4877,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Medivir",
@@ -4921,11 +4921,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MeiraGTx",
@@ -4965,11 +4965,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MeiraGTx",
@@ -5009,11 +5009,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MeiraGTx",
@@ -5053,11 +5053,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MeiraGTx",
@@ -5097,11 +5097,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Merlin Biotech",
@@ -5141,11 +5141,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Mesoblast",
@@ -5185,11 +5185,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "META Pharmaceuticals",
@@ -5229,11 +5229,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Mirum",
@@ -5273,11 +5273,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Modalis Therapeutics",
@@ -5317,11 +5317,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Muscular Dystrophy Association",
@@ -5361,11 +5361,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "MyoGene Bio",
@@ -5405,11 +5405,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Myopax",
@@ -5449,11 +5449,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5493,11 +5493,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5537,11 +5537,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5581,11 +5581,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5625,11 +5625,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5669,11 +5669,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NCATS",
@@ -5713,11 +5713,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Neuren Pharmaceuticals",
@@ -5757,14 +5757,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "Neurocrine",
+    "Company": "Neurocrine Biosciences",
     "Candidate": "Crenessity",
     "COUNTRY": "US",
     "Public/Private": "Public",
@@ -5801,11 +5801,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Neurocrine Biosciences",
@@ -5845,11 +5845,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Nobias Therapeutics",
@@ -5889,11 +5889,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NorthSea",
@@ -5933,11 +5933,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Novartis",
@@ -5977,11 +5977,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Novartis",
@@ -6021,11 +6021,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "4/1/15",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "8/1/18",
+    "BLA submission": "2/1/19"
   },
   {
     "Company": "Novimmune",
@@ -6065,11 +6065,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NS Pharma",
@@ -6109,11 +6109,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NS Pharma",
@@ -6153,11 +6153,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "NS Pharma",
@@ -6197,11 +6197,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ocugen",
@@ -6241,11 +6241,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ocuphire Pharma",
@@ -6285,11 +6285,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Omeros",
@@ -6329,11 +6329,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Orchard",
@@ -6373,11 +6373,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Orchard",
@@ -6417,11 +6417,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Origin",
@@ -6461,11 +6461,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Papillon Therapeutics",
@@ -6505,11 +6505,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Papillon Therapeutics",
@@ -6549,11 +6549,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "PepGen",
@@ -6593,11 +6593,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Pharming",
@@ -6637,11 +6637,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "PIF Partners",
@@ -6681,11 +6681,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Praxis",
@@ -6725,11 +6725,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Prometic",
@@ -6769,11 +6769,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "PTC",
@@ -6813,11 +6813,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "PTC",
@@ -6857,11 +6857,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "PYC Therapeutics",
@@ -6901,11 +6901,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Race Onco",
@@ -6945,11 +6945,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ractigen Therapeutics",
@@ -6989,11 +6989,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Reata",
@@ -7033,11 +7033,11 @@
     "Acq date": "26",
     "Acq year": "2023",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Regeneron",
@@ -7077,11 +7077,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Rhythm",
@@ -7121,11 +7121,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Safi Bio",
@@ -7165,11 +7165,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sanofi",
@@ -7209,11 +7209,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Saol Therapeutics",
@@ -7253,11 +7253,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sarepta",
@@ -7297,11 +7297,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sarepta",
@@ -7341,11 +7341,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sarepta",
@@ -7385,11 +7385,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sarepta",
@@ -7429,11 +7429,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sarepta",
@@ -7473,11 +7473,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Satellos",
@@ -7517,11 +7517,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Satellos",
@@ -7561,14 +7561,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "SELLAS",
+    "Company": "SELLAS Life Sciences",
     "Candidate": "SLS009-ALL",
     "COUNTRY": "US",
     "Public/Private": "Public",
@@ -7605,14 +7605,14 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
-    "Company": "SELLAS",
+    "Company": "SELLAS Life Sciences",
     "Candidate": "SLS009-AML",
     "COUNTRY": "US",
     "Public/Private": "Public",
@@ -7649,11 +7649,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "SELLAS Life Sciences",
@@ -7693,11 +7693,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Senhwa Biosciences",
@@ -7737,11 +7737,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sernova",
@@ -7781,11 +7781,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Siren Biotechnology",
@@ -7825,11 +7825,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "SiSaf",
@@ -7869,11 +7869,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Solid Biosciences",
@@ -7913,11 +7913,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Somite Therapeutics",
@@ -7957,11 +7957,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Spark",
@@ -8001,11 +8001,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "SpringWorks",
@@ -8045,11 +8045,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Sumitomo",
@@ -8089,11 +8089,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "SynaptixBio",
@@ -8133,11 +8133,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Synlogic",
@@ -8177,11 +8177,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Takeda",
@@ -8221,11 +8221,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": " (RPD-2022-685)",
-    "IND submission ": "9-28-2012",
-    "ODD granted": "9-5-2008",
-    "FTD granted": "2-17-2017",
-    "RPDD granted": "3-3-2023",
-    "BLA submission": "3-17-2023"
+    "IND submission ": "#N/A",
+    "ODD granted": "9/5/08",
+    "FTD granted": "2/17/17",
+    "RPDD granted": "3/3/23",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Tenaya Therapeutics",
@@ -8265,11 +8265,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Tetra (Shionogi)",
@@ -8309,11 +8309,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Theriva Biologics",
@@ -8353,11 +8353,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Tonix Pharmaceuticals",
@@ -8397,11 +8397,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Travere",
@@ -8441,11 +8441,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Tyre Biosciences",
@@ -8485,11 +8485,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ultragenyx",
@@ -8529,11 +8529,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Ultragenyx",
@@ -8573,11 +8573,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "United",
@@ -8617,11 +8617,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "AbbVie buys last available priority voucher for $350 million",
-    "IND submission ": "",
+    "IND submission ": "1/1/11",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "12/1/14",
+    "BLA submission": "7/1/14"
   },
   {
     "Company": "Vertex",
@@ -8661,11 +8661,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "FibroGen",
@@ -8705,11 +8705,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Vertex",
@@ -8749,11 +8749,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Vertex",
@@ -8793,11 +8793,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Wave Life Sciences",
@@ -8837,11 +8837,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Wellstat",
@@ -8881,11 +8881,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "X4",
@@ -8925,11 +8925,11 @@
     "Acq date": "NA",
     "Acq year": "NA",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Y-mAbs",
@@ -8969,11 +8969,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "YolTech",
@@ -9013,11 +9013,11 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   },
   {
     "Company": "Zevra Therapeutics",
@@ -9057,10 +9057,10 @@
     "Acq date": "",
     "Acq year": "",
     "Acq notes": "",
-    "IND submission ": "",
+    "IND submission ": "#N/A",
     "ODD granted": "",
     "FTD granted": "",
-    "RPDD granted": "",
-    "BLA submission": ""
+    "RPDD granted": "#N/A",
+    "BLA submission": "#N/A"
   }
 ]
