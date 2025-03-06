@@ -1,106 +1,157 @@
-// Data processing utilities for regulatory timeline
+/**
+ * Utility functions for handling regulatory timeline data
+ */
 
 /**
- * Process raw data into formatted timeline events
- * @param {Object} data - Raw drug candidate data
- * @param {Object} eventColors - Color mapping for event types
- * @returns {Array} Formatted and sorted timeline events
+ * Process drug data into timeline events
+ * @param {Object} data - Drug data object
+ * @param {Object} eventColors - Mapping of event types to colors
+ * @returns {Array} Array of formatted timeline events
  */
-export function processTimelineData(data, eventColors) {
-    const events = [];
+export function processTimelineData(data, eventColors = defaultEventColors) {
+    if (!data) return [];
+    
+    let events = [];
     
     // Add regulatory milestone events
     const milestones = {
-      "ODD": { label: "ODD granted", date: data["ODD granted"] },
-      "IND": { label: "IND submission", date: data["IND submission "] },
-      "FTD": { label: "FTD granted", date: data["FTD granted"] },
-      "RPDD": { label: "RPDD granted", date: data["RPDD granted"] },
-      "BLA": { label: "BLA submission", date: data["BLA submission"] }
+      "ODD granted": data["ODD granted"],
+      "IND submission": data["IND submission "],
+      "FTD granted": data["FTD granted"],
+      "RPDD granted": data["RPDD granted"],
+      "BLA submission": data["BLA submission"]
     };
   
     // Add all milestone events that have dates
-    Object.entries(milestones).forEach(([id, info]) => {
-      if (info.date && info.date.trim() !== "") {
+    Object.entries(milestones).forEach(([label, date]) => {
+      if (date && date.trim() !== "" && date !== "#N/A") {
+        // Get color for the event
+        const color = eventColors[label] || "#37587e";
+        
+        // Parse different date formats
+        let formattedDate = date;
+        if (date.includes('/')) {
+          // Handle formats like "9/5/08"
+          let [month, day, year] = date.split('/');
+          
+          // Add century prefix to 2-digit year if needed
+          if (year && year.length === 2) {
+            year = year < '50' ? `20${year}` : `19${year}`;
+          }
+          
+          formattedDate = `${month}-${day}-${year}`;
+        }
+        
         events.push({
-          id,
-          label: info.label,
-          date: info.date,
-          color: eventColors[id]
+          label,
+          date: formattedDate,
+          color
         });
       }
     });
   
     // Add RPDD Month-Date-Year if provided
-    if (data["RPDD Month"] && data["RPDD Date"] && data["RPDD Year"]) {
-      const rpddDate = `${data["RPDD Month"]}-${data["RPDD Date"]}-${data["RPDD Year"]}`;
+    if (data["RPDD Month"] && data["RPDD Year"]) {
+      const rpddDate = `${data["RPDD Month"]}-${data["RPDD Date"] || "1"}-${data["RPDD Year"]}`;
       events.push({
-        id: "RPDD_MDY",
-        label: "RPDD Month-Date-Year",
+        label: "RPDD Date",
         date: rpddDate,
-        color: eventColors["RPDD_MDY"]
+        color: eventColors["RPDD Date"]
       });
     }
   
     // Add PRV Month-Date-Year if provided
-    if (data["PRV Month"] && data["Date"] && data["PRV Year"]) {
-      const prvDate = `${data["PRV Month"]}-${data["Date"]}-${data["PRV Year"]}`;
+    if (data["PRV Month"] && data["PRV Year"]) {
+      const prvDate = `${data["PRV Month"]}-${data["Date"] || "1"}-${data["PRV Year"]}`;
       events.push({
-        id: "PRV_MDY",
-        label: "PRV Month-Date-Year",
+        label: "PRV Awarded",
         date: prvDate,
-        color: eventColors["PRV_MDY"]
+        color: eventColors["PRV Awarded"]
+      });
+    }
+  
+    // Add PRV Transaction if available
+    if (data["Purchase Month"] && data["Purchase Year"]) {
+      const transactionDate = `${data["Purchase Month"]}-${data["Purchase Date"] || "1"}-${data["Purchase Year"]}`;
+      events.push({
+        label: "PRV Transaction",
+        date: transactionDate,
+        color: eventColors["PRV Transaction"]
       });
     }
   
     // Format dates and sort chronologically
     return events
-      .filter(event => event.date && event.date.trim() !== "")
+      .filter(event => event.date && event.date.trim() !== "" && event.date !== "#N/A")
       .map(event => {
-        const [month, day, year] = event.date.split("-").map(part => part.trim());
-        const dateObj = new Date(`${month}/${day}/${year}`);
-        return {
-          ...event,
-          dateObj,
-          formattedDate: `${month}/${day}/${year}`
-        };
+        try {
+          const [month, day, year] = event.date.split("-").map(part => part.trim());
+          
+          // Handle 2-digit years
+          let fullYear = year;
+          if (year && year.length === 2) {
+            fullYear = parseInt(year) < 50 ? `20${year}` : `19${year}`;
+          }
+          
+          const dateObj = new Date(`${month}/${day}/${fullYear}`);
+          
+          if (isNaN(dateObj.getTime())) {
+            console.warn(`Invalid date for ${event.label}: ${event.date}`);
+            return null;
+          }
+          
+          return {
+            ...event,
+            dateObj,
+            formattedDate: `${month}/${day}/${fullYear}`,
+            rawDate: event.date
+          };
+        } catch (e) {
+          console.warn(`Error parsing date for ${event.label}: ${event.date}`, e);
+          return null;
+        }
       })
+      .filter(event => event !== null)
       .sort((a, b) => a.dateObj - b.dateObj);
   }
   
   /**
-   * Format a date string for display
-   * @param {string} dateStr - Date string in "M-D-YYYY" format
-   * @returns {string} Formatted date string
+   * Format a date string to a more readable format
+   * @param {string} dateStr - Date string in format "MM-DD-YYYY"
+   * @returns {string} Formatted date
    */
-  export function formatDate(dateStr) {
+  export function formatDateString(dateStr) {
     if (!dateStr) return '';
     
-    const [month, day, year] = dateStr.split("-").map(part => part.trim());
-    return `${month}/${day}/${year}`;
+    try {
+      const [month, day, year] = dateStr.split('-').map(part => part.trim());
+      const date = new Date(`${month}/${day}/${year}`);
+      
+      if (isNaN(date.getTime())) {
+        return dateStr; // Return original if parsing fails
+      }
+      
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (e) {
+      return dateStr; // Return original on error
+    }
   }
   
   /**
-   * Calculate time span between first and last events in days
-   * @param {Array} events - Sorted timeline events
-   * @returns {number} Time span in days
-   */
-  export function calculateTimeSpan(events) {
-    if (!events || events.length < 2) return 0;
-    
-    const firstDate = events[0].dateObj;
-    const lastDate = events[events.length - 1].dateObj;
-    return Math.round((lastDate - firstDate) / (1000 * 60 * 60 * 24));
-  }
-  
-  /**
-   * Default color scheme for regulatory events
+   * Default event colors for regulatory timeline
    */
   export const defaultEventColors = {
-    ODD: "#4285F4",     // Blue
-    IND: "#34A853",     // Green
-    FTD: "#FBBC05",     // Yellow
-    RPDD: "#EA4335",    // Red
-    RPDD_MDY: "#EA4335", // Red
-    PRV_MDY: "#9C27B0", // Purple
-    BLA: "#FF6D00"      // Orange
+    "ODD granted": "#4285F4",      // Blue
+    "IND submission": "#34A853",   // Green
+    "FTD granted": "#FBBC05",      // Yellow
+    "RPDD granted": "#EA4335",     // Red
+    "RPDD Date": "#EA4335",        // Red
+    "PRV Date": "#9C27B0",         // Purple
+    "PRV Awarded": "#9C27B0",      // Purple
+    "BLA submission": "#FF6D00",   // Orange
+    "PRV Transaction": "#1CD819"   // Green
   };

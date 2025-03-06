@@ -339,7 +339,7 @@ companies.forEach(company => {
                                 drugGroup.select("text")
                                     .transition()
                                     .duration(200)
-                                    .attr("font-size", isAllYearView ? "8px" : "10px");
+                                    .attr("font-size", isAllYearView ? "8.25px" : "10px");
                             }
                             else if (drug["PRV Issue Year"] || drug["PRV Year"]) {
                                 drugGroup.select("circle:last-child")
@@ -559,85 +559,209 @@ companies.forEach(company => {
     /**
      * Shows tooltip at the given mouse event position for the provided data
      */
-    function showTooltip(event: MouseEvent, d: any, isCompany: boolean = false) {
-        // Clear existing tooltip timeout
-        if (tooltipTimeout) {
-            clearTimeout(tooltipTimeout);
-            tooltipTimeout = null;
-        }
-        
-        if (!svg) return;
-        
-        const containerRect = svg.getBoundingClientRect();
-        
-        // Position tooltip
-        tooltipX = event.clientX - containerRect.left + tooltipOffset.x;
-        tooltipY = event.clientY - containerRect.top + tooltipOffset.y;
-        
-        // Ensure tooltip stays within container
-        const tooltipWidth = 200;
-        if (tooltipX + tooltipWidth > containerRect.width) {
-            tooltipX = event.clientX - containerRect.left - tooltipWidth - tooltipOffset.x;
-        }
-        
-        const tooltipHeight = 100;
-        if (tooltipY + tooltipHeight > containerRect.height) {
-            tooltipY = event.clientY - containerRect.top - tooltipHeight - tooltipOffset.y;
-        }
-        
-        // Set tooltip content
-        if (isCompany) {
-            tooltipContent = {
-                sponsor: d.company,
-                drugName: '',
-                therapeuticArea: '',
-                id: `${d.totalDrugs} drugs in pipeline`
-            };
-            const statusColor = getCompanyStatusColor(d.status);
-            tooltipBorderColor = statusColor.stroke;
-        } else {
-            // Enhanced tooltip content that shows transaction information
-            let idText = d["Current Development Stage"] || "";
-            
-            if (d["Purchase Year"]) {
-                idText = "PRV Transacted";
-                if (d["Sale Price (USD Millions)"]) {
-                    idText += ` ($${d["Sale Price (USD Millions)"]}M)`;
-                }
-            } else if (d["PRV Issue Year"] || d["PRV Year"]) {
-                idText = "PRV Awarded";
+
+     function createDrugEventHandlers(drug, drugGroup, areaColors, drugId) {
+    return {
+        onMouseEnter: (event) => {
+            // Highlight the drug node
+            drugGroup.select("circle")
+                .transition()
+                .duration(200)
+                .attr("r", sizeConfig.highlightedNodeRadius)
+                .style("filter", "url(#dropshadow)");
+
+            // Highlight PRV indicator if present
+            if (drug["PRV Issue Year"]) {
+                drugGroup.select("circle:last-child")
+                    .transition()
+                    .duration(200)
+                    .attr("r", sizeConfig.highlightedNodeRadius)
+                    .attr("stroke-width", isAllYearView ? 3.5 : 4.725);
             }
             
-            tooltipContent = {
-                sponsor: d.Company || '',
-                drugName: d.Candidate || '',
-                therapeuticArea: d.TherapeuticArea1 || '',
-                id: idText
-            };
+            // Highlight the connection line for this drug
+            highlightDrugConnections(drugId);
             
-            // Get appropriate color for tooltip border based on stage
-            const stage = getStage(d);
-            const stageFullName = getStageFullName(stage);
-            const stageColor = getStageColor(stageFullName);
-            tooltipBorderColor = stageColor.stroke;
-        }
+            showTooltip(event, drug);
+        },
         
-        tooltipVisible = true;
+        onMouseMove: (event) => {
+            // Update tooltip position when mouse moves
+            showTooltip(event, drug);
+        },
+        
+        onMouseLeave: () => {
+            // Reset drug node appearance
+            drugGroup.select("circle")
+                .transition()
+                .duration(200)
+                .attr("r", sizeConfig.drugNodeRadius)
+                .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
+                .attr("stroke", areaColors.stroke)
+                .style("filter", "url(#dropshadow)");
+
+            // Reset PRV indicator if present
+            if (drug["PRV Issue Year"]) {
+                drugGroup.select("circle:last-child")
+                    .transition()
+                    .duration(200)
+                    .attr("r", sizeConfig.prvIndicatorRadius)
+                    .attr("stroke-width", isAllYearView ? "1.5" : "2");
+            }
+            
+            // Reset connection highlights
+            resetConnectionHighlights();
+            
+            hideTooltip();
+        },
+        
+        onClick: (event) => {
+            event.stopPropagation();
+            
+            // Force immediate tooltip hiding without delay
+            clearTooltipTimeout();
+            tooltipVisible = false;
+            
+            onShowDrugDetail({
+                drugName: drug.Candidate,
+                year: drug["PRV Year"] || drug["RPDD Year"],
+                Company: drug.Company,
+                therapeuticArea: drug.TherapeuticArea1,
+                entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
+                color: areaColors.fill,
+                strokeColor: areaColors.stroke,
+                currentStage: drug["Current Development Stage"],
+                indication: drug.Indication || "",
+                rpddAwardDate: drug["RPDD Year"],
+                voucherAwardDate: drug["PRV Year"] || "",
+                treatmentClass: drug.Class1 || "TBD",
+                mechanismOfAction: drug.MOA || "TBD",
+                companyUrl: drug["Link to CrunchBase"] || ""
+            });
+        }
+    };
+}
+
+// Create reusable company node event handlers
+function createCompanyEventHandlers(company, statusColor) {
+    return {
+        onMouseEnter: (event) => {
+            // Set this company as active
+            setActiveCompany(company.company, company.entries);
+            
+            // Highlight all connections for this company
+            highlightCompanyConnections(company.company);
+            
+            showTooltip(event, {
+                company: company.company,
+                totalDrugs: company.totalDrugs,
+                status: company.status
+            }, true);
+        },
+        
+        onMouseMove: (event) => {
+            // Update tooltip position when mouse moves
+            showTooltip(event, {
+                company: company.company,
+                totalDrugs: company.totalDrugs,
+                status: company.status
+            }, true);
+        },
+        
+        onMouseLeave: () => {
+            // Reset connection highlights
+            resetConnectionHighlights();
+            
+            hideTooltip();
+        },
+        
+        onClick: (event) => {
+            event.stopPropagation();
+            
+            // Force immediate tooltip hiding without delay
+            clearTooltipTimeout();
+            tooltipVisible = false;
+            
+            onShowCompanyDetail({
+                Company: company.company,
+                entries: company.entries,
+                color: statusColor.fill,
+                strokeColor: statusColor.stroke
+            });
+        }
+    };
+}
+
+// Helper function to safely clear tooltip timeout
+function clearTooltipTimeout() {
+    if (tooltipTimeout) {
+        clearTimeout(tooltipTimeout);
+        tooltipTimeout = null;
     }
+}
+
+    function showTooltip(event, d, isCompany = false) {
+    // Clear existing tooltip timeout
+    clearTooltipTimeout();
+    
+    if (!svg) return;
+    
+    const containerRect = svg.getBoundingClientRect();
+    
+    // Position tooltip with safety bounds
+    tooltipX = Math.min(
+        containerRect.width - 200 - tooltipOffset.x,
+        event.clientX - containerRect.left + tooltipOffset.x
+    );
+    
+    tooltipY = Math.min(
+        containerRect.height - 100 - tooltipOffset.y,
+        event.clientY - containerRect.top + tooltipOffset.y
+    );
+    
+    // Ensure tooltip doesn't go off the left or top edges
+    tooltipX = Math.max(tooltipOffset.x, tooltipX);
+    tooltipY = Math.max(tooltipOffset.y, tooltipY);
+    
+    // Set tooltip content
+    if (isCompany) {
+        tooltipContent = {
+            sponsor: d.company,
+            drugName: '',
+            therapeuticArea: '',
+            id: `${d.totalDrugs} drugs in pipeline`
+        };
+        const statusColor = getCompanyStatusColor(d.status);
+        tooltipBorderColor = statusColor.stroke;
+    } else {
+        tooltipContent = {
+            sponsor: d.Company || '',
+            drugName: d.Candidate || '',
+            therapeuticArea: d.TherapeuticArea1 || '',
+            id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
+        };
+        const stageCode = getStage(d);
+        const stageFullName = getStageFullName(stageCode);
+        const stageColor = getStageColor(stageFullName);
+        tooltipBorderColor = stageColor.stroke;
+    }
+    
+    tooltipVisible = true;
+}
+
 
     /**
      * Hides tooltip with a small delay
      */
-    function hideTooltip() {
-        if (tooltipTimeout) {
-            clearTimeout(tooltipTimeout);
-        }
-        
-        tooltipTimeout = setTimeout(() => {
-            tooltipVisible = false;
-            tooltipTimeout = null;
-        }, 100);
-    }
+    
+function hideTooltip() {
+    clearTooltipTimeout();
+    
+    tooltipTimeout = setTimeout(() => {
+        tooltipVisible = false;
+        tooltipTimeout = null;
+    }, 100);
+}
     
     /**
      * Sets the active company and updates visual state
