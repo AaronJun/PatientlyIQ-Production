@@ -312,7 +312,7 @@
           class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
           {activeTab === tab ? 
             'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501] active-tab' : 
-            'hover:text-[#e05501] text-slate-400 px-2 hover:text-slate-50'}"
+            'hover:text-[#e05501] text-slate-400 px-2 hover:text-orange-500'}"
           on:click={() => setActiveTab(tab)}
         >
           {tab}

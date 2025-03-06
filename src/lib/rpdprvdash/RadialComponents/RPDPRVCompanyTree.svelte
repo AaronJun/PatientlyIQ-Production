@@ -1,4 +1,4 @@
-<!-- Modified RPDPRVCompanyTree.svelte -->
+<!-- RPDPRVCompanyTree.svelte with PRV Transacted Feature (Continued) -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -11,7 +11,7 @@
         getCompanyStatusColor
     } from '../utils/colorDefinitions';
     
-    // Import our new utility functions
+    // Import our utility functions
     import {
         getStage,
         getStageFullName,
@@ -33,7 +33,7 @@
     export let onLeave: () => void = () => {};
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
-    export let isAllYearView: boolean = false; // New prop to check if "all" year view is selected
+    export let isAllYearView: boolean = false; // Prop to check if "all" year view is selected
 
     // SVG and dimension configuration
     let svg: SVGElement;
@@ -252,7 +252,7 @@ companies.forEach(company => {
         ? (nodeAngle * 180 / Math.PI)
         : (nodeAngle * 180 / Math.PI) + 180;
     
-    // Apply rotation and fix text anchoring
+    // Apply rotation transform
     textContainer.attr("transform", `rotate(${textRotation})`);
     
     // Add the text with appropriate anchor
@@ -316,16 +316,8 @@ companies.forEach(company => {
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
 
-                    // Add PRV indicator for PRV awarded drugs
-                    if (drug["PRV Issue Year"]) {
-                        drugGroup.append("circle")
-                            .attr("r", sizeConfig.prvIndicatorRadius)
-                            .attr("fill", "none")
-                            .attr("stroke", "#976201")
-                            .attr("stroke-width", isAllYearView ? "1.5" : "2")
-                            .attr("stroke-dasharray", "2,2");
-                    }
-
+                    // Special visualization for transacted PRVs
+            
                     // Drug interactions
                     drugGroup
                         .on("mouseenter", (event) => {
@@ -336,14 +328,25 @@ companies.forEach(company => {
                                 .attr("r", sizeConfig.highlightedNodeRadius)
                                 .style("filter","url(#dropshadow)");
 
-                            // Highlight PRV indicator if present
-                            if (drug["PRV Issue Year"]) {
+                            // Highlight PRV indicator or transaction indicator if present
+                            if (drug["Purchase Year"]) {
+                                drugGroup.select("circle:nth-child(2)")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", sizeConfig.highlightedNodeRadius * 1.1)
+                                    .attr("stroke-width", isAllYearView ? 2.5 : 3.25);
+                                    
+                                drugGroup.select("text")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("font-size", isAllYearView ? "8px" : "10px");
+                            }
+                            else if (drug["PRV Issue Year"] || drug["PRV Year"]) {
                                 drugGroup.select("circle:last-child")
                                     .transition()
                                     .duration(200)
                                     .attr("r", sizeConfig.highlightedNodeRadius)
-                                    .attr("transform", isAllYearView ? "translate(12,10)" : "translate(8,2)")
-                                    .attr("stroke-width", isAllYearView ? 3.5 : 4.725);
+                                    .attr("stroke-width", isAllYearView ? "2.5" : "3.25");
                             }
                             
                             // Highlight the connection line for this drug
@@ -361,13 +364,24 @@ companies.forEach(company => {
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.drugNodeRadius)
-                                .attr("transform", "translate(0,0)")
                                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                                 .attr("stroke", areaColors.stroke)
                                 .style("filter","url(#dropshadow)");
 
                             // Reset PRV indicator if present
-                            if (drug["PRV Issue Year"]) {
+                            if (drug["Purchase Year"]) {
+                                drugGroup.select("circle:nth-child(2)")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("r", sizeConfig.prvIndicatorRadius)
+                                    .attr("stroke-width", isAllYearView ? "1.75" : "2.25");
+                                    
+                                drugGroup.select("text")
+                                    .transition()
+                                    .duration(200)
+                                    .attr("font-size", isAllYearView ? "6px" : "8px");
+                            }
+                            else if (drug["PRV Issue Year"] || drug["PRV Year"]) {
                                 drugGroup.select("circle:last-child")
                                     .transition()
                                     .duration(200)
@@ -390,9 +404,10 @@ companies.forEach(company => {
                             }
                             tooltipVisible = false;
                             
+                            // Add Purchase information to detail view if available
                             onShowDrugDetail({
                                 drugName: drug.Candidate,
-                                year: drug["PRV Year"] || drug["RPDD Year"],
+                                year: drug["Purchase Year"] || drug["PRV Year"] || drug["RPDD Year"],
                                 Company: drug.Company,
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
@@ -402,6 +417,9 @@ companies.forEach(company => {
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
                                 voucherAwardDate: drug["PRV Year"] || "",
+                                transactionDate: drug["Purchase Year"] || "",
+                                purchaser: drug["Purchaser"] || "",
+                                salePrice: drug["Sale Price (USD Millions)"] || "",
                                 treatmentClass: drug.Class1 || "TBD",
                                 mechanismOfAction: drug.MOA || "TBD",
                                 companyUrl: drug["Link to CrunchBase"] || ""
@@ -501,11 +519,13 @@ companies.forEach(company => {
                 }
                 tooltipVisible = false;
                 
+                // Add transacted vouchers to company detail
                 onShowCompanyDetail({
                     Company: company.company,
                     entries: company.entries,
                     color: statusColor.fill,
-                    strokeColor: statusColor.stroke
+                    strokeColor: statusColor.stroke,
+                    transactedVouchers: company.transactedVouchers || 0
                 });
             };
 
@@ -576,14 +596,28 @@ companies.forEach(company => {
             const statusColor = getCompanyStatusColor(d.status);
             tooltipBorderColor = statusColor.stroke;
         } else {
+            // Enhanced tooltip content that shows transaction information
+            let idText = d["Current Development Stage"] || "";
+            
+            if (d["Purchase Year"]) {
+                idText = "PRV Transacted";
+                if (d["Sale Price (USD Millions)"]) {
+                    idText += ` ($${d["Sale Price (USD Millions)"]}M)`;
+                }
+            } else if (d["PRV Issue Year"] || d["PRV Year"]) {
+                idText = "PRV Awarded";
+            }
+            
             tooltipContent = {
                 sponsor: d.Company || '',
                 drugName: d.Candidate || '',
                 therapeuticArea: d.TherapeuticArea1 || '',
-                id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
+                id: idText
             };
-            const stageCode = getStage(d);
-            const stageFullName = getStageFullName(stageCode);
+            
+            // Get appropriate color for tooltip border based on stage
+            const stage = getStage(d);
+            const stageFullName = getStageFullName(stage);
             const stageColor = getStageColor(stageFullName);
             tooltipBorderColor = stageColor.stroke;
         }
@@ -693,6 +727,7 @@ companies.forEach(company => {
                     totalDrugs: companyData.totalDrugs,
                     clinicalTrials: companyData.clinicalTrials,
                     vouchersAwarded: companyData.vouchersAwarded,
+                    transactedVouchers: companyData.transactedVouchers || 0, // Add transacted vouchers to callback
                     uniqueIndications: companyData.uniqueIndications.size,
                     uniqueAreas: companyData.uniqueAreas.size
                 });

@@ -1,180 +1,14 @@
-
-export function processDataForTherapeuticAreas(data: any[]) {
-    const areasMap = new Map();
-    
-    data.forEach(entry => {
-        const stage = getStage(entry);
-        const area = entry.TherapeuticArea1;
-        
-        if (!areasMap.has(area)) {
-            areasMap.set(area, {
-                company: area, // Use 'company' key for compatibility with calculateCompanyAngles
-                area,
-                stages: new Map(),
-                totalDrugs: 0,
-                entries: [],
-                uniqueCompanies: new Set(),
-                uniqueCandidates: new Set(),
-                clinicalTrials: 0,
-                vouchersAwarded: 0,
-                indications: new Set()
-            });
-        }
-        
-        const areaData = areasMap.get(area);
-        if (!areaData.stages.has(stage)) {
-            areaData.stages.set(stage, []);
-        }
-        
-        areaData.stages.get(stage).push(entry);
-        areaData.entries.push(entry);
-        areaData.totalDrugs++;
-        
-        // Track unique companies and candidates
-        if (entry.Company) {
-            areaData.uniqueCompanies.add(entry.Company);
-        }
-        if (entry.Candidate) {
-            areaData.uniqueCandidates.add(entry.Candidate);
-        }
-        if (entry.Indication) {
-            areaData.indications.add(entry.Indication);
-        }
-        
-        // Count clinical trials (Phase 1-3)
-        const clinicalStages = ["P1", "P1/2", "P2", "P3"];
-        if (clinicalStages.includes(stage)) {
-            areaData.clinicalTrials++;
-        }
-        
-        // Count vouchers awarded
-        if (stage === "PRV" || entry["PRV Issue Year"]) {
-            areaData.vouchersAwarded++;
-        }
-    });
-
-    // Sort by total drugs count (descending) for better visualization
-    return}
-
-/**
- * Creates an area label group with text and dots representing drugs
- * This is a D3 helper function with text aligned to the connecting line angle
- */
-export function createAreaLabelGroup(
-    group: any, 
-    area: any, 
-    labelPlacement: any,
-    sizeConfig: any,
-    labelConfig: any,
-    maxLabelWidth: number = 85,
-    areaColors: any
-) {
-    // Determine if label is on right or left side
-    const isRightSide = labelPlacement.isRightSide;
-    
-    // Create a rotated group to align with connecting line
-    const labelGroup = group.append("g")
-        .attr("class", "area-label-text");
-        
-    // Calculate rotation angle to align with connecting line
-    // Convert radians to degrees and adjust by 90 degrees for text orientation
-    const rotationAngle = (labelPlacement.angle * 180 / Math.PI) + (isRightSide ? 0 : 180);
-    
-    // Apply rotation transform
-    labelGroup.attr("transform", `rotate(${rotationAngle})`);
-    
-    // Determine text anchor and offset based on side
-    const textAnchor = isRightSide ? "start" : "end";
-    const xOffset = isRightSide ? 10 : -10; // Reduced offset to bring labels closer
-    
-    // Create text element with area name and counter-rotate to keep text horizontal
-    const textElement = labelGroup.append("text")
-        .attr("text-anchor", textAnchor)
-        .attr("dx", xOffset)
-        .attr("dy", "0.35em")
-        // Counter-rotate the text to keep it horizontal while the group is rotated
-        .attr("transform", `rotate(${-rotationAngle})`)
-        .text(truncateText(area.area, maxLabelWidth))
-        .attr("fill", "#4A5568")
-        .attr("font-size", sizeConfig.labelFontSize)
-        .attr("font-weight", sizeConfig.labelFontWeight);
-    
-    // Create dots group with counter-rotation
-    const dotsGroup = labelGroup.append("g")
-        .attr("class", "area-drugs")
-        .attr("transform", `rotate(${-rotationAngle}) translate(${xOffset}, ${labelConfig.textHeight})`);
-    
-    const numDots = Math.min(area.totalDrugs, 20); // Limit dots for visual clarity
-    const dotsPerRow = Math.min(10, numDots);  // Maximum 10 dots per row
-    
-    for (let i = 0; i < numDots; i++) {
-        const row = Math.floor(i / dotsPerRow);
-        const col = i % dotsPerRow;
-        const x = textAnchor === "start" ? col * 6 : -(col * 6);
-        
-        dotsGroup.append("circle")
-            .attr("r", 0)
-            .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-            .attr("cy", row * 5)  // 5px spacing between rows
-            .attr("fill", areaColors.fill)
-            .attr("stroke", areaColors.stroke)
-            .attr("stroke-width", 0.5)
-            .attr("opacity", 0.8);
-    }
-    
-    return { labelGroup, textElement, dotsGroup };
-}
-
-/**
- * Truncates text to fit within maximum width
- */
-export function truncateText(text: string, maxWidth: number) {
-    if (!text) return '';
-    if (text.length <= maxWidth / 4) return text;
-    return text.slice(0, Math.floor(maxWidth / 8) - 3) + '...';
-}
-
-/**
- * Returns an object with counts for various metrics by therapeutic area
- */
-export function getAreaStatistics(data: any[]) {
-    const areas = processDataForTherapeuticAreas(data);
-    
-    return areas.map(area => ({
-        name: area.area,
-        totalDrugs: area.totalDrugs,
-        companies: area.uniqueCompanies.size,
-        candidates: area.uniqueCandidates.size,
-        indications: area.indications.size,
-        clinicalTrials: area.clinicalTrials,
-        vouchersAwarded: area.vouchersAwarded,
-        // Count drugs by stage
-        stages: Array.from(area.stages.entries()).reduce((acc, [stage, drugs]) => {
-            acc[stage] = drugs.length;
-            return acc;
-        }, {})
-    }));
-}
-
-// Maps for stage and company status codes
-export const stageCodeMap = {
-    'PRE': 'Preclinical',
-    'P1': 'Phase 1',
-    'P1/2': 'Phase 1/2',
-    'P2': 'Phase 2',
-    'P3': 'Phase 3',
-    'FILED': 'Filed',
-    'APRV': 'Approved',
-    'PRV': 'PRV Awarded'
-};
-
 /**
  * Determines the stage code from an entry
  */
 export function getStage(entry: any): string {
     if (!entry) return "PRE";
     
-    if (entry["PRV Year"]) return "PRV";
+    // Check if PRV has been transacted (purchased)
+    if (entry["Purchase Year"]) return "TRNS";
+    
+    // Check if PRV has been issued
+    if (entry["PRV Year"] || entry["PRV Issue Year"]) return "PRV";
     
     const stage = entry["Current Development Stage"];
     switch(stage) {
@@ -188,6 +22,34 @@ export function getStage(entry: any): string {
         case "Approved": return "APRV";
         default: return "PRE";
     }
+}
+
+// Maps for stage and company status codes
+export const stageCodeMap = {
+    'PRE': 'Preclinical',
+    'P1': 'Phase 1',
+    'P1/2': 'Phase 1/2',
+    'P2': 'Phase 2',
+    'P3': 'Phase 3',
+    'FILED': 'Filed',
+    'APRV': 'Approved',
+    'PRV': 'PRV Awarded',
+    'TRNS': 'PRV Transacted'
+};
+
+/**
+ * Get the stage radii configuration
+ */
+export function getStageRadii(radius: number) {
+    return {
+        'PRE': radius * 0.925,
+        'P1': radius * 0.8425,
+        'P2': radius * 0.7425,
+        'P3': radius * 0.6425,
+        'FILED': radius * 0.525,
+        'PRV': radius * 0.425,
+        'TRNS': radius * 0.325  // Add the new TRNS stage with smaller radius
+    };
 }
 
 /**
@@ -352,6 +214,7 @@ export function processDataForLayout(data: any[]) {
                 entries: [],
                 clinicalTrials: 0,
                 vouchersAwarded: 0,
+                transactedVouchers: 0,  // Add counter for transacted vouchers
                 uniqueIndications: new Set(),
                 uniqueAreas: new Set()
             });
@@ -383,8 +246,13 @@ export function processDataForLayout(data: any[]) {
         }
         
         // Count vouchers awarded
-        if (stage === "PRV" || entry["PRV Issue Year"]) {
+        if (stage === "PRV" || entry["PRV Issue Year"] || entry["PRV Year"]) {
             companyData.vouchersAwarded++;
+        }
+        
+        // Count transacted vouchers
+        if (stage === "TRNS" || entry["Purchase Year"]) {
+            companyData.transactedVouchers++;
         }
     });
 
@@ -430,20 +298,6 @@ export function getLabelConfig(radius: number, isAllYearView: boolean) {
 }
 
 /**
- * Get the stage radii configuration
- */
-export function getStageRadii(radius: number) {
-    return {
-        'PRE': radius * 0.9025,
-        'P1': radius * 0.825,
-        'P2': radius * 0.7125,
-        'P3': radius * 0.6025,
-        'FILED': radius * 0.5025,
-        'PRV': radius * 0.4125
-    };
-}
-
-/**
  * Get the stage label configuration
  */
 export function getStageLabelConfig() {
@@ -452,6 +306,172 @@ export function getStageLabelConfig() {
         height: 10,
         cornerRadius: 10
     };
+}
+
+export function processDataForTherapeuticAreas(data: any[]) {
+    const areasMap = new Map();
+    
+    data.forEach(entry => {
+        const stage = getStage(entry);
+        const area = entry.TherapeuticArea1;
+        
+        if (!areasMap.has(area)) {
+            areasMap.set(area, {
+                company: area, // Use 'company' key for compatibility with calculateCompanyAngles
+                area,
+                stages: new Map(),
+                totalDrugs: 0,
+                entries: [],
+                uniqueCompanies: new Set(),
+                uniqueCandidates: new Set(),
+                clinicalTrials: 0,
+                vouchersAwarded: 0,
+                transactedVouchers: 0,  // Add counter for transacted vouchers
+                indications: new Set()
+            });
+        }
+        
+        const areaData = areasMap.get(area);
+        if (!areaData.stages.has(stage)) {
+            areaData.stages.set(stage, []);
+        }
+        
+        areaData.stages.get(stage).push(entry);
+        areaData.entries.push(entry);
+        areaData.totalDrugs++;
+        
+        // Track unique companies and candidates
+        if (entry.Company) {
+            areaData.uniqueCompanies.add(entry.Company);
+        }
+        if (entry.Candidate) {
+            areaData.uniqueCandidates.add(entry.Candidate);
+        }
+        if (entry.Indication) {
+            areaData.indications.add(entry.Indication);
+        }
+        
+        // Count clinical trials (Phase 1-3)
+        const clinicalStages = ["P1", "P1/2", "P2", "P3"];
+        if (clinicalStages.includes(stage)) {
+            areaData.clinicalTrials++;
+        }
+        
+        // Count vouchers awarded
+        if (stage === "PRV" || entry["PRV Issue Year"] || entry["PRV Year"]) {
+            areaData.vouchersAwarded++;
+        }
+        
+        // Count transacted vouchers
+        if (stage === "TRNS" || entry["Purchase Year"]) {
+            areaData.transactedVouchers++;
+        }
+    });
+
+    // Return as array sorted by total drugs
+    return Array.from(areasMap.values())
+        .sort((a, b) => b.totalDrugs - a.totalDrugs);
+}
+
+/**
+ * Returns an object with counts for various metrics by therapeutic area
+ */
+export function getAreaStatistics(data: any[]) {
+    const areas = processDataForTherapeuticAreas(data);
+    
+    return areas.map(area => ({
+        name: area.area,
+        totalDrugs: area.totalDrugs,
+        companies: area.uniqueCompanies.size,
+        candidates: area.uniqueCandidates.size,
+        indications: area.indications.size,
+        clinicalTrials: area.clinicalTrials,
+        vouchersAwarded: area.vouchersAwarded,
+        transactedVouchers: area.transactedVouchers,  // Add transacted vouchers to statistics
+        // Count drugs by stage
+        stages: Array.from(area.stages.entries()).reduce((acc, [stage, drugs]) => {
+            acc[stage] = drugs.length;
+            return acc;
+        }, {})
+    }));
+}
+
+/**
+ * Creates an area label group with text and dots representing drugs
+ * This is a D3 helper function with text aligned to the connecting line angle
+ */
+export function createAreaLabelGroup(
+    group: any, 
+    area: any, 
+    labelPlacement: any,
+    sizeConfig: any,
+    labelConfig: any,
+    maxLabelWidth: number = 85,
+    areaColors: any
+) {
+    // Determine if label is on right or left side
+    const isRightSide = labelPlacement.isRightSide;
+    
+    // Create a rotated group to align with connecting line
+    const labelGroup = group.append("g")
+        .attr("class", "area-label-text");
+        
+    // Calculate rotation angle to align with connecting line
+    // Convert radians to degrees and adjust by 90 degrees for text orientation
+    const rotationAngle = (labelPlacement.angle * 180 / Math.PI) + (isRightSide ? 0 : 180);
+    
+    // Apply rotation transform
+    labelGroup.attr("transform", `rotate(${rotationAngle})`);
+    
+    // Determine text anchor and offset based on side
+    const textAnchor = isRightSide ? "start" : "end";
+    const xOffset = isRightSide ? 10 : -10; // Reduced offset to bring labels closer
+    
+    // Create text element with area name and counter-rotate to keep text horizontal
+    const textElement = labelGroup.append("text")
+        .attr("text-anchor", textAnchor)
+        .attr("dx", xOffset)
+        .attr("dy", "0.35em")
+        // Counter-rotate the text to keep it horizontal while the group is rotated
+        .attr("transform", `rotate(${-rotationAngle})`)
+        .text(truncateText(area.area, maxLabelWidth))
+        .attr("fill", "#4A5568")
+        .attr("font-size", sizeConfig.labelFontSize)
+        .attr("font-weight", sizeConfig.labelFontWeight);
+    
+    // Create dots group with counter-rotation
+    const dotsGroup = labelGroup.append("g")
+        .attr("class", "area-drugs")
+        .attr("transform", `rotate(${-rotationAngle}) translate(${xOffset}, ${labelConfig.textHeight})`);
+    
+    const numDots = Math.min(area.totalDrugs, 20); // Limit dots for visual clarity
+    const dotsPerRow = Math.min(10, numDots);  // Maximum 10 dots per row
+    
+    for (let i = 0; i < numDots; i++) {
+        const row = Math.floor(i / dotsPerRow);
+        const col = i % dotsPerRow;
+        const x = textAnchor === "start" ? col * 6 : -(col * 6);
+        
+        dotsGroup.append("circle")
+            .attr("r", 0)
+            .attr("cx", x + (textAnchor === "start" ? 3 : -3))
+            .attr("cy", row * 5)  // 5px spacing between rows
+            .attr("fill", areaColors.fill)
+            .attr("stroke", areaColors.stroke)
+            .attr("stroke-width", 0.5)
+            .attr("opacity", 0.8);
+    }
+    
+    return { labelGroup, textElement, dotsGroup };
+}
+
+/**
+ * Truncates text to fit within maximum width
+ */
+export function truncateText(text: string, maxWidth: number) {
+    if (!text) return '';
+    if (text.length <= maxWidth / 4) return text;
+    return text.slice(0, Math.floor(maxWidth / 8) - 3) + '...';
 }
 
 /**
@@ -489,9 +509,6 @@ export function createLabelGroup(
         .attr("fill", "#4A5568")
         .attr("font-size", "6.25px")
         .attr("font-weight", "400");
-    
-    // Get company status color
-    const statusColor = getCompanyStatusColor(company.status);
     
     return { 
         group: labelGroup,

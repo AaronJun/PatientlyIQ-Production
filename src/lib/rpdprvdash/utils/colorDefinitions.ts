@@ -33,8 +33,8 @@ export interface ColorCombo {
       stroke: '#C05621'   // Darker orange
     },
     'Cardiology': {
-      fill: '#38A169',    // Lighter red-orange
-      stroke: '#DD6B20'   // Darker red-orange
+      fill: '#1CD819',    // Lighter red-orange
+      stroke: '#38A169'   // Darker red-orange
     },
     'Pulmonology': {
       fill: '#E9D8FD',    // Lighter lavender
@@ -90,54 +90,24 @@ export interface ColorCombo {
     }
   };
   
-  // Development stage color map
-  export const stageColors: Record<string, ColorCombo> = {
-    'Preclinical': {
-      fill: '#E2E8F0',     // Light slate gray
-      stroke: '#4A5568'    // Darker slate gray
-    },
-    'Phase 1': {
-      fill: '#B2F5EA',     // Light teal
-      stroke: '#2C7A7B'    // Darker teal
-    },
-    'Phase 1/2': {
-      fill: '#BEE3F8',     // Light blue
-      stroke: '#2B6CB0'    // Darker blue
-    },
-    'Phase 2': {
-      fill: '#90CDF4',     // Medium blue
-      stroke: '#2C5282'    // Darker blue
-    },
-    'Phase 2a': {
-      fill: '#90CDF4',     // Medium blue
-      stroke: '#2C5282'    // Darker blue
-    },
-    'Phase 2b': {
-      fill: '#90CDF4',     // Medium blue
-      stroke: '#2C5282'    // Darker blue
-    },
-    'Phase 3': {
-      fill: '#63B3ED',     // Deeper blue
-      stroke: '#1A365D'    // Navy blue
-    },
-    'FDA Approved': {
-      fill: '#2F855A',     // Light green
-      stroke: '#9AE6B4'    // Darker green
-    },
-    'PRV Awarded': {
-      fill: '#68D391',     // Medium green
-      stroke: '#276749'    // Darker green
-    },
-    'Filed': {
-      fill: '#FEB2B2',     // Light red
-      stroke: '#7B341E'    // Brown
-    },
-    'Approved': {
-      fill: '#9AE6B4',     // Light green
-      stroke: '#2F855A'    // Darker green
-    }
+export function getStageColor(stageName: string) {
+  const stageColors = {
+      'Preclinical': { fill: '#E3F2FD', stroke: '#4C5BBB' },
+      'Phase 1': { fill: '#E8F5E9', stroke: '#414D9D' },
+      'Phase 1/2': { fill: '#E8F5E9', stroke: '#2F3A81' },
+      'Phase 2': { fill: '#FFF3E0', stroke: '#2F6181' },
+      'Phase 3': { fill: '#FFEECE', stroke: '#2F8170' },
+      'Filed': { fill: '#FBE9E7', stroke: '#2E7139' },
+      'Approved': { fill: '#F3E5F5', stroke: '#2E7139' },
+      'PRV Awarded': { fill: '#FFF8E1', stroke: '#2E7139' },
+      'PRV Transacted': { fill: '#FCE8A5', stroke: '#127F24' } // Added new color for PRV Transacted
   };
-  
+
+  // Default color
+  const defaultColor = { fill: '#ECEFF1', stroke: '#B0BEC5' };
+
+  return stageColors[stageName] || defaultColor;
+}
   // Company status color map
   export const companyStatusColors: Record<string, ColorCombo> = {
     'Public': {
@@ -155,13 +125,13 @@ export interface ColorCombo {
     return therapeuticAreaColors[area] || { fill: '#CBD5E0', stroke: '#4A5568' }; // Gray fallback
   };
   
-  export const getStageColor = (stage: string): ColorCombo => {
-    return stageColors[stage] || { fill: '#E2E8F0', stroke: '#718096' }; // Light gray fallback
-  };
-  
-  export const getCompanyStatusColor = (status: string): ColorCombo => {
-    return companyStatusColors[status] || { fill: '#EDF2F7', stroke: '#4A5568' }; // Slate gray fallback
-  };
+  export function getCompanyStatusColor(status: string) {
+    if (status === 'Public') {
+        return { fill: '#E8F0FE', stroke: '#1A73E8' };
+    } else {
+        return { fill: '#F8F9FA', stroke: '#5F6368' };
+    }
+  }
   
   // Helper functions for backward compatibility (returns only fill color)
   export const getTherapeuticAreaFill = (area: string): string => {
