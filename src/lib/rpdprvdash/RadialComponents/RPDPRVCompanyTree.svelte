@@ -124,6 +124,8 @@
         const stagesGroup = mainGroup.append("g").attr("class", "stage-circles");
         const companyLabelsGroup = mainGroup.append("g").attr("class", "company-labels");
 
+
+
         // Create stage circles and labels
         Object.entries(stageRadii).forEach(([stage, radius]) => {
             // Get the stage color from our color definitions

@@ -1,11 +1,13 @@
-<!-- RPDPRVTimeline.svelte -->
+<!-- EnhancedSankeyTimeline.svelte -->
 <script>
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     
     export let data = [];
+    export let redemptionData = [];
     export let width = 1000;
-    export let height = 400;
+    export let height = 500; // Increased height to accommodate legend
+    export let onEntrySelect = (entry) => {};
     
     let svg;
     let tooltipVisible = false;
@@ -37,6 +39,7 @@
     };
     
     const defaultColor = '#CBD5E0';
+    const redemptionColor = '#4CAF50'; // Green color for redemption points
     
     // Get therapeutic area color with fallback
     function getColor(area) {
@@ -73,10 +76,34 @@
                 
                 return {
                     ...d,
-                    prvDate: new Date(dateString)
+                    prvDate: new Date(dateString),
+                    dataType: "prv"
                 };
             })
             .sort((a, b) => a.prvDate - b.prvDate);
+            
+        // Process redemption data and format it to match prvData structure
+        const processedRedemptionData = redemptionData
+            .filter(d => d.drug && d.approval_date) // Filter out empty entries
+            .map(d => {
+                const [month, day, year] = d.approval_date.split('/');
+                const dateString = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                
+                return {
+                    Company: d.sponsor,
+                    Candidate: d.drug,
+                    TherapeuticArea1: "Redemption", // Use a placeholder for now
+                    "PRV Year": year,
+                    prvDate: new Date(dateString),
+                    dataType: "redemption",
+                    redemptionDate: new Date(dateString),
+                    approval_date: d.approval_date
+                };
+            })
+            .sort((a, b) => a.prvDate - b.prvDate);
+            
+        // Combine both data sets
+        const combinedData = [...prvData, ...processedRedemptionData];
         
         // Create SVG container
         const svgContainer = d3.select(svg)
@@ -86,7 +113,7 @@
             .attr("style", "max-width: 100%; height: auto;");
             
         // Set up margins
-        const margin = { top: 40, right: 20, bottom: 60, left: 40 };
+        const margin = { top: 40, right: 20, bottom: 100, left: 40 }; // Increased bottom margin for legend
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
         
@@ -96,7 +123,7 @@
             
         // Set up x-scale for timeline
         const xScale = d3.scaleTime()
-            .domain(d3.extent(prvData, d => d.prvDate))
+            .domain(d3.extent(combinedData, d => d.prvDate))
             .range([0, innerWidth])
             .nice();
             
@@ -115,16 +142,19 @@
         // Add axis label
         g.append("text")
             .attr("x", innerWidth / 2)
-            .attr("y", innerHeight + margin.bottom - 10)
+            .attr("y", innerHeight + 30)
             .attr("text-anchor", "middle")
             .attr("font-size", "12px")
             .text("Year");
             
-        // Group PRVs by company
-        const prvsByCompany = d3.group(prvData, d => d.Company);
+        // Group data by company
+        const companiesMap = new Map();
+        combinedData.forEach(d => {
+            companiesMap.set(d.Company, true);
+        });
         
         // Set up y-scale for companies
-        const companies = Array.from(prvsByCompany.keys());
+        const companies = Array.from(companiesMap.keys());
         const yScale = d3.scaleBand()
             .domain(companies)
             .range([0, innerHeight])
@@ -170,6 +200,43 @@
                 const rect = svg.getBoundingClientRect();
                 tooltipX = event.clientX - rect.left;
                 tooltipY = event.clientY - rect.top;
+                
+                // Call the onEntrySelect function
+                onEntrySelect(d);
+            })
+            .on("mousemove", (event) => {
+                const rect = svg.getBoundingClientRect();
+                tooltipX = event.clientX - rect.left;
+                tooltipY = event.clientY - rect.top;
+            })
+            .on("mouseleave", () => {
+                tooltipVisible = false;
+            });
+            
+        // Add redemption points (diamond shapes)
+        g.selectAll(".redemption-point")
+            .data(processedRedemptionData)
+            .join("path")
+            .attr("class", "redemption-point")
+            .attr("d", d3.symbol().type(d3.symbolDiamond).size(100))
+            .attr("transform", d => `translate(${xScale(d.prvDate)}, ${yScale(d.Company) + yScale.bandwidth() / 2})`)
+            .attr("fill", redemptionColor)
+            .attr("stroke", "#333")
+            .attr("stroke-width", 1)
+            .on("mouseenter", (event, d) => {
+                // Show tooltip
+                tooltipVisible = true;
+                tooltipContent = {
+                    ...d,
+                    isRedemption: true
+                };
+                
+                const rect = svg.getBoundingClientRect();
+                tooltipX = event.clientX - rect.left;
+                tooltipY = event.clientY - rect.top;
+                
+                // Call the onEntrySelect function
+                onEntrySelect(d);
             })
             .on("mousemove", (event) => {
                 const rect = svg.getBoundingClientRect();
@@ -192,6 +259,36 @@
             .attr("font-weight", "bold")
             .text("$");
             
+        // Add connecting lines between PRVs and redemption points for the same company
+        // Note: This assumes a company gets a PRV first, then redeems it
+        companies.forEach(company => {
+            const companyPRVs = prvData.filter(d => d.Company === company);
+            const companyRedemptions = processedRedemptionData.filter(d => d.Company === company);
+            
+            if (companyPRVs.length > 0 && companyRedemptions.length > 0) {
+                // For each redemption, find the closest PRV
+                companyRedemptions.forEach(redemption => {
+                    const closestPRV = companyPRVs
+                        .filter(prv => prv.prvDate < redemption.prvDate) // PRV must come before redemption
+                        .reduce((closest, current) => {
+                            return !closest || 
+                                Math.abs(current.prvDate - redemption.prvDate) < Math.abs(closest.prvDate - redemption.prvDate) 
+                                ? current : closest;
+                        }, null);
+                    
+                    if (closestPRV) {
+                        g.append("path")
+                            .attr("d", `M${xScale(closestPRV.prvDate)},${yScale(company) + yScale.bandwidth() / 2} 
+                                        L${xScale(redemption.prvDate)},${yScale(company) + yScale.bandwidth() / 2}`)
+                            .attr("stroke", "#aaa")
+                            .attr("stroke-width", 1)
+                            .attr("stroke-dasharray", "3,3")
+                            .attr("fill", "none");
+                    }
+                });
+            }
+        });
+            
         // Add title
         svgContainer.append("text")
             .attr("x", width / 2)
@@ -200,17 +297,20 @@
             .attr("font-size", "16px")
             .attr("font-weight", "bold")
             .attr("font-family", "sans-serif")
-            .text("PRV Awards Timeline by Company");
+            .text("PRV Awards and Redemptions Timeline");
             
         // Add legend for therapeutic areas
-        const legendData = Object.entries(therapeuticAreaColors);
+        const legendData = [
+            ...Object.entries(therapeuticAreaColors),
+            ["Redemption", redemptionColor]
+        ];
         const legendItemHeight = 20;
         const legendItemWidth = 150;
         const legendCols = 4;
         const legendRows = Math.ceil(legendData.length / legendCols);
         
         const legend = svgContainer.append("g")
-            .attr("transform", `translate(${margin.left}, ${height - margin.bottom + 20})`);
+            .attr("transform", `translate(${margin.left}, ${height - margin.bottom + 40})`);
             
         legend.selectAll(".legend-item")
             .data(legendData)
@@ -225,11 +325,19 @@
                 const [area, color] = d;
                 const g = d3.select(this);
                 
-                g.append("circle")
-                    .attr("cx", 8)
-                    .attr("cy", 8)
-                    .attr("r", 6)
-                    .attr("fill", color);
+                // Use different symbols for PRV vs Redemption
+                if (area === "Redemption") {
+                    g.append("path")
+                        .attr("d", d3.symbol().type(d3.symbolDiamond).size(60))
+                        .attr("transform", "translate(8, 8)")
+                        .attr("fill", color);
+                } else {
+                    g.append("circle")
+                        .attr("cx", 8)
+                        .attr("cy", 8)
+                        .attr("r", 6)
+                        .attr("fill", color);
+                }
                     
                 g.append("text")
                     .attr("x", 20)
@@ -237,9 +345,32 @@
                     .attr("font-size", "9px")
                     .text(area);
             });
+            
+        // Add a special legend for the dotted line
+        const lineLegend = svgContainer.append("g")
+            .attr("transform", `translate(${margin.left}, ${height - margin.bottom + 40 + (legendRows * legendItemHeight)})`);
+            
+        lineLegend.append("line")
+            .attr("x1", 0)
+            .attr("y1", 8)
+            .attr("x2", 16)
+            .attr("y2", 8)
+            .attr("stroke", "#aaa")
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "3,3");
+            
+        lineLegend.append("text")
+            .attr("x", 20)
+            .attr("y", 12)
+            .attr("font-size", "9px")
+            .text("PRV to Redemption Connection");
     }
     
     $: if (data.length && svg) {
+        createTimeline();
+    }
+    
+    $: if (redemptionData.length && svg && data.length) {
         createTimeline();
     }
     
@@ -260,11 +391,16 @@
         >
             <div class="font-semibold">{tooltipContent.Candidate}</div>
             <div>Company: {tooltipContent.Company}</div>
-            <div>Area: {tooltipContent.TherapeuticArea1}</div>
-            <div>PRV Year: {tooltipContent["PRV Year"]}</div>
-            {#if tooltipContent.Purchased === "Y"}
-                <div>Purchased by: {tooltipContent.Purchaser || 'Unknown'}</div>
-                <div>Sale price: ${tooltipContent["Sale Price (USD Millions)"] || 'Undisclosed'} million</div>
+            {#if tooltipContent.isRedemption}
+                <div>Type: Redemption</div>
+                <div>Approval Date: {tooltipContent.approval_date || new Date(tooltipContent.prvDate).toLocaleDateString()}</div>
+            {:else}
+                <div>Area: {tooltipContent.TherapeuticArea1}</div>
+                <div>PRV Year: {tooltipContent["PRV Year"]}</div>
+                {#if tooltipContent.Purchased === "Y"}
+                    <div>Purchased by: {tooltipContent.Purchaser || 'Unknown'}</div>
+                    <div>Sale price: ${tooltipContent["Sale Price (USD Millions)"] || 'Undisclosed'} million</div>
+                {/if}
             {/if}
         </div>
     {/if}

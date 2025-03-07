@@ -4,14 +4,14 @@
     export let data = []; // Full dataset for the selected year
     export let year = ""; // Selected year
     
-    // Computed statistics
+    // Computed stats
     $: totalRPDDs = data.length;
     $: uniqueCandidates = new Set(data.map(d => d.Candidate)).size;
     $: uniqueCompanies = new Set(data.filter(d => d.Company).map(d => d.Company)).size;
     $: uniqueAreas = new Set(data.filter(d => d.TherapeuticArea1).map(d => d.TherapeuticArea1)).size;
     
     // Count PRVs awarded in this year
-    $: prvsAwarded = data.filter(d => d["PRV Year"] === year).length;
+    $: prvsAwarded = data.filter(d => d["PRV Year"] && d["PRV Year"].trim() !== "").length;
     
     // Calculate average time from RPDD to PRV (for those that have both)
     $: rpddToVoucherData = data.filter(d => d["RPDD Year"] && d["PRV Year"]);

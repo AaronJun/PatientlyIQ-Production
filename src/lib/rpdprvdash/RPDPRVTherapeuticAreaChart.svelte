@@ -754,7 +754,7 @@
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.highlightedNodeRadius)
-                                .attr("transform", "translate(8,2)")
+                                .attr("transform", "translate(8,)")
                                 .style("filter", "url(#dropshadow)");
 
                             // Highlight PRV indicator if present

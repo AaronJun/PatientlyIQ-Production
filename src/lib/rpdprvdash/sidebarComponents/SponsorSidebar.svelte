@@ -25,7 +25,7 @@
         currentStage: entry["Current Development Stage"] || "TBD",
         indication: entry.Indication || "",
         rpddAwardDate: entry["RPDD Year"],
-        voucherAwardDate: entry["PRV Issue Year"] || "",
+        voucherAwardDate: entry["PRV Year"] || "",
         treatmentClass: entry.Class1 || "TBD",
         mechanismOfAction: entry.MOA || "TBD",
         companyUrl: entry["Link to CrunchBase"] || ""

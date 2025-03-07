@@ -398,8 +398,8 @@ function updateSelection() {
 </script>
 
 <div class="timeline-container">
-    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
-        <h4 class="text-sm capitalize font-medium text-slate-800">
+    <div class="sidebar-header ml-4 flex gap-2 uppercase place-items-center">      
+        <h4 class="text-xs capitalize font-medium text-slate-600">
             Select Year              
          </h4>
     </div>    
