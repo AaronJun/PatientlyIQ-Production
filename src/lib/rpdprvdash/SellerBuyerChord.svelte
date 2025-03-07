@@ -2,7 +2,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import * as d3 from 'd3';
-  import { getTherapeuticAreaColor } from './utils/colorDefinitions';
 
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
@@ -44,61 +43,78 @@
   const width = 920;
   const height = 920;
   const labelConfig = {
-    radius: Math.min(width, height) * 0.40,
+    radius: Math.min(width, height) * .420,
     padding: 12,
     minAngleDiff: Math.PI / 32
   };
 
   function formatCompanyName(companyName) {
-    // If no company name, return empty string
-    if (!companyName) return '';
-    
+  // If no company name, return empty string
+  if (!companyName) return '';
+  
     // List of words/phrases to remove - sort longer phrases first
     const phrasesToRemove = [
-      'Life Sciences',
-      'Life Science',
-      'Pharmaceuticals',
-      'Biotechnology',
-      'Therapeutics',
-      'Biometrics',
-      'Partners',
-      'Science',
-      'Pharma',
-      'Biotech',
-      'Genetic',
-      'Bio',
-      'Biosciences'
-    ];
-      
-    let formattedName = companyName;
+    'Life Sciences',
+    'Life Science',
+    'Pharmaceuticals',
+    'Biotechnology',
+    'Therapeutics',
+    'Biometrics',
+    'Partners',
+    'Science',
+    'Pharma',
+    'Biotech',
+    'Genetic',
+    'Bio',
+    'Biosciences'
+  ];
     
-    // Replace each phrase individually to handle multi-word phrases better
-    phrasesToRemove.forEach(phrase => {
-      const pattern = new RegExp(`\\b${phrase}\\b`, 'gi');
-      formattedName = formattedName.replace(pattern, '');
-    });
-    
-    // Clean up extra spaces, commas and other punctuation
-    formattedName = formattedName.replace(/\s+/g, ' ').trim();
-    formattedName = formattedName.replace(/,\s*$/, '').replace(/^\s*,/, '');
-    formattedName = formattedName.replace(/,\s*,/g, ',');
-    
-    // Fix cases where we removed all words or only punctuation remains
-    if (!formattedName.trim() || formattedName.trim().match(/^[,.\s-]+$/)) {
-      return companyName; // Return original if nothing meaningful remains
-    }
-    
-    // Fix cases with trailing/leading commas or just punctuation
-    formattedName = formattedName.replace(/^\s*[,.-]\s*/, '').replace(/\s*[,.-]\s*$/, '');
-    
-    // Fix inconsistencies with Inc, Inc., Corporation, etc.
-    formattedName = formattedName.replace(/\s*,\s*Inc\.?$/i, '');
-    formattedName = formattedName.replace(/\s*,\s*LLC\.?$/i, '');
-    formattedName = formattedName.replace(/\s*,\s*Ltd\.?$/i, '');
-    formattedName = formattedName.replace(/\s*,\s*Corporation\.?$/i, '');
-    
-    return formattedName;
+  let formattedName = companyName;
+  
+  // Replace each phrase individually to handle multi-word phrases better
+  phrasesToRemove.forEach(phrase => {
+    const pattern = new RegExp(`\\b${phrase}\\b`, 'gi');
+    formattedName = formattedName.replace(pattern, '');
+  });
+  
+  // Clean up extra spaces, commas and other punctuation
+  formattedName = formattedName.replace(/\s+/g, ' ').trim();
+  formattedName = formattedName.replace(/,\s*$/, '').replace(/^\s*,/, '');
+  formattedName = formattedName.replace(/,\s*,/g, ',');
+  
+  // Fix cases where we removed all words or only punctuation remains
+  if (!formattedName.trim() || formattedName.trim().match(/^[,.\s-]+$/)) {
+    return companyName; // Return original if nothing meaningful remains
   }
+  
+  // Fix cases with trailing/leading commas or just punctuation
+  formattedName = formattedName.replace(/^\s*[,.-]\s*/, '').replace(/\s*[,.-]\s*$/, '');
+  
+  // Fix inconsistencies with Inc, Inc., Corporation, etc.
+  formattedName = formattedName.replace(/\s*,\s*Inc\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*LLC\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Ltd\.?$/i, '');
+  formattedName = formattedName.replace(/\s*,\s*Corporation\.?$/i, '');
+  
+  return formattedName;
+}
+
+
+  const therapeuticAreaColorScale = d3.scaleOrdinal()
+    .domain([
+      'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',
+      'Cardiovascular', 'Pulmonology', 'Hematology',
+      'Endocrinology', 'Genetic', 'Immunology',
+      'Gastroenterology', 'Hepatology', 'Dermatology',
+      'Neonatology', 'Urology'
+    ])
+    .range([
+      '#FF6B6B', '#FF1515', '#4ECDC4', '#45B7D1', '#96CEB4',
+      '#FFEEAD', '#D4A5A5', '#9DE0AD',
+      '#FF9F1C', '#2EC4B6', '#E71D36',
+      '#FDFFB6', '#CBE896', '#FFA07A',
+      '#98D8C8', '#B8B8D1'
+    ]);
 
   // Update visualizations when the selected year changes
   $: if (selectedYear && transactions) {
@@ -124,8 +140,7 @@
       Company: d.Company,
       therapeuticArea: d.TherapeuticArea1,
       entries,
-      color: getTherapeuticAreaColor(d.TherapeuticArea1).fill,
-      color2: getTherapeuticAreaColor(d.TherapeuticArea1).fill,
+      color: therapeuticAreaColorScale(d.TherapeuticArea1),
       currentStage: d["Current Development Stage"] || "TBD",
       indication: d.Indication || "",
       rpddAwardDate: d["RPDD Year"],
@@ -159,7 +174,7 @@
       therapeuticArea: primaryArea,
       id: `${companyTransactions.length} transactions`
     };
-    tooltipBorderColor = getTherapeuticAreaColor(primaryArea).fill;
+    tooltipBorderColor = therapeuticAreaColorScale(primaryArea);
 
     // Highlight all ribbons involving this company
     ribbons
@@ -279,7 +294,7 @@
       .transition()
       .duration(800)
       .attr("stroke-width", 3)
-      .attr("stroke", getTherapeuticAreaColor("Oncology").fill)
+      .attr("stroke", "#FF9F1C")
       .transition()
       .duration(800)
       .attr("stroke-width", 1.5)
@@ -291,7 +306,7 @@
             .transition()
             .duration(800)
             .attr("stroke-width", 3)
-            .attr("stroke", getTherapeuticAreaColor("Oncology").fill)
+            .attr("stroke", "#FF9F1C")
             .transition()
             .duration(800)
             .attr("stroke-width", 1.5)
@@ -340,7 +355,7 @@
   function getTransactionColor(source: number, target: number) {
     const transaction = getTransaction(source, target);
     if (transaction) {
-      return getTherapeuticAreaColor(transaction.TherapeuticArea1).fill;
+      return therapeuticAreaColorScale(transaction.TherapeuticArea1);
     }
     return "#cccccc"; // Default gray if no transaction found
   }
@@ -418,18 +433,15 @@
       .style("fill", d => {
         // Color based on the therapeutic area of the actual transaction
         const transaction = getTransaction(d.source.index, d.target.index);
-        return transaction ? getTherapeuticAreaColor(transaction.TherapeuticArea1).fill : "#cccccc";
+        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
       })
       .style("mix-blend-mode", "multiply")
       .style("opacity", 0.6)
       .attr("stroke", d => {
         // Darker stroke of the same therapeutic area color
         const transaction = getTransaction(d.source.index, d.target.index);
-        if (transaction) {
-          const colorCombo = getTherapeuticAreaColor(transaction.TherapeuticArea1);
-          return colorCombo.stroke;
-        }
-        return "#999999";
+        const color = transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
+        return d3.color(color)?.darker(0.5);
       })
       .attr("stroke-width", 0.5)
       .attr("stroke-dasharray", d => {
@@ -457,7 +469,7 @@
             therapeuticArea: transaction.Candidate,
             id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
-          tooltipBorderColor = getTherapeuticAreaColor(transaction.TherapeuticArea1).fill;
+          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1);
 
           const rect = svg.getBoundingClientRect();
           tooltipX = event.clientX - rect.left;
@@ -482,7 +494,7 @@
         // Get company's primary therapeutic area color
         const company = companies[d.index];
         const companyInfo = companyData.get(company);
-        return getTherapeuticAreaColor(companyInfo.therapeuticArea).fill;
+        return therapeuticAreaColorScale(companyInfo.therapeuticArea);
       })
       .attr("d", d3.arc()
         .innerRadius(innerRadius)
@@ -509,7 +521,7 @@
           .datum(transaction)
           .attr("r", nodeRadius)
           .attr("transform", `translate(${x},${y})`)
-          .attr("fill", getTherapeuticAreaColor(transaction.TherapeuticArea1).fill)
+          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
           .attr("stroke", "#565656")
           .attr("stroke-width", 1.5)
           .attr("stroke-dasharray", isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "2,2" : null)
@@ -533,7 +545,7 @@
             therapeuticArea: transaction.Candidate,
             id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
-            tooltipBorderColor = getTherapeuticAreaColor(d.TherapeuticArea1).fill;
+            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1);
 
             const rect = svg.getBoundingClientRect();
             tooltipX = event.clientX - rect.left;
@@ -634,7 +646,7 @@
     stockData={stockData}
     onClose={handleCloseCompanyDrawer}
     onShowDrugDetail={onShowDrugDetail}
-    color={getTherapeuticAreaColor("Neuromuscular").fill}
+    color="#37587e"
   />
 {/if}
 

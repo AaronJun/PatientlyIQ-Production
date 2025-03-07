@@ -100,8 +100,8 @@
         // Create a special gradient for "All Years"
         const allYearsGradient = defs.append("linearGradient")
             .attr("id", "gradient-all-years")
-            .attr("x1", "10%")
-            .attr("y1", "20%")
+            .attr("x1", "0%")
+            .attr("y1", "0%")
             .attr("x2", "100%")
             .attr("y2", "100%");
             
@@ -277,8 +277,8 @@
             .attr("class", "year-circle")
             .attr("r", 22) // Larger than regular circles
             .attr("fill", "url(#gradient-all-years)")
-            .attr("stroke", "#BC9533")
-            .attr("stroke-width", selectedYear === "All" ? 4 : 2.5)
+            .attr("stroke", "#565656")
+            .attr("stroke-width", selectedYear === "All" ? 5.5 : 4.5)
             .style("filter", selectedYear === "All" ? "url(#glow)" : "none")
             .style("cursor", "pointer")
             .on("click", () => {
@@ -296,7 +296,7 @@
                     d3.select(this)
                         .transition()
                         .duration(200)
-                        .attr("stroke-width", 2)
+                        .attr("stroke-width", 5.5)
                         .style("filter", "url(#glow)");
                         
                     allYearsGroup.select(".year-label")
