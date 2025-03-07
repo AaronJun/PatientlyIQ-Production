@@ -87,7 +87,7 @@
           </span>
           {#if companyProfile.marketCap !== 'N/A'}
             <span class="meta-item">
-              Market Cap: {companyProfile.marketCap}
+              {companyProfile.marketCap}
             </span>
           {/if}
         </div>

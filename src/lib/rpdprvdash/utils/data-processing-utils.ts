@@ -4,11 +4,9 @@
 export function getStage(entry: any): string {
     if (!entry) return "PRE";
     
-    // Check if PRV has been transacted (purchased)
-    if (entry["Purchase Year"]) return "TRNS";
-    
-    // Check if PRV has been issued
-    if (entry["PRV Year"] || entry["PRV Issue Year"]) return "PRV";
+    // Check if PRV has been issued (ensuring this takes precedence over Current Development Stage)
+    // We no longer check Purchase Year for stage placement, only for styling
+    if (entry["PRV Year"] || entry["PRV Year"]) return "PRV";
     
     const stage = entry["Current Development Stage"];
     switch(stage) {
@@ -16,7 +14,9 @@ export function getStage(entry: any): string {
         case "Preclinical": return "PRE";
         case "Phase 1": return "P1";
         case "Phase 1/2": return "P1";
-        case "Phase 2" || "Phase 2a" || "Phase 2b": return "P2";
+        case "Phase 2": return "P2"; // Fix for logical OR issue
+        case "Phase 2a": return "P2";
+        case "Phase 2b": return "P2";
         case "Phase 3": return "P3";
         case "Filed": return "FILED";
         case "Approved": return "APRV";
@@ -34,7 +34,6 @@ export const stageCodeMap = {
     'FILED': 'Filed',
     'APRV': 'Approved',
     'PRV': 'PRV Awarded',
-    'TRNS': 'PRV Transacted'
 };
 
 /**
@@ -43,12 +42,11 @@ export const stageCodeMap = {
 export function getStageRadii(radius: number) {
     return {
         'PRE': radius * 0.925,
-        'P1': radius * 0.8425,
-        'P2': radius * 0.7425,
-        'P3': radius * 0.6425,
-        'FILED': radius * 0.525,
-        'PRV': radius * 0.425,
-        'TRNS': radius * 0.325  // Add the new TRNS stage with smaller radius
+        'P1': radius * 0.8125,
+        'P2': radius * 0.7125,
+        'P3': radius * 0.5725,
+        'FILED': radius * 0.4325,
+        'PRV': radius * 0.2725,
     };
 }
 
@@ -246,12 +244,12 @@ export function processDataForLayout(data: any[]) {
         }
         
         // Count vouchers awarded
-        if (stage === "PRV" || entry["PRV Issue Year"] || entry["PRV Year"]) {
+        if (stage === "PRV" || entry["PRV Year"] || entry["PRV Year"]) {
             companyData.vouchersAwarded++;
         }
         
-        // Count transacted vouchers
-        if (stage === "TRNS" || entry["Purchase Year"]) {
+        // Count transacted vouchers - still track these separately even though they're part of PRV ring
+        if (entry["Purchase Year"]) {
             companyData.transactedVouchers++;
         }
     });
@@ -358,12 +356,12 @@ export function processDataForTherapeuticAreas(data: any[]) {
         }
         
         // Count vouchers awarded
-        if (stage === "PRV" || entry["PRV Issue Year"] || entry["PRV Year"]) {
+        if (stage === "PRV" || entry["PRV Year"] || entry["PRV Year"]) {
             areaData.vouchersAwarded++;
         }
         
         // Count transacted vouchers
-        if (stage === "TRNS" || entry["Purchase Year"]) {
+        if (entry["Purchase Year"]) {
             areaData.transactedVouchers++;
         }
     });

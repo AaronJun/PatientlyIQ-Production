@@ -44,8 +44,8 @@
     // Adjust label config for therapeutic area chart to position labels closer to the radial
     $: labelConfig = {
         ...getLabelConfig(radius, isAllYearView),
-        minRadius: radius * 1.05, // Reduced from 1.15 to bring labels closer
-        maxRadius: radius * 1.15, // Reduced from 1.25 to bring labels closer
+        minRadius: radius * 1, // Reduced from 1.15 to bring labels closer
+        maxRadius: radius * 1.05, // Reduced from 1.25 to bring labels closer
         padding: 6.5 // Reduced padding between labels
     };
     $: stageRadii = getStageRadii(radius);
@@ -281,33 +281,10 @@
             .attr("font-size", sizeConfig.labelFontSize)
             .attr("font-weight", sizeConfig.labelFontWeight);
         
-        // Create dots group to represent drugs
-        const dotsGroup = labelGroup.append("g")
-            .attr("class", "area-drugs")
-            .attr("transform", `translate(${xOffset}, ${labelConfig.textHeight})`);
-        
-        const numDots = Math.min(area.totalDrugs, 20); // Limit dots for visual clarity
-        const dotsPerRow = Math.min(12, numDots);  // Maximum 12 dots per row
-        
         // Get therapeutic area color
         const areaColors = getTherapeuticAreaColor(area.area);
-        
-        for (let i = 0; i < numDots; i++) {
-            const row = Math.floor(i / dotsPerRow);
-            const col = i % dotsPerRow;
-            const x = textAnchor === "start" ? col * 6 : -(col * 6);
-            
-            dotsGroup.append("circle")
-                .attr("r", 0)
-                .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-                .attr("cy", row * 5)  // 5px spacing between rows
-                .attr("fill", areaColors.fill)
-                .attr("stroke", areaColors.stroke)
-                .attr("stroke-width", 0.5)
-                .attr("opacity", 0.8);
-        }
-        
-        return { labelGroup, textElement, dotsGroup };
+                
+        return { labelGroup, textElement };
     }
 
     /**

@@ -1,4 +1,3 @@
-<!-- RPDPRVCompanyTree.svelte with PRV Transacted Feature (Continued) -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
@@ -169,7 +168,7 @@
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.3em")
                 .attr("fill", stageColor.stroke)
-                .attr("font-size", isAllYearView ? "8px" : "9.25px")
+                .attr("font-size", isAllYearView ? "8px" : "11.25px")
                 .attr("font-weight", "400")
                 .text(stage);
                 
@@ -204,7 +203,7 @@ companies.forEach(company => {
     const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
 
     // Calculate node position (where lines connect)
-    const nodeRadius = radius * .9725;
+    const nodeRadius = radius * 1;
     const nodeAngle = angle.center - Math.PI/2; // Adjust for SVG coordinates
     const nodeX = nodeRadius * Math.cos(nodeAngle);
     const nodeY = nodeRadius * Math.sin(nodeAngle);
@@ -310,11 +309,14 @@ companies.forEach(company => {
                     // Get therapeutic area color
                     const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
 
+                    // Determine stroke color - use gold for transacted PRVs
+                    const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
+
                     // Drug circle
                     drugGroup.append("circle")
                         .attr("r", sizeConfig.drugNodeRadius)
                         .attr("fill", areaColors.fill)
-                        .attr("stroke", areaColors.stroke)
+                        .attr("stroke", strokeColor)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
 
@@ -362,12 +364,15 @@ companies.forEach(company => {
                         })
                         .on("mouseleave", () => {
                             // Reset drug node appearance
+                            // Determine stroke color - use gold for transacted PRVs
+                            const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
+                            
                             drugGroup.select("circle")
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.drugNodeRadius)
                                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                                .attr("stroke", areaColors.stroke)
+                                .attr("stroke", strokeColor)
                                 .style("filter","url(#dropshadow)");
 
                             // Reset PRV indicator if present
@@ -594,12 +599,15 @@ companies.forEach(company => {
         
         onMouseLeave: () => {
             // Reset drug node appearance
+            // Determine stroke color - use gold for transacted PRVs
+            const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
+            
             drugGroup.select("circle")
                 .transition()
                 .duration(200)
                 .attr("r", sizeConfig.drugNodeRadius)
                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                .attr("stroke", areaColors.stroke)
+                .attr("stroke", strokeColor)
                 .style("filter", "url(#dropshadow)");
 
             // Reset PRV indicator if present
@@ -982,3 +990,4 @@ function hideTooltip() {
         position: relative;
     }
 </style>
+    
