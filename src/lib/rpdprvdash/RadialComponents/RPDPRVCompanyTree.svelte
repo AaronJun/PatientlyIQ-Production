@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import RPDTooltip from '../RPDTooltip.svelte';
+    // Remove the CompanyNode import since we're not using it
+    // import CompanyNode from '../components/CompanyNode.svelte';
     
     // Import the color definitions
     import { 
@@ -63,17 +65,30 @@
     let tooltipX = 0;
     let tooltipY = 0;
     const tooltipOffset = { x: 15, y: 15 };
-    let tooltipTimeout = null;
+    let tooltipTimeout: any = null;
 
     // Active selection tracking
-    let activeCompany = null;
-    let activeStage = null;
+    let activeCompany: any = null;
+    let activeStage: any = null;
+    
+    // Track elements that can be keyboard-focused
+    let focusableElements: { 
+        element: Element, 
+        type: string, 
+        company?: string, 
+        isSelected?: boolean, 
+        drugNodes?: Array<{ element: Element, drug: any }>,
+        index?: number
+    }[] = [];
 
     /**
      * Creates the visualization with all components
      */
     function createVisualization() {
         if (!svg) return;
+
+        // Clear any existing elements
+        focusableElements = [];
 
         const svgElement = d3.select(svg);
         svgElement.selectAll("*").remove();
@@ -192,86 +207,104 @@
         const companyAngles = calculateCompanyAngles(companies, ANGLE_BUFFER);
         const labelPlacements = calculateOptimalLabelPlacement(companies, companyAngles, labelConfig);
 
-   
-companies.forEach(company => {
-    const angle = companyAngles.get(company.company);
-    if (!angle) return;
-    
-    const companyGroup = mainGroup.append("g");
+        // Create company nodes directly with D3 but add keyboard accessibility
+        companies.forEach((company, index) => {
+            const angle = companyAngles.get(company.company);
+            if (!angle) return;
+            
+            const companyGroup = mainGroup.append("g");
 
-    // Create sanitized ID for the company
-    const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
+            // Create sanitized ID for the company
+            const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
 
-    // Calculate node position (where lines connect)
-    const nodeRadius = radius * 1;
-    const nodeAngle = angle.center - Math.PI/2; // Adjust for SVG coordinates
-    const nodeX = nodeRadius * Math.cos(nodeAngle);
-    const nodeY = nodeRadius * Math.sin(nodeAngle);
+            // Calculate node position (where lines connect)
+            const nodeRadius = radius * 1;
+            const nodeAngle = angle.center - Math.PI/2; // Adjust for SVG coordinates
+            const nodeX = nodeRadius * Math.cos(nodeAngle);
+            const nodeY = nodeRadius * Math.sin(nodeAngle);
 
-    // Get company status color
-    const statusColor = getCompanyStatusColor(company.status);
+            // Get company status color
+            const statusColor = getCompanyStatusColor(company.status);
 
-    // Create company node
-    const nodeGroup = companyLabelsGroup.append("g")
-        .attr("transform", `translate(${nodeX},${nodeY})`)
-        .attr("cursor", "pointer")
-        .attr("class", "company-node")
-        .attr("id", `company-node-${companyId}`);
+            // Create company node with keyboard accessibility support
+            const nodeGroup = companyLabelsGroup.append("g")
+                .attr("transform", `translate(${nodeX},${nodeY})`)
+                .attr("cursor", "pointer")
+                .attr("class", "company-node")
+                .attr("id", `company-node-${companyId}`)
+                .attr("tabindex", index + 1) // Sequential tabindex starting from 1 for proper tab order
+                .attr("role", "button")
+                .attr("aria-label", `Company ${company.company} with ${company.totalDrugs} drugs`);
 
-    nodeGroup.append("rect")
-        .attr("width", sizeConfig.companyNodeWidth)
-        .attr("height", sizeConfig.companyNodeHeight)
-        .attr("fill", statusColor.fill)
-        .attr("stroke", statusColor.stroke)
-        .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
-        .attr("stroke-width", 0.725)
-        .attr("rx", 2);
+            // Ensure SVG element can receive focus
+            const nodeElement = nodeGroup.node();
+            if (nodeElement) {
+                nodeElement.setAttribute("focusable", "true");
+                // Store reference for keyboard navigation
+                focusableElements.push({
+                    element: nodeElement,
+                    type: 'company',
+                    company: company.company,
+                    isSelected: false,
+                    index: index,
+                    drugNodes: []
+                });
+            }
 
-    // Calculate label position aligned with node angle
-    // Use outer position from node (not the center of the chart)
-    const labelDistance = radius * 1.05; // Position labels outside the outermost stage circle
-    const labelX = nodeX + (labelDistance - nodeRadius) * Math.cos(nodeAngle);
-    const labelY = nodeY + (labelDistance - nodeRadius) * Math.sin(nodeAngle);
+            nodeGroup.append("rect")
+                .attr("width", sizeConfig.companyNodeWidth)
+                .attr("height", sizeConfig.companyNodeHeight)
+                .attr("fill", statusColor.fill)
+                .attr("stroke", statusColor.stroke)
+                .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
+                .attr("stroke-width", 0.725)
+                .attr("rx", 2);
 
-    // Determine if label should be on left or right side based on position in circle
-    const isRightSide = Math.cos(nodeAngle) > 0;
-    
-    // Create label with alignment to connecting line
-    const labelGroup = companyLabelsGroup.append("g")
-        .attr("transform", `translate(${labelX},${labelY})`)
-        .attr("cursor", "pointer")
-        .attr("class", "company-label")
-        .attr("id", `company-label-${companyId}`);
+            // Calculate label position aligned with node angle
+            // Use outer position from node (not the center of the chart)
+            const labelDistance = radius * 1.05; // Position labels outside the outermost stage circle
+            const labelX = nodeX + (labelDistance - nodeRadius) * Math.cos(nodeAngle);
+            const labelY = nodeY + (labelDistance - nodeRadius) * Math.sin(nodeAngle);
 
-    // Create rotated text container for better alignment
-    const textContainer = labelGroup.append("g");
-    
-    const textRotation = isRightSide 
-        ? (nodeAngle * 180 / Math.PI)
-        : (nodeAngle * 180 / Math.PI) + 180;
-    
-    // Apply rotation transform
-    textContainer.attr("transform", `rotate(${textRotation})`);
-    
-    // Add the text with appropriate anchor
-    textContainer.append("text")
-        .attr("text-anchor", isRightSide ? "start" : "end")
-        .attr("dx", isRightSide ? 0 : 0) // Small offset from connection point
-        .attr("dy", "0.35em")
-        .text(formatCompanyName(company.company))
-        .attr("fill", "#4A5568")
-        .attr("font-size", sizeConfig.labelFontSize)
-        .attr("font-weight", sizeConfig.labelFontWeight);
+            // Determine if label should be on left or right side based on position in circle
+            const isRightSide = Math.cos(nodeAngle) > 0;
+            
+            // Create label with alignment to connecting line
+            const labelGroup = companyLabelsGroup.append("g")
+                .attr("transform", `translate(${labelX},${labelY})`)
+                .attr("cursor", "pointer")
+                .attr("class", "company-label")
+                .attr("id", `company-label-${companyId}`);
 
-    // Connect node to label with a direct line
-    linesGroup.append("path")
-        .attr("class", "company-path")
-        .attr("data-company", company.company)
-        .attr("d", `M${nodeX},${nodeY}L${labelX},${labelY}`)
-        .attr("stroke", "#37587e")
-        .attr("stroke-width", sizeConfig.connectionStrokeWidth)
-        .attr("stroke-opacity", sizeConfig.connectionOpacity)
-        .attr("fill", "none");
+            // Create rotated text container for better alignment
+            const textContainer = labelGroup.append("g");
+            
+            const textRotation = isRightSide 
+                ? (nodeAngle * 180 / Math.PI)
+                : (nodeAngle * 180 / Math.PI) + 180;
+            
+            // Apply rotation transform
+            textContainer.attr("transform", `rotate(${textRotation})`);
+            
+            // Add the text with appropriate anchor
+            const labelText = textContainer.append("text")
+                .attr("text-anchor", isRightSide ? "start" : "end")
+                .attr("dx", isRightSide ? 0 : 0) // Small offset from connection point
+                .attr("dy", "0.35em")
+                .text(formatCompanyName(company.company))
+                .attr("fill", "#4A5568")
+                .attr("font-size", sizeConfig.labelFontSize)
+                .attr("font-weight", sizeConfig.labelFontWeight);
+
+            // Connect node to label with a direct line
+            linesGroup.append("path")
+                .attr("class", "company-path")
+                .attr("data-company", company.company)
+                .attr("d", `M${nodeX},${nodeY}L${labelX},${labelY}`)
+                .attr("stroke", "#37587e")
+                .attr("stroke-width", sizeConfig.connectionStrokeWidth)
+                .attr("stroke-opacity", sizeConfig.connectionOpacity)
+                .attr("fill", "none");
 
             // Connect drugs to node
             company.stages.forEach((drugs, stage) => {
@@ -301,7 +334,25 @@ companies.forEach(company => {
                         .attr("transform", `translate(${drugX},${drugY})`)
                         .attr("cursor", "pointer")
                         .attr("class", "drug-node")
-                        .attr("id", drugId);
+                        .attr("id", drugId)
+                        .attr("tabindex", -1) // Initially not focusable until company is selected
+                        .attr("role", "button")
+                        .attr("aria-label", `Drug ${drug.Candidate} for ${drug.Indication || 'unknown indication'}, stage: ${drug["Current Development Stage"] || 'unknown stage'}`);
+
+                    // Ensure the SVG element can receive focus
+                    const drugElement = drugGroup.node();
+                    if (drugElement && nodeElement) {
+                        drugElement.setAttribute("focusable", "true");
+                        
+                        // Store drug node reference in the company's drugNodes array
+                        const companyRef = focusableElements.find(item => item.element === nodeElement);
+                        if (companyRef) {
+                            companyRef.drugNodes.push({
+                                element: drugElement,
+                                drug: drug
+                            });
+                        }
+                    }
 
                     // Get therapeutic area color
                     const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
@@ -317,9 +368,103 @@ companies.forEach(company => {
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
 
-                    // Special visualization for transacted PRVs
-            
-                    // Drug interactions
+                    // Add PRV indicator for PRV awarded drugs
+                    if (drug["PRV Issue Year"] || drug["PRV Year"]) {
+                        drugGroup.append("circle")
+                            .attr("r", sizeConfig.prvIndicatorRadius)
+                            .attr("fill", "none")
+                            .attr("stroke", "#976201")
+                            .attr("stroke-width", isAllYearView ? "1.5" : "2")
+                            .attr("stroke-dasharray", "2,2");
+                    }
+
+                    // Add keyboard event handler for accessibility
+                    drugGroup.on("keydown", function(event) {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            // Show drug details
+                            onShowDrugDetail({
+                                drugName: drug.Candidate,
+                                year: drug["PRV Year"] || drug["RPDD Year"],
+                                Company: drug.Company,
+                                therapeuticArea: drug.TherapeuticArea1,
+                                entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
+                                color: areaColors.fill,
+                                strokeColor: areaColors.stroke,
+                                currentStage: drug["Current Development Stage"],
+                                indication: drug.Indication || "",
+                                rpddAwardDate: drug["RPDD Year"],
+                                voucherAwardDate: drug["PRV Year"] || "",
+                                treatmentClass: drug.Class1 || "TBD",
+                                mechanismOfAction: drug.MOA || "TBD",
+                                companyUrl: drug["Link to CrunchBase"] || ""
+                            });
+                        } else if (event.key === "Escape") {
+                            // Return focus to company node
+                            event.preventDefault();
+                            nodeElement?.focus();
+                        }
+                    });
+
+                    // Add focus handlers for keyboard navigation
+                    drugGroup.on("focus", function(event) {
+                        // Highlight the drug node
+                        drugGroup.select("circle")
+                            .transition()
+                            .duration(200)
+                            .attr("r", sizeConfig.highlightedNodeRadius)
+                            .style("filter", "url(#dropshadow)");
+                        
+                        // Highlight PRV indicator if present
+                        if (drug["PRV Issue Year"] || drug["PRV Year"]) {
+                            drugGroup.select("circle:last-child")
+                                .transition()
+                                .duration(200)
+                                .attr("r", sizeConfig.highlightedNodeRadius)
+                                .attr("stroke-width", isAllYearView ? 3.5 : 4.725);
+                        }
+                        
+                        // Highlight the connection line for this drug
+                        highlightDrugConnections(drugId);
+                        
+                        // Show tooltip near the node
+                        const rect = event.target.getBoundingClientRect();
+                        const fakeEvent = {
+                            clientX: rect.left + rect.width/2,
+                            clientY: rect.top + rect.height/2
+                        };
+                        
+                        showTooltip(fakeEvent, drug);
+                    });
+                    
+                    drugGroup.on("blur", function() {
+                        // Reset drug node appearance
+                        drugGroup.select("circle")
+                            .transition()
+                            .duration(200)
+                            .attr("r", sizeConfig.drugNodeRadius)
+                            .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
+                            .attr("stroke", strokeColor)
+                            .style("filter", "url(#dropshadow)");
+                        
+                        // Reset PRV indicator if present
+                        if (drug["PRV Issue Year"] || drug["PRV Year"]) {
+                            drugGroup.select("circle:last-child")
+                                .transition()
+                                .duration(200)
+                                .attr("r", sizeConfig.prvIndicatorRadius)
+                                .attr("stroke-width", isAllYearView ? "1.5" : "2");
+                        }
+                        
+                        // Reset connection highlights
+                        resetConnectionHighlights();
+                        
+                        hideTooltip();
+                    });
+                    
+                    // Drug mouse interactions
                     drugGroup
                         .on("mouseenter", (event) => {
                             // Highlight the drug node
@@ -327,7 +472,7 @@ companies.forEach(company => {
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.highlightedNodeRadius)
-                                .style("filter","url(#dropshadow)");
+                                .style("filter", "url(#dropshadow)");
 
                             // Highlight PRV indicator or transaction indicator if present
                             if (drug["Purchase Year"]) {
@@ -361,16 +506,13 @@ companies.forEach(company => {
                         })
                         .on("mouseleave", () => {
                             // Reset drug node appearance
-                            // Determine stroke color - use gold for transacted PRVs
-                            const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
-                            
                             drugGroup.select("circle")
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.drugNodeRadius)
                                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                                 .attr("stroke", strokeColor)
-                                .style("filter","url(#dropshadow)");
+                                .style("filter", "url(#dropshadow)");
 
                             // Reset PRV indicator if present
                             if (drug["Purchase Year"]) {
@@ -432,16 +574,47 @@ companies.forEach(company => {
                 });
             });
 
-            // Add interaction handlers for both node and label
-            const handleMouseEnter = (event: MouseEvent) => {
-                // Set this company as active
-                setActiveCompany(company.company, company.entries);
-                
-                // Highlight all connections for this company
+            // Add keyboard event handler for accessibility
+            nodeGroup.on("keydown", function(event: KeyboardEvent) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Toggle selection state
+                    const companyRef = focusableElements.find(item => item.element === nodeElement);
+                    if (companyRef) {
+                        companyRef.isSelected = !companyRef.isSelected;
+                        
+                        // Make drug nodes focusable when company is selected
+                        if (companyRef.drugNodes) {
+                            companyRef.drugNodes.forEach((drugRef, i) => {
+                                // Use sequential tabindex values for drug nodes
+                                // When company is selected, drug nodes get tabindex values that come right after this company
+                                // When company is deselected, drug nodes are removed from tab order
+                                const companyIndex = companyRef.index || index;
+                                const drugTabIndex = companyRef.isSelected ? (companyIndex + 1 + 0.1 + i/100) : -1;
+                                drugRef.element.setAttribute("tabindex", String(drugTabIndex));
+                            });
+                        }
+                    }
+                    
+                    // Trigger the same action as clicking
+                    onShowCompanyDetail({
+                        Company: company.company,
+                        entries: company.entries,
+                        color: statusColor.fill,
+                        strokeColor: statusColor.stroke
+                    });
+                }
+            });
+
+            // Add focus/blur handlers
+            nodeGroup.on("focus", function(event) {
+                // Highlight connections
                 highlightCompanyConnections(company.company);
                 
                 // Enhance visual feedback
-                nodeGroup.select("rect:first-child") // First rect is the company node
+                nodeGroup.select("rect")
                     .transition()
                     .duration(200)
                     .attr("width", sizeConfig.companyNodeWidth * 1.15)
@@ -449,20 +622,60 @@ companies.forEach(company => {
                     .attr("transform", `translate(${-(sizeConfig.companyNodeWidth * 1.15)/2}, ${-(sizeConfig.companyNodeHeight * 1.15)/2})`)
                     .attr("stroke-width", 1.25);
                 
-                // Enhance the label background and text
-                nodeGroup.select(".label-group rect")
+                // Show tooltip near the focused node
+                const rect = (event.target as Element).getBoundingClientRect();
+                const fakeEvent = {
+                    clientX: rect.left + rect.width/2,
+                    clientY: rect.top + rect.height/2
+                } as MouseEvent;
+                
+                showTooltip(fakeEvent, {
+                    company: company.company,
+                    totalDrugs: company.totalDrugs,
+                    status: company.status
+                }, true);
+            });
+            
+            nodeGroup.on("blur", function() {
+                // Only reset if not the active company
+                if (activeCompany !== company.company) {
+                    nodeGroup.select("rect")
+                        .transition()
+                        .duration(200)
+                        .attr("width", sizeConfig.companyNodeWidth)
+                        .attr("height", sizeConfig.companyNodeHeight)
+                        .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
+                        .attr("stroke-width", 0.725);
+                }
+                
+                // Reset connections and hide tooltip
+                resetConnectionHighlights();
+                hideTooltip();
+            });
+
+            // Add interaction handlers for both node and label
+            const handleMouseEnter = (event) => {
+                // Set this company as active
+                setActiveCompany(company.company, company.entries);
+                
+                // Highlight all connections for this company
+                highlightCompanyConnections(company.company);
+                
+                // Enhance visual feedback
+                nodeGroup.select("rect")
                     .transition()
                     .duration(200)
-                    .attr("fill", "#F7FAFC")
-                    .attr("stroke", "#CBD5E0")
-                    .attr("stroke-width", 1);
-                
+                    .attr("width", sizeConfig.companyNodeWidth * 1.15)
+                    .attr("height", sizeConfig.companyNodeHeight * 1.15)
+                    .attr("transform", `translate(${-(sizeConfig.companyNodeWidth * 1.15)/2}, ${-(sizeConfig.companyNodeHeight * 1.15)/2})`)
+                    .attr("stroke-width", 1.25);
+                    
                 // Enhance node label text
-                nodeGroup.select(".company-node-label")
+                labelText
                     .transition()
                     .duration(200)
                     .attr("font-weight", "800")
-                    .attr("fill", "#2C5282"); // Highlight color
+                    .attr("fill", "#2B6CB0"); // Highlight color
                 
                 showTooltip(event, {
                     company: company.company,
@@ -471,7 +684,7 @@ companies.forEach(company => {
                 }, true);
             };
 
-            const handleMouseMove = (event: MouseEvent) => {
+            const handleMouseMove = (event) => {
                 // Update tooltip position when mouse moves
                 showTooltip(event, {
                     company: company.company,
@@ -483,7 +696,7 @@ companies.forEach(company => {
             const handleMouseLeave = () => {
                 // Reset node appearance if not active company
                 if (activeCompany !== company.company) {
-                    nodeGroup.select("rect:first-child")
+                    nodeGroup.select("rect")
                         .transition()
                         .duration(200)
                         .attr("width", sizeConfig.companyNodeWidth)
@@ -491,19 +704,12 @@ companies.forEach(company => {
                         .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
                         .attr("stroke-width", 0.725);
                     
-                    // Reset the label background
-                    nodeGroup.select(".label-group rect")
-                        .transition()
-                        .duration(200)
-                        .attr("stroke", "#E2E8F0")
-                        .attr("stroke-width", 0.5);
-                        
                     // Reset the label text
-                    nodeGroup.select(".company-node-label")
+                    labelText
                         .transition()
                         .duration(200)
-                        .attr("font-weight", "600")
-                        .attr("fill", "#1A202C");
+                        .attr("font-weight", sizeConfig.labelFontWeight)
+                        .attr("fill", "#4A5568");
                 }
                 
                 // Reset connection highlights
@@ -539,6 +745,13 @@ companies.forEach(company => {
                 .on("mousemove", handleMouseMove)
                 .on("mouseleave", handleMouseLeave)
                 .on("click", handleClick);
+                
+            // Apply the same handlers to the label group
+            labelGroup
+                .on("mouseenter", handleMouseEnter)
+                .on("mousemove", handleMouseMove)
+                .on("mouseleave", handleMouseLeave)
+                .on("click", handleClick);
         });
 
         // Add click handler to SVG background to clear selections
@@ -552,6 +765,19 @@ companies.forEach(company => {
                 onLeave();
             }
         });
+        
+        // Add keyboard handler for SVG container for accessibility
+        svgElement.attr("tabindex", "0")
+            .attr("role", "application")
+            .attr("aria-label", "Company and drug visualization")
+            .on("keydown", (event) => {
+                // When Tab is pressed in the SVG container, focus the first company node
+                if (event.key === "Tab" && !event.shiftKey && focusableElements.length > 0) {
+                    event.preventDefault();
+                    // Use HTMLElement focus method on the element
+                    (focusableElements[0].element as HTMLElement).focus();
+                }
+            });
         
         // Add event listeners to handle tooltip when mouse leaves SVG
         svgElement.on("mouseleave", () => {
@@ -605,7 +831,7 @@ companies.forEach(company => {
                 .attr("r", sizeConfig.drugNodeRadius)
                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                 .attr("stroke", strokeColor)
-                .style("filter", "url(#dropshadow)");
+                .style("filter","url(#dropshadow)");
 
             // Reset PRV indicator if present
             if (drug["PRV Issue Year"]) {
