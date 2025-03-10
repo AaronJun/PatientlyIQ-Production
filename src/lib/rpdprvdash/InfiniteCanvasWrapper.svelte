@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import * as d3 from 'd3';
 
-  export let width = window.innerWidth;
-  export let height = window.innerHeight;
+  // Use default values instead of window properties for SSR compatibility
+  export let width = 800;
+  export let height = 600;
   
   let svg: SVGSVGElement;
   let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
   let transform = d3.zoomIdentity;
   let container: HTMLDivElement;
+  let initialized = false;
 
   // Initialize zoom behavior with proper typing
   const zoom = d3.zoom<SVGSVGElement, unknown>()
@@ -43,79 +45,104 @@
   function updateDimensions() {
     if (container) {
       const rect = container.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
+      width = rect.width || width;
+      height = rect.height || height;
       console.log("Container dimensions:", width, height);
     }
   }
 
-  onMount(() => {
+  // Initialize the canvas with proper error handling
+  async function initializeCanvas() {
+    if (!svg || initialized) return;
+    
+    try {
+      console.log("Initializing InfiniteCanvasWrapper");
+      
+      // Update dimensions based on container
+      updateDimensions();
+      
+      // Initialize the SVG and main group
+      const svgSelection = d3.select<SVGSVGElement, unknown>(svg);
+      
+      // Add dotted pattern for background
+      const defs = svgSelection.append('defs');
+      const pattern = defs.append('pattern')
+        .attr('id', 'dotGrid')
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('patternUnits', 'userSpaceOnUse');
+        
+      // Add dot at center of pattern
+      pattern.append('circle')
+        .attr('cx', 10)
+        .attr('cy', 10)
+        .attr('r', 1.625)
+        .attr('fill', '#EBE9E3');
+      
+      // Add background rect with dotted pattern
+      svgSelection.insert('rect', ':first-child')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'url(#dotGrid)')
+        .attr('opacity', 1);  // Increased opacity since dots are subtle
+      
+      // Create main group
+      mainGroup = svgSelection.append('g');
+      console.log("mainGroup created:", mainGroup);
+      
+      // Apply zoom behavior
+      svgSelection.call(zoom);
+        
+      // Center the view initially
+      const initialTransform = d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(1.135);
+      
+      svgSelection.call(zoom.transform, initialTransform);
+      console.log("Initial transform applied:", initialTransform);
+      
+      initialized = true;
+      
+      // Force a Svelte update to ensure the slot content renders
+      await tick();
+    } catch (error) {
+      console.error("Error initializing InfiniteCanvasWrapper:", error);
+    }
+  }
+
+  onMount(async () => {
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') return;
+    
     if (!svg) {
       console.error("SVG element not available");
       return;
     }
     
-    console.log("Initializing InfiniteCanvasWrapper");
-    
-    // Update dimensions based on container
-    updateDimensions();
-    
-    // Initialize the SVG and main group
-    const svgSelection = d3.select<SVGSVGElement, unknown>(svg);
-    
-    // Add dotted pattern for background
-    const defs = svgSelection.append('defs');
-    const pattern = defs.append('pattern')
-      .attr('id', 'dotGrid')
-      .attr('width', 10)
-      .attr('height', 10)
-      .attr('patternUnits', 'userSpaceOnUse');
-      
-    // Add dot at center of pattern
-    pattern.append('circle')
-      .attr('cx', 10)
-      .attr('cy', 10)
-      .attr('r', 1.625)
-      .attr('fill', '#EBE9E3');
-    
-    // Add background rect with dotted pattern
-    svgSelection.insert('rect', ':first-child')
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('fill', 'url(#dotGrid)')
-      .attr('opacity', 1);  // Increased opacity since dots are subtle
-    
-    // Create main group
-    mainGroup = svgSelection.append('g');
-    console.log("mainGroup created:", mainGroup);
-    
-    // Apply zoom behavior
-    svgSelection.call(zoom);
-      
-    // Center the view initially
-    const initialTransform = d3.zoomIdentity
-      .translate(width / 2, height / 2)
-      .scale(1.135);
-    
-    svgSelection.call(zoom.transform, initialTransform);
-    console.log("Initial transform applied:", initialTransform);
+    // Initialize the canvas
+    await initializeCanvas();
     
     // Add resize observer
-    const resizeObserver = new ResizeObserver(() => {
-      updateDimensions();
+    if (container && typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        updateDimensions();
+        
+        // Update SVG dimensions
+        if (svg) {
+          const svgSelection = d3.select<SVGSVGElement, unknown>(svg);
+          svgSelection
+            .attr('width', width)
+            .attr('height', height)
+            .attr('viewBox', `0 0 ${width} ${height}`);
+        }
+      });
       
-      // Update SVG dimensions
-      svgSelection
-        .attr('width', width)
-        .attr('height', height)
-        .attr('viewBox', `0 0 ${width} ${height}`);
-    });
-    
-    resizeObserver.observe(container);
-    
-    return () => {
-      resizeObserver.disconnect();
-    };
+      resizeObserver.observe(container);
+      
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
   });
 
   // Function to reset zoom/pan
@@ -131,6 +158,12 @@
         );
     }
   }
+
+  // Update dimensions when container is available
+  $: if (container && !initialized) {
+    updateDimensions();
+    initializeCanvas();
+  }
 </script>
 
 <div class="infinite-canvas-container" bind:this={container}>
@@ -141,9 +174,7 @@
     viewBox="0 0 {width} {height}"
     class="w-full h-full"
   >
-    {#if mainGroup}
-      <slot {mainGroup} />
-    {/if}
+    <slot {mainGroup} />
   </svg>
   
   <div class="navigation-controls">
@@ -184,13 +215,14 @@
 
   .navigation-controls {
     position: absolute;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
     display: flex;
+    border: 1px solid #549E7D;
     gap: 8px;
     background: white;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 100px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
@@ -198,7 +230,7 @@
     width: 36px;
     height: 36px;
     border: none;
-    border-radius: 4px;
+    border-radius: 100px;
     background: white;
     color: #666;
     cursor: pointer;
@@ -209,7 +241,7 @@
   }
 
   .nav-button:hover {
-    background: #f0f0f0;
+    background: #549E7D;
     color: #333;
   }
 

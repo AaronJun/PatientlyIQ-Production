@@ -392,11 +392,29 @@
                     {mainGroup}
                   />
                 {:else}
-                  <div class="text-center p-4">Loading visualization...</div>
+                  <!-- Improved loading state with spinner -->
+                  <g transform="translate(460, 460)">
+                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
+                    <path 
+                      d="M40 0 A40 40 0 0 1 40 0" 
+                      fill="none" 
+                      stroke="#3b82f6" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                    >
+                      <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        from="0" 
+                        to="360" 
+                        dur="1s" 
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                  </g>
                 {/if}
               </InfiniteCanvasWrapper>
-              <!-- Add reset view button -->
-             
+              
             </div>
 
             <!-- Sticky sidebar with collapse button -->
