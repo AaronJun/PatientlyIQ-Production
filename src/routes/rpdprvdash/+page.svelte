@@ -79,10 +79,14 @@
   // Filter data based on selected year (for non-transaction tabs)
   $: filteredData = selectedYear === "All" 
     ? rpddData // Use all data when "All" is selected
-    : rpddData.filter(entry => 
-        entry["RPDD Year"] === selectedYear || 
-        (entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"] === selectedYear)
-      );
+    : rpddData.filter(entry => {
+        // If entry has PRV Status = "PRV Awarded" and a PRV Year, only show it in the PRV Year
+        if (entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"] && entry["PRV Year"].trim() !== "") {
+          return entry["PRV Year"] === selectedYear;
+        }
+        // Otherwise, show it in its RPDD Year
+        return entry["RPDD Year"] === selectedYear;
+      });
   
   // Filter transaction data based on selected transaction year (for transaction tab)
   $: filteredTransactionData = rpddData.filter(entry => 

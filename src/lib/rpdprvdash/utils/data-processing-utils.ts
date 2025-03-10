@@ -12,14 +12,11 @@ export function hasPRVAward(entry: any): boolean {
     // Check if PRV Year is set to a specific year (not empty)
     const hasPRVYear = entry["PRV Year"] && entry["PRV Year"].trim() !== "";
     
-    // Check if PRV Issue Year is set (not empty)
-    const hasPRVIssueYear = entry["PRV Issue Year"] && entry["PRV Issue Year"].trim() !== "";
-    
     // Check if PRV Status is set to "PRV Awarded"
     const hasPRVStatus = entry["PRV Status"] === "PRV Awarded";
     
-    // Return true if any of the PRV indicators are present
-    return hasPRVYear || hasPRVIssueYear || hasPRVStatus;
+    // Return true only if BOTH conditions are met: PRV Status is "PRV Awarded" AND PRV Year is not empty
+    return hasPRVStatus && hasPRVYear;
 }
 
 /**
@@ -31,40 +28,24 @@ export function getStage(entry: any): string {
     const entryId = `${entry.Company}-${entry.Candidate}`;
     let assignedStage = "PRE"; // Default stage
 
-    // Always prioritize PRV Year if PRV Status is "PRV Awarded"
-    if (entry["PRV Status"] === "PRV Awarded") {
-        if (entry["PRV Year"] && entry["PRV Year"].trim() !== "") {
-            // Log for debugging
-            if (!processedPRVEntries.has(entryId)) {
-                processedPRVEntries.add(entryId);
-                console.log("PRV Awarded Entry:", {
-                    id: entryId,
-                    candidate: entry["Candidate"],
-                    company: entry["Company"],
-                    currentStage: entry["Current Development Stage"],
-                    prvYear: entry["PRV Year"],
-                    rpddYear: entry["RPDD Year"]
-                });
-            }
-            return "PRV";
-            
-        } else {
-            // Handle PRV Awarded without PRV Year explicitly
-            if (!processedPRVEntries.has(entryId)) {
-                processedPRVEntries.add(entryId);
-                console.warn("PRV Awarded without PRV Year:", {
-                    id: entryId,
-                    candidate: entry["Candidate"],
-                    company: entry["Company"],
-                    currentStage: entry["Current Development Stage"],
-                    rpddYear: entry["RPDD Year"]
-                });
-            }
-            return "PRV";
+    // Only place in PRV stage if both PRV Status is "PRV Awarded" AND PRV Year is not empty
+    if (entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"] && entry["PRV Year"].trim() !== "") {
+        // Log for debugging
+        if (!processedPRVEntries.has(entryId)) {
+            processedPRVEntries.add(entryId);
+            console.log("PRV Awarded Entry:", {
+                id: entryId,
+                candidate: entry["Candidate"],
+                company: entry["Company"],
+                currentStage: entry["Current Development Stage"],
+                prvYear: entry["PRV Year"],
+                rpddYear: entry["RPDD Year"]
+            });
         }
+        return "PRV";
     }
 
-    // Fallback to existing logic if no PRV Awarded status
+    // Fallback to existing logic if not a valid PRV entry
     const stage = entry["Current Development Stage"];
     switch(stage) {
         case "Preclinical":
@@ -286,7 +267,7 @@ export function processDataForLayout(data: any[]) {
     
     // Log PRV entries with more information for verification
     const prvEntries = data.filter(entry => 
-        entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"]
+        hasPRVAward(entry)
     );
     
     if (prvEntries.length > 0) {
@@ -297,7 +278,6 @@ export function processDataForLayout(data: any[]) {
             currentStage: entry["Current Development Stage"],
             prvYear: entry["PRV Year"],
             prvStatus: entry["PRV Status"],
-            rpddYear: entry["RPDD Year"] // Log RPDD Year for verification
         })));
     }
     
@@ -366,12 +346,12 @@ export function processDataForLayout(data: any[]) {
             companyData.clinicalTrials++;
         }
         
-        // Count vouchers awarded more explicitly
+        // Count vouchers awarded using the updated hasPRVAward function
         if (hasPRVAward(entry)) {
             companyData.vouchersAwarded++;
         }
         
-        // Count transacted vouchers - still track these separately even though they're part of PRV ring
+        // Count transacted vouchers
         if (entry["Purchase Year"]) {
             companyData.transactedVouchers++;
         }
@@ -399,7 +379,7 @@ export function getSizeConfig(isAllYearView: boolean) {
     return {
         // When all years view is active, use smaller sizes
         labelFontSize: isAllYearView ? "6.425px" : "7.725px",
-        labelFontWeight: isAllYearView ? "600" : "500",
+        labelFontWeight: isAllYearView ? "600" : "400",
         companyNodeWidth: isAllYearView ? 5.25 : 7.725,
         companyNodeHeight: isAllYearView ? 5.25 : 7.725,
         drugNodeRadius: isAllYearView ? 2.7125 : 6.125,
