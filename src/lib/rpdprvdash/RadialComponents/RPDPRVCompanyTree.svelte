@@ -83,6 +83,9 @@
         drugNodes?: Array<{ element: Element, drug: any }>,
         index?: number
     }[] = [];
+    
+    // Track current focused element index for keyboard navigation
+    let currentFocusIndex = -1;
 
     // Add type definitions
     interface CompanyMetrics {
@@ -324,7 +327,7 @@
                 .attr("cursor", "pointer")
                 .attr("class", "company-node")
                 .attr("id", `company-node-${companyId}`)
-                .attr("tabindex", index + 1) // Sequential tabindex starting from 1 for proper tab order
+                .attr("tabindex", "0") // Use tabindex="0" for all company nodes to include them in natural tab order
                 .attr("role", "button")
                 .attr("aria-label", `Company ${company.company} with ${company.totalDrugs} drugs`);
 
@@ -427,7 +430,7 @@
                         .attr("cursor", "pointer")
                         .attr("class", "drug-node")
                         .attr("id", drugId)
-                        .attr("tabindex", -1) // Initially not focusable until company is selected
+                        .attr("tabindex", "-1") // Initially not focusable until company is selected
                         .attr("role", "button")
                         .attr("aria-label", `Drug ${drug.Candidate} for ${drug.Indication || 'unknown indication'}, stage: ${drug["Current Development Stage"] || 'unknown stage'}`);
 
@@ -477,7 +480,7 @@
                             // Show drug details
                             onShowDrugDetail({
                                 drugName: drug.Candidate,
-                                year: drug["PRV Year"] || drug["RPDD Year"],
+                                year: drug["Purchase Year"] || drug["PRV Year"] || drug["RPDD Year"],
                                 Company: drug.Company,
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
@@ -487,6 +490,10 @@
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
                                 voucherAwardDate: drug["PRV Year"] || "",
+                                prvStatus: drug["PRV Status"] || "",
+                                transactionDate: drug["Purchase Year"] || "",
+                                purchaser: drug["Purchaser"] || "",
+                                salePrice: drug["Sale Price (USD Millions)"] || "",
                                 treatmentClass: drug.Class1 || "TBD",
                                 mechanismOfAction: drug.MOA || "TBD",
                                 companyUrl: drug["Link to CrunchBase"] || ""
@@ -495,6 +502,14 @@
                             // Return focus to company node
                             event.preventDefault();
                             nodeElement?.focus();
+                        } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                            // Navigate to next drug in the same company
+                            event.preventDefault();
+                            navigateToNextDrug(company.company, drugId);
+                        } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                            // Navigate to previous drug in the same company
+                            event.preventDefault();
+                            navigateToPreviousDrug(company.company, drugId);
                         }
                     });
 
@@ -511,6 +526,28 @@
                         highlightDrugConnections(drugId);
                         
                         showTooltip(event as unknown as MouseEvent, drug);
+                        
+                        // Update sidebar data by showing drug details
+                        onShowDrugDetail({
+                            drugName: drug.Candidate,
+                            year: drug["Purchase Year"] || drug["PRV Year"] || drug["RPDD Year"],
+                            Company: drug.Company,
+                            therapeuticArea: drug.TherapeuticArea1,
+                            entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
+                            color: areaColors.fill,
+                            strokeColor: strokeColor,
+                            currentStage: drug["Current Development Stage"],
+                            indication: drug.Indication || "",
+                            rpddAwardDate: drug["RPDD Year"],
+                            voucherAwardDate: drug["PRV Year"] || "",
+                            prvStatus: drug["PRV Status"] || "",
+                            transactionDate: drug["Purchase Year"] || "",
+                            purchaser: drug["Purchaser"] || "",
+                            salePrice: drug["Sale Price (USD Millions)"] || "",
+                            treatmentClass: drug.Class1 || "TBD",
+                            mechanismOfAction: drug.MOA || "TBD",
+                            companyUrl: drug["Link to CrunchBase"] || ""
+                        });
                     });
                     
                     drugGroup.on("blur", function() {
@@ -542,7 +579,30 @@
                             // Highlight the connection line for this drug
                             highlightDrugConnections(drugId);
                             
+                            // Show tooltip
                             showTooltip(event, drug);
+                            
+                            // Update sidebar data
+                            onShowDrugDetail({
+                                drugName: drug.Candidate,
+                                year: drug["Purchase Year"] || drug["PRV Year"] || drug["RPDD Year"],
+                                Company: drug.Company,
+                                therapeuticArea: drug.TherapeuticArea1,
+                                entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
+                                color: areaColors.fill,
+                                strokeColor: strokeColor,
+                                currentStage: drug["Current Development Stage"],
+                                indication: drug.Indication || "",
+                                rpddAwardDate: drug["RPDD Year"],
+                                voucherAwardDate: drug["PRV Year"] || "",
+                                prvStatus: drug["PRV Status"] || "",
+                                transactionDate: drug["Purchase Year"] || "",
+                                purchaser: drug["Purchaser"] || "",
+                                salePrice: drug["Sale Price (USD Millions)"] || "",
+                                treatmentClass: drug.Class1 || "TBD",
+                                mechanismOfAction: drug.MOA || "TBD",
+                                companyUrl: drug["Link to CrunchBase"] || ""
+                            });
                         })
                         .on("mousemove", (event: MouseEvent) => {
                             // Update tooltip position when mouse moves
@@ -612,13 +672,21 @@
                         // Make drug nodes focusable when company is selected
                         if (companyRef.drugNodes) {
                             companyRef.drugNodes.forEach((drugRef, i) => {
-                                // Use sequential tabindex values for drug nodes
-                                // When company is selected, drug nodes get tabindex values that come right after this company
+                                // When company is selected, drug nodes get tabindex="0" to make them focusable
                                 // When company is deselected, drug nodes are removed from tab order
-                                const companyIndex = companyRef.index || index;
-                                const drugTabIndex = companyRef.isSelected ? (companyIndex + 1 + 0.1 + i/100) : -1;
-                                drugRef.element.setAttribute("tabindex", String(drugTabIndex));
+                                const drugTabIndex = companyRef.isSelected ? "0" : "-1";
+                                drugRef.element.setAttribute("tabindex", drugTabIndex);
+                                
+                                // Ensure the drug node is focusable
+                                drugRef.element.setAttribute("focusable", "true");
                             });
+                            
+                            // If company is selected and has drug nodes, focus the first drug node
+                            if (companyRef.isSelected && companyRef.drugNodes && companyRef.drugNodes.length > 0) {
+                                setTimeout(() => {
+                                    (companyRef.drugNodes![0].element as HTMLElement).focus();
+                                }, 50);
+                            }
                         }
                     }
                     
@@ -627,8 +695,17 @@
                         Company: company.company,
                         entries: company.entries,
                         color: statusColor.fill,
-                        strokeColor: statusColor.stroke
+                        strokeColor: statusColor.stroke,
+                        transactedVouchers: company.transactedVouchers || 0
                     });
+                } else if (event.key === "Tab" && !event.shiftKey) {
+                    // When Tab is pressed on a company node, check if it's selected
+                    const companyRef = focusableElements.find(item => item.element === nodeElement);
+                    if (companyRef && companyRef.isSelected && companyRef.drugNodes && companyRef.drugNodes.length > 0) {
+                        // If company is selected and has drug nodes, focus the first drug node
+                        event.preventDefault();
+                        (companyRef.drugNodes[0].element as HTMLElement).focus();
+                    }
                 }
             });
 
@@ -658,6 +735,9 @@
                     totalDrugs: company.totalDrugs,
                     status: company.status
                 }, true);
+                
+                // Update sidebar data by setting this company as active
+                setActiveCompany(company.company, company.entries);
             });
             
             nodeGroup.on("blur", function() {
@@ -702,11 +782,30 @@
                     .attr("font-size", "10.25px")
                     .attr("fill", "#2B6CB0"); // Highlight color
                 
+                // Make sure tooltip is visible
                 showTooltip(event, {
                     company: company.company,
                     totalDrugs: company.totalDrugs,
                     status: company.status
                 }, true);
+                
+                // Update sidebar data
+                const companyData = processDataForLayout(data).find(c => c.company === company.company);
+                if (companyData) {
+                    const metrics: CompanyMetrics = {
+                        entries: companyData.entries,
+                        companyName: companyData.company,
+                        totalDrugs: companyData.totalDrugs,
+                        clinicalTrials: companyData.clinicalTrials,
+                        vouchersAwarded: companyData.vouchersAwarded,
+                        transactedVouchers: companyData.transactedVouchers || 0,
+                        uniqueIndications: companyData.uniqueIndications.size,
+                        uniqueAreas: companyData.uniqueAreas.size
+                    };
+                    onCompanyHover(metrics);
+                } else {
+                    onCompanyHover(company.entries);
+                }
             };
 
             const handleMouseMove = (event: MouseEvent) => {
@@ -753,6 +852,25 @@
                     tooltipTimeout = null;
                 }
                 tooltipVisible = false;
+                
+                // Toggle selection state for keyboard navigation
+                const companyRef = focusableElements.find(item => item.element === nodeElement);
+                if (companyRef) {
+                    companyRef.isSelected = !companyRef.isSelected;
+                    
+                    // Make drug nodes focusable when company is selected
+                    if (companyRef.drugNodes) {
+                        companyRef.drugNodes.forEach((drugRef) => {
+                            // When company is selected, drug nodes get tabindex="0" to make them focusable
+                            // When company is deselected, drug nodes are removed from tab order
+                            const drugTabIndex = companyRef.isSelected ? "0" : "-1";
+                            drugRef.element.setAttribute("tabindex", drugTabIndex);
+                            
+                            // Ensure the drug node is focusable
+                            drugRef.element.setAttribute("focusable", "true");
+                        });
+                    }
+                }
                 
                 // Add transacted vouchers to company detail
                 onShowCompanyDetail({
@@ -801,6 +919,16 @@
                     event.preventDefault();
                     // Use HTMLElement focus method on the element
                     (focusableElements[0].element as HTMLElement).focus();
+                    currentFocusIndex = 0;
+                }
+                
+                // Add arrow key navigation between company nodes
+                if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                    event.preventDefault();
+                    navigateToNextCompany();
+                } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                    event.preventDefault();
+                    navigateToPreviousCompany();
                 }
             });
         
@@ -809,78 +937,168 @@
             resetConnectionHighlights();
             hideTooltip();
         });
+        
+        // Add global keyboard event listener for arrow navigation between companies
+        document.addEventListener('keydown', handleGlobalKeydown);
     }
+    
+    // Function to handle global keyboard navigation
+    function handleGlobalKeydown(event: KeyboardEvent) {
+        // Only handle arrow keys when a company node is focused
+        if (currentFocusIndex >= 0 && (
+            event.key === "ArrowRight" || 
+            event.key === "ArrowDown" || 
+            event.key === "ArrowLeft" || 
+            event.key === "ArrowUp"
+        )) {
+            event.preventDefault();
+            
+            if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                navigateToNextCompany();
+            } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                navigateToPreviousCompany();
+            }
+        }
+    }
+    
+    // Function to navigate to the next company
+    function navigateToNextCompany() {
+        if (focusableElements.length === 0) return;
+        
+        // Find companies (not drugs)
+        const companyElements = focusableElements.filter(el => el.type === 'company');
+        if (companyElements.length === 0) return;
+        
+        // Find current index or start at beginning
+        let currentIndex = companyElements.findIndex(el => 
+            document.activeElement === el.element
+        );
+        
+        // Move to next company or wrap around
+        currentIndex = (currentIndex < 0) ? 0 : (currentIndex + 1) % companyElements.length;
+        
+        // Focus the next company
+        (companyElements[currentIndex].element as HTMLElement).focus();
+        currentFocusIndex = focusableElements.indexOf(companyElements[currentIndex]);
+        
+        // Also update the active company to ensure sidebar data is updated
+        const company = companyElements[currentIndex].company;
+        if (company) {
+            const companyData = processDataForLayout(data).find(c => c.company === company);
+            if (companyData) {
+                setActiveCompany(company, companyData.entries);
+            }
+        }
+    }
+    
+    // Function to navigate to the previous company
+    function navigateToPreviousCompany() {
+        if (focusableElements.length === 0) return;
+        
+        // Find companies (not drugs)
+        const companyElements = focusableElements.filter(el => el.type === 'company');
+        if (companyElements.length === 0) return;
+        
+        // Find current index or start at end
+        let currentIndex = companyElements.findIndex(el => 
+            document.activeElement === el.element
+        );
+        
+        // Move to previous company or wrap around
+        currentIndex = (currentIndex < 0) ? companyElements.length - 1 : 
+                      (currentIndex - 1 + companyElements.length) % companyElements.length;
+        
+        // Focus the previous company
+        (companyElements[currentIndex].element as HTMLElement).focus();
+        currentFocusIndex = focusableElements.indexOf(companyElements[currentIndex]);
+        
+        // Also update the active company to ensure sidebar data is updated
+        const company = companyElements[currentIndex].company;
+        if (company) {
+            const companyData = processDataForLayout(data).find(c => c.company === company);
+            if (companyData) {
+                setActiveCompany(company, companyData.entries);
+            }
+        }
+    }
+    
+    // Clean up event listeners when component is destroyed
+    onMount(() => {
+        return () => {
+            document.removeEventListener('keydown', handleGlobalKeydown);
+        };
+    });
 
-// Helper function to safely clear tooltip timeout
-function clearTooltipTimeout() {
-    if (tooltipTimeout) {
-        clearTimeout(tooltipTimeout);
-        tooltipTimeout = null;
+    // Helper function to safely clear tooltip timeout
+    function clearTooltipTimeout() {
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = null;
+        }
     }
-}
 
     function showTooltip(event: MouseEvent, d: any, isCompany = false) {
-    clearTooltipTimeout();
-    
-    if (!mainGroup || !contentGroup) return;
-    
-    const containerRect = contentGroup.node()?.getBoundingClientRect();
-    if (!containerRect) return;
-    
-    // Position tooltip with safety bounds
-    tooltipX = Math.min(
-        containerRect.width - 200 - tooltipOffset.x,
-        event.clientX - containerRect.left + tooltipOffset.x
-    );
-    
-    tooltipY = Math.min(
-        containerRect.height - 100 - tooltipOffset.y,
-        event.clientY - containerRect.top + tooltipOffset.y
-    );
-    
-    // Ensure tooltip doesn't go off the left or top edges
-    tooltipX = Math.max(tooltipOffset.x, tooltipX);
-    tooltipY = Math.max(tooltipOffset.y, tooltipY);
-    
-    // Set tooltip content
-    if (isCompany) {
-        tooltipContent = {
-            sponsor: d.company,
-            drugName: '',
-            therapeuticArea: '',
-            id: `${d.totalDrugs} drugs in pipeline`
-        };
-        const statusColor = getCompanyStatusColor(d.status);
-        tooltipBorderColor = statusColor.stroke;
-    } else {
-        tooltipContent = {
-            sponsor: d.Company || '',
-            drugName: d.Candidate || '',
-            therapeuticArea: d.TherapeuticArea1 || '',
-            id: d["Current Development Stage"] || (hasPRVAward(d) ? "PRV" : "")
-        };
-        const stageCode = getStage(d);
-        const stageFullName = getStageFullName(stageCode);
-        const stageColor = getStageColor(stageFullName);
-        tooltipBorderColor = stageColor.stroke;
+        clearTooltipTimeout();
+        
+        if (!mainGroup || !contentGroup) return;
+        
+        const containerRect = contentGroup.node()?.getBoundingClientRect();
+        if (!containerRect) return;
+        
+        // Position tooltip with safety bounds
+        tooltipX = Math.min(
+            containerRect.width - 200 - tooltipOffset.x,
+            event.clientX - containerRect.left + tooltipOffset.x
+        );
+        
+        tooltipY = Math.min(
+            containerRect.height - 100 - tooltipOffset.y,
+            event.clientY - containerRect.top + tooltipOffset.y
+        );
+        
+        // Ensure tooltip doesn't go off the left or top edges
+        tooltipX = Math.max(tooltipOffset.x, tooltipX);
+        tooltipY = Math.max(tooltipOffset.y, tooltipY);
+        
+        // Set tooltip content
+        if (isCompany) {
+            tooltipContent = {
+                sponsor: d.company,
+                drugName: '',
+                therapeuticArea: '',
+                id: `${d.totalDrugs} drugs in pipeline`
+            };
+            const statusColor = getCompanyStatusColor(d.status);
+            tooltipBorderColor = statusColor.stroke;
+        } else {
+            tooltipContent = {
+                sponsor: d.Company || '',
+                drugName: d.Candidate || '',
+                therapeuticArea: d.TherapeuticArea1 || '',
+                id: d["Current Development Stage"] || (hasPRVAward(d) ? "PRV" : "")
+            };
+            const stageCode = getStage(d);
+            const stageFullName = getStageFullName(stageCode);
+            const stageColor = getStageColor(stageFullName);
+            tooltipBorderColor = stageColor.stroke;
+        }
+        
+        // Ensure tooltip is visible
+        tooltipVisible = true;
     }
-    
-    tooltipVisible = true;
-}
-
 
     /**
      * Hides tooltip with a small delay
      */
     
-function hideTooltip() {
-    clearTooltipTimeout();
-    
-    tooltipTimeout = setTimeout(() => {
-        tooltipVisible = false;
-        tooltipTimeout = null;
-    }, 100);
-}
+    function hideTooltip() {
+        clearTooltipTimeout();
+        
+        tooltipTimeout = setTimeout(() => {
+            tooltipVisible = false;
+            tooltipTimeout = null;
+        }, 100);
+    }
     
     /**
      * Sets the active company and updates visual state
@@ -1048,6 +1266,56 @@ function hideTooltip() {
             .attr("stroke", "#37587e")
             .attr("stroke-width", sizeConfig.connectionStrokeWidth)
             .attr("stroke-opacity", sizeConfig.connectionOpacity);
+    }
+
+    // Function to navigate to the next drug within the same company
+    function navigateToNextDrug(companyName: string, currentDrugId: string) {
+        // Find the company reference
+        const companyRef = focusableElements.find(item => 
+            item.type === 'company' && item.company === companyName
+        );
+        
+        if (!companyRef || !companyRef.drugNodes || companyRef.drugNodes.length === 0) return;
+        
+        // Find the current drug index
+        const currentIndex = companyRef.drugNodes.findIndex(drugRef => 
+            drugRef.element.id === currentDrugId
+        );
+        
+        if (currentIndex < 0) return;
+        
+        // Calculate next index with wrap-around
+        const nextIndex = (currentIndex + 1) % companyRef.drugNodes.length;
+        
+        // Focus the next drug
+        (companyRef.drugNodes[nextIndex].element as HTMLElement).focus();
+        
+        // The focus event handler will update the sidebar data
+    }
+    
+    // Function to navigate to the previous drug within the same company
+    function navigateToPreviousDrug(companyName: string, currentDrugId: string) {
+        // Find the company reference
+        const companyRef = focusableElements.find(item => 
+            item.type === 'company' && item.company === companyName
+        );
+        
+        if (!companyRef || !companyRef.drugNodes || companyRef.drugNodes.length === 0) return;
+        
+        // Find the current drug index
+        const currentIndex = companyRef.drugNodes.findIndex(drugRef => 
+            drugRef.element.id === currentDrugId
+        );
+        
+        if (currentIndex < 0) return;
+        
+        // Calculate previous index with wrap-around
+        const prevIndex = (currentIndex - 1 + companyRef.drugNodes.length) % companyRef.drugNodes.length;
+        
+        // Focus the previous drug
+        (companyRef.drugNodes[prevIndex].element as HTMLElement).focus();
+        
+        // The focus event handler will update the sidebar data
     }
 
     // React to changes in mainGroup

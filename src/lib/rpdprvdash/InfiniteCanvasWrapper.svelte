@@ -3,8 +3,8 @@
   import * as d3 from 'd3';
 
   // Use default values instead of window properties for SSR compatibility
-  export let width = 800;
-  export let height = 600;
+  export let width = 950;
+  export let height = width;
   
   let svg: SVGSVGElement;
   let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -176,6 +176,7 @@
   >
     <slot {mainGroup} />
   </svg>
+  
   
   <div class="navigation-controls">
     <button on:click={zoomIn} class="nav-button" title="Zoom In">
