@@ -3,15 +3,21 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from './utils/colorDefinitions';
+    import * as Dialog from "$lib/components/ui/dialog";
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string | null = null;
     
     let svg: SVGElement;
+    let showRestrictedModal = false;
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const width = 125;
     const height = 800;
+    
+    function isYearRestricted(year: string): boolean {
+        return parseInt(year) < 2023;
+    }
     
     $: yearData = Object.entries(
         data.reduce((acc, entry) => {
@@ -182,10 +188,9 @@
             .attr("stroke", "#37587e")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
+            .style("opacity", d => isYearRestricted(d.year) ? 0.5 : 1)
             .on("click", (event, d) => {
-                selectedYear = d.year;
-                onYearSelect(d.year);
-                updateSelection();
+                handleYearClick(d);
             })
             .on("mouseenter", function(event, d) {
                 if (d.year !== selectedYear) {
@@ -206,7 +211,7 @@
                         .transition()
                         .duration(200)
                         .attr("font-weight", "600")
-                        .attr("fill", "#FF1515");
+                        .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#FF1515");
                         
                     d3.select(this.parentNode)
                         .select(".count-label")
@@ -234,7 +239,7 @@
                         .transition()
                         .duration(200)
                         .attr("font-weight", "400")
-                        .attr("fill", "#718096");
+                        .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#718096");
                         
                     d3.select(this.parentNode)
                         .select(".count-label")
@@ -251,7 +256,7 @@
             .attr("y", -40) // Center vertically
             .attr("text-anchor", "start")
             .attr("transform", "rotate(-90)")
-            .attr("fill", "#718096")
+            .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
             .style("dominant-baseline", "end")
             .style("font-family", "'IBM Plex Mono', monospace")
@@ -282,9 +287,7 @@
             .style("filter", selectedYear === "All" ? "url(#glow)" : "none")
             .style("cursor", "pointer")
             .on("click", () => {
-                selectedYear = "All";
-                onYearSelect("All");
-                updateSelection();
+                handleYearClick({ year: "All" });
             })
             .on("mouseenter", function() {
                 if (selectedYear !== "All") {
@@ -342,7 +345,7 @@
         updateSelection();
     }
 
-function updateSelection() {
+    function updateSelection() {
         if (!svg) return;
 
         // Update "All Years" circle state
@@ -372,6 +375,7 @@ function updateSelection() {
             .each(function(d: any) {
                 const group = d3.select(this);
                 const isSelected = d.year === selectedYear;
+                const isRestricted = isYearRestricted(d.year);
 
                 group.select(".highlight-circle")
                     .transition()
@@ -382,14 +386,25 @@ function updateSelection() {
                     .transition()
                     .duration(300)
                     .attr("stroke-width", isSelected ? 3 : 1.5)
-                    .style("filter", isSelected ? "url(#glow)" : "none");
+                    .style("filter", isSelected ? "url(#glow)" : "none")
+                    .style("opacity", isRestricted ? 0.5 : 1);
 
                 group.select(".year-label")
                     .transition()
                     .duration(300)
                     .attr("font-weight", isSelected ? "600" : "400")
-                    .attr("fill", isSelected ? "#FF1515" : "#718096");
+                    .attr("fill", isSelected ? "#FF1515" : (isRestricted ? "#9CA3AF" : "#718096"));
             });
+    }
+
+    function handleYearClick(d: any) {
+        if (isYearRestricted(d.year)) {
+            showRestrictedModal = true;
+        } else {
+            selectedYear = d.year;
+            onYearSelect(d.year);
+            updateSelection();
+        }
     }
 
     $: if (data.length > 0 && svg) {
@@ -403,7 +418,7 @@ function updateSelection() {
             Select Year              
          </h4>
     </div>    
-        <svg
+    <svg
         bind:this={svg}
         {width}
         {height}
@@ -412,6 +427,26 @@ function updateSelection() {
     />
 </div>
 
+<Dialog.Root bind:open={showRestrictedModal}>
+    <Dialog.Content class="sm:max-w-md">
+        <Dialog.Header>
+            <Dialog.Title>Restricted Access</Dialog.Title>
+            <Dialog.Description>
+                Historical data prior to 2023 requires full access.
+            </Dialog.Description>
+        </Dialog.Header>
+        <div class="flex flex-col gap-4 py-4">
+            <p class="text-left text-primary">
+                For full access to the 500+ drug candidates in the RPD PRV database, please contact us at team@patiently.studio
+            </p>
+        </div>
+        <Dialog.Footer>
+            <Dialog.Close class="bg-slate-500 text-primary-foreground hover:bg-orange-500/90 px-4 py-2 rounded-md">
+                Close
+            </Dialog.Close>
+        </Dialog.Footer>
+    </Dialog.Content>
+</Dialog.Root>
 
 <style>
     .timeline-container {

@@ -246,9 +246,6 @@ companies.forEach(company => {
     // Create rotated text container for better alignment
     const textContainer = labelGroup.append("g");
     
-    // Determine rotation angle for text to align with connecting line
-    // When on the right side, rotate to read from left to right
-    // When on the left side, rotate 180 degrees to read from left to right
     const textRotation = isRightSide 
         ? (nodeAngle * 180 / Math.PI)
         : (nodeAngle * 180 / Math.PI) + 180;

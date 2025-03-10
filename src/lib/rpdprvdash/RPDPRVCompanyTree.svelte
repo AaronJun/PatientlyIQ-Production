@@ -64,11 +64,49 @@
     let tooltipX = 0;
     let tooltipY = 0;
     const tooltipOffset = { x: 15, y: 15 };
-    let tooltipTimeout = null;
+    let tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Active selection tracking
-    let activeCompany = null;
-    let activeStage = null;
+    let activeCompany: string | null = null;
+    let activeStage: string | null = null;
+
+    // Stage radii type definition
+    type StageRadii = {
+        PRE: number;
+        P1: number;
+        P2: number;
+        P3: number;
+        FILED: number;
+        PRV: number;
+    };
+
+    // Company type definition
+    type Company = {
+        company: string;
+        status: string;
+        stages: Map<string, Drug[]>;
+        totalDrugs: number;
+        entries: Drug[];
+        clinicalTrials: number;
+        vouchersAwarded: number;
+        uniqueIndications: Set<string>;
+        uniqueAreas: Set<string>;
+    };
+
+    // Drug type definition
+    type Drug = {
+        Company: string;
+        Candidate: string;
+        TherapeuticArea1: string;
+        "Current Development Stage": string;
+        "PRV Issue Year"?: string;
+        "PRV Year"?: string;
+        "RPDD Year"?: string;
+        Indication?: string;
+        Class1?: string;
+        MOA?: string;
+        "Link to CrunchBase"?: string;
+    };
 
     /**
      * Creates the visualization with all components
@@ -236,12 +274,101 @@
                 .attr("stroke-opacity", sizeConfig.connectionOpacity)
                 .attr("fill", "none");
 
+            // Define interaction handlers for both node and label
+            const handleMouseEnter = (event: MouseEvent) => {
+                // Set this company as active
+                setActiveCompany(company.company, company.entries);
+                
+                // Highlight all connections for this company
+                highlightCompanyConnections(company.company);
+                
+                // Enhance visual feedback for the node
+                nodeGroup.select("rect")
+                    .transition()
+                    .duration(200)
+                    .attr("width", sizeConfig.companyNodeWidth * 1.15)
+                    .attr("height", sizeConfig.companyNodeHeight * 1.15)
+                    .attr("transform", `translate(${-(sizeConfig.companyNodeWidth * 1.15)/2}, ${-(sizeConfig.companyNodeHeight * 1.15)/2})`)
+                    .attr("stroke-width", 1.25);
+
+                // Enhance visual feedback for the label
+                labelGroup.select("text")
+                    .transition()
+                    .duration(200)
+                    .attr("font-weight", "800")
+                    .attr("fill", "#2B6CB0"); // Use a blue color for emphasis
+                
+                showTooltip(event, {
+                    company: company.company,
+                    totalDrugs: company.totalDrugs,
+                    status: company.status
+                }, true);
+            };
+
+            const handleMouseMove = (event: MouseEvent) => {
+                // Update tooltip position when mouse moves
+                showTooltip(event, {
+                    company: company.company,
+                    totalDrugs: company.totalDrugs,
+                    status: company.status
+                }, true);
+            };
+            
+            const handleMouseLeave = () => {
+                // Reset node appearance
+                nodeGroup.select("rect")
+                    .transition()
+                    .duration(200)
+                    .attr("width", sizeConfig.companyNodeWidth)
+                    .attr("height", sizeConfig.companyNodeHeight)
+                    .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
+                    .attr("stroke-width", 0.725);
+
+                // Reset label appearance
+                labelGroup.select("text")
+                    .transition()
+                    .duration(200)
+                    .attr("font-weight", sizeConfig.labelFontWeight)
+                    .attr("fill", "#4A5568");
+                
+                // Reset connection highlights
+                resetConnectionHighlights();
+                
+                hideTooltip();
+            };
+
+            const handleClick = (event: MouseEvent) => {
+                // Stop event propagation to prevent background click handler from firing
+                event.stopPropagation();
+                
+                // Force immediate tooltip hiding without delay
+                if (tooltipTimeout) {
+                    clearTimeout(tooltipTimeout);
+                    tooltipTimeout = null;
+                }
+                tooltipVisible = false;
+                
+                onShowCompanyDetail({
+                    Company: company.company,
+                    entries: company.entries,
+                    color: statusColor.fill,
+                    strokeColor: statusColor.stroke
+                });
+            };
+
+            // Apply handlers to node group
+            nodeGroup
+                .on("mouseenter", handleMouseEnter)
+                .on("mousemove", handleMouseMove)
+                .on("mouseleave", handleMouseLeave)
+                .on("click", handleClick);
+
             // Connect drugs to node
-            company.stages.forEach((drugs, stage) => {
-                const stageRadius = stageRadii[stage];
+            company.stages.forEach((drugs: Drug[], stage: string) => {
+                const stageRadius = stageRadii[stage as keyof StageRadii];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
 
-                drugs.forEach((drug, i) => {
+                drugs.forEach((drug: Drug, i: number) => {
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                     const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
@@ -369,58 +496,38 @@
                 });
             });
 
-            // Add interaction handlers for both node and label
-            const handleMouseEnter = (event: MouseEvent) => {
-                // Set this company as active
-                setActiveCompany(company.company, company.entries);
-                
-                // Highlight all connections for this company
-                highlightCompanyConnections(company.company);
-                
-                showTooltip(event, {
-                    company: company.company,
-                    totalDrugs: company.totalDrugs,
-                    status: company.status
-                }, true);
-            };
+            // Create label with alignment to connecting line
+            const labelGroup = companyLabelsGroup.append("g")
+                .attr("transform", `translate(${labelPlacement.x},${labelPlacement.y})`)
+                .attr("cursor", "pointer")
+                .attr("class", "company-label")
+                .attr("id", `company-label-${companyId}`);
 
-            const handleMouseMove = (event: MouseEvent) => {
-                // Update tooltip position when mouse moves
-                showTooltip(event, {
-                    company: company.company,
-                    totalDrugs: company.totalDrugs,
-                    status: company.status
-                }, true);
-            };
+            // Create rotated text container for better alignment
+            const textContainer = labelGroup.append("g");
             
-            const handleMouseLeave = () => {
-                // Reset connection highlights
-                resetConnectionHighlights();
-                
-                hideTooltip();
-            };
+            // Determine rotation angle for text to align with connecting line
+            // When on the right side, rotate to read from left to right
+            // When on the left side, rotate 180 degrees to read from left to right
+            const textRotation = labelPlacement.isRightSide 
+                ? (nodeAngle * 180 / Math.PI)
+                : (nodeAngle * 180 / Math.PI) + 180;
+            
+            // Apply rotation transform
+            textContainer.attr("transform", `rotate(${textRotation})`);
+            
+            // Add the text with appropriate anchor
+            textContainer.append("text")
+                .attr("text-anchor", labelPlacement.isRightSide ? "start" : "end")
+                .attr("dx", labelPlacement.isRightSide ? 0 : 0) // Small offset from connection point
+                .attr("dy", "0.35em")
+                .text(formatCompanyName(company.company))
+                .attr("fill", "#4A5568")
+                .attr("font-size", sizeConfig.labelFontSize)
+                .attr("font-weight", sizeConfig.labelFontWeight);
 
-            const handleClick = (event) => {
-                // Stop event propagation to prevent background click handler from firing
-                event.stopPropagation();
-                
-                // Force immediate tooltip hiding without delay
-                if (tooltipTimeout) {
-                    clearTimeout(tooltipTimeout);
-                    tooltipTimeout = null;
-                }
-                tooltipVisible = false;
-                
-                onShowCompanyDetail({
-                    Company: company.company,
-                    entries: company.entries,
-                    color: statusColor.fill,
-                    strokeColor: statusColor.stroke
-                });
-            };
-
-            // Apply handlers to the node group
-            nodeGroup
+            // Add hover and click handlers to label group
+            labelGroup
                 .on("mouseenter", handleMouseEnter)
                 .on("mousemove", handleMouseMove)
                 .on("mouseleave", handleMouseLeave)
@@ -518,7 +625,7 @@
     /**
      * Sets the active company and updates visual state
      */
-    function setActiveCompany(company, entries) {
+    function setActiveCompany(company: string, entries: Drug[]) {
         // Reset state
         activeCompany = company;
         activeStage = null;
@@ -556,15 +663,15 @@
             // Get company data to pass to callback
             const companyData = processDataForLayout(data).find(c => c.company === company);
             if (companyData) {
-                onCompanyHover({
+                onCompanyHover([{
                     entries: companyData.entries,
-                    companyName: companyData.company, 
+                    company: companyData.company, 
                     totalDrugs: companyData.totalDrugs,
                     clinicalTrials: companyData.clinicalTrials,
                     vouchersAwarded: companyData.vouchersAwarded,
                     uniqueIndications: companyData.uniqueIndications.size,
                     uniqueAreas: companyData.uniqueAreas.size
-                });
+                }]);
             } else {
                 onCompanyHover(entries);
             }
@@ -574,7 +681,7 @@
     /**
      * Sets the active stage and updates visual state
      */
-    function setActiveStage(stage, entries) {
+    function setActiveStage(stage: string, entries: Drug[]) {
         // Reset state
         activeStage = stage;
         activeCompany = null;
@@ -609,7 +716,7 @@
     /**
      * Highlighting and connection management functions
      */
-    function highlightCompanyConnections(companyName) {
+    function highlightCompanyConnections(companyName: string) {
         resetConnectionHighlights();
         
         d3.selectAll(`path.company-path[data-company="${companyName}"], path.drug-path[data-company="${companyName}"]`)
@@ -620,7 +727,7 @@
             .attr("stroke-opacity", 1);
     }
     
-    function highlightDrugConnections(drugId) {
+    function highlightDrugConnections(drugId: string) {
         resetConnectionHighlights();
             
         d3.select(`path.drug-path[data-drug="${drugId}"]`)
