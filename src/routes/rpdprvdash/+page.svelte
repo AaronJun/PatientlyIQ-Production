@@ -72,6 +72,7 @@
   let selectedYear = "2024"; // Default year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
+  let isSidebarCollapsed = false; // Add state for sidebar collapse
   
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
@@ -373,7 +374,7 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
-            <div class="w-4/5 pr-8 pl-2">
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pr-8 pl-2">
               <RpdprvCompanyTree 
                 data={filteredData}
                 isAllYearView={selectedYear === "All"}
@@ -385,9 +386,29 @@
               />
             </div>
 
-            <!-- Sticky sidebar -->
-            <div class="w-1/5 pr-8 pl-12">
-              <div class="sticky top-32">
+            <!-- Sticky sidebar with collapse button -->
+            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <button
+                class="rounded-btn absolute -left-3 top-32 z- p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
+                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
                 <!-- Use the updated sidebar component -->
                 <SponsorSidebar
                   {currentView}
@@ -412,21 +433,40 @@
         {:else if activeTab === 'By Transactions'}
          <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row">
-            <div class="w-4/5 px-12">
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-12">
               <SellerBuyerChord 
-              data={rpddData}
-              stockData={rpdCompanyValues}
-              selectedYear={selectedTransactionYear}
-              {highlightedTransaction}
-              onShowDrugDetail={handleShowDrugDetail}
-              on:transactionHover={(event) => highlightedTransaction = event.detail}
-              on:transactionLeave={() => highlightedTransaction = null}
-            />
-            
+                data={rpddData}
+                stockData={rpdCompanyValues}
+                selectedYear={selectedTransactionYear}
+                {highlightedTransaction}
+                onShowDrugDetail={handleShowDrugDetail}
+                on:transactionHover={(event) => highlightedTransaction = event.detail}
+                on:transactionLeave={() => highlightedTransaction = null}
+              />
             </div>
             
-            <div class="w-1/5 pr-8 pl-12">
-              <div class="sticky top-32">
+            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <button
+                class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
+                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
                 <div class="sidebar-header mb-4">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">                              
                     {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
@@ -448,13 +488,11 @@
                   </div>
                   <div class="bg-white rounded-lg shadow-sm p-4">
                     <RPDTransactionSummaryView 
-                    data={rpddData}
-                    year={selectedTransactionYear}
-                  />
+                      data={rpddData}
+                      year={selectedTransactionYear}
+                    />
                   </div>
-                  
                 </div>
-          
               </div>
             </div>
           </div>
@@ -463,8 +501,8 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row">
             <!-- Main visualization area -->
-            <div class="w-4/5 px-6">
-            <RPDDRadialYear 
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-6">
+              <RPDDRadialYear 
                 data={filteredData}
                 onCompanyHover={handleCompanyHover}
                 onStageHover={handleStageHover}
@@ -475,8 +513,28 @@
             </div>
 
             <!-- Sticky sidebar -->
-            <div class="w-1/5 pr-8 pl-12">
-              <div class="sticky top-32">
+            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <button
+                class="rounded-btn absolute -left-3 top-32 z- p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
+                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
                 <div class="sidebar-header mb-2">
                   <h4 class="text-xs uppercase font-semibold text-slate-600">              
                     {currentArea ? `${currentArea}` : 'Overview'}
@@ -612,8 +670,10 @@
     max-height: 65vh;
     overflow-y: scroll;
     scrollbar-color: #e5e7eb #f9fafb;
-    border-top: 0px;
-    overflow-y: scroll;
+  }
+
+  .rounded-btn {
+    border: 1px solid #549E7D;
   }
   
   .nav-bar {
