@@ -38,7 +38,7 @@
 
     // SVG and dimension configuration
     let svg: SVGElement;
-    const width = 920;
+    const width = 1050;
     const height = width;
     const radius = Math.min(width, height) / 2 - 60;
     const ANGLE_BUFFER = isAllYearView ? Math.PI / 32 : Math.PI / 64;

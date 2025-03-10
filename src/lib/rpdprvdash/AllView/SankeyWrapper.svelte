@@ -1,7 +1,7 @@
 <!-- RPDPRVAnalytics.svelte -->
 <script>
     import { onMount } from 'svelte';
-    import ProgramSankey from './SankeyFlow.svelte';
+    import ProgramSankey from './TimelineSankeyFlow.svelte';
     import PRVAwardCount from './PRVAwardCount.svelte';
     import PRVValueTimeline from './PRVValueTimeline.svelte';
     import TherapeuticAreaDistribution from './TherapeuticAreaDistribution.svelte';
@@ -27,8 +27,8 @@
     let expandedSections = {
       overview: true,
       sankey: true,
-      valueTrends: false,
-      topPerformers: false
+      valueTrends: true,
+      topPerformers: true
     };
     
     function toggleSection(section) {
