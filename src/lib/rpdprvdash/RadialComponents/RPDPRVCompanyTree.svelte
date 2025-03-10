@@ -28,20 +28,23 @@
 
     // Component props
     export let data: any[] = [];
-    export let onCompanyHover: (entries: any[]) => void = () => {};
+    export let onCompanyHover: (data: CompanyMetrics | any[]) => void = () => {};
     export let onStageHover: (entries: any[]) => void = () => {};
     export let onLeave: () => void = () => {};
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
     export let isAllYearView: boolean = false;
+    export let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 
 
     // SVG and dimension configuration
-    let svg: SVGElement;
     const width = 1050;
     const height = width;
     const radius = Math.min(width, height) / 2 - 60;
     const ANGLE_BUFFER = isAllYearView ? Math.PI / 32 : Math.PI / 64;
+
+    // Store reference to the content group
+    let contentGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 
     // Get configuration from utility functions
     $: sizeConfig = getSizeConfig(isAllYearView);
@@ -81,19 +84,44 @@
         index?: number
     }[] = [];
 
-    
-    
+    // Add type definitions
+    interface CompanyMetrics {
+        entries: any[];
+        companyName: string;
+        totalDrugs: number;
+        clinicalTrials: number;
+        vouchersAwarded: number;
+        transactedVouchers: number;
+        uniqueIndications: number;
+        uniqueAreas: number;
+    }
+
     function createVisualization() {
-        if (!svg) return;
+        if (!mainGroup) {
+            console.error("mainGroup is not available");
+            return;
+        }
+
+        console.log("Creating visualization with mainGroup:", mainGroup);
 
         // Clear any existing elements
         focusableElements = [];
+        mainGroup.selectAll("*").remove();
 
-        const svgElement = d3.select(svg);
-        svgElement.selectAll("*").remove();
+        // Add a background rect to capture events
+        mainGroup.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("x", -width/2)
+            .attr("y", -height/2)
+            .attr("fill", "transparent")
+            .attr("class", "background-rect");
+
+        // Center the visualization in the mainGroup
+        contentGroup = mainGroup.append("g");
 
         // Create drop shadow filter
-        const defs = svgElement.append("defs");
+        const defs = contentGroup.append("defs");
         
         // Create drop shadow filter with proper rounded edges
         const dropShadow = defs.append("filter")
@@ -198,12 +226,9 @@
         yellowMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
 
-        const mainGroup = svgElement.append("g")
-            .attr("transform", `translate(${width/2},${height/2})`);
-
-        const linesGroup = mainGroup.append("g").attr("class", "connecting-lines");
-        const stagesGroup = mainGroup.append("g").attr("class", "stage-circles");
-        const companyLabelsGroup = mainGroup.append("g").attr("class", "company-labels");
+        const linesGroup = contentGroup.append("g").attr("class", "connecting-lines");
+        const stagesGroup = contentGroup.append("g").attr("class", "stage-circles");
+        const companyLabelsGroup = contentGroup.append("g").attr("class", "company-labels");
 
 
 
@@ -279,7 +304,7 @@
             const angle = companyAngles.get(company.company);
             if (!angle) return;
             
-            const companyGroup = mainGroup.append("g");
+            const companyGroup = contentGroup.append("g");
 
             // Create sanitized ID for the company
             const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
@@ -755,9 +780,9 @@
         });
 
         // Add click handler to SVG background to clear selections
-        svgElement.on("click", (event) => {
+        contentGroup.on("click", (event) => {
             // Check if click was directly on the SVG background
-            if (event.target === svg) {
+            if (event.target === contentGroup) {
                 activeCompany = null;
                 activeStage = null;
                 resetConnectionHighlights();
@@ -767,7 +792,7 @@
         });
         
         // Add keyboard handler for SVG container for accessibility
-        svgElement.attr("tabindex", "0")
+        contentGroup.attr("tabindex", "0")
             .attr("role", "application")
             .attr("aria-label", "Company and drug visualization")
             .on("keydown", (event) => {
@@ -780,7 +805,7 @@
             });
         
         // Add event listeners to handle tooltip when mouse leaves SVG
-        svgElement.on("mouseleave", () => {
+        contentGroup.on("mouseleave", () => {
             resetConnectionHighlights();
             hideTooltip();
         });
@@ -795,12 +820,12 @@ function clearTooltipTimeout() {
 }
 
     function showTooltip(event: MouseEvent, d: any, isCompany = false) {
-    // Clear existing tooltip timeout
     clearTooltipTimeout();
     
-    if (!svg) return;
+    if (!mainGroup || !contentGroup) return;
     
-    const containerRect = svg.getBoundingClientRect();
+    const containerRect = contentGroup.node()?.getBoundingClientRect();
+    if (!containerRect) return;
     
     // Position tooltip with safety bounds
     tooltipX = Math.min(
@@ -939,16 +964,17 @@ function hideTooltip() {
             // Get company data to pass to callback
             const companyData = processDataForLayout(data).find(c => c.company === company);
             if (companyData) {
-                onCompanyHover({
+                const metrics: CompanyMetrics = {
                     entries: companyData.entries,
-                    companyName: companyData.company, 
+                    companyName: companyData.company,
                     totalDrugs: companyData.totalDrugs,
                     clinicalTrials: companyData.clinicalTrials,
                     vouchersAwarded: companyData.vouchersAwarded,
-                    transactedVouchers: companyData.transactedVouchers || 0, // Add transacted vouchers to callback
+                    transactedVouchers: companyData.transactedVouchers || 0,
                     uniqueIndications: companyData.uniqueIndications.size,
                     uniqueAreas: companyData.uniqueAreas.size
-                });
+                };
+                onCompanyHover(metrics);
             } else {
                 onCompanyHover(entries);
             }
@@ -993,7 +1019,7 @@ function hideTooltip() {
     /**
      * Highlighting and connection management functions
      */
-    function highlightCompanyConnections(companyName) {
+    function highlightCompanyConnections(companyName: string) {
         resetConnectionHighlights();
         
         d3.selectAll(`path.company-path[data-company="${companyName}"], path.drug-path[data-company="${companyName}"]`)
@@ -1004,7 +1030,7 @@ function hideTooltip() {
             .attr("stroke-opacity", 1);
     }
     
-    function highlightDrugConnections(drugId) {
+    function highlightDrugConnections(drugId: string) {
         resetConnectionHighlights();
             
         d3.select(`path.drug-path[data-drug="${drugId}"]`)
@@ -1024,37 +1050,14 @@ function hideTooltip() {
             .attr("stroke-opacity", sizeConfig.connectionOpacity);
     }
 
-    // React to changes in isAllYearView
-    $: if (isAllYearView !== undefined && svg && data.length > 0) {
-        // Recreate visualization when view mode changes
+    // React to changes in mainGroup
+    $: if (mainGroup && data.length > 0) {
+        console.log("mainGroup or data changed, recreating visualization");
         createVisualization();
     }
-    
-    // Initialize visualization on mount
-    onMount(() => {
-        if (data.length > 0) {
-            createVisualization();
-        }
-        
-        // Clean up tooltip when component is destroyed
-        return () => {
-            if (tooltipTimeout) {
-                clearTimeout(tooltipTimeout);
-                tooltipTimeout = null;
-            }
-        };
-    });
 </script>
 
 <div class="chart-container">
-    <svg
-        bind:this={svg}
-        {width}
-        {height}
-        viewBox="0 0 {width} {height}"
-        class="w-full h-auto"
-    />
-
     {#if tooltipVisible}
         <RPDTooltip
             visible={tooltipVisible}

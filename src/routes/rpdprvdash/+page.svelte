@@ -22,6 +22,7 @@
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
   import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
+  import InfiniteCanvasWrapper from '$lib/rpdprvdash/InfiniteCanvasWrapper.svelte';
 
   // New PRV Analytics Components
   import RPDPRVAnalytics from '$lib/rpdprvdash/AllView/SankeyWrapper.svelte';
@@ -276,6 +277,9 @@
 
   const colorScale = (area: string) => colorMap[area] || '#999999';
 
+  // Add reference to infinite canvas
+  let infiniteCanvas: { resetView: () => void };
+
   onMount(() => {
     try {
       // Process stock data on mount
@@ -374,16 +378,25 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pr-8 pl-2">
-              <RpdprvCompanyTree 
-                data={filteredData}
-                isAllYearView={selectedYear === "All"}
-                onCompanyHover={handleCompanyHover}
-                onStageHover={handleStageHover}
-                onLeave={handleLeave}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
-              />
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pr-8 pl-2 h-[calc(100vh-12rem)] relative">
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup>
+                {#if mainGroup}
+                  <RpdprvCompanyTree 
+                    data={filteredData}
+                    isAllYearView={selectedYear === "All"}
+                    onCompanyHover={handleCompanyHover}
+                    onStageHover={handleStageHover}
+                    onLeave={handleLeave}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    onShowCompanyDetail={handleShowCompanyDetail}
+                    {mainGroup}
+                  />
+                {:else}
+                  <div class="text-center p-4">Loading visualization...</div>
+                {/if}
+              </InfiniteCanvasWrapper>
+              <!-- Add reset view button -->
+             
             </div>
 
             <!-- Sticky sidebar with collapse button -->
