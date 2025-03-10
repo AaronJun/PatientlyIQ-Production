@@ -3,6 +3,7 @@
   import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icons-svelte';
   // Import our new enhanced stock price chart instead of the original
   import EnhancedStockPriceChart from './StockPriceChart.svelte';
+  import { hasPRVAward } from './utils/data-processing-utils';
 
   export let isOpen: boolean = false;
   export let companyName: string = '';
@@ -30,7 +31,7 @@
       // Calculate company profile stats
       const uniqueAreas = [...new Set(companyData.map(d => d.TherapeuticArea1))].filter(Boolean);
       const rpddEntries = companyData.filter(d => d["RPDD Year"]);
-      const prvEntries = companyData.filter(d => d["PRV Year"]);
+      const prvEntries = companyData.filter(d => hasPRVAward(d));
       const transactionEntries = companyData.filter(d => d.Purchased === "Y" && d.Purchaser);
       
       companyProfile = {
@@ -168,8 +169,8 @@
                 {#if drug["RPDD Year"]}
                   <span class="award-chip rpdd">RPDD {drug["RPDD Year"]}</span>
                 {/if}
-                {#if drug["PRV Year"]}
-                  <span class="award-chip prv">PRV {drug["PRV Year"]}</span>
+                {#if hasPRVAward(drug)}
+                  <span class="award-chip prv">PRV {drug["PRV Year"] || "Awarded"}</span>
                 {/if}
                 {#if drug["Purchase Year"]}
                   <span class="award-chip sale">PRV Sale {drug["Purchase Year"]}</span>

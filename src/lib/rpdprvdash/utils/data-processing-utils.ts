@@ -1,27 +1,112 @@
+// Add a Set to track unique PRV entries
+const processedPRVEntries = new Set<string>();
+
+/**
+ * Checks if an entry has a PRV award
+ * @param entry The data entry to check
+ * @returns True if the entry has a PRV award, false otherwise
+ */
+export function hasPRVAward(entry: any): boolean {
+    if (!entry) return false;
+    
+    // Check if PRV Year is set to a specific year (not empty)
+    const hasPRVYear = entry["PRV Year"] && entry["PRV Year"].trim() !== "";
+    
+    // Check if PRV Issue Year is set (not empty)
+    const hasPRVIssueYear = entry["PRV Issue Year"] && entry["PRV Issue Year"].trim() !== "";
+    
+    // Check if PRV Status is set to "PRV Awarded"
+    const hasPRVStatus = entry["PRV Status"] === "PRV Awarded";
+    
+    // Return true if any of the PRV indicators are present
+    return hasPRVYear || hasPRVIssueYear || hasPRVStatus;
+}
+
 /**
  * Determines the stage code from an entry
  */
 export function getStage(entry: any): string {
     if (!entry) return "PRE";
-    
-    // Check if PRV has been issued (ensuring this takes precedence over Current Development Stage)
-    // We no longer check Purchase Year for stage placement, only for styling
-    if (entry["PRV Year"] || entry["PRV Year"]) return "PRV";
-    
+
+    const entryId = `${entry.Company}-${entry.Candidate}`;
+    let assignedStage = "PRE"; // Default stage
+
+    // Always prioritize PRV Year if PRV Status is "PRV Awarded"
+    if (entry["PRV Status"] === "PRV Awarded") {
+        if (entry["PRV Year"] && entry["PRV Year"].trim() !== "") {
+            // Log for debugging
+            if (!processedPRVEntries.has(entryId)) {
+                processedPRVEntries.add(entryId);
+                console.log("PRV Awarded Entry:", {
+                    id: entryId,
+                    candidate: entry["Candidate"],
+                    company: entry["Company"],
+                    currentStage: entry["Current Development Stage"],
+                    prvYear: entry["PRV Year"],
+                    rpddYear: entry["RPDD Year"]
+                });
+            }
+            return "PRV";
+            
+        } else {
+            // Handle PRV Awarded without PRV Year explicitly
+            if (!processedPRVEntries.has(entryId)) {
+                processedPRVEntries.add(entryId);
+                console.warn("PRV Awarded without PRV Year:", {
+                    id: entryId,
+                    candidate: entry["Candidate"],
+                    company: entry["Company"],
+                    currentStage: entry["Current Development Stage"],
+                    rpddYear: entry["RPDD Year"]
+                });
+            }
+            return "PRV";
+        }
+    }
+
+    // Fallback to existing logic if no PRV Awarded status
     const stage = entry["Current Development Stage"];
     switch(stage) {
-        case "PRV Awarded": return "PRV";
-        case "Preclinical": return "PRE";
-        case "Phase 1": return "P1";
-        case "Phase 1/2": return "P1";
-        case "Phase 2": return "P2"; // Fix for logical OR issue
-        case "Phase 2a": return "P2";
-        case "Phase 2b": return "P2";
-        case "Phase 3": return "P3";
-        case "Filed": return "FILED";
-        case "Approved": return "APRV";
-        default: return "PRE";
+        case "Preclinical":
+            assignedStage = "PRE";
+            break;
+        case "Phase 1":
+        case "Phase 1/2":
+            assignedStage = "P1";
+            break;
+        case "Phase 2":
+        case "Phase 2a":
+        case "Phase 2b":
+            assignedStage = "P2";
+            break;
+        case "Phase 3":
+            assignedStage = "P3";
+            break;
+        case "Filed":
+            assignedStage = "FILED";
+            break;
+        case "Approved":
+            assignedStage = "APRV";
+            break;
+        default:
+            assignedStage = "PRE";
+            break;
     }
+    
+    // For debugging RPDD entries - only log for verification
+    if (entry["RPDD Year"] && !hasPRVAward(entry)) {
+        console.log("RPDD Entry:", {
+            id: entryId,
+            candidate: entry["Candidate"],
+            company: entry["Company"],
+            currentStage: entry["Current Development Stage"],
+            assignedStage: assignedStage,
+            rpddYear: entry["RPDD Year"],
+            hasPRV: hasPRVAward(entry) // Log whether it has a PRV award for verification
+        });
+    }
+    
+    return assignedStage;
 }
 
 // Maps for stage and company status codes
@@ -194,10 +279,30 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
 }
 
 /**
- * Process data into a format suitable for the visualization
+ * Process data for the radial layout visualization
  */
 export function processDataForLayout(data: any[]) {
+    console.log("Starting data processing with", data.length, "entries");
+    
+    // Log PRV entries with more information for verification
+    const prvEntries = data.filter(entry => 
+        entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"]
+    );
+    
+    if (prvEntries.length > 0) {
+        console.log("PRV entries:", prvEntries.length);
+        console.log("PRV entries sample:", prvEntries.slice(0, 5).map(entry => ({
+            candidate: entry["Candidate"],
+            company: entry["Company"],
+            currentStage: entry["Current Development Stage"],
+            prvYear: entry["PRV Year"],
+            prvStatus: entry["PRV Status"],
+            rpddYear: entry["RPDD Year"] // Log RPDD Year for verification
+        })));
+    }
+    
     const companiesMap = new Map();
+    const processedStages = new Map(); // Track entries by stage
     
     data.forEach((entry) => {
         const companyName = entry.Company;
@@ -212,14 +317,32 @@ export function processDataForLayout(data: any[]) {
                 entries: [],
                 clinicalTrials: 0,
                 vouchersAwarded: 0,
-                transactedVouchers: 0,  // Add counter for transacted vouchers
+                transactedVouchers: 0,
                 uniqueIndications: new Set(),
                 uniqueAreas: new Set()
             });
         }
         
         const companyData = companiesMap.get(companyName);
+        
+        // Use the updated getStage function which prioritizes PRV Year
         const stage = getStage(entry);
+        
+        // Track all entries by stage
+        if (!processedStages.has(stage)) {
+            processedStages.set(stage, []);
+        }
+        
+        // Add more detailed information for debugging
+        processedStages.get(stage).push({
+            candidate: entry["Candidate"],
+            company: companyName,
+            stage: stage,
+            prvYear: entry["PRV Year"],
+            prvStatus: entry["PRV Status"],
+            rpddYear: entry["RPDD Year"],
+            hasPRV: hasPRVAward(entry)
+        });
         
         if (!companyData.stages.has(stage)) {
             companyData.stages.set(stage, []);
@@ -243,8 +366,8 @@ export function processDataForLayout(data: any[]) {
             companyData.clinicalTrials++;
         }
         
-        // Count vouchers awarded
-        if (stage === "PRV" || entry["PRV Year"] || entry["PRV Year"]) {
+        // Count vouchers awarded more explicitly
+        if (hasPRVAward(entry)) {
             companyData.vouchersAwarded++;
         }
         
@@ -253,7 +376,18 @@ export function processDataForLayout(data: any[]) {
             companyData.transactedVouchers++;
         }
     });
-
+    
+    // Log summary of entries by stage
+    console.log("Entries by stage:", Object.fromEntries(
+        Array.from(processedStages.entries()).map(([stage, entries]) => [
+            stage,
+            entries.length
+        ])
+    ));
+    
+    // Log specific PRV stage entries with detailed information
+    console.log("PRV stage entries:", processedStages.get("PRV"));
+    
     return Array.from(companiesMap.values())
         .sort((a, b) => a.company.localeCompare(b.company));
 }
@@ -423,7 +557,7 @@ export function createAreaLabelGroup(
     
     // Determine text anchor and offset based on side
     const textAnchor = isRightSide ? "start" : "end";
-    const xOffset = isRightSide ? 10 : -10; // Reduced offset to bring labels closer
+    const xOffset = isRightSide ? 10 : -10; // Reduced offset to bring labels closer    
     
     // Create text element with area name and counter-rotate to keep text horizontal
     const textElement = labelGroup.append("text")

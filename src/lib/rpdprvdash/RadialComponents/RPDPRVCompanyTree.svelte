@@ -2,8 +2,6 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import RPDTooltip from '../RPDTooltip.svelte';
-    // Remove the CompanyNode import since we're not using it
-    // import CompanyNode from '../components/CompanyNode.svelte';
     
     // Import the color definitions
     import { 
@@ -23,7 +21,8 @@
         getSizeConfig,
         getLabelConfig,
         getStageRadii,
-        getStageLabelConfig
+        getStageLabelConfig,
+        hasPRVAward
     } from '../utils/data-processing-utils';
 
 
@@ -34,7 +33,8 @@
     export let onLeave: () => void = () => {};
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
-    export let isAllYearView: boolean = false; // Prop to check if "all" year view is selected
+    export let isAllYearView: boolean = false;
+
 
     // SVG and dimension configuration
     let svg: SVGElement;
@@ -81,9 +81,8 @@
         index?: number
     }[] = [];
 
-    /**
-     * Creates the visualization with all components
-     */
+    
+    
     function createVisualization() {
         if (!svg) return;
 
@@ -129,6 +128,74 @@
         feMerge.append("feMergeNode")
             .attr("in", "shadowMatrixOut");
         feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+            
+        // Create green glow filter for purchased vouchers
+        const greenGlow = defs.append("filter")
+            .attr("id", "greenGlow")
+            .attr("width", "200%")
+            .attr("height", "200%")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("filterUnits", "userSpaceOnUse");
+            
+        greenGlow.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 3)
+            .attr("result", "blur");
+            
+        greenGlow.append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 0)
+            .attr("dy", 0)
+            .attr("result", "offsetBlur");
+            
+        // Apply green color to the shadow
+        greenGlow.append("feColorMatrix")
+            .attr("in", "offsetBlur")
+            .attr("type", "matrix")
+            .attr("values", "0 0 0 0 0.2 0 0 0 0 0.8 0 0 0 0 0.2 0 0 0 1 0")
+            .attr("result", "coloredBlur");
+            
+        // Create a composite of the original shape with the green glow
+        const greenMerge = greenGlow.append("feMerge");
+        greenMerge.append("feMergeNode")
+            .attr("in", "coloredBlur");
+        greenMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+            
+        // Create yellow glow filter for filed PRV status
+        const yellowGlow = defs.append("filter")
+            .attr("id", "yellowGlow")
+            .attr("width", "200%")
+            .attr("height", "200%")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("filterUnits", "userSpaceOnUse");
+            
+        yellowGlow.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 3)
+            .attr("result", "blur");
+            
+        yellowGlow.append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 0)
+            .attr("dy", 0)
+            .attr("result", "offsetBlur");
+            
+        // Apply yellow color to the shadow
+        yellowGlow.append("feColorMatrix")
+            .attr("in", "offsetBlur")
+            .attr("type", "matrix")
+            .attr("values", "0 0 0 0 0.9 0 0 0 0 0.8 0 0 0 0 0.2 0 0 0 1 0")
+            .attr("result", "coloredBlur");
+            
+        // Create a composite of the original shape with the yellow glow
+        const yellowMerge = yellowGlow.append("feMerge");
+        yellowMerge.append("feMergeNode")
+            .attr("in", "coloredBlur");
+        yellowMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
 
         const mainGroup = svgElement.append("g")
@@ -307,11 +374,11 @@
                 .attr("fill", "none");
 
             // Connect drugs to node
-            company.stages.forEach((drugs, stage) => {
-                const stageRadius = stageRadii[stage];
+            company.stages.forEach((drugs: any[], stage: string) => {
+                const stageRadius = stageRadii[stage as keyof typeof stageRadii];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
 
-                drugs.forEach((drug, i) => {
+                drugs.forEach((drug: any, i: number) => {
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                     const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
@@ -346,7 +413,7 @@
                         
                         // Store drug node reference in the company's drugNodes array
                         const companyRef = focusableElements.find(item => item.element === nodeElement);
-                        if (companyRef) {
+                        if (companyRef && companyRef.drugNodes) {
                             companyRef.drugNodes.push({
                                 element: drugElement,
                                 drug: drug
@@ -357,6 +424,14 @@
                     // Get therapeutic area color
                     const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
 
+                    // Determine which filter to use based on drug status
+                    let filterUrl = "url(#dropshadow)";
+                    if (drug.Purchased === "Y") {
+                        filterUrl = "url(#greenGlow)";
+                    } else if (drug["PRV Status"] === "Filed") {
+                        filterUrl = "url(#yellowGlow)";
+                    }
+
                     // Determine stroke color - use gold for transacted PRVs
                     const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
 
@@ -366,20 +441,10 @@
                         .attr("fill", areaColors.fill)
                         .attr("stroke", strokeColor)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                        .style("filter", "url(#dropshadow)"); // Apply drop shadow to all drug circles
-
-                    // Add PRV indicator for PRV awarded drugs
-                    if (drug["PRV Issue Year"] || drug["PRV Year"]) {
-                        drugGroup.append("circle")
-                            .attr("r", sizeConfig.prvIndicatorRadius)
-                            .attr("fill", "none")
-                            .attr("stroke", "#976201")
-                            .attr("stroke-width", isAllYearView ? "1.5" : "2")
-                            .attr("stroke-dasharray", "2,2");
-                    }
+                        .style("filter", filterUrl); // Apply appropriate filter
 
                     // Add keyboard event handler for accessibility
-                    drugGroup.on("keydown", function(event) {
+                    drugGroup.on("keydown", function(event: KeyboardEvent) {
                         if (event.key === "Enter" || event.key === " ") {
                             event.preventDefault();
                             event.stopPropagation();
@@ -392,7 +457,7 @@
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
                                 color: areaColors.fill,
-                                strokeColor: areaColors.stroke,
+                                strokeColor: strokeColor,
                                 currentStage: drug["Current Development Stage"],
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
@@ -409,34 +474,18 @@
                     });
 
                     // Add focus handlers for keyboard navigation
-                    drugGroup.on("focus", function(event) {
+                    drugGroup.on("focus", function(event: FocusEvent) {
                         // Highlight the drug node
                         drugGroup.select("circle")
                             .transition()
                             .duration(200)
                             .attr("r", sizeConfig.highlightedNodeRadius)
-                            .style("filter", "url(#dropshadow)");
-                        
-                        // Highlight PRV indicator if present
-                        if (drug["PRV Issue Year"] || drug["PRV Year"]) {
-                            drugGroup.select("circle:last-child")
-                                .transition()
-                                .duration(200)
-                                .attr("r", sizeConfig.highlightedNodeRadius)
-                                .attr("stroke-width", isAllYearView ? 3.5 : 4.725);
-                        }
+                            .style("filter", filterUrl);
                         
                         // Highlight the connection line for this drug
                         highlightDrugConnections(drugId);
                         
-                        // Show tooltip near the node
-                        const rect = event.target.getBoundingClientRect();
-                        const fakeEvent = {
-                            clientX: rect.left + rect.width/2,
-                            clientY: rect.top + rect.height/2
-                        };
-                        
-                        showTooltip(fakeEvent, drug);
+                        showTooltip(event as unknown as MouseEvent, drug);
                     });
                     
                     drugGroup.on("blur", function() {
@@ -447,16 +496,7 @@
                             .attr("r", sizeConfig.drugNodeRadius)
                             .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                             .attr("stroke", strokeColor)
-                            .style("filter", "url(#dropshadow)");
-                        
-                        // Reset PRV indicator if present
-                        if (drug["PRV Issue Year"] || drug["PRV Year"]) {
-                            drugGroup.select("circle:last-child")
-                                .transition()
-                                .duration(200)
-                                .attr("r", sizeConfig.prvIndicatorRadius)
-                                .attr("stroke-width", isAllYearView ? "1.5" : "2");
-                        }
+                            .style("filter", filterUrl);
                         
                         // Reset connection highlights
                         resetConnectionHighlights();
@@ -466,41 +506,20 @@
                     
                     // Drug mouse interactions
                     drugGroup
-                        .on("mouseenter", (event) => {
+                        .on("mouseenter", (event: MouseEvent) => {
                             // Highlight the drug node
                             drugGroup.select("circle")
                                 .transition()
                                 .duration(200)
                                 .attr("r", sizeConfig.highlightedNodeRadius)
-                                .style("filter", "url(#dropshadow)");
-
-                            // Highlight PRV indicator or transaction indicator if present
-                            if (drug["Purchase Year"]) {
-                                drugGroup.select("circle:nth-child(2)")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", sizeConfig.highlightedNodeRadius * 1.1)
-                                    .attr("stroke-width", isAllYearView ? 2.5 : 3.25);
-                                    
-                                drugGroup.select("text")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("font-size", isAllYearView ? "8.25px" : "10px");
-                            }
-                            else if (drug["PRV Issue Year"] || drug["PRV Year"]) {
-                                drugGroup.select("circle:last-child")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", sizeConfig.highlightedNodeRadius)
-                                    .attr("stroke-width", isAllYearView ? "2.5" : "3.25");
-                            }
+                                .style("filter", filterUrl);
                             
                             // Highlight the connection line for this drug
                             highlightDrugConnections(drugId);
                             
                             showTooltip(event, drug);
                         })
-                        .on("mousemove", (event) => {
+                        .on("mousemove", (event: MouseEvent) => {
                             // Update tooltip position when mouse moves
                             showTooltip(event, drug);
                         })
@@ -512,35 +531,14 @@
                                 .attr("r", sizeConfig.drugNodeRadius)
                                 .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                                 .attr("stroke", strokeColor)
-                                .style("filter", "url(#dropshadow)");
-
-                            // Reset PRV indicator if present
-                            if (drug["Purchase Year"]) {
-                                drugGroup.select("circle:nth-child(2)")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", sizeConfig.prvIndicatorRadius)
-                                    .attr("stroke-width", isAllYearView ? "1.75" : "2.25");
-                                    
-                                drugGroup.select("text")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("font-size", isAllYearView ? "6px" : "8px");
-                            }
-                            else if (drug["PRV Issue Year"] || drug["PRV Year"]) {
-                                drugGroup.select("circle:last-child")
-                                    .transition()
-                                    .duration(200)
-                                    .attr("r", sizeConfig.prvIndicatorRadius)
-                                    .attr("stroke-width", isAllYearView ? "1.5" : "2");
-                            }
+                                .style("filter", filterUrl);
                             
                             // Reset connection highlights
                             resetConnectionHighlights();
                             
                             hideTooltip();
                         })
-                        .on("click", (event) => {
+                        .on("click", (event: MouseEvent) => {
                             event.stopPropagation();
                             
                             // Force immediate tooltip hiding without delay
@@ -558,11 +556,12 @@
                                 therapeuticArea: drug.TherapeuticArea1,
                                 entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
                                 color: areaColors.fill,
-                                strokeColor: areaColors.stroke,
+                                strokeColor: strokeColor,
                                 currentStage: drug["Current Development Stage"],
                                 indication: drug.Indication || "",
                                 rpddAwardDate: drug["RPDD Year"],
                                 voucherAwardDate: drug["PRV Year"] || "",
+                                prvStatus: drug["PRV Status"] || "",
                                 transactionDate: drug["Purchase Year"] || "",
                                 purchaser: drug["Purchaser"] || "",
                                 salePrice: drug["Sale Price (USD Millions)"] || "",
@@ -654,7 +653,7 @@
             });
 
             // Add interaction handlers for both node and label
-            const handleMouseEnter = (event) => {
+            const handleMouseEnter = (event: MouseEvent) => {
                 // Set this company as active
                 setActiveCompany(company.company, company.entries);
                 
@@ -675,6 +674,7 @@
                     .transition()
                     .duration(200)
                     .attr("font-weight", "800")
+                    .attr("font-size", "10.25px")
                     .attr("fill", "#2B6CB0"); // Highlight color
                 
                 showTooltip(event, {
@@ -684,7 +684,7 @@
                 }, true);
             };
 
-            const handleMouseMove = (event) => {
+            const handleMouseMove = (event: MouseEvent) => {
                 // Update tooltip position when mouse moves
                 showTooltip(event, {
                     company: company.company,
@@ -718,7 +718,7 @@
                 hideTooltip();
             };
 
-            const handleClick = (event) => {
+            const handleClick = (event: MouseEvent) => {
                 // Stop event propagation to prevent background click handler from firing
                 event.stopPropagation();
                 
@@ -786,145 +786,6 @@
         });
     }
 
-    /**
-     * Shows tooltip at the given mouse event position for the provided data
-     */
-
-     function createDrugEventHandlers(drug, drugGroup, areaColors, drugId) {
-    return {
-        onMouseEnter: (event) => {
-            // Highlight the drug node
-            drugGroup.select("circle")
-                .transition()
-                .duration(200)
-                .attr("r", sizeConfig.highlightedNodeRadius)
-                .style("filter", "url(#dropshadow)");
-
-            // Highlight PRV indicator if present
-            if (drug["PRV Issue Year"]) {
-                drugGroup.select("circle:last-child")
-                    .transition()
-                    .duration(200)
-                    .attr("r", sizeConfig.highlightedNodeRadius)
-                    .attr("stroke-width", isAllYearView ? 3.5 : 4.725);
-            }
-            
-            // Highlight the connection line for this drug
-            highlightDrugConnections(drugId);
-            
-            showTooltip(event, drug);
-        },
-        
-        onMouseMove: (event) => {
-            // Update tooltip position when mouse moves
-            showTooltip(event, drug);
-        },
-        
-        onMouseLeave: () => {
-            // Reset drug node appearance
-            // Determine stroke color - use gold for transacted PRVs
-            const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
-            
-            drugGroup.select("circle")
-                .transition()
-                .duration(200)
-                .attr("r", sizeConfig.drugNodeRadius)
-                .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                .attr("stroke", strokeColor)
-                .style("filter","url(#dropshadow)");
-
-            // Reset PRV indicator if present
-            if (drug["PRV Issue Year"]) {
-                drugGroup.select("circle:last-child")
-                    .transition()
-                    .duration(200)
-                    .attr("r", sizeConfig.prvIndicatorRadius)
-                    .attr("stroke-width", isAllYearView ? "1.5" : "2");
-            }
-            
-            // Reset connection highlights
-            resetConnectionHighlights();
-            
-            hideTooltip();
-        },
-        
-        onClick: (event) => {
-            event.stopPropagation();
-            
-            // Force immediate tooltip hiding without delay
-            clearTooltipTimeout();
-            tooltipVisible = false;
-            
-            onShowDrugDetail({
-                drugName: drug.Candidate,
-                year: drug["PRV Year"] || drug["RPDD Year"],
-                Company: drug.Company,
-                therapeuticArea: drug.TherapeuticArea1,
-                entries: data.filter(d => d.TherapeuticArea1 === drug.TherapeuticArea1),
-                color: areaColors.fill,
-                strokeColor: areaColors.stroke,
-                currentStage: drug["Current Development Stage"],
-                indication: drug.Indication || "",
-                rpddAwardDate: drug["RPDD Year"],
-                voucherAwardDate: drug["PRV Year"] || "",
-                treatmentClass: drug.Class1 || "TBD",
-                mechanismOfAction: drug.MOA || "TBD",
-                companyUrl: drug["Link to CrunchBase"] || ""
-            });
-        }
-    };
-}
-
-// Create reusable company node event handlers
-function createCompanyEventHandlers(company, statusColor) {
-    return {
-        onMouseEnter: (event) => {
-            // Set this company as active
-            setActiveCompany(company.company, company.entries);
-            
-            // Highlight all connections for this company
-            highlightCompanyConnections(company.company);
-            
-            showTooltip(event, {
-                company: company.company,
-                totalDrugs: company.totalDrugs,
-                status: company.status
-            }, true);
-        },
-        
-        onMouseMove: (event) => {
-            // Update tooltip position when mouse moves
-            showTooltip(event, {
-                company: company.company,
-                totalDrugs: company.totalDrugs,
-                status: company.status
-            }, true);
-        },
-        
-        onMouseLeave: () => {
-            // Reset connection highlights
-            resetConnectionHighlights();
-            
-            hideTooltip();
-        },
-        
-        onClick: (event) => {
-            event.stopPropagation();
-            
-            // Force immediate tooltip hiding without delay
-            clearTooltipTimeout();
-            tooltipVisible = false;
-            
-            onShowCompanyDetail({
-                Company: company.company,
-                entries: company.entries,
-                color: statusColor.fill,
-                strokeColor: statusColor.stroke
-            });
-        }
-    };
-}
-
 // Helper function to safely clear tooltip timeout
 function clearTooltipTimeout() {
     if (tooltipTimeout) {
@@ -933,7 +794,7 @@ function clearTooltipTimeout() {
     }
 }
 
-    function showTooltip(event, d, isCompany = false) {
+    function showTooltip(event: MouseEvent, d: any, isCompany = false) {
     // Clear existing tooltip timeout
     clearTooltipTimeout();
     
@@ -971,7 +832,7 @@ function clearTooltipTimeout() {
             sponsor: d.Company || '',
             drugName: d.Candidate || '',
             therapeuticArea: d.TherapeuticArea1 || '',
-            id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
+            id: d["Current Development Stage"] || (hasPRVAward(d) ? "PRV" : "")
         };
         const stageCode = getStage(d);
         const stageFullName = getStageFullName(stageCode);
@@ -999,7 +860,7 @@ function hideTooltip() {
     /**
      * Sets the active company and updates visual state
      */
-    function setActiveCompany(company, entries) {
+    function setActiveCompany(company: any, entries: any[]) {
         // Reset state
         activeCompany = company;
         activeStage = null;
@@ -1097,7 +958,7 @@ function hideTooltip() {
     /**
      * Sets the active stage and updates visual state
      */
-    function setActiveStage(stage, entries) {
+    function setActiveStage(stage: any, entries: any[]) {
         // Reset state
         activeStage = stage;
         activeCompany = null;

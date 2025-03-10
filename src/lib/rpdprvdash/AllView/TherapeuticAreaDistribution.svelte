@@ -2,6 +2,7 @@
 <script>
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import { hasPRVAward } from '../utils/data-processing-utils';
     
     export let data = [];
     export let height = 250;
@@ -44,7 +45,7 @@
       svgElement.selectAll("*").remove();
       
       // Process data - extract therapeutic area distribution for PRVs awarded
-      const prvData = data.filter(d => d["PRV Year"]);
+      const prvData = data.filter(d => hasPRVAward(d));
       
       if (prvData.length === 0) {
         svgElement.append("text")

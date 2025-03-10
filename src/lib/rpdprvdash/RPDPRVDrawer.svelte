@@ -7,6 +7,7 @@
     import RegulatoryTimeline from './DrawerComponents/RegulatoryTimeline.svelte';
     import { trackedDrugs } from '$lib/trackingStores';
     import RPDOverlayDrawer from './RPDOverlayDrawer.svelte';
+    import { hasPRVAward } from './utils/data-processing-utils';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;
@@ -38,7 +39,8 @@
     };
 
     // Track the actual PRV award status
-    $: hasPRV = entries.find(e => e["Candidate"] === drugName)?.["PRV Year"];
+    $: hasPRV = entries.find(e => e["Candidate"] === drugName) ? 
+        hasPRVAward(entries.find(e => e["Candidate"] === drugName)) : false;
     
     // Get the drug data for the timeline
     $: drugData = entries.find(e => e["Candidate"] === drugName);

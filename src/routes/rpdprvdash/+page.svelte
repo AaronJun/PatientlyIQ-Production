@@ -79,7 +79,10 @@
   // Filter data based on selected year (for non-transaction tabs)
   $: filteredData = selectedYear === "All" 
     ? rpddData // Use all data when "All" is selected
-    : rpddData.filter(entry => entry["RPDD Year"] === selectedYear);
+    : rpddData.filter(entry => 
+        entry["RPDD Year"] === selectedYear || 
+        (entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"] === selectedYear)
+      );
   
   // Filter transaction data based on selected transaction year (for transaction tab)
   $: filteredTransactionData = rpddData.filter(entry => 

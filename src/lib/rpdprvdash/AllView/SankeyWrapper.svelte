@@ -7,6 +7,7 @@
     import TherapeuticAreaDistribution from './TherapeuticAreaDistribution.svelte';
     import CompanyLeaderboard from './CompanyLeaderboard.svelte';
     import { Report, Money, ChartParallel, CicsTransactionServerZos } from 'carbon-icons-svelte';
+    import { hasPRVAward } from '../utils/data-processing-utils';
     
     export let data = [];
     export let onEntrySelect = (entry) => {};
@@ -46,7 +47,7 @@
       totalEntries = data.length;
       
       // Filter to just PRV data
-      const prvData = data.filter(d => d["PRV Year"]);
+      const prvData = data.filter(d => hasPRVAward(d));
       totalPRVs = prvData.length;
       
       // Calculate sold vouchers

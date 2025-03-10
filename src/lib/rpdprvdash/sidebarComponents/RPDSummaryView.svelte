@@ -1,6 +1,8 @@
 <!-- RPDSummaryView.svelte -->
 <script lang="ts">
     // A component to display summary statistics for the selected year
+    import { hasPRVAward } from '../utils/data-processing-utils';
+    
     export let data = []; // Full dataset for the selected year
     export let year = ""; // Selected year
     
@@ -11,12 +13,23 @@
     $: uniqueAreas = new Set(data.filter(d => d.TherapeuticArea1).map(d => d.TherapeuticArea1)).size;
     
     // Count PRVs awarded in this year
-    $: prvsAwarded = data.filter(d => d["PRV Year"] && d["PRV Year"].trim() !== "").length;
+    $: prvsAwarded = data.filter(d => hasPRVAward(d)).length;
     
     // Calculate average time from RPDD to PRV (for those that have both)
-    $: rpddToVoucherData = data.filter(d => d["RPDD Year"] && d["PRV Year"]);
+    $: rpddToVoucherData = data.filter(d => d["RPDD Year"] && hasPRVAward(d));
     $: avgYearsToVoucher = rpddToVoucherData.length > 0 
-      ? (rpddToVoucherData.reduce((sum, d) => sum + (parseInt(d["PRV Year"]) - parseInt(d["RPDD Year"])), 0) / rpddToVoucherData.length).toFixed(1)
+      ? (rpddToVoucherData.reduce((sum, d) => {
+          // If PRV Year is available, use it for calculation
+          if (d["PRV Year"]) {
+              return sum + (parseInt(d["PRV Year"]) - parseInt(d["RPDD Year"]));
+          }
+          // If PRV Status is "PRV Awarded" but no PRV Year, use current year
+          else if (d["PRV Status"] === "PRV Awarded") {
+              const currentYear = new Date().getFullYear();
+              return sum + (currentYear - parseInt(d["RPDD Year"]));
+          }
+          return sum;
+      }, 0) / rpddToVoucherData.length).toFixed(1)
       : "N/A";
     
     // Top therapeutic areas
