@@ -83,14 +83,14 @@
     $: totalValuePercentage = totalValueAllTime > 0 ? (totalValueInYear / totalValueAllTime * 100) : 0;
   </script>
   
-  <div class="summary-view">    
+  <div class="summary-view w-full max-w-full">    
     <!-- Transaction visualization section -->
-    <div class="bg-white rounded-sm shadow-sm mb-4">
+    <div class="bg-white rounded-sm shadow-sm mb-4 p-3">
       <div class="flex flex-col">
         <div class="transaction-counts text-xs text-slate-500 font-medium gap-2 flex justify-between align-middle">
-         <h4 class="text-sm text-slate-800 font-semibold"> {year}
+         <h4 class="text-sm text-slate-800 font-semibold truncate"> {year}
             </h4>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 whitespace-nowrap">
           <span class="text-emerald-600">{totalTransactionsInYear}</span> 
           <span class="italic">of</span> 
           <span>{totalTransactions}</span>
@@ -121,21 +121,20 @@
     </div>
     
     <!-- Metrics list section -->
-    <div class="bg-white rounded-md shadow-sm mb-4">
+    <div class="bg-white rounded-md shadow-sm mb-4 p-3">
       <h4 class="text-xs font-medium text-slate-700 mb-2">Value Metrics</h4>
-      <div class="space-y-2">
+      <div class="space-y-4">
         <!-- Average Value Comparison Chart -->
-        <div class="metric-item py-3 border-b border-slate-100">
+        <div class="metric-item py-2 border-b border-slate-100">
           <div class="flex justify-between items-center mb-2">
             <span class="text-xs text-slate-600">Average Value Comparison</span>
-
           </div>
           
           <div class="chart-container">
             <!-- All-time average bar -->
             <div class="bar-label flex justify-between items-center mb-1">
               <span class="text-xs text-slate-500">All-time</span>
-              <span class="text-xs font-medium text-slate-700">
+              <span class="text-xs font-medium text-slate-700 ml-auto">
                 {averageValue === "N/A" ? "N/A" : formatMoney(parseFloat(averageValue))}
               </span>
             </div>
@@ -146,7 +145,7 @@
             <!-- Selected year average bar -->
             <div class="bar-label flex justify-between items-center mb-1">
               <span class="text-xs text-slate-500">{year}</span>
-              <span class="text-xs font-medium text-slate-700">
+              <span class="text-xs font-medium text-slate-700 ml-auto">
                 {averageValueInYear === "N/A" ? "N/A" : formatMoney(parseFloat(averageValueInYear))}
               </span>
             </div>
@@ -157,16 +156,15 @@
         </div>
         
         <!-- Total Value Comparison Chart -->
-        <div class="flex flex-col py-3 border-b border-slate-100">
-          <div class="flex-row justify-between items-center mb-2">
+        <div class="py-2 border-b border-slate-100">
+          <div class="flex justify-between items-center mb-2">
             <span class="text-xs text-slate-600">Total Value Comparison</span>
-      
           </div>
           
-          <div class="chart-container flex flex-col w-full place-items-start">
+          <div class="chart-container w-full">
             <!-- Labels -->
-            <div class="flex flex-col justify-evenly gap-1 items-center mb-1">
-              <div class="flex items-center w-full">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 mb-2">
+              <div class="flex items-center">
                 <span class="inline-block ring-1 ring-emerald-800 w-2 h-2 rounded-full bg-emerald-200 mr-1"></span>
                 <span class="text-xs text-slate-500">All-time</span>
                 <span class="text-xs font-medium text-slate-700 ml-2">
@@ -174,7 +172,7 @@
                 </span>
               </div>
               <div class="flex items-center">
-                <span class="inline-block w-2 h-2 rounded-full ring-1 ring-emerald-800  bg-emerald-500 mr-1"></span>
+                <span class="inline-block w-2 h-2 rounded-full ring-1 ring-emerald-800 bg-emerald-500 mr-1"></span>
                 <span class="text-xs text-slate-500">{year}</span>
                 <span class="text-xs font-medium text-slate-700 ml-2">
                   {formatMoney(totalValueInYear)}
@@ -193,6 +191,13 @@
               <div class="absolute top-0 left-0 h-5 bg-emerald-500 rounded-full opacity-80" 
                    style="width: {totalValuePercentage}%"></div>
             </div>
+            
+            <!-- Percentage indicator -->
+            {#if totalValuePercentage > 0 && totalValuePercentage !== 100}
+              <div class="text-xs font-medium text-right mt-1 {totalValuePercentage > 100 ? 'text-emerald-600' : 'text-amber-600'}">
+                {Math.round(totalValuePercentage)}% {totalValuePercentage > 100 ? 'above' : 'of'} all-time total
+              </div>
+            {/if}
           </div>
         </div>
       </div>
@@ -225,6 +230,7 @@
   <style>
     .summary-view {
       transition: all 0.3s ease;
+      overflow-x: hidden;
     }
     
     .transaction-circles-container {
@@ -260,6 +266,7 @@
     
     .chart-container {
       margin-top: 8px;
+      width: 100%;
     }
     
     .bar-bg {
@@ -268,5 +275,16 @@
     
     .bar-fill {
       transition: width 0.5s ease-out;
+    }
+    
+    @media (max-width: 640px) {
+      .transaction-circles {
+        gap: 3px;
+      }
+      
+      .transaction-circle {
+        width: 6px;
+        height: 6px;
+      }
     }
   </style>
