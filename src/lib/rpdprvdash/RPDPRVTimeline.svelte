@@ -11,9 +11,35 @@
     
     let svg: SVGElement;
     let showRestrictedModal = false;
-    const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const width = 125;
-    const height = 800;
+    let isMobile = false;
+    
+    // Responsive dimensions
+    let margin = { top: 20, right: 20, bottom: 20, left: 40 };
+    let width = 125;
+    let height = 800;
+    
+    // Update dimensions based on screen size
+    function updateDimensions() {
+        isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            width = Math.min(window.innerWidth - 40, 800);
+            height = 125;
+            margin = { top: 20, right: 20, bottom: 40, left: 20 };
+        } else {
+            width = 125;
+            height = 800;
+            margin = { top: 20, right: 20, bottom: 20, left: 40 };
+        }
+        if (data.length > 0 && svg) {
+            createVisualization();
+        }
+    }
+    
+    onMount(() => {
+        updateDimensions();
+        window.addEventListener('resize', updateDimensions);
+        return () => window.removeEventListener('resize', updateDimensions);
+    });
     
     function isYearRestricted(year: string): boolean {
         return parseInt(year) < 2023;
@@ -38,17 +64,22 @@
             return acc;
         }, {} as Record<string, { count: number; areas: Record<string, number> }>)
     )
-    .map(([year, data]) => ({
-        year,
-        count: data.count,
-        areas: Object.entries(data.areas)
-            .map(([area, count]) => ({
-                area,
-                count,
-                percentage: count / data.count
-            }))
-            .sort((a, b) => b.percentage - a.percentage)
-    }))
+    .map(([year, data]) => {
+        // Type assertion to help TypeScript understand the structure
+        const yearInfo = data as { count: number; areas: Record<string, number> };
+        
+        return {
+            year,
+            count: yearInfo.count,
+            areas: Object.entries(yearInfo.areas)
+                .map(([area, count]) => ({
+                    area,
+                    count,
+                    percentage: count / yearInfo.count
+                }))
+                .sort((a, b) => b.percentage - a.percentage)
+        };
+    })
     .sort((a, b) => a.year.localeCompare(b.year));
 
     function createGradientId(year: string): string {
@@ -64,18 +95,23 @@
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        // Create y scale (reversed for top-to-bottom order)
-        const yScale = d3.scalePoint()
-            .domain(yearData.map(d => d.year))
-            .range([margin.top, innerHeight - 60]) // Leave space at bottom for "All Years"
-            .padding(0.5);
+        // Create scale based on orientation
+        const mainScale = isMobile 
+            ? d3.scalePoint()
+                .domain(yearData.map(d => d.year))
+                .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
+                .padding(0.5)
+            : d3.scalePoint()
+                .domain(yearData.map(d => d.year))
+                .range([margin.top, innerHeight - 60]) // Leave space at bottom for "All Years"
+                .padding(0.5);
 
         const radiusScale = d3.scaleSqrt()
         .domain([0, d3.max(yearData, d => d.count) || 0])
         .range([4, 20]);
 
         const g = svgElement.append("g")
-            .attr("transform", `translate(${margin.left},0)`);
+            .attr("transform", isMobile ? `translate(0,${margin.top})` : `translate(${margin.left},0)`);
 
         // Create gradients
         const defs = svgElement.append("defs");
@@ -120,7 +156,7 @@
         });
         
         // Add all therapeutic areas to the gradient
-        const uniqueAreas = Array.from(allAreas);
+        const uniqueAreas = Array.from(allAreas) as string[];
         uniqueAreas.forEach((area, index) => {
             const colorCombo = getTherapeuticAreaColor(area);
             const position = index / uniqueAreas.length;
@@ -156,10 +192,10 @@
 
         // Add connecting line
         g.append("line")
-            .attr("x1", innerWidth / 2)
-            .attr("x2", innerWidth / 2)
-            .attr("y1", margin.top + 20) // Start below the "All" button
-            .attr("y2", innerHeight + 10)
+            .attr("x1", isMobile ? margin.left : innerWidth / 2)
+            .attr("x2", isMobile ? innerWidth - 10 : innerWidth / 2)
+            .attr("y1", isMobile ? innerHeight / 2 : margin.top + 20) // Start below the "All" button
+            .attr("y2", isMobile ? innerHeight / 2 : innerHeight + 10)
             .attr("stroke", "#666666")
             .attr("stroke-width", 0.5)
             .attr("stroke-dasharray", "3,3");
@@ -169,7 +205,9 @@
             .data(yearData)
             .join("g")
             .attr("class", "year-group")
-            .attr("transform", d => `translate(${innerWidth / 2},${yScale(d.year)})`);
+            .attr("transform", d => isMobile 
+                ? `translate(${mainScale(d.year)},${innerHeight / 2})` 
+                : `translate(${innerWidth / 2},${mainScale(d.year)})`);
 
         // Add highlight circles
         yearGroups.append("circle")
@@ -194,11 +232,15 @@
             })
             .on("mouseenter", function(event, d) {
                 if (d.year !== selectedYear) {
-                    d3.select(this.parentNode)
-                        .select(".highlight-circle")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0.325);
+                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
+                    const parentElement = d3.select(this).node()?.parentElement;
+                    if (parentElement) {
+                        d3.select(parentElement)
+                            .select(".highlight-circle")
+                            .transition()
+                            .duration(200)
+                            .attr("opacity", 0.325);
+                    }
 
                     d3.select(this)
                         .transition()
@@ -206,27 +248,34 @@
                         .attr("stroke-width", 2)
                         .style("filter", "url(#glow)");
 
-                    d3.select(this.parentNode)
-                        .select(".year-label")
-                        .transition()
-                        .duration(200)
-                        .attr("font-weight", "600")
-                        .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#FF1515");
-                        
-                    d3.select(this.parentNode)
-                        .select(".count-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 1);
+                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
+                    if (parentElement) {
+                        d3.select(parentElement)
+                            .select(".year-label")
+                            .transition()
+                            .duration(200)
+                            .attr("font-weight", "600")
+                            .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#FF1515");
+                            
+                        d3.select(parentElement)
+                            .select(".count-label")
+                            .transition()
+                            .duration(200)
+                            .attr("opacity", 1);
+                    }
                 }
             })
             .on("mouseleave", function(event, d) {
                 if (d.year !== selectedYear) {
-                    d3.select(this.parentNode)
-                        .select(".highlight-circle")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0);
+                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
+                    const parentElement = d3.select(this).node()?.parentElement;
+                    if (parentElement) {
+                        d3.select(parentElement)
+                            .select(".highlight-circle")
+                            .transition()
+                            .duration(200)
+                            .attr("opacity", 0);
+                    }
 
                     d3.select(this)
                         .transition()
@@ -234,38 +283,43 @@
                         .attr("stroke-width", 1.5)
                         .style("filter", "none");
 
-                    d3.select(this.parentNode)
-                        .select(".year-label")
-                        .transition()
-                        .duration(200)
-                        .attr("font-weight", "400")
-                        .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#718096");
-                        
-                    d3.select(this.parentNode)
-                        .select(".count-label")
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0.6);
+                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
+                    if (parentElement) {
+                        d3.select(parentElement)
+                            .select(".year-label")
+                            .transition()
+                            .duration(200)
+                            .attr("font-weight", "400")
+                            .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#718096");
+                            
+                        d3.select(parentElement)
+                            .select(".count-label")
+                            .transition()
+                            .duration(200)
+                            .attr("opacity", 0.6);
+                    }
                 }
             });
 
         // Add year labels
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", -radiusScale(d3.max(yearData, d => d.count) || 0))
-            .attr("y", -40) // Center vertically
-            .attr("text-anchor", "start")
-            .attr("transform", "rotate(-90)")
+            .attr("x", isMobile ? 0 : -radiusScale(d3.max(yearData, d => d.count) || 0))
+            .attr("y", isMobile ? 30 : -40) // Position based on orientation
+            .attr("text-anchor", "middle")
+            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", "end")
+            .style("dominant-baseline", isMobile ? "hanging" : "end")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
             
-        // Create "All Years" circle at the bottom
+        // Create "All Years" circle at the bottom/right
         const allYearsGroup = g.append("g")
             .attr("class", "all-years-group")
-            .attr("transform", `translate(${innerWidth / 2}, ${innerHeight +10})`)
+            .attr("transform", isMobile 
+                ? `translate(${innerWidth - 30}, ${innerHeight / 2})` 
+                : `translate(${innerWidth / 2}, ${innerHeight + 10})`)
             .attr("cursor", "pointer");
             
         // Create highlight circle for "All Years"
@@ -333,12 +387,12 @@
         // Add "All Years" label
         allYearsGroup.append("text")
             .attr("class", "year-label")
-            .attr("y", -42) // Center vertically
+            .attr("y", isMobile ? 30 : -42) // Position based on orientation
             .attr("text-anchor", "middle")
-            .attr("transform", "rotate(-90)")
+            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", "end")
+            .style("dominant-baseline", isMobile ? "hanging" : "end")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text("All");
 
@@ -420,8 +474,8 @@
     </div>    
     <svg
         bind:this={svg}
-        {width}
-        {height}
+        width={width}
+        height={height}
         viewBox="0 0 {width} {height}"
         class="w-full h-auto"
     />
@@ -465,5 +519,12 @@
 
     :global(.year-group) {
         transition: all 0.3s ease;
+    }
+    
+    /* Media query for mobile devices */
+    @media (max-width: 768px) {
+        .timeline-container {
+            flex-direction: column;
+        }
     }
 </style>

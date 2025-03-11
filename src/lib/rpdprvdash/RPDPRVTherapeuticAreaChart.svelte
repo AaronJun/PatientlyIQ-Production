@@ -2,7 +2,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import RPDTooltip from './RPDTooltip.svelte';
     
     // Import color definitions from the centralized file
     import { 
@@ -31,8 +30,13 @@
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
     export let isAllYearView: boolean = false; // New prop to check if "all" year view is selected
+    // Add props for InfiniteCanvasWrapper integration
+    export let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
+    export let showTooltip: (event: MouseEvent, data: any, isCompany?: boolean) => void = () => {};
+    export let hideTooltip: () => void = () => {};
 
-    let svg: SVGElement;
+    // Remove the SVG element binding as we'll use mainGroup instead
+    // let svg: SVGElement;
     const width = 920;
     const height = width;
     const radius = Math.min(width, height) / 2 - 60;
@@ -55,24 +59,12 @@
     const highlightColor = "#FFD700"; // Gold color for highlighted connections
     const highlightWidth = isAllYearView ? 1.75 : 2.25; // Width for highlighted connections
 
-    // Tooltip state
-    let tooltipVisible = false;
-    let tooltipContent = {
-        sponsor: '',
-        drugName: '',
-        therapeuticArea: '',
-        id: ''
-    };
-    let tooltipBorderColor = '';
-    let tooltipX = 0;
-    let tooltipY = 0;
-    // Tooltip offset from cursor
-    const tooltipOffset = { x: 15, y: 15 };
-    let tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
-    
+    // Remove local tooltip state since we'll use the parent's tooltip
     // Track active selections
     let activeArea: string | null = null;
     let activeStage: string | null = null;
+    let contentGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+    let focusableElements: any[] = [];
 
     /**
      * Process data into a format suitable for therapeutic area visualization
@@ -303,78 +295,6 @@
     }
 
     /**
-     * Helper function to safely clear tooltip timeout
-     */
-    function clearTooltipTimeout(): void {
-        if (tooltipTimeout) {
-            clearTimeout(tooltipTimeout);
-            tooltipTimeout = null;
-        }
-    }
-
-    /**
-     * Shows tooltip at the given mouse event position for the provided data
-     */
-    function showTooltip(event: MouseEvent, d: any, isArea: boolean = false): void {
-        // Clear existing tooltip timeout
-        clearTooltipTimeout();
-        
-        if (!svg) return;
-        
-        const containerRect = svg.getBoundingClientRect();
-        
-        // Position tooltip
-        tooltipX = event.clientX - containerRect.left + tooltipOffset.x;
-        tooltipY = event.clientY - containerRect.top + tooltipOffset.y;
-        
-        // Ensure tooltip stays within container
-        const tooltipWidth = 200;
-        if (tooltipX + tooltipWidth > containerRect.width) {
-            tooltipX = event.clientX - containerRect.left - tooltipWidth - tooltipOffset.x;
-        }
-        
-        const tooltipHeight = 100;
-        if (tooltipY + tooltipHeight > containerRect.height) {
-            tooltipY = event.clientY - containerRect.top - tooltipHeight - tooltipOffset.y;
-        }
-        
-        // Set tooltip content
-        if (isArea) {
-            tooltipContent = {
-                sponsor: d.area,
-                drugName: `${d.totalDrugs} drugs`,
-                therapeuticArea: d.area,
-                id: `${d.uniqueCompanies.size} companies`
-            };
-            const areaColors = getTherapeuticAreaColor(d.area);
-            tooltipBorderColor = areaColors.stroke;
-        } else {
-            tooltipContent = {
-                sponsor: d.Company || '',
-                drugName: d.Candidate || '',
-                therapeuticArea: d.TherapeuticArea1 || '',
-                id: d["Current Development Stage"] || (d["PRV Issue Year"] ? "PRV" : "")
-            };
-            const areaColors = getTherapeuticAreaColor(d.TherapeuticArea1);
-            tooltipBorderColor = areaColors.stroke;
-        }
-        
-        tooltipVisible = true;
-    }
-
-    /**
-     * Hides tooltip with a small delay
-     */
-    function hideTooltip(): void {
-        clearTooltipTimeout();
-        
-        tooltipTimeout = setTimeout(() => {
-            tooltipVisible = false;
-            tooltipTimeout = null;
-        }, 100);
-    }
-    
-    /**
      * Sets the active area and updates visual state
      */
     function setActiveArea(area: any, entries: any): void {
@@ -501,16 +421,34 @@
     }
 
     /**
-     * Creates the visualization with all components
+     * Create the visualization with all components
      */
     function createVisualization() {
-        if (!svg) return;
+        if (!mainGroup) {
+            console.error("mainGroup is not available");
+            return;
+        }
 
-        const svgElement = d3.select(svg);
-        svgElement.selectAll("*").remove();
+        console.log("Creating therapeutic area visualization with mainGroup:", mainGroup);
+
+        // Clear any existing elements
+        focusableElements = [];
+        mainGroup.selectAll("*").remove();
+
+        // Add a background rect to capture events
+        mainGroup.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("x", -width/2)
+            .attr("y", -height/2)
+            .attr("fill", "transparent")
+            .attr("class", "background-rect");
+
+        // Center the visualization in the mainGroup
+        contentGroup = mainGroup.append("g");
 
         // Create drop shadow filter
-        const defs = svgElement.append("defs");
+        const defs = contentGroup.append("defs");
         
         // Create drop shadow filter with proper rounded edges
         const dropShadow = defs.append("filter")
@@ -547,13 +485,10 @@
         feMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
 
-        const mainGroup = svgElement.append("g")
-            .attr("transform", `translate(${width/2},${height/2})`);
-
         // Create containers for different layers
-        const linesGroup = mainGroup.append("g").attr("class", "connecting-lines");
-        const stagesGroup = mainGroup.append("g").attr("class", "stage-circles");
-        const areaLabelsGroup = mainGroup.append("g").attr("class", "area-labels");
+        const linesGroup = contentGroup.append("g").attr("class", "connecting-lines");
+        const stagesGroup = contentGroup.append("g").attr("class", "stage-circles");
+        const areaLabelsGroup = contentGroup.append("g").attr("class", "area-labels");
 
         // Create stage circles and labels
         Object.entries(stageRadii).forEach(([stage, radius]) => {
@@ -607,8 +542,7 @@
                 event.stopPropagation();
                 
                 // Hide tooltip immediately
-                clearTooltipTimeout();
-                tooltipVisible = false;
+                hideTooltip();
                 
                 const stageEntries = data.filter(entry => getStage(entry) === stage);
                 setActiveStage(stage, stageEntries);
@@ -629,7 +563,7 @@
             const labelPlacement = labelPlacements.find(l => l.company === area.company);
             if (!labelPlacement) return;
 
-            const areaGroup = mainGroup.append("g");
+            const areaGroup = contentGroup.append("g");
 
             // Create sanitized ID for the area
             const areaId = area.area.replace(/\s+/g, '-').toLowerCase();
@@ -748,6 +682,7 @@
                             // Highlight the connection line for this drug
                             highlightDrugConnections(drugId);
                             
+                            // Use the parent's showTooltip function
                             showTooltip(event, drug);
                         })
                         .on("mousemove", (event) => {
@@ -777,14 +712,14 @@
                             // Reset connection highlights
                             resetConnectionHighlights();
                             
+                            // Use the parent's hideTooltip function
                             hideTooltip();
                         })
                         .on("click", (event) => {
                             event.stopPropagation();
                             
                             // Force immediate tooltip hiding without delay
-                            clearTooltipTimeout();
-                            tooltipVisible = false;
+                            hideTooltip();
                             
                             onShowDrugDetail({
                                 drugName: drug.Candidate,
@@ -822,6 +757,7 @@
                 // Highlight all connections for this area
                 highlightAreaConnections(area.area);
                 
+                // Use the parent's showTooltip function
                 showTooltip(event, area, true);
             };
 
@@ -834,6 +770,7 @@
                 // Reset connection highlights
                 resetConnectionHighlights();
                 
+                // Use the parent's hideTooltip function
                 hideTooltip();
             };
 
@@ -842,8 +779,7 @@
                 event.stopPropagation();
                 
                 // Force immediate tooltip hiding without delay
-                clearTooltipTimeout();
-                tooltipVisible = false;
+                hideTooltip();
                 
                 // Keep area active after click and notify callback
                 setActiveArea(area, {
@@ -863,69 +799,29 @@
                 .on("click", handleClick);
         });
 
-        // Add click handler to SVG background to clear selections
-        svgElement.on("click", (event) => {
-            // Check if click was directly on the SVG background
-            if (event.target === svg) {
-                activeArea = null;
-                activeStage = null;
-                resetConnectionHighlights();
-                hideTooltip(); // Ensure tooltip is hidden when clicking on background
-                onLeave();
-            }
-        });
-        
-        // Add event listeners to handle tooltip when mouse leaves SVG
-        svgElement.on("mouseleave", () => {
+        // Add click handler to background to clear selections
+        mainGroup.select(".background-rect").on("click", () => {
+            activeArea = null;
+            activeStage = null;
             resetConnectionHighlights();
-            hideTooltip();
+            hideTooltip(); // Ensure tooltip is hidden when clicking on background
+            onLeave();
         });
     }
 
-    // React to changes in isAllYearView
-    $: if (isAllYearView !== undefined && svg && data.length > 0) {
-        // Recreate visualization when view mode changes
+    // React to changes in isAllYearView or mainGroup
+    $: if (mainGroup && data.length > 0) {
+        // Recreate visualization when view mode changes or mainGroup is available
         createVisualization();
     }
     
     // Initialize visualization on mount
     onMount(() => {
-        if (data.length > 0) {
+        if (mainGroup && data.length > 0) {
             createVisualization();
         }
-        
-        // Clean up tooltip when component is destroyed
-        return () => {
-            clearTooltipTimeout();
-        };
     });
 </script>
 
-<div class="chart-container">
-    <svg
-        bind:this={svg}
-        {width}
-        {height}
-        viewBox="0 0 {width} {height}"
-        class="w-full h-auto"
-    />
-
-    {#if tooltipVisible}
-        <RPDTooltip
-            visible={tooltipVisible}
-            content={tooltipContent}
-            borderColor={tooltipBorderColor}
-            x={tooltipX}
-            y={tooltipY}
-        />
-    {/if}
-</div>
-
-<style>
-    .chart-container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        position: relative;
-    }
-</style>
+<!-- Remove the chart-container div and SVG element since we're using the parent's SVG -->
+<!-- Remove the RPDTooltip component since we're using the parent's tooltip -->

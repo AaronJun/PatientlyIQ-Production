@@ -534,15 +534,44 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row">
             <!-- Main visualization area -->
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-6">
-              <RPDDRadialYear 
-                data={filteredData}
-                onCompanyHover={handleCompanyHover}
-                onStageHover={handleStageHover}
-                onLeave={handleLeave}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
-              />
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-6 h-[calc(100vh-12rem)] relative">
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
+                {#if mainGroup}
+                  <RPDDRadialYear 
+                    data={filteredData}
+                    isAllYearView={selectedYear === "All"}
+                    onCompanyHover={handleCompanyHover}
+                    onStageHover={handleStageHover}
+                    onLeave={handleLeave}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    onShowCompanyDetail={handleShowCompanyDetail}
+                    {mainGroup}
+                    {showTooltip}
+                    {hideTooltip}
+                  />
+                {:else}
+                  <!-- Loading state with spinner -->
+                  <g transform="translate(460, 460)">
+                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
+                    <path 
+                      d="M40 0 A40 40 0 0 1 40 0" 
+                      fill="none" 
+                      stroke="#3b82f6" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                    >
+                      <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        from="0" 
+                        to="360" 
+                        dur="1s" 
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                  </g>
+                {/if}
+              </InfiniteCanvasWrapper>
             </div>
 
             <!-- Sticky sidebar -->
