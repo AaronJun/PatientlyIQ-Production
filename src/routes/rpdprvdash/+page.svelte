@@ -19,7 +19,7 @@
   import RPDTransactionSummaryView from '$lib/rpdprvdash/sidebarComponents/RPDTransactionsSummary.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
   
-  import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
+  import RPDCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
   import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
@@ -280,18 +280,24 @@
   function handleShowCompanyDetail(detail: any) {
     const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
     selectedCompany = detail.Company;
+    
+    // Set drawer props for RPDPRVDrawer
     drawerProps = {
       isCompanyView: true,
       Company: detail.Company,
       entries: companyEntries,
-      color: '#37587e',
+      color: detail.color || '#37587e',
       companyUrl: detail.companyUrl,
       country: companyEntries[0]?.COUNTRY || 'N/A',
       publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
       marketCap: companyEntries[0]?.MarketCap || 'N/A'
     };
+    
+    // Set drawer state flags
     isDrawerOpen = true;
     isCompanyDetailDrawerOpen = true;
+    
+    console.log('Opening company detail drawer for:', detail.Company);
     
     // Track company detail view
     tracker.trackCompanyDetailView(detail.Company, companyEntries.length);
@@ -314,11 +320,14 @@
   }
 
   function handleCloseDrawer() {
+    console.log("Closing drawer");
     isDrawerOpen = false;
     isCompanyDetailDrawerOpen = false;
   }
 
-  function handleDashboardClick() {
+  function handleDashboardClick(event: Event) {
+    console.log("Dashboard button clicked");
+    event.stopPropagation();
     isDashboardOpen = true;
     tracker.trackDashboardInteraction('open');
   }
@@ -461,7 +470,7 @@
           <!-- Dashboard button with responsive design -->
           <button 
             class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-            on:click={handleDashboardClick}
+            on:click={e => handleDashboardClick(e)}
           >
             <DashboardReference size={16}/>
             <span class="hidden lg:inline">Dashboard</span>
@@ -470,7 +479,7 @@
           <!-- Mobile Dashboard Icon Button -->
           <button 
             class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
-            on:click={handleDashboardClick}
+            on:click={e => handleDashboardClick(e)}
           >
             <DashboardReference size={16}/>
           </button>
@@ -935,15 +944,16 @@
 {/if}
 
 {#if isDrawerOpen}
+  <!-- Debug info: {JSON.stringify({isDrawerOpen, isCompanyDetailDrawerOpen, isCompanyView: drawerProps.isCompanyView})} -->
   {#if drawerProps.isCompanyView}
-    <RpdCompanyDetailDrawer
+    <RPDCompanyDetailDrawer
       companyName={drawerProps.Company}
       allData={rpddData}
       stockData={rpdCompanyValues}
       isOpen={isDrawerOpen}
       onClose={handleCloseDrawer}
       onShowDrugDetail={handleShowDrugDetail}
-      color={drawerProps.color}
+      color={drawerProps.color || '#37587e'}
     />
   {:else}
     <RPDPRVDrawer

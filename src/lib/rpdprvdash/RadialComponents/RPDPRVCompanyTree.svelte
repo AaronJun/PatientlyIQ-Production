@@ -1117,7 +1117,7 @@
             .duration(300)
             .attr("stroke", highlightColor)
             .attr("stroke-width", highlightWidth)
-            .attr("stroke-opacity", 1);
+        .attr("stroke-opacity", 1); 
     }
     
     function resetConnectionHighlights() {

@@ -4,6 +4,7 @@
   // Import our new enhanced stock price chart instead of the original
   import EnhancedStockPriceChart from './StockPriceChart.svelte';
   import { hasPRVAward } from './utils/data-processing-utils';
+  import { onMount } from 'svelte';
 
   export let isOpen: boolean = false;
   export let companyName: string = '';
@@ -24,8 +25,13 @@
     transactions: 0
   };
 
+  onMount(() => {
+    console.log("RPDCompanyDetailDrawer mounted", { isOpen, companyName });
+  });
+
   $: {
     if (allData && companyName) {
+      console.log("Processing company data for:", companyName);
       companyData = allData.filter(d => d.Company === companyName);
       
       // Calculate company profile stats
@@ -44,6 +50,11 @@
         transactions: transactionEntries.length
       };
     }
+  }
+
+  function handleCloseClick() {
+    console.log("Close button clicked in company drawer");
+    onClose();
   }
 
   function handleDrugClick(drug: any) {
@@ -65,7 +76,7 @@
 </script>
 
 {#if isOpen}
-<div class="drawer-backdrop" on:click={onClose} transition:fly={{ duration: 0, opacity: 0.5 }}>
+<div class="drawer-backdrop" on:click={handleCloseClick} transition:fly={{ duration: 0, opacity: 0.5 }}>
   <div 
     class="drawer"
     on:click|stopPropagation={() => {}}
@@ -73,8 +84,8 @@
   >
     <div class="drawer-header">
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-semibold">{companyName}</h2>
-        <button class="close-button" on:click={onClose}>
+        <h2 class="text-lg font-semibold">{companyName || 'Company Name Not Set'}</h2>
+        <button class="close-button" on:click={handleCloseClick}>
           <Close size={20} />
         </button>
       </div>
