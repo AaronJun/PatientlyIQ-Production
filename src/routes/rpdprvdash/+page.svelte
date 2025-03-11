@@ -432,7 +432,7 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow relative">
             <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-12rem)] relative">
+            <div class="w-full h-[calc(100vh-2rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
