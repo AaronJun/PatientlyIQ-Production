@@ -472,29 +472,18 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Left timeline sidebar -->
-            {#if activeTab !== 'Program Overview'}
-              <div class="absolute left-0 top-0 h-fit w-fit z-10">
-                <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">    <!-- Timeline content -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    {#if activeTab === 'By Transactions'}
-                      <PRVPurchaseTimeline 
-                        data={rpddData}
-                        selectedYear={selectedTransactionYear}
-                        onYearSelect={handleTransactionYearSelect}
-                        transactionYearSelected={handleTransactionYearSelect}
-                      />
-                    {:else}
-                      <RPDPRVVerticalTimeline 
-                        data={rpddData}
-                        selectedYear={selectedYear}
-                        onYearSelect={handleYearSelect}
-                      />
-                    {/if}
-                  </div>
+            <!-- Left timeline sidebar for By Sponsor tab -->
+            <div class="absolute left-0 top-0 h-fit w-fit z-10">
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <RPDPRVVerticalTimeline 
+                    data={rpddData}
+                    selectedYear={selectedYear}
+                    onYearSelect={handleYearSelect}
+                  />
                 </div>
               </div>
-            {/if}
+            </div>
 
             <div class="absolute right-0 top-16 h-fit fit max-h-[1280px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
               <button
@@ -594,21 +583,18 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Left timeline sidebar -->
-            {#if activeTab !== 'Program Overview'}
+            <!-- Left timeline sidebar for By Therapeutic Area tab -->
             <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col"> 
-                  <!-- Timeline content -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    <RPDPRVVerticalTimeline 
-                      data={rpddData}
-                      selectedYear={selectedYear}
-                      onYearSelect={handleYearSelect}
-                    />
-                  </div>
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <RPDPRVVerticalTimeline 
+                    data={rpddData}
+                    selectedYear={selectedYear}
+                    onYearSelect={handleYearSelect}
+                  />
                 </div>
               </div>
-            {/if}
+            </div>
 
             <!-- Right information sidebar -->
             <div class="absolute right-0 top-0 h-full {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
@@ -666,6 +652,88 @@
               </div>
             </div>
           </div>
+
+        <!-- By Transactions Tab Layout -->
+        {:else if activeTab === 'By Transactions'}
+          <!-- Updated Transactions Tab Layout -->
+          <div class="flex flex-row relative">
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} pl-32 transition-all duration-300">
+              <SellerBuyerChord 
+                data={rpddData}
+                stockData={rpdCompanyValues}
+                selectedYear={selectedTransactionYear}
+                {highlightedTransaction}
+                onShowDrugDetail={handleShowDrugDetail}
+                on:transactionHover={(event) => highlightedTransaction = event.detail}
+                on:transactionLeave={() => highlightedTransaction = null}
+              />
+            </div>
+            
+            <!-- Left timeline sidebar for By Transactions tab -->
+            <div class="absolute left-0 top-0 h-fit w-fit z-10">
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <PRVPurchaseTimeline 
+                    data={rpddData}
+                    selectedYear={selectedTransactionYear}
+                    onYearSelect={handleTransactionYearSelect}
+                    transactionYearSelected={handleTransactionYearSelect}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <button
+                class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
+                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
+                <div class="sidebar-header mb-4">
+                  <h4 class="text-xs uppercase font-semibold text-slate-600">                              
+                    {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
+                  </h4>
+                </div>
+
+                <!-- Show transaction summary when no transaction is selected -->
+                <div class="flex flex-col gap-4">
+                  <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
+                    <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+                    <VoucherBeeswarmPlot 
+                      data={rpddData}
+                      {highlightedTransaction}
+                      selectedYear={selectedTransactionYear}
+                      onPointClick={handleShowDrugDetail}
+                      on:transactionHover={(event) => highlightedTransaction = event.detail}
+                      on:transactionLeave={() => highlightedTransaction = null}
+                    />
+                  </div>
+                  <div class="bg-white rounded-lg shadow-sm p-4">
+                    <RPDTransactionSummaryView 
+                      data={rpddData}
+                      year={selectedTransactionYear}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           
         <!-- Program Overview (Analytics) Tab Layout -->
         {:else if activeTab === 'Program Overview'}
@@ -675,22 +743,23 @@
               <p class="text-slate-600 mb-6">Comprehensive analysis of the Rare Pediatric Disease Priority Review Voucher program performance and impact.</p>
               
               <RPDPRVAnalytics 
-              data={rpddData} 
-              isAllYearView={selectedYear === "All"}
-              onEntrySelect={(entry) => handleShowDrugDetail({
-                Company: entry.Company,
-                drugName: entry.Candidate,
-                therapeuticArea: entry.TherapeuticArea1,
-                year: entry["RPDD Year"],
-                color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
-                entries: [entry],
-                // Add other properties needed for your drug detail drawer
-                currentStage: entry["Current Development Stage"],
-                rpddAwardDate: entry["RPDD Date"],
-                voucherAwardDate: entry["PRV Date"],
-                indication: entry.Indication
-              })}
-            />            </div>
+                data={rpddData} 
+                isAllYearView={selectedYear === "All"}
+                onEntrySelect={(entry) => handleShowDrugDetail({
+                  Company: entry.Company,
+                  drugName: entry.Candidate,
+                  therapeuticArea: entry.TherapeuticArea1,
+                  year: entry["RPDD Year"],
+                  color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
+                  entries: [entry],
+                  // Add other properties needed for your drug detail drawer
+                  currentStage: entry["Current Development Stage"],
+                  rpddAwardDate: entry["RPDD Date"],
+                  voucherAwardDate: entry["PRV Date"],
+                  indication: entry.Indication
+                })}
+              />
+            </div>
           </div>
         {/if}
       </div>

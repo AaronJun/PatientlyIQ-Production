@@ -103,7 +103,7 @@
 
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.count) || 0])
-            .range([4, 20]);
+            .range([4, 16]);
 
         const g = svgElement.append("g")
             .attr("transform", isMobile ? `translate(0,${margin.top})` : `translate(${margin.left},0)`);
