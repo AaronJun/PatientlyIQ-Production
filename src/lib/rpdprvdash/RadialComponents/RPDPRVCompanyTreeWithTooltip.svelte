@@ -760,6 +760,7 @@
                     labelText
                         .transition()
                         .duration(200)
+                        .attr("font-size", sizeConfig.labelFontSize)
                         .attr("font-weight", sizeConfig.labelFontWeight)
                         .attr("fill", "#4A5568");
                 }

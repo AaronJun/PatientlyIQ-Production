@@ -5,6 +5,7 @@
   import { dev } from '$app/environment';
 
   import { injectAnalytics } from '@vercel/analytics/sveltekit'
+  import { shouldDisableTracking } from '$lib/analytics/excludeIP.js';
   
   const defaultMetadata = {
     title: "PatientlyIQ",
@@ -44,7 +45,51 @@ injectSpeedInsights();
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
   
-    gtag('config', 'G-S4WC261VK3');
+    // Initialize Google Analytics with IP anonymization
+    gtag('config', 'G-S4WC261VK3', {
+      'anonymize_ip': true,
+      'send_page_view': false // We'll manually send page views for better control
+    });
+    
+    // Add function to exclude internal traffic
+    window.excludeInternalTraffic = function() {
+      // Create custom tracker function that checks conditions before sending to GA
+      window.trackEvent = function(eventName, params) {
+        // Skip tracking if exclusion conditions are met
+        if (typeof shouldDisableTracking === 'function' && shouldDisableTracking()) {
+          console.log('Analytics tracking disabled - event not sent:', eventName, params);
+          return;
+        }
+        
+        // Check if we're in local development environment
+        if (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1') {
+          console.log('Local development - analytics event not sent:', eventName, params);
+          return;
+        }
+        
+        // Check if this IP is specifically excluded
+        if (window.gaExcludedIPs && window.gaExcludedIPs.length > 0) {
+          console.log('IP excluded - analytics event not sent:', eventName, params);
+          return;
+        }
+        
+        // Send the event to Google Analytics
+        if (typeof gtag === 'function') {
+          gtag('event', eventName, params);
+        }
+      };
+      
+      // Send initial page view (will be filtered by conditions above)
+      window.trackEvent('page_view', {
+        page_title: document.title,
+        page_location: window.location.href,
+        page_path: window.location.pathname
+      });
+    };
+    
+    // Call the function to configure tracking
+    window.excludeInternalTraffic();
   </script>  
   <!-- Basic Meta Tags -->
   <title>{metadata.title}</title>

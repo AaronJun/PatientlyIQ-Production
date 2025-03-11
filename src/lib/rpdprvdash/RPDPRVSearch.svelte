@@ -7,6 +7,7 @@
     export let data: any[] = [];
     export let onShowDrugDetail: (detail: any) => void;
     export let onShowCompanyDetail: (detail: any) => void;
+    export let onSearch: (term: string, resultCount: number) => void = () => {};
 
     let searchTerm = "";
     let isOpen = false;
@@ -45,6 +46,12 @@
                 company: d.Company,
                 therapeuticArea: d.TherapeuticArea1
             }));
+            
+        // Track search if term has at least 3 characters
+        if (term.length >= 3) {
+            const totalResults = searchResults.companies.length + searchResults.drugs.length;
+            onSearch(term, totalResults);
+        }
     } else {
         isOpen = false;
         searchResults = { companies: [], drugs: [] };

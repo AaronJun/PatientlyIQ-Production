@@ -4,7 +4,7 @@
   import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
 
   // Use default values instead of window properties for SSR compatibility
-  export let width = 950;
+  export let width = 1020;
   export let height = width;
   
   // Tooltip state
@@ -320,14 +320,14 @@
 
   .navigation-controls {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: 4px;
+    right: 8px;
     display: flex;
     border: 1px solid #549E7D;
     gap: 8px;
     background: white;
-    padding: 8px;
-    border-radius: 100px;
+    padding: 4px;
+    border-radius: 5.245px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
