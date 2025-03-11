@@ -320,7 +320,7 @@
 
   .navigation-controls {
     position: absolute;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     display: flex;
     border: 1px solid #549E7D;

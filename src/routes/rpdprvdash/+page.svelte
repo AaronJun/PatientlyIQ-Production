@@ -426,33 +426,13 @@
   
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8">
-    
-    <div class="tab-content w-full h-full flex">
-      <!-- Vertical timeline on the left - conditionally show either RPDD timeline or Purchase timeline -->
-      <div class="timeline-wrapper max-w-1/5 min-h-full">
-        {#if activeTab === 'By Transactions'}
-        <PRVPurchaseTimeline 
-        data={rpddData}
-        selectedYear={selectedTransactionYear}
-        onYearSelect={handleTransactionYearSelect}
-        transactionYearSelected={handleTransactionYearSelect}
-      />
-        {:else if activeTab !== 'Program Overview'}
-          <RPDPRVVerticalTimeline 
-            data={rpddData}
-            selectedYear={selectedYear}
-            onYearSelect={handleYearSelect}
-          />
-        {/if}
-        
-      </div>
-
-      <!-- Main content area with adjusted width to accommodate the vertical timeline -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'flex-1 ml-4'}">
+    <div class="tab-content w-full h-full flex relative">
+      <!-- Main content area taking full width -->
+      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'}">
         {#if activeTab === 'By Sponsor'}
-          <div class="flex flex-row flex-grow">
-            <!-- Main visualization area -->
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pr-8 pl-2 h-[calc(100vh-12rem)] relative">
+          <div class="flex flex-row flex-grow relative">
+            <!-- Main visualization area taking full width -->
+            <div class="w-full h-[calc(100vh-12rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
@@ -468,7 +448,7 @@
                     {hideTooltip}
                   />
                 {:else}
-                  <!-- Improved loading state with spinner -->
+                  <!-- Loading spinner -->
                   <g transform="translate(460, 460)">
                     <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
                     <path 
@@ -490,69 +470,34 @@
                   </g>
                 {/if}
               </InfiniteCanvasWrapper>
-              
             </div>
 
-            <!-- Sticky sidebar with collapse button -->
-            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
-              <button
-                class="rounded-btn absolute -left-3 top-32 z- p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
-                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                <svg
-                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
-                <!-- Use the updated sidebar component -->
-                <SponsorSidebar
-                  {currentView}
-                  {currentEntries}
-                  {currentCompanyMetrics}
-                  colorMap={colorMap}
-                  onShowDrugDetail={handleShowDrugDetail}
-                  fullYearData={filteredData}
-                  selectedYear={selectedYear}
-                />
-                <div class="mt-12">
-                  <RPDRadialLegend 
-                    items={processedData}
-                    {colorScale}
-                  />
+            <!-- Left timeline sidebar -->
+            {#if activeTab !== 'Program Overview'}
+              <div class="absolute left-0 top-0 h-fit w-fit z-10">
+                <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">    <!-- Timeline content -->
+                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                    {#if activeTab === 'By Transactions'}
+                      <PRVPurchaseTimeline 
+                        data={rpddData}
+                        selectedYear={selectedTransactionYear}
+                        onYearSelect={handleTransactionYearSelect}
+                        transactionYearSelected={handleTransactionYearSelect}
+                      />
+                    {:else}
+                      <RPDPRVVerticalTimeline 
+                        data={rpddData}
+                        selectedYear={selectedYear}
+                        onYearSelect={handleYearSelect}
+                      />
+                    {/if}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            {/if}
 
-        <!-- By Transactions Tab Layout -->
-        {:else if activeTab === 'By Transactions'}
-         <!-- Updated Transactions Tab Layout -->
-          <div class="flex flex-row">
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-12">
-              <SellerBuyerChord 
-                data={rpddData}
-                stockData={rpdCompanyValues}
-                selectedYear={selectedTransactionYear}
-                {highlightedTransaction}
-                onShowDrugDetail={handleShowDrugDetail}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
-              />
-            </div>
-            
-            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+            <!-- Right information sidebar -->
+            <div class="absolute right-0 top-0 h-full {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
               <button
                 class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                 on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
@@ -573,42 +518,44 @@
                   />
                 </svg>
               </button>
-              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
-                <div class="sidebar-header mb-4">
-                  <h4 class="text-xs uppercase font-semibold text-slate-600">                              
-                    {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
+              <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <!-- Sidebar header stays at top -->
+                <div class="flex-none mb-4">
+                  <h4 class="text-xs uppercase font-semibold text-slate-600">
+                    {currentArea ? `${currentArea}` : 'Overview'}
                   </h4>
                 </div>
 
-                <!-- Show transaction summary when no transaction is selected -->
-                <div class="flex flex-col gap-4">
-                  <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
-                    <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
-                    <VoucherBeeswarmPlot 
-                      data={rpddData}
-                      {highlightedTransaction}
-                      selectedYear={selectedTransactionYear}
-                      onPointClick={handleShowDrugDetail}
-                      on:transactionHover={(event) => highlightedTransaction = event.detail}
-                      on:transactionLeave={() => highlightedTransaction = null}
-                    />
-                  </div>
-                  <div class="bg-white rounded-lg shadow-sm p-4">
-                    <RPDTransactionSummaryView 
-                      data={rpddData}
-                      year={selectedTransactionYear}
-                    />
-                  </div>
+                <!-- Scrollable content area -->
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <!-- Use the updated sidebar component -->
+                  <SponsorSidebar
+                    {currentView}
+                    {currentEntries}
+                    {currentCompanyMetrics}
+                    colorMap={colorMap}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    fullYearData={filteredData}
+                    selectedYear={selectedYear}
+                  />
+                </div>
+
+                <!-- Legend stays at bottom -->
+                <div class="flex-none mt-6 pt-4 border-t border-slate-200">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-        <!-- Therapeutic Area Tab Layout -->  
+        <!-- By Therapeutic Area Tab Layout -->  
         {:else if activeTab === 'By Therapeutic Area'}
-          <div class="flex flex-row">
-            <!-- Main visualization area -->
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 px-6 h-[calc(100vh-12rem)] relative">
+          <div class="flex flex-row relative">
+            <!-- Main visualization area taking full width -->
+            <div class="w-full h-[calc(100vh-12rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
@@ -648,10 +595,26 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Sticky sidebar -->
-            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+            <!-- Left timeline sidebar -->
+            {#if activeTab !== 'Program Overview'}
+            <div class="absolute left-0 top-0 h-fit w-fit z-10">
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col"> 
+                  <!-- Timeline content -->
+                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                    <RPDPRVVerticalTimeline 
+                      data={rpddData}
+                      selectedYear={selectedYear}
+                      onYearSelect={handleYearSelect}
+                    />
+                  </div>
+                </div>
+              </div>
+            {/if}
+
+            <!-- Right information sidebar -->
+            <div class="absolute right-0 top-0 h-full {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
               <button
-                class="rounded-btn absolute -left-3 top-32 z- p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                 on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
                 title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               >
@@ -670,24 +633,32 @@
                   />
                 </svg>
               </button>
-              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
-                <div class="sidebar-header mb-2">
-                  <h4 class="text-xs uppercase font-semibold text-slate-600">              
-                    {currentArea ? `${currentArea}` : 'Overview'}
-                  </h4>
+              <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <!-- Sidebar header stays at top -->
+                <div class="flex-none mb-4">
+                  <div class="sidebar-header">
+                    <h4 class="text-xs uppercase font-semibold text-slate-600">              
+                      {currentArea ? `${currentArea}` : 'Overview'}
+                    </h4>
+                  </div>
                 </div>
-                
-                <!-- Use the updated therapeutic area sidebar component -->
-                <TherapeuticAreaSidebar
-                  {currentEntries}
-                  {currentArea}
-                  {areaMetrics}
-                  colorMap={colorMap}
-                  onShowDrugDetail={handleShowDrugDetail}
-                  fullYearData={filteredData}
-                  selectedYear={selectedYear}
-                />
-                <div class="mt-12">
+
+                <!-- Scrollable content area -->
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <!-- Use the updated therapeutic area sidebar component -->
+                  <TherapeuticAreaSidebar
+                    {currentEntries}
+                    {currentArea}
+                    {areaMetrics}
+                    colorMap={colorMap}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    fullYearData={filteredData}
+                    selectedYear={selectedYear}
+                  />
+                </div>
+
+                <!-- Legend stays at bottom -->
+                <div class="flex-none mt-6 pt-4 border-t border-slate-200">
                   <RPDRadialLegend 
                     items={processedData}
                     {colorScale}
@@ -833,4 +804,35 @@
     border-bottom: .5px dotted #535353;
     padding: .25rem 1rem 1rem 0;
   }
-  </style>
+
+  /* Custom scrollbar styles */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
+  }
+
+  /* Firefox scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #e5e7eb;
+  }
+
+  /* For Edge */
+  .scrollbar-thin {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+</style>
