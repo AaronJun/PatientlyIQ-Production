@@ -47,18 +47,18 @@
   </script>
   
   <div class="summary-view">
-    <h3 class="text-base font-medium text-slate-800 mb-3">
+    <h3 class="text-base font-semibold text-slate-800 mb-3">
       {year} Year Summary
     </h3>
     
     <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="stat-card">
-        <span class="text-3xl font-bold text-slate-700">{totalRPDDs}</span>
+        <span class="text-3xl font-bold text-slate-500">{totalRPDDs}</span>
         <p class="text-xs text-slate-500 mt-1">Total RPDDs</p>
       </div>
       
       <div class="stat-card">
-        <span class="text-3xl font-bold text-slate-700">{prvsAwarded}</span>
+        <span class="text-3xl font-bold text-emerald-700">{prvsAwarded}</span>
         <p class="text-xs text-slate-500 mt-1">PRVs Awarded</p>
       </div>
     </div>
@@ -111,7 +111,11 @@
     .summary-view {
       transition: all 0.3s ease;
     }
-    
+
+    .summary-header {
+      border-bottom: 1px solid #565656;
+    } 
+
     .stat-card {
       display: flex;
       flex-direction: column;

@@ -30,6 +30,7 @@
 
   import { ArrowUpRight, Bee, DashboardReference, Globe, Analytics } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
+  import { ChevronDown } from 'carbon-icons-svelte';
 
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
@@ -76,6 +77,7 @@
   let selectedCompany = "";
   let isSidebarCollapsed = false; // Add state for sidebar collapse
   let isHowToReadOpen = false; // New state variable for How to Read modal
+  let isDropdownOpen = false; // New state variable for dropdown menu
   
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
@@ -225,8 +227,22 @@
       return;
     }
     
-    // Reset sidebar view
+    // Reset sidebar view and close dropdown
     resetSidebarView();
+    isDropdownOpen = false;
+  }
+
+  // Function to handle dropdown toggle
+  function toggleDropdown(event: Event) {
+    event.stopPropagation();
+    isDropdownOpen = !isDropdownOpen;
+  }
+
+  // Function to handle mobile tab selection
+  function handleMobileTabSelect(tab: string, event: Event) {
+    event.stopPropagation();
+    setActiveTab(tab);
+    isDropdownOpen = false;
   }
 
   function handleShowCompanyDetail(detail: any) {
@@ -325,34 +341,83 @@
     </button>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
+    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-2">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
-        <div class="flex">
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex">
           {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions', 'Program Overview'] as tab}
-          <button
-          class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
-          {activeTab === tab ? 
-            'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501] active-tab' : 
-            'hover:text-[#e05501] text-slate-400 px-2 hover:text-orange-500'}"
-          on:click={() => setActiveTab(tab)}
-        >
-          {tab}
+            <button
+              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
+              {activeTab === tab ? 
+                'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501] active-tab' : 
+                'hover:text-[#e05501] text-slate-400 px-2 hover:text-orange-500'}"
+              on:click={() => setActiveTab(tab)}
+            >
+              {tab}
             </button>
           {/each}
         </div>
 
-        <div class="flex w-1/5 gap-2">
-          <RpdprvSearch
-            data={rpddData}
-            onShowDrugDetail={handleShowDrugDetail}
-            onShowCompanyDetail={handleShowCompanyDetail}
-          />
+        <!-- Mobile Navigation -->
+        <div class="relative md:hidden">
+          <button
+            class="flex items-center gap-2 px-2 py-2 text-xs font-medium text-slate-700 bg-white rounded-full ring-1 ring-emerald-200 shadow-sm hover:bg-slate-50 focus:outline-none"
+            on:click={toggleDropdown}
+          >
+            {activeTab}
+            <ChevronDown
+              size={16}
+              class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
+            />
+          </button>
+
+          {#if isDropdownOpen}
+            <div
+              class="absolute left-0 mt-2 rounded-md shadow-lg bg-white ring-2 ring-emerald-500 px-2 z-50"
+              on:click|stopPropagation
+            >
+              <div class="py-1" role="menu" aria-orientation="vertical">
+                {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions', 'Program Overview'] as tab}
+                  <button
+                    class="block w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-100 hover:text-[#FF5501]
+                    {activeTab === tab ? 'bg-emerald-200 text-[#FF5501] font-medium' : ''}"
+                    on:click={(e) => handleMobileTabSelect(tab, e)}
+                    role="menuitem"
+                  >
+                    {tab}
+                  </button>
+                {/each}
+              </div>
+            </div>
+          {/if}
+        </div>
+
+        <!-- Search and Dashboard Buttons -->
+        <div class="flex gap-2 items-stretch">
+          <!-- Search component with responsive width -->
+          <div class="w-full md:w-48 lg:w-64">
+            <RpdprvSearch
+              data={rpddData}
+              onShowDrugDetail={handleShowDrugDetail}
+              onShowCompanyDetail={handleShowCompanyDetail}
+            />
+          </div>
+          
+          <!-- Dashboard button with responsive design -->
           <button 
-            class="interactive-element flex px-2 pt-2.5 rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+            class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
             on:click={handleDashboardClick}
           >
             <DashboardReference size={16}/>
-            Dashboard
+            <span class="hidden lg:inline">Dashboard</span>
+          </button>
+          
+          <!-- Mobile Dashboard Icon Button -->
+          <button 
+            class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
+            on:click={handleDashboardClick}
+          >
+            <DashboardReference size={16}/>
           </button>
         </div>
       </div>

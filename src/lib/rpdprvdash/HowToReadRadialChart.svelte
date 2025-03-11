@@ -1,6 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
+  import { slide, fade } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
+  import { ChevronLeft, ChevronRight, Close } from 'carbon-icons-svelte';
+  import { Tabs as TabsPrimitive } from "bits-ui";
+  import { cn } from "$lib/utils";
   
   // Import color definitions for the legend
   import { 
@@ -21,6 +26,7 @@
   // References to SVG elements
   let svgSponsor: SVGSVGElement;
   let svgTherapeutic: SVGSVGElement;
+  let activeTab = 'radial';
   
   // Stage radii for the diagrams
   const stageRadii: Record<string, number> = {
@@ -360,121 +366,305 @@
     createSponsorDiagram();
     createTherapeuticDiagram();
   });
+
+  function handleBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  }
 </script>
 
-<div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center {isOpen ? 'block' : 'hidden'}" on:click={onClose}>
-  <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" on:click|stopPropagation>
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-slate-800">How to Read the Radial Charts</h2>
-        <button class="text-slate-500 hover:text-slate-700" on:click={onClose}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      
-      <div class="prose max-w-none">
-        <p class="text-slate-600 mb-6">
-          The radial charts in this application visualize relationships between companies, therapeutic areas, and drugs across different development stages. This guide explains how to interpret these visualizations.
-        </p>
-        
-        <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">Basic Structure</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div>
-            <p class="text-slate-600 mb-2">
-              The charts are organized in concentric circles, with each circle representing a different development stage:
-            </p>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li><span class="font-medium">Outer circle:</span> Preclinical (PRE)</li>
-              <li><span class="font-medium">Middle circles:</span> Clinical Phases (P1, P2, P3)</li>
-              <li><span class="font-medium">Inner circles:</span> Filed (FILED) and PRV Awarded (PRV)</li>
-            </ul>
-          </div>
-          <div>
-            <p class="text-slate-600 mb-2">
-              The position of elements indicates relationships:
-            </p>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li>Companies/therapeutic areas are positioned around the outer edge</li>
-              <li>Drugs are positioned on the stage circles based on their development phase</li>
-              <li>Lines connect related elements to show relationships</li>
-            </ul>
-          </div>
+<svelte:window on:keydown={handleKeydown}/>
+
+{#if isOpen}
+  <div 
+    class="fixed inset-0 bg-black/50 z-[1000] flex justify-end"
+    on:click={handleBackdropClick}
+    transition:fade={{duration: 200}}
+  >
+    <div 
+      class="fixed inset-y-0 right-0 w-[65vw] bg-white shadow-lg z-50 overflow-y-auto"
+      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
+    >
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">How to Read the Dashboard</h2>
+          <button 
+            class="p-2 hover:bg-gray-100 rounded-full"
+            on:click={onClose}
+          >
+            <Close size={24} />
+          </button>
         </div>
-        
-        <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">By Sponsor View</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div>
-            <p class="text-slate-600 mb-4">
-              In the "By Sponsor" view, companies are arranged around the outer edge of the chart, with their drugs positioned on the appropriate stage circles.
-            </p>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li><span class="font-medium">Square nodes:</span> Companies (color indicates public/private status)</li>
-              <li><span class="font-medium">Circle nodes:</span> Drugs (color indicates therapeutic area)</li>
-              <li><span class="font-medium">Lines:</span> Connect companies to their drugs</li>
-            </ul>
-          </div>
-          <div class="flex justify-center">
-            <svg bind:this={svgSponsor} width={width} height={height} viewBox="0 0 {width} {height}" class="w-full h-auto"></svg>
-          </div>
-        </div>
-        
-        <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">By Therapeutic Area View</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div>
-            <p class="text-slate-600 mb-4">
-              In the "By Therapeutic Area" view, therapeutic areas are arranged around the outer edge, with drugs positioned on the appropriate stage circles.
-            </p>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li><span class="font-medium">Circle nodes (outer):</span> Therapeutic areas</li>
-              <li><span class="font-medium">Circle nodes (inner):</span> Drugs (color matches their therapeutic area)</li>
-              <li><span class="font-medium">Lines:</span> Connect therapeutic areas to their drugs</li>
-            </ul>
-          </div>
-          <div class="flex justify-center">
-            <svg bind:this={svgTherapeutic} width={width} height={height} viewBox="0 0 {width} {height}" class="w-full h-auto"></svg>
-          </div>
-        </div>
-        
-        <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">Special Visual Indicators</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div>
-            <h4 class="font-medium text-slate-700 mb-2">Drug Status Indicators:</h4>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li><span class="font-medium">Standard drug:</span> Regular circle with therapeutic area color</li>
-              <li><span class="font-medium">PRV Awarded:</span> Circle with yellow glow effect</li>
-              <li><span class="font-medium">Voucher Purchased:</span> Circle with green glow effect</li>
-              <li><span class="font-medium">Transacted PRV:</span> Circle with gold stroke</li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-medium text-slate-700 mb-2">Company Status Indicators:</h4>
-            <ul class="list-disc pl-5 text-slate-600">
-              <li><span class="font-medium">Public company:</span> Blue square</li>
-              <li><span class="font-medium">Private company:</span> Green square</li>
-              <li><span class="font-medium">NIH/Government:</span> Purple square</li>
-            </ul>
-          </div>
-        </div>
-        
-        <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">Interaction Tips</h3>
-        <ul class="list-disc pl-5 text-slate-600 mb-8">
-          <li><span class="font-medium">Hover over elements:</span> Shows detailed information in the sidebar</li>
-          <li><span class="font-medium">Click on company/area:</span> Highlights all related drugs</li>
-          <li><span class="font-medium">Click on drug:</span> Opens detailed information drawer</li>
-          <li><span class="font-medium">Zoom and pan:</span> Use mouse wheel and drag to navigate the visualization</li>
-        </ul>
+
+        <TabsPrimitive.Root value={activeTab} onValueChange={(value) => activeTab = value}>
+          <TabsPrimitive.List class="flex space-x-4 border-b border-gray-200 mb-6">
+            <TabsPrimitive.Trigger 
+              value="radial"
+              class={cn(
+                "px-4 py-2 text-sm font-medium",
+                "data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+              )}
+            >
+              Radial Charts
+            </TabsPrimitive.Trigger>
+            <TabsPrimitive.Trigger
+              value="navigation"
+              class={cn(
+                "px-4 py-2 text-sm font-medium",
+                "data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+              )}
+            >
+              Navigation
+            </TabsPrimitive.Trigger>
+            <TabsPrimitive.Trigger
+              value="sidebars"
+              class={cn(
+                "px-4 py-2 text-sm font-medium",
+                "data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+              )}
+            >
+              Sidebars & Cards
+            </TabsPrimitive.Trigger>
+            <TabsPrimitive.Trigger
+              value="filters"
+              class={cn(
+                "px-4 py-2 text-sm font-medium",
+                "data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+              )}
+            >
+              Filters & Search
+            </TabsPrimitive.Trigger>
+          </TabsPrimitive.List>
+
+          <TabsPrimitive.Content value="radial">
+            <div class="space-y-6">
+              <div class="prose max-w-none mt-6">
+                <h3 class="text-xl font-semibold text-slate-800 mb-4">Understanding the Radial Charts</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <p class="text-slate-600 mb-4">
+                      The radial charts visualize relationships between companies, therapeutic areas, and drugs across different development stages:
+                    </p>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Outer circle:</span> Preclinical (PRE)</li>
+                      <li><span class="font-medium">Middle circles:</span> Clinical Phases (P1, P2, P3)</li>
+                      <li><span class="font-medium">Inner circles:</span> Filed (FILED) and PRV Awarded (PRV)</li>
+                    </ul>
+                  </div>
+                  <div class="flex justify-center">
+                    <svg bind:this={svgSponsor} width={width} height={height} viewBox="0 0 {width} {height}" class="w-full h-auto"></svg>
+                  </div>
+                </div>
+
+                <h4 class="text-lg font-semibold text-slate-800 mt-8 mb-4">By Sponsor View</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <p class="text-slate-600 mb-4">
+                      In the "By Sponsor" view:
+                    </p>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Square nodes:</span> Companies (color indicates public/private status)</li>
+                      <li><span class="font-medium">Circle nodes:</span> Drugs (color indicates therapeutic area)</li>
+                      <li><span class="font-medium">Lines:</span> Connect companies to their drugs</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 class="font-medium text-slate-700 mb-2">Company Status Colors:</h5>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Blue square:</span> Public company</li>
+                      <li><span class="font-medium">Green square:</span> Private company</li>
+                      <li><span class="font-medium">Purple square:</span> NIH/Government</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <h4 class="text-lg font-semibold text-slate-800 mt-8 mb-4">By Therapeutic Area View</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <p class="text-slate-600 mb-4">
+                      In the "By Therapeutic Area" view:
+                    </p>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Circle nodes (outer):</span> Therapeutic areas</li>
+                      <li><span class="font-medium">Circle nodes (inner):</span> Drugs (color matches their therapeutic area)</li>
+                      <li><span class="font-medium">Lines:</span> Connect therapeutic areas to their drugs</li>
+                    </ul>
+                  </div>
+                  <div class="flex justify-center">
+                    <svg bind:this={svgTherapeutic} width={width} height={height} viewBox="0 0 {width} {height}" class="w-full h-auto"></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsPrimitive.Content>
+
+          <TabsPrimitive.Content value="navigation">
+            <div class="space-y-6">
+              <div class="prose max-w-none mt-6">
+                <h3 class="text-xl font-semibold text-slate-800 mb-4">Navigation Features</h3>
+                
+                <div class="space-y-6">
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Main Tabs</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">By Sponsor:</span> View drugs organized by company</li>
+                      <li><span class="font-medium">By Therapeutic Area:</span> View drugs organized by disease area</li>
+                      <li><span class="font-medium">Transactions:</span> View PRV transactions and history</li>
+                      <li><span class="font-medium">Timeline:</span> Chronological view of PRV events</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Interactive Features</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Hover interactions:</span> Reveal detailed information in tooltips</li>
+                      <li><span class="font-medium">Click actions:</span> Open detailed views and highlight related elements</li>
+                      <li><span class="font-medium">Zoom & Pan:</span> Navigate large visualizations (use mouse wheel and drag)</li>
+                      <li><span class="font-medium">Year selection:</span> Filter data by specific years</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Keyboard Navigation</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Tab:</span> Navigate between interactive elements</li>
+                      <li><span class="font-medium">Enter/Space:</span> Activate selected elements</li>
+                      <li><span class="font-medium">Escape:</span> Close modals and drawers</li>
+                      <li><span class="font-medium">Arrow keys:</span> Navigate within components</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsPrimitive.Content>
+
+          <TabsPrimitive.Content value="sidebars">
+            <div class="space-y-6">
+              <div class="prose max-w-none mt-6">
+                <h3 class="text-xl font-semibold text-slate-800 mb-4">Understanding UI Components</h3>
+                
+                <div class="space-y-6">
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Sidebar Features</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Overview panel:</span> Shows summary statistics and key metrics</li>
+                      <li><span class="font-medium">Filters panel:</span> Customize your view with various filters</li>
+                      <li><span class="font-medium">Details panel:</span> View detailed information about selected items</li>
+                      <li><span class="font-medium">Collapsible:</span> Toggle sidebar visibility for more space</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Information Cards</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Company cards:</span> Display company information and metrics</li>
+                      <li><span class="font-medium">Drug cards:</span> Show drug development status and details</li>
+                      <li><span class="font-medium">Transaction cards:</span> Present PRV transaction information</li>
+                      <li><span class="font-medium">Metric cards:</span> Highlight key statistics and trends</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Detail Drawers</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Company details:</span> In-depth company information and portfolio</li>
+                      <li><span class="font-medium">Drug details:</span> Comprehensive drug development information</li>
+                      <li><span class="font-medium">Transaction details:</span> Complete transaction history and terms</li>
+                      <li><span class="font-medium">Navigation:</span> Use arrows to move between related items</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsPrimitive.Content>
+
+          <TabsPrimitive.Content value="filters">
+            <div class="space-y-6">
+              <div class="prose max-w-none mt-6">
+                <h3 class="text-xl font-semibold text-slate-800 mb-4">Search and Filter Tools</h3>
+                
+                <div class="space-y-6">
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Search Capabilities</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Global search:</span> Search across all data types</li>
+                      <li><span class="font-medium">Company search:</span> Find specific companies</li>
+                      <li><span class="font-medium">Drug search:</span> Locate specific drugs or compounds</li>
+                      <li><span class="font-medium">Auto-complete:</span> Suggestions as you type</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Filter Options</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Year filters:</span> Filter by specific years</li>
+                      <li><span class="font-medium">Status filters:</span> Filter by development stage</li>
+                      <li><span class="font-medium">Company filters:</span> Filter by company type (public/private)</li>
+                      <li><span class="font-medium">Therapeutic area filters:</span> Filter by disease area</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 class="text-lg font-medium text-slate-800 mb-2">Advanced Features</h4>
+                    <ul class="list-disc pl-5 text-slate-600">
+                      <li><span class="font-medium">Combined filters:</span> Apply multiple filters simultaneously</li>
+                      <li><span class="font-medium">Save preferences:</span> Remember your filter settings</li>
+                      <li><span class="font-medium">Quick reset:</span> Clear all filters instantly</li>
+                      <li><span class="font-medium">Export filtered data:</span> Download your filtered results</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsPrimitive.Content>
+        </TabsPrimitive.Root>
       </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style>
+  :global(.tab-panel) {
+    padding: 0 !important;
+  }
+
+  :global(.tab-list) {
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 1rem;
+  }
+
+  :global(.tab) {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  :global(.tab[aria-selected="true"]) {
+    color: #0f172a;
+    border-bottom-color: #2563eb;
+  }
+
   .prose h3 {
     color: #334155;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
+  }
+  
+  .prose h4 {
+    color: #475569;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
   }
   
   .prose ul {
@@ -485,5 +675,9 @@
   .prose li {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
+  }
+
+  .prose li span.font-medium {
+    color: #334155;
   }
 </style> 

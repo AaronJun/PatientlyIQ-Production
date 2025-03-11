@@ -97,7 +97,7 @@
             type="text"
             bind:value={searchTerm}
             placeholder="Company/Drug Search"
-            class="w-full pl-10 pr-4 py-2 border border-slate-200 focus:outline-none focus:border-slate-400 text-sm"
+            class="w-full pl-10 pr-4 py-2 border border-slate-200 focus:outline-none focus:border-slate-400 text-xs"
         />
     </div>
 
