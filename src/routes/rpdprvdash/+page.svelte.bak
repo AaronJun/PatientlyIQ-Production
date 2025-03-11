@@ -380,7 +380,7 @@
         <!-- Mobile Navigation -->
         <div class="relative md:hidden">
           <button
-            class="flex items-center gap-2 px-2 py-2 text-xs font-medium text-slate-700 bg-white rounded-sm ring-1 ring-emerald-200 shadow-sm hover:bg-slate-50 focus:outline-none"
+            class="flex items-center gap-2 px-2 py-2 text-xs font-medium text-slate-700 bg-white rounded-full ring-1 ring-emerald-200 shadow-sm hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
           >
             {activeTab}
@@ -392,7 +392,7 @@
 
           {#if isDropdownOpen}
             <div
-              class="absolute left-0 mt-2 rounded-sm shadow-lg bg-white ring-2 ring-emerald-500 px-2 z-50"
+              class="absolute left-0 mt-2 rounded-md shadow-lg bg-white ring-2 ring-emerald-500 px-2 z-50"
               on:click|stopPropagation
             >
               <div class="py-1" role="menu" aria-orientation="vertical">
