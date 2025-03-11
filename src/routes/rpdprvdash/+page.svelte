@@ -667,6 +667,144 @@
               </div>
             </div>
           </div>
+
+          
+        <!-- By Transactions Tab Layout -->
+        {:else if activeTab === 'By Transactions'}
+         <!-- Updated Transactions Tab Layout -->
+          <div class="flex flex-row">
+            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pl-24">
+              <SellerBuyerChord 
+                data={rpddData}
+                stockData={rpdCompanyValues}
+                selectedYear={selectedTransactionYear}
+                {highlightedTransaction}
+                onShowDrugDetail={handleShowDrugDetail}
+                on:transactionHover={(event) => highlightedTransaction = event.detail}
+                on:transactionLeave={() => highlightedTransaction = null}
+              />
+            </div>
+
+            <!-- Left timeline sidebar -->
+            {#if activeTab !== 'Program Overview'}
+              <div class="absolute left-0 top-0 h-fit w-fit z-10">
+                <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">    <!-- Timeline content -->
+                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                    {#if activeTab === 'By Transactions'}
+                      <PRVPurchaseTimeline 
+                        data={rpddData}
+                        selectedYear={selectedTransactionYear}
+                        onYearSelect={handleTransactionYearSelect}
+                        transactionYearSelected={handleTransactionYearSelect}
+                      />
+                    {:else}
+                      <RPDPRVVerticalTimeline 
+                        data={rpddData}
+                        selectedYear={selectedYear}
+                        onYearSelect={handleYearSelect}
+                      />
+                    {/if}
+                  </div>
+                </div>
+              </div>
+            {/if}
+            
+            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <button
+                class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
+                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
+                <div class="sidebar-header mb-4">
+                  <h4 class="text-xs uppercase font-semibold text-slate-600">                              
+                    {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
+                  </h4>
+                </div>
+
+                <!-- Show transaction summary when no transaction is selected -->
+                <div class="flex flex-col gap-4">
+                  <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
+                    <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+                    <VoucherBeeswarmPlot 
+                      data={rpddData}
+                      {highlightedTransaction}
+                      selectedYear={selectedTransactionYear}
+                      onPointClick={handleShowDrugDetail}
+                      on:transactionHover={(event) => highlightedTransaction = event.detail}
+                      on:transactionLeave={() => highlightedTransaction = null}
+                    />
+                  </div>
+                  <div class="bg-white rounded-lg shadow-sm p-4">
+                    <RPDTransactionSummaryView 
+                      data={rpddData}
+                      year={selectedTransactionYear}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <!-- Therapeutic Area Tab Layout -->  
+        {:else if activeTab === 'By Therapeutic Area'}
+          <div class="flex flex-row relative">
+            <!-- Main visualization area taking full width -->
+            <div class="w-full px-6 h-[calc(100vh-12rem)] relative">
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
+                {#if mainGroup}
+                  <RPDDRadialYear 
+                    data={filteredData}
+                    isAllYearView={selectedYear === "All"}
+                    onCompanyHover={handleCompanyHover}
+                    onStageHover={handleStageHover}
+                    onLeave={handleLeave}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    onShowCompanyDetail={handleShowCompanyDetail}
+                    {mainGroup}
+                    {showTooltip}
+                    {hideTooltip}
+                  />
+                {:else}
+                  <!-- Loading state with spinner -->
+                  <g transform="translate(460, 460)">
+                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
+                    <path 
+                      d="M40 0 A40 40 0 0 1 40 0" 
+                      fill="none" 
+                      stroke="#3b82f6" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                    >
+                      <animateTransform 
+                        attributeName="transform" 
+                        type="rotate" 
+                        from="0" 
+                        to="360" 
+                        dur="1s" 
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                  </g>
+                {/if}
+              </InfiniteCanvasWrapper>
+            </div>
+          </div>
           
         <!-- Program Overview (Analytics) Tab Layout -->
         {:else if activeTab === 'Program Overview'}
