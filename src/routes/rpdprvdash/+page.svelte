@@ -379,7 +379,7 @@
           <div class="flex flex-row flex-grow">
             <!-- Main visualization area -->
             <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pr-8 pl-2 h-[calc(100vh-12rem)] relative">
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup>
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
                     data={filteredData}
@@ -390,6 +390,8 @@
                     onShowDrugDetail={handleShowDrugDetail}
                     onShowCompanyDetail={handleShowCompanyDetail}
                     {mainGroup}
+                    {showTooltip}
+                    {hideTooltip}
                   />
                 {:else}
                   <!-- Improved loading state with spinner -->

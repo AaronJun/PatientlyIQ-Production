@@ -42,7 +42,7 @@
         </div>
         <div class="tooltip-detail bg-emerald-100 px-2 py-1">
             <span class="label text-xs font-medium text-slate-900">Click for details</span>
-            <ArrowUpRight size="16" class="text-slate-900" />
+            <ArrowUpRight size={16} class="text-slate-900" />
         </div>  
       </div>
         {/if}

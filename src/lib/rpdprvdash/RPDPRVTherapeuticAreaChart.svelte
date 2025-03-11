@@ -68,11 +68,11 @@
     let tooltipY = 0;
     // Tooltip offset from cursor
     const tooltipOffset = { x: 15, y: 15 };
-    let tooltipTimeout = null;
+    let tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
     
     // Track active selections
-    let activeArea = null;
-    let activeStage = null;
+    let activeArea: string | null = null;
+    let activeStage: string | null = null;
 
     /**
      * Process data into a format suitable for therapeutic area visualization
@@ -303,14 +303,21 @@
     }
 
     /**
-     * Shows tooltip at the given mouse event position for the provided data
+     * Helper function to safely clear tooltip timeout
      */
-    function showTooltip(event: MouseEvent, d: any, isArea: boolean = false) {
-        // Clear existing tooltip timeout
+    function clearTooltipTimeout(): void {
         if (tooltipTimeout) {
             clearTimeout(tooltipTimeout);
             tooltipTimeout = null;
         }
+    }
+
+    /**
+     * Shows tooltip at the given mouse event position for the provided data
+     */
+    function showTooltip(event: MouseEvent, d: any, isArea: boolean = false): void {
+        // Clear existing tooltip timeout
+        clearTooltipTimeout();
         
         if (!svg) return;
         
@@ -358,10 +365,8 @@
     /**
      * Hides tooltip with a small delay
      */
-    function hideTooltip() {
-        if (tooltipTimeout) {
-            clearTimeout(tooltipTimeout);
-        }
+    function hideTooltip(): void {
+        clearTooltipTimeout();
         
         tooltipTimeout = setTimeout(() => {
             tooltipVisible = false;
@@ -372,7 +377,7 @@
     /**
      * Sets the active area and updates visual state
      */
-    function setActiveArea(area, entries) {
+    function setActiveArea(area: any, entries: any): void {
         // Reset state
         activeArea = area.area || area;
         activeStage = null;
@@ -427,7 +432,7 @@
     /**
      * Sets the active stage and updates visual state
      */
-    function setActiveStage(stage, entries) {
+    function setActiveStage(stage: string, entries: any[]): void {
         // Reset state
         activeStage = stage;
         activeArea = null;
@@ -463,7 +468,7 @@
      * Highlighting and connection management functions
      * Uses the same approach as the company tree for consistency
      */
-    function highlightAreaConnections(areaName) {
+    function highlightAreaConnections(areaName: string): void {
         resetConnectionHighlights();
         
         // Use company data attribute for consistency with the company tree component
@@ -475,7 +480,7 @@
             .attr("stroke-opacity", 1);
     }
     
-    function highlightDrugConnections(drugId) {
+    function highlightDrugConnections(drugId: string): void {
         resetConnectionHighlights();
             
         d3.select(`path.drug-path[data-drug="${drugId}"]`)
@@ -602,10 +607,7 @@
                 event.stopPropagation();
                 
                 // Hide tooltip immediately
-                if (tooltipTimeout) {
-                    clearTimeout(tooltipTimeout);
-                    tooltipTimeout = null;
-                }
+                clearTooltipTimeout();
                 tooltipVisible = false;
                 
                 const stageEntries = data.filter(entry => getStage(entry) === stage);
@@ -671,11 +673,11 @@
                 .attr("fill", "none");
 
             // Connect drugs to area
-            area.stages.forEach((drugs, stage) => {
-                const stageRadius = stageRadii[stage];
+            area.stages.forEach((drugs: any[], stage: string) => {
+                const stageRadius = stageRadii[stage as keyof typeof stageRadii];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
 
-                drugs.forEach((drug, i) => {
+                drugs.forEach((drug: any, i: number) => {
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                     const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
@@ -781,10 +783,7 @@
                             event.stopPropagation();
                             
                             // Force immediate tooltip hiding without delay
-                            if (tooltipTimeout) {
-                                clearTimeout(tooltipTimeout);
-                                tooltipTimeout = null;
-                            }
+                            clearTooltipTimeout();
                             tooltipVisible = false;
                             
                             onShowDrugDetail({
@@ -838,15 +837,12 @@
                 hideTooltip();
             };
 
-            const handleClick = (event) => {
+            const handleClick = (event: MouseEvent) => {
                 // Stop event propagation to prevent background click handler from firing
                 event.stopPropagation();
                 
                 // Force immediate tooltip hiding without delay
-                if (tooltipTimeout) {
-                    clearTimeout(tooltipTimeout);
-                    tooltipTimeout = null;
-                }
+                clearTooltipTimeout();
                 tooltipVisible = false;
                 
                 // Keep area active after click and notify callback
@@ -900,10 +896,7 @@
         
         // Clean up tooltip when component is destroyed
         return () => {
-            if (tooltipTimeout) {
-                clearTimeout(tooltipTimeout);
-                tooltipTimeout = null;
-            }
+            clearTooltipTimeout();
         };
     });
 </script>

@@ -1,10 +1,28 @@
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount, tick, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
+  import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
 
   // Use default values instead of window properties for SSR compatibility
   export let width = 950;
   export let height = width;
+  
+  // Tooltip state
+  let tooltipVisible = false;
+  let tooltipContent = {
+    sponsor: '',
+    drugName: '',
+    therapeuticArea: '',
+    id: ''
+  };
+  let tooltipBorderColor = '#000000';
+  let tooltipX = 0;
+  let tooltipY = 0;
+  let tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
+  const tooltipOffset = { x: 15, y: 15 };
+
+  // Create event dispatcher
+  const dispatch = createEventDispatcher();
   
   let svg: SVGSVGElement;
   let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -159,6 +177,76 @@
     }
   }
 
+  // Tooltip functions
+  function clearTooltipTimeout() {
+    if (tooltipTimeout) {
+      clearTimeout(tooltipTimeout);
+      tooltipTimeout = null;
+    }
+  }
+
+  export function showTooltip(event: MouseEvent | FocusEvent, data: any, isCompany = false) {
+    clearTooltipTimeout();
+    
+    // Get the event coordinates in page space
+    let pageX = 0;
+    let pageY = 0;
+    
+    if (event instanceof MouseEvent) {
+      // Handle mouse event
+      pageX = event.pageX || event.clientX;
+      pageY = event.pageY || event.clientY;
+    } else {
+      // Handle focus event - use target's position
+      if (event.target) {
+        const targetRect = (event.target as Element).getBoundingClientRect();
+        pageX = targetRect.left + window.scrollX + targetRect.width/2;
+        pageY = targetRect.top + window.scrollY + targetRect.height/2;
+      }
+    }
+    
+    // Position tooltip with a small offset from the cursor
+    tooltipX = pageX + tooltipOffset.x;
+    tooltipY = pageY + tooltipOffset.y;
+    
+    // Set tooltip content
+    if (isCompany) {
+      tooltipContent = {
+        sponsor: data.company || data.Company || '',
+        drugName: '',
+        therapeuticArea: '',
+        id: data.totalDrugs ? `${data.totalDrugs} drugs in pipeline` : ''
+      };
+      tooltipBorderColor = data.color || '#549E7D';
+    } else {
+      tooltipContent = {
+        sponsor: data.Company || '',
+        drugName: data.Candidate || '',
+        therapeuticArea: data.TherapeuticArea1 || '',
+        id: data["Current Development Stage"] || ''
+      };
+      tooltipBorderColor = data.color || '#549E7D';
+    }
+    
+    // Force tooltip to be visible
+    tooltipVisible = true;
+    
+    // Dispatch event for parent components
+    dispatch('tooltipShow', { content: tooltipContent, isCompany });
+  }
+
+  export function hideTooltip() {
+    clearTooltipTimeout();
+    
+    tooltipTimeout = setTimeout(() => {
+      tooltipVisible = false;
+      tooltipTimeout = null;
+      
+      // Dispatch event for parent components
+      dispatch('tooltipHide');
+    }, 100);
+  }
+
   // Update dimensions when container is available
   $: if (container && !initialized) {
     updateDimensions();
@@ -174,9 +262,20 @@
     viewBox="0 0 {width} {height}"
     class="w-full h-full"
   >
-    <slot {mainGroup} />
+    <slot {mainGroup} {showTooltip} {hideTooltip} />
   </svg>
   
+  <!-- Tooltip component -->
+  <div 
+    class="tooltip-container" 
+    style="left: {tooltipX}px; top: {tooltipY}px; pointer-events: none;"
+  >
+    <RPDTooltip 
+      visible={tooltipVisible} 
+      content={tooltipContent} 
+      borderColor={tooltipBorderColor} 
+    />
+  </div>
   
   <div class="navigation-controls">
     <button on:click={zoomIn} class="nav-button" title="Zoom In">
@@ -212,6 +311,11 @@
 
   :global(svg:active) {
     cursor: grabbing;
+  }
+
+  .tooltip-container {
+    position: fixed;
+    z-index: 1000;
   }
 
   .navigation-controls {

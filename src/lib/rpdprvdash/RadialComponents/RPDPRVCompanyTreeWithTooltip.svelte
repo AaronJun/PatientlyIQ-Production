@@ -35,7 +35,7 @@
     export let isAllYearView: boolean = false;
     export let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
     // Import tooltip functions from parent
-    export let showTooltip: (event: MouseEvent | FocusEvent, data: any, isCompany?: boolean) => void;
+    export let showTooltip: (event: MouseEvent, data: any, isCompany?: boolean) => void;
     export let hideTooltip: () => void;
 
 
@@ -957,6 +957,78 @@
         };
     });
 
+    // Remove the clearTooltipTimeout function
+    function clearTooltipTimeout() {
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = null;
+        }
+    }
+
+    // Remove the showTooltip function
+    function showTooltip(event: MouseEvent, d: any, isCompany = false) {
+        clearTooltipTimeout();
+        
+        // Get the event coordinates in page space
+        let pageX = event.pageX || event.clientX;
+        let pageY = event.pageY || event.clientY;
+        
+        // If this is a synthetic event (from focus), use the target's position
+        if ((!pageX || !pageY) && event.target) {
+            const targetRect = (event.target as Element).getBoundingClientRect();
+            pageX = targetRect.left + window.scrollX + targetRect.width/2;
+            pageY = targetRect.top + window.scrollY + targetRect.height/2;
+        }
+        
+        // Position tooltip with a small offset from the cursor
+        tooltipX = pageX + tooltipOffset.x;
+        tooltipY = pageY + tooltipOffset.y;
+        
+        // Set tooltip content
+        if (isCompany) {
+            tooltipContent = {
+                sponsor: d.company,
+                drugName: '',
+                therapeuticArea: '',
+                id: `${d.totalDrugs} drugs in pipeline`
+            };
+            const statusColor = getCompanyStatusColor(d.status);
+            tooltipBorderColor = statusColor.stroke;
+        } else {
+            tooltipContent = {
+                sponsor: d.Company || '',
+                drugName: d.Candidate || '',
+                therapeuticArea: d.TherapeuticArea1 || '',
+                id: d["Current Development Stage"] || (hasPRVAward(d) ? "PRV" : "")
+            };
+            const stageCode = getStage(d);
+            const stageFullName = getStageFullName(stageCode);
+            const stageColor = getStageColor(stageFullName);
+            tooltipBorderColor = stageColor.stroke;
+        }
+        
+        // Force tooltip to be visible
+        tooltipVisible = true;
+        
+        // Log tooltip state for debugging
+        console.log("Tooltip shown:", {
+            visible: tooltipVisible,
+            x: tooltipX,
+            y: tooltipY,
+            content: tooltipContent
+        });
+    }
+
+    // Remove the hideTooltip function
+    function hideTooltip() {
+        clearTooltipTimeout();
+        
+        tooltipTimeout = setTimeout(() => {
+            tooltipVisible = false;
+            tooltipTimeout = null;
+        }, 100);
+    }
+    
     /**
      * Sets the active company and updates visual state
      */
