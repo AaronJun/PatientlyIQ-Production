@@ -14,6 +14,7 @@
   
   import SponsorSidebar from '$lib/rpdprvdash/sidebarComponents/SponsorSidebar.svelte';
   import TherapeuticAreaSidebar from '$lib/rpdprvdash/sidebarComponents/TherapeuticAreaSidebar.svelte';
+  import HowToReadRadialChart from '$lib/rpdprvdash/HowToReadRadialChart.svelte';
   
   import RPDTransactionSummaryView from '$lib/rpdprvdash/sidebarComponents/RPDTransactionsSummary.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
@@ -74,6 +75,7 @@
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   let isSidebarCollapsed = false; // Add state for sidebar collapse
+  let isHowToReadOpen = false; // New state variable for How to Read modal
   
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
@@ -307,13 +309,20 @@
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
   <div class="sticky top-0 left-0 right-0 z-50">
-    <div class="header flex align-baseline font-sans bg-slate-900 text-slate-50 px-8">
+    <div class="header flex align-baseline justify-between font-sans bg-slate-900 text-slate-50">
       <div class="flex gap-2 justify-evenly items-center">
         <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
         <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
             RPDD + PRV Constellation
         </h1>
       </div>
+      <button 
+      class="interactive-element flex px-2 gap-2 align-middle items-center justify-center font-medium text-xs transition-colors text-slate-800 bg-emerald-200 hover:bg-[#FF4A4A] hover:text-slate-50"
+      on:click={() => isHowToReadOpen = true}
+    >
+      <Globe size={16}/>
+      How to Navigate
+    </button>
     </div>
     
     <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-8">
@@ -653,6 +662,13 @@
     </div>
   </main>
 </div>
+
+{#if isHowToReadOpen}
+  <HowToReadRadialChart
+    isOpen={isHowToReadOpen}
+    onClose={() => isHowToReadOpen = false}
+  />
+{/if}
 
 {#if isDashboardOpen}
   <RPDPRVDashboardView
