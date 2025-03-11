@@ -19,7 +19,7 @@
   import RPDTransactionSummaryView from '$lib/rpdprvdash/sidebarComponents/RPDTransactionsSummary.svelte';
   import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
   
-  import RPDCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
+  import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
   import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
@@ -36,9 +36,6 @@
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
   import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
-
-  // Import Google Analytics tracking
-  import * as tracker from '$lib/rpdprvdash/RPDPRVTracker.svelte';
 
   // Interface definitions
   interface DrawerProps {
@@ -138,12 +135,10 @@
   
   function handleYearSelect(year: string) {
     selectedYear = year;
-    tracker.trackYearSelection(year, activeTab);
   }
   
   function handleTransactionYearSelect(year: string) {
     selectedTransactionYear = year;
-    tracker.trackYearSelection(year, 'By Transactions');
   }
   
   let drawerProps: DrawerProps = {
@@ -163,15 +158,6 @@
       currentCompanyMetrics = null;
       currentArea = null;
       areaMetrics = null;
-      
-      // Track visualization interaction
-      if (data.length > 0) {
-        tracker.trackVisualizationInteraction(
-          'company_radial', 
-          'hover', 
-          { company: data[0].Company, count: data.length }
-        );
-      }
     } else if (data.entries && data.areaName) {
       // New format with therapeutic area metrics
       currentEntries = data.entries;
@@ -183,13 +169,6 @@
       };
       currentView = 'Area View';
       currentCompanyMetrics = null;
-      
-      // Track visualization interaction
-      tracker.trackVisualizationInteraction(
-        'therapeutic_area_radial', 
-        'hover', 
-        { area: data.areaName, count: data.entries.length }
-      );
     } else if (data.entries) {
       // Company format with additional metrics
       currentEntries = data.entries;
@@ -204,15 +183,6 @@
       currentView = 'Company View';
       currentArea = null;
       areaMetrics = null;
-      
-      // Track visualization interaction
-      if (data.companyName) {
-        tracker.trackVisualizationInteraction(
-          'company_detail', 
-          'hover', 
-          { company: data.companyName, count: data.entries.length }
-        );
-      }
     }
   }
 
@@ -233,8 +203,6 @@
 
   function setActiveTab(tab: string) {
     activeTab = tab;
-    // Track tab change
-    tracker.trackTabChange(tab);
     // Reset views when changing tabs
     resetSidebarView();
   }
@@ -280,27 +248,18 @@
   function handleShowCompanyDetail(detail: any) {
     const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
     selectedCompany = detail.Company;
-    
-    // Set drawer props for RPDPRVDrawer
     drawerProps = {
       isCompanyView: true,
       Company: detail.Company,
       entries: companyEntries,
-      color: detail.color || '#37587e',
+      color: '#37587e',
       companyUrl: detail.companyUrl,
       country: companyEntries[0]?.COUNTRY || 'N/A',
       publicPrivate: companyEntries[0]?.['Public/Private/NIH'] || 'N/A',
       marketCap: companyEntries[0]?.MarketCap || 'N/A'
     };
-    
-    // Set drawer state flags
     isDrawerOpen = true;
     isCompanyDetailDrawerOpen = true;
-    
-    console.log('Opening company detail drawer for:', detail.Company);
-    
-    // Track company detail view
-    tracker.trackCompanyDetailView(detail.Company, companyEntries.length);
   }
 
   function handleShowDrugDetail(detail: any) {
@@ -310,31 +269,19 @@
     };
     isDrawerOpen = true;
     isCompanyDetailDrawerOpen = false;
-    
-    // Track drug detail view
-    tracker.trackDrugDetailView(
-      detail.drugName || '',
-      detail.Company || '',
-      detail.therapeuticArea || ''
-    );
   }
 
   function handleCloseDrawer() {
-    console.log("Closing drawer");
     isDrawerOpen = false;
     isCompanyDetailDrawerOpen = false;
   }
 
-  function handleDashboardClick(event: Event) {
-    console.log("Dashboard button clicked");
-    event.stopPropagation();
+  function handleDashboardClick() {
     isDashboardOpen = true;
-    tracker.trackDashboardInteraction('open');
   }
 
   function handleDashboardClose() {
     isDashboardOpen = false;
-    tracker.trackDashboardInteraction('close');
   }
 
   const processedData = Object.entries(
@@ -353,12 +300,6 @@
 
   onMount(() => {
     try {
-      // Initialize tracking
-      tracker.initializeTracking();
-      
-      // Initialize section view tracking
-      const unobserveFunction = tracker.trackSectionViews();
-      
       // Process stock data on mount
       stockDataByCompany = processStockData(rpdCompanyValues);
       
@@ -373,7 +314,6 @@
       // Clean up on component destruction
       return () => {
         window.removeEventListener('click', handleWindowClick);
-        if (unobserveFunction) unobserveFunction();
       };
     } catch (error) {
       console.error('Error initializing:', error);
@@ -384,7 +324,7 @@
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col min-h-screen bg-slate-100/50">
   <!-- Fixed header area -->
-  <div class="relative top-0 left-0 right-0 z-50">
+  <div class="sticky top-0 left-0 right-0 z-50">
     <div class="header flex align-baseline justify-between font-sans bg-slate-900 text-slate-50">
       <div class="flex gap-2 justify-evenly items-center">
         <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
@@ -401,7 +341,7 @@
     </button>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full pt-2 px-2">
+    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-2">
       <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
         <!-- Desktop Navigation -->
         <div class="hidden md:flex">
@@ -422,10 +362,7 @@
         <div class="relative md:hidden">
           <button
             class="flex items-center gap-2 px-2 py-2 text-xs font-medium text-slate-700 bg-white rounded-full ring-1 ring-emerald-200 shadow-sm hover:bg-slate-50 focus:outline-none"
-            on:click={(e) => {
-              toggleDropdown(e);
-              tracker.trackDashboardInteraction('toggle_mobile_dropdown');
-            }}
+            on:click={toggleDropdown}
           >
             {activeTab}
             <ChevronDown
@@ -463,14 +400,13 @@
               data={rpddData}
               onShowDrugDetail={handleShowDrugDetail}
               onShowCompanyDetail={handleShowCompanyDetail}
-              onSearch={(term, count) => tracker.trackSearch(term, count)}
             />
           </div>
           
           <!-- Dashboard button with responsive design -->
           <button 
             class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-            on:click={e => handleDashboardClick(e)}
+            on:click={handleDashboardClick}
           >
             <DashboardReference size={16}/>
             <span class="hidden lg:inline">Dashboard</span>
@@ -479,7 +415,7 @@
           <!-- Mobile Dashboard Icon Button -->
           <button 
             class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
-            on:click={e => handleDashboardClick(e)}
+            on:click={handleDashboardClick}
           >
             <DashboardReference size={16}/>
           </button>
@@ -496,23 +432,14 @@
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow relative">
             <!-- Main visualization area taking full width -->
-            <div class="w-full h-full relative" data-section="sponsor-visualization" data-section-name="Sponsor Visualization">
+            <div class="w-full h-[calc(100vh-12rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
                     data={filteredData}
                     isAllYearView={selectedYear === "All"}
                     onCompanyHover={handleCompanyHover}
-                    onStageHover={(entries) => {
-                      handleStageHover(entries);
-                      if (entries.length > 0) {
-                        tracker.trackVisualizationInteraction(
-                          'stage_view',
-                          'hover',
-                          { stage: entries[0]['Current Development Stage'], count: entries.length }
-                        );
-                      }
-                    }}
+                    onStageHover={handleStageHover}
                     onLeave={handleLeave}
                     onShowDrugDetail={handleShowDrugDetail}
                     onShowCompanyDetail={handleShowCompanyDetail}
@@ -569,7 +496,6 @@
               </div>
             {/if}
 
-            <!-- Right information sidebar -->
             <div class="absolute right-0 top-16 h-fit fit max-h-[1280px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
               <button
                 class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -628,23 +554,14 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row relative">
             <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-12rem)] relative" data-section="therapeutic-area-visualization" data-section-name="Therapeutic Area Visualization">
+            <div class="w-full h-[calc(100vh-12rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
                     data={filteredData}
                     isAllYearView={selectedYear === "All"}
                     onCompanyHover={handleCompanyHover}
-                    onStageHover={(entries) => {
-                      handleStageHover(entries);
-                      if (entries.length > 0) {
-                        tracker.trackVisualizationInteraction(
-                          'stage_view',
-                          'hover',
-                          { stage: entries[0]['Current Development Stage'], count: entries.length }
-                        );
-                      }
-                    }}
+                    onStageHover={handleStageHover}
                     onLeave={handleLeave}
                     onShowDrugDetail={handleShowDrugDetail}
                     onShowCompanyDetail={handleShowCompanyDetail}
@@ -749,158 +666,11 @@
               </div>
             </div>
           </div>
-
-          
-        <!-- By Transactions Tab Layout -->
-        {:else if activeTab === 'By Transactions'}
-         <!-- Updated Transactions Tab Layout -->
-          <div class="flex flex-row">
-            <div class="w-{isSidebarCollapsed ? '11/12' : '4/5'} transition-all duration-300 pl-24" data-section="transactions-visualization" data-section-name="Transactions Visualization">
-              <SellerBuyerChord 
-                data={rpddData}
-                stockData={rpdCompanyValues}
-                selectedYear={selectedTransactionYear}
-                {highlightedTransaction}
-                onShowDrugDetail={handleShowDrugDetail}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
-              />
-            </div>
-
-            <!-- Left timeline sidebar -->
-            {#if activeTab !== 'Program Overview'}
-              <div class="absolute left-0 top-0 h-fit w-fit z-10">
-                <div class="h-full bg-white/70 ring-1 ring-slate-400 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">    <!-- Timeline content -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    {#if activeTab === 'By Transactions'}
-                      <PRVPurchaseTimeline 
-                        data={rpddData}
-                        selectedYear={selectedTransactionYear}
-                        onYearSelect={handleTransactionYearSelect}
-                        transactionYearSelected={handleTransactionYearSelect}
-                      />
-                    {:else}
-                      <RPDPRVVerticalTimeline 
-                        data={rpddData}
-                        selectedYear={selectedYear}
-                        onYearSelect={handleYearSelect}
-                      />
-                    {/if}
-                  </div>
-                </div>
-              </div>
-            {/if}
-            
-            <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
-              <button
-                class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-white hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
-                title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                <svg
-                  class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-              <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
-                <div class="sidebar-header mb-4">
-                  <h4 class="text-xs uppercase font-semibold text-slate-600">                              
-                    {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
-                  </h4>
-                </div>
-
-                <!-- Show transaction summary when no transaction is selected -->
-                <div class="flex flex-col gap-4">
-                  <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
-                    <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
-                    <VoucherBeeswarmPlot 
-                      data={rpddData}
-                      {highlightedTransaction}
-                      selectedYear={selectedTransactionYear}
-                      onPointClick={handleShowDrugDetail}
-                      on:transactionHover={(event) => highlightedTransaction = event.detail}
-                      on:transactionLeave={() => highlightedTransaction = null}
-                    />
-                  </div>
-                  <div class="bg-white rounded-lg shadow-sm p-4">
-                    <RPDTransactionSummaryView 
-                      data={rpddData}
-                      year={selectedTransactionYear}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        <!-- Therapeutic Area Tab Layout -->  
-        {:else if activeTab === 'By Therapeutic Area'}
-          <div class="flex flex-row relative">
-            <!-- Main visualization area taking full width -->
-            <div class="w-full px-6 h-[calc(100vh-12rem)] relative">
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
-                {#if mainGroup}
-                  <RPDDRadialYear 
-                    data={filteredData}
-                    isAllYearView={selectedYear === "All"}
-                    onCompanyHover={handleCompanyHover}
-                    onStageHover={(entries) => {
-                      handleStageHover(entries);
-                      if (entries.length > 0) {
-                        tracker.trackVisualizationInteraction(
-                          'stage_view',
-                          'hover',
-                          { stage: entries[0]['Current Development Stage'], count: entries.length }
-                        );
-                      }
-                    }}
-                    onLeave={handleLeave}
-                    onShowDrugDetail={handleShowDrugDetail}
-                    onShowCompanyDetail={handleShowCompanyDetail}
-                    {mainGroup}
-                    {showTooltip}
-                    {hideTooltip}
-                  />
-                {:else}
-                  <!-- Loading state with spinner -->
-                  <g transform="translate(460, 460)">
-                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
-                    <path 
-                      d="M40 0 A40 40 0 0 1 40 0" 
-                      fill="none" 
-                      stroke="#3b82f6" 
-                      stroke-width="8" 
-                      stroke-linecap="round"
-                    >
-                      <animateTransform 
-                        attributeName="transform" 
-                        type="rotate" 
-                        from="0" 
-                        to="360" 
-                        dur="1s" 
-                        repeatCount="indefinite"
-                      />
-                    </path>
-                  </g>
-                {/if}
-              </InfiniteCanvasWrapper>
-            </div>
-          </div>
           
         <!-- Program Overview (Analytics) Tab Layout -->
         {:else if activeTab === 'Program Overview'}
           <div class="w-full">
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6" data-section="program-analytics" data-section-name="Program Analytics">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
               <h2 class="text-xl font-semibold text-slate-800 mb-4">RPDD + PRV Program Analytics</h2>
               <p class="text-slate-600 mb-6">Comprehensive analysis of the Rare Pediatric Disease Priority Review Voucher program performance and impact.</p>
               
@@ -944,16 +714,15 @@
 {/if}
 
 {#if isDrawerOpen}
-  <!-- Debug info: {JSON.stringify({isDrawerOpen, isCompanyDetailDrawerOpen, isCompanyView: drawerProps.isCompanyView})} -->
   {#if drawerProps.isCompanyView}
-    <RPDCompanyDetailDrawer
+    <RpdCompanyDetailDrawer
       companyName={drawerProps.Company}
       allData={rpddData}
       stockData={rpdCompanyValues}
       isOpen={isDrawerOpen}
       onClose={handleCloseDrawer}
       onShowDrugDetail={handleShowDrugDetail}
-      color={drawerProps.color || '#37587e'}
+      color={drawerProps.color}
     />
   {:else}
     <RPDPRVDrawer

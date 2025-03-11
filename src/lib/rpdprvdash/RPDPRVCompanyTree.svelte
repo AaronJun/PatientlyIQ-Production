@@ -349,6 +349,8 @@
                 }
                 tooltipVisible = false;
                 
+                console.log("Company node clicked:", company.company);
+                
                 onShowCompanyDetail({
                     Company: company.company,
                     entries: company.entries,

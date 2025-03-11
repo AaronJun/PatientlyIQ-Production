@@ -19,7 +19,7 @@
     country: 'N/A',
     publicPrivate: 'N/A',
     marketCap: 'N/A',
-    therapyAreas: [],
+    therapyAreas: [] as string[],
     rpddCount: 0,
     prvCount: 0,
     transactions: 0
@@ -27,7 +27,12 @@
 
   onMount(() => {
     console.log("RPDCompanyDetailDrawer mounted", { isOpen, companyName });
+    console.log("Drawer props:", { allData: allData?.length, stockData: stockData?.length });
+    console.log("Company profile:", companyProfile);
   });
+
+  // Log when isOpen changes
+  $: console.log("isOpen changed:", isOpen);
 
   $: {
     if (allData && companyName) {
