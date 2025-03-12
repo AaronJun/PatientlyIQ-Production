@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { fly, fade } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
   import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icons-svelte';
   // Import our new enhanced stock price chart instead of the original
   import EnhancedStockPriceChart from './StockPriceChart.svelte';
@@ -93,11 +92,11 @@
 </script>
 
 {#if isOpen}
-<div class="drawer-backdrop" on:click={handleCloseClick} transition:fade={{ duration: 300, easing: cubicOut }}>
+<div class="drawer-backdrop" on:click={handleCloseClick} transition:fly={{ duration: 0, opacity: 0.5 }}>
   <div 
     class="drawer {isMobile ? 'w-[94.275vw]' : 'w-65vw max-w-920px'}"
     on:click|stopPropagation={() => {}}
-    transition:fly={{ x: 400, duration: 400, opacity: 1, easing: cubicOut }}
+    transition:fly={{ x: 400, duration: 300 }}
   >
     <div class="drawer-header">
       <div class="flex justify-between items-center">

@@ -855,9 +855,10 @@
   {:else}
     <RPDPRVDrawer
       {...drawerProps}
-      {isDrawerOpen}
+      isOpen={isDrawerOpen}
       onClose={handleCloseDrawer}
       onShowDrugDetail={handleShowDrugDetail}
+      onShowCompanyDetail={handleShowCompanyDetail}
       color={drawerProps.color}
     />
   {/if}

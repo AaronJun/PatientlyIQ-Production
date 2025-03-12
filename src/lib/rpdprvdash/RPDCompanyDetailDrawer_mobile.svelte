@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { fly, fade } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
   import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icons-svelte';
   // Import our new enhanced stock price chart instead of the original
   import EnhancedStockPriceChart from './StockPriceChart.svelte';
@@ -25,23 +24,12 @@
     prvCount: 0,
     transactions: 0
   };
-  
-  // Add mobile detection
-  let isMobile: boolean = false;
-  
+
   onMount(() => {
     console.log("RPDCompanyDetailDrawer mounted", { isOpen, companyName });
     console.log("Drawer props:", { allData: allData?.length, stockData: stockData?.length });
     console.log("Company profile:", companyProfile);
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
   });
-  
-  function checkMobile() {
-    isMobile = window.innerWidth < 768;
-  }
 
   // Log when isOpen changes
   $: console.log("isOpen changed:", isOpen);
@@ -93,11 +81,11 @@
 </script>
 
 {#if isOpen}
-<div class="drawer-backdrop" on:click={handleCloseClick} transition:fade={{ duration: 300, easing: cubicOut }}>
+<div class="drawer-backdrop" on:click={handleCloseClick} transition:fly={{ duration: 0, opacity: 0.5 }}>
   <div 
-    class="drawer {isMobile ? 'w-[94.275vw]' : 'w-65vw max-w-920px'}"
+    class="drawer"
     on:click|stopPropagation={() => {}}
-    transition:fly={{ x: 400, duration: 400, opacity: 1, easing: cubicOut }}
+    transition:fly={{ x: 400, duration: 300 }}
   >
     <div class="drawer-header">
       <div class="flex justify-between items-center">
@@ -107,7 +95,7 @@
         </button>
       </div>
       <div class="company-meta">
-        <div class="flex {isMobile ? 'flex-wrap' : ''} items-center gap-2">
+        <div class="flex items-center gap-2">
           <span class="meta-item">
             {companyProfile.publicPrivate}
           </span>
@@ -140,7 +128,7 @@
           <Information size={16} /> 
           Company Overview
         </h3>
-        <div class="stats-grid {isMobile ? 'grid-cols-2' : 'grid-cols-4'}">
+        <div class="stats-grid">
           <div class="stat-card">
             <span class="stat-value">{companyProfile.rpddCount}</span>
             <span class="stat-label">RPDDs</span>
@@ -184,16 +172,16 @@
         <div class="candidates-list">
           {#each companyData as drug}
             <div class="candidate-card" on:click={() => handleDrugClick(drug)}>
-              <div class="flex {isMobile ? 'flex-col' : 'justify-between'} items-start">
+              <div class="flex justify-between items-start">
                 <div>
                   <h4 class="candidate-name">{drug.Candidate}</h4>
                   <p class="candidate-indication capitalize">{drug.Indication || 'Unknown Indication'}</p>
                 </div>
-                <span class="candidate-stage {isMobile ? 'mt-2' : ''}">
+                <span class="candidate-stage">
                   {drug["Current Development Stage"] || 'Unknown Stage'}
                 </span>
               </div>
-              <div class="flex mt-2 {isMobile ? 'flex-wrap' : ''} gap-2">
+              <div class="flex mt-2 gap-2">
                 {#if drug["RPDD Year"]}
                   <span class="award-chip rpdd">RPDD {drug["RPDD Year"]}</span>
                 {/if}
@@ -227,6 +215,8 @@
   }
 
   .drawer {
+    width: 65vw;
+    max-width: 920px;
     height: 100%;
     background-color: white;
     overflow-y: auto;
@@ -267,7 +257,6 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    margin-bottom: 0.25rem;
   }
 
   .section-title {
@@ -284,6 +273,7 @@
 
   .stats-grid {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 
@@ -366,7 +356,6 @@
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
     font-weight: 500;
-    margin-bottom: 0.25rem;
   }
 
   .rpdd {
@@ -382,24 +371,5 @@
   .sale {
     background-color: #f3ebff;
     color: #805ad5;
-  }
-  
-  /* Mobile styles */
-  @media (max-width: 767px) {
-    .drawer-content {
-      padding: 0.75rem;
-    }
-    
-    .section-title {
-      font-size: 0.875rem;
-    }
-    
-    .stat-value {
-      font-size: 1.25rem;
-    }
-    
-    .candidate-card {
-      padding: 0.5rem;
-    }
   }
 </style>

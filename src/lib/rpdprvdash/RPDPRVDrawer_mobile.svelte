@@ -33,8 +33,8 @@
     let overlayData = {
         isOpen: false,
         title: '',
-        data: [] as any[],
-        type: 'stage' as 'stage' | 'therapeuticArea' | 'indication' | 'treatmentClass' | 'moa',
+        data: [],
+        type: null as any,
         color: ''
     };
 
@@ -92,10 +92,6 @@
     }
 
     function handleCompanyClick() {
-        // First close the current drawer
-        handleClose();
-        
-        // Then show the company detail drawer
         onShowCompanyDetail({
             Company,
             entries: entries.filter(entry => entry.Company === Company),
@@ -122,7 +118,7 @@
                 isOpen: true,
                 title: `Voucher status: Awarded in ${voucherAwardDate}`,
                 data: entries.filter(entry => entry["PRV Issue Year"] === voucherAwardDate),
-                type: 'stage',
+                type: 'voucherAwardDate',
                 color
             };
         }
