@@ -266,7 +266,7 @@
         // Determine if label is on right or left side
         const isRightSide = labelPlacement.isRightSide;
         
-        // Create a rotated group to align with connecting line
+        // Create a group for the label
         const labelGroup = group.append("g")
             .attr("class", "area-label-text");
         
@@ -314,12 +314,7 @@
         activeStage = null;
         
         // Reset all visual elements
-        d3.selectAll(".area-node")
-            .transition()
-            .duration(200)
-            .attr("r", 2.725);
-            
-        d3.selectAll(".area-label-text text")
+        d3.selectAll(".area-label text")
             .transition()
             .duration(500)
             .attr("fill", "#4A5568")
@@ -336,12 +331,7 @@
         if (area) {
             const areaId = (area.area || area).replace(/\s+/g, '-').toLowerCase();
                 
-            d3.select(`#area-node-${areaId}`)
-                .transition()
-                .duration(200)
-                .attr("r", 4);
-                
-            d3.select(`#area-label-${areaId} .area-label-text text`)
+            d3.select(`#area-label-${areaId} text`)
                 .transition()
                 .duration(500)
                 .attr("fill", "#2D3748")
@@ -403,7 +393,7 @@
         resetConnectionHighlights();
         
         // Use company data attribute for consistency with the company tree component
-        d3.selectAll(`path.area-path[data-company="${areaName}"], path.drug-path[data-company="${areaName}"]`)
+        d3.selectAll(`path.drug-path[data-company="${areaName}"], path.area-connector[data-company="${areaName}"]`)
             .transition()
             .duration(300)
             .attr("stroke", highlightColor)
@@ -423,7 +413,7 @@
     }
     
     function resetConnectionHighlights() {
-        d3.selectAll("path.area-path, path.drug-path")
+        d3.selectAll("path.drug-path, path.area-connector")
             .transition()
             .duration(300)
             .attr("stroke", "#37587e")
@@ -566,7 +556,7 @@
         // Use calculateOptimalLabelPlacement from utilities to position the labels
         const labelPlacements = calculateOptimalLabelPlacement(areas, areaAngles, labelConfig);
 
-        // Create area nodes, labels, and drugs
+        // Create area labels and drugs
         areas.forEach(area => {
             const angle = areaAngles.get(area.company); // Use company key (mapped to area) for consistency
             if (!angle) return;
@@ -579,7 +569,7 @@
             // Create sanitized ID for the area
             const areaId = area.area.replace(/\s+/g, '-').toLowerCase();
 
-            // Calculate node position (where lines connect)
+            // Calculate node position at the outer edge of the visualization
             const nodeRadius = radius * .9725;
             const nodeAngle = angle.center;
             const nodeX = nodeRadius * Math.cos(nodeAngle - Math.PI/2);
@@ -588,28 +578,34 @@
             // Get therapeutic area color
             const areaColor = getTherapeuticAreaColor(area.area);
 
-            // Create area node at label position
-            const nodeGroup = areaLabelsGroup.append("g")
+            // Create area label using the optimal placement from calculateOptimalLabelPlacement
+            const labelGroup = areaLabelsGroup.append("g")
                 .attr("transform", `translate(${labelPlacement.x},${labelPlacement.y})`)
                 .attr("cursor", "pointer")
                 .attr("class", "area-label")
                 .attr("id", `area-label-${areaId}`);
 
-            nodeGroup.append("circle")
-                .attr("class", "area-node")
-                .attr("id", `area-node-${areaId}`)
-                .attr("r", 2.725)
-                .attr("fill", areaColor.fill)
-                .attr("stroke", areaColor.stroke)
-                .attr("stroke-width", 1);
+            // Create label with text using the placement information
+            const isRightSide = labelPlacement.isRightSide;
+            const textAnchor = isRightSide ? "start" : "end";
+            // Adjust xOffset to align text better with the connection point
+            const xOffset = isRightSide ? 8 : -8;
+            
+            labelGroup.append("text")
+                .attr("class", "area-label-text")
+                .attr("text-anchor", textAnchor)
+                .attr("dx", xOffset)
+                .attr("dy", "0.32em") // Adjust vertical alignment to align with connection line
+                .attr("dominant-baseline", "middle") // Ensure text is vertically centered on the connection point
+                .text(truncateText(area.area, maxLabelWidth))
+                .attr("fill", "#4A5568")
+                .attr("font-size", sizeConfig.labelFontSize)
+                .attr("font-weight", sizeConfig.labelFontWeight);
 
-            // Create label with text and dots
-            createAreaLabelGroup(nodeGroup, area, labelPlacement);
-
-            // Add connecting line from label to area center with data attribute
+            // Add connecting line from label to the edge position
             linesGroup.append("path")
-                .attr("class", "area-path")
-                .attr("data-company", area.company) // Use company key for consistency with company tree
+                .attr("class", "drug-path area-connector")
+                .attr("data-company", area.company)
                 .attr("data-area", area.area)
                 .attr("d", `M${labelPlacement.x},${labelPlacement.y}L${nodeX},${nodeY}`)
                 .attr("stroke", "#37587e")
@@ -617,7 +613,7 @@
                 .attr("stroke-opacity", sizeConfig.connectionOpacity)
                 .attr("fill", "none");
 
-            // Connect drugs to area
+            // Connect drugs to the edge position (not directly to label)
             area.stages.forEach((drugs: any[], stage: string) => {
                 const stageRadius = stageRadii[stage as keyof typeof stageRadii];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
@@ -630,7 +626,7 @@
                     // Create unique ID for drug
                     const drugId = `${area.area}-${drug.Candidate}-${i}`.replace(/\s+/g, '-').toLowerCase();
 
-                    // Add connecting line from node to drug with data attributes
+                    // Add connecting line from edge position to drug
                     linesGroup.append("path")
                         .attr("class", "drug-path")
                         .attr("data-company", area.company) // Use company key for consistency
@@ -752,7 +748,7 @@
                 });
             });
 
-            // Add interaction handlers for both node and label
+            // Add interaction handlers for the label
             const handleMouseEnter = (event: MouseEvent) => {
                 // Set this area as active
                 setActiveArea(area, {
@@ -817,8 +813,8 @@
                 });
             };
 
-            // Apply handlers to the node group
-            nodeGroup
+            // Apply handlers to the label group
+            labelGroup
                 .on("mouseenter", handleMouseEnter)
                 .on("mousemove", handleMouseMove)
                 .on("mouseleave", handleMouseLeave)
