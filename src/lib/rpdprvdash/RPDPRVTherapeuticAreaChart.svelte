@@ -22,6 +22,9 @@
         getStageRadii,
         getStageLabelConfig
     } from './utils/data-processing-utils';
+    
+    // Remove the import for TherapeuticAreaDetailDrawer as we'll use the parent's drawer
+    // import TherapeuticAreaDetailDrawer from './components/TherapeuticAreaDetailDrawer.svelte';
 
     export let data: any[] = [];
     export let onCompanyHover: (entries: any[]) => void = () => {};
@@ -29,6 +32,8 @@
     export let onLeave: () => void = () => {};
     export let onShowDrugDetail: (detail: any) => void = () => {};
     export let onShowCompanyDetail: (detail: any) => void = () => {};
+    // Add a new prop for showing therapeutic area detail
+    export let onShowTherapeuticAreaDetail: (detail: any) => void = () => {};
     export let isAllYearView: boolean = false; // New prop to check if "all" year view is selected
     // Add props for InfiniteCanvasWrapper integration
     export let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
@@ -65,6 +70,12 @@
     let activeStage: string | null = null;
     let contentGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
     let focusableElements: any[] = [];
+
+    // Replace the openAreaDetailDrawer function to use the parent's drawer
+    function openAreaDetailDrawer(area: any, entries: any): void {
+        // Call the parent's function instead of managing state locally
+        onShowTherapeuticAreaDetail(entries);
+    }
 
     /**
      * Process data into a format suitable for therapeutic area visualization
@@ -787,7 +798,22 @@
                     areaName: area.area,
                     totalDrugs: area.totalDrugs,
                     uniqueCompanies: area.uniqueCompanies.size,
-                    uniqueCandidates: area.uniqueCandidates.size
+                    uniqueCandidates: area.uniqueCandidates.size,
+                    clinicalTrials: area.clinicalTrials,
+                    vouchersAwarded: area.vouchersAwarded,
+                    indications: area.indications
+                });
+                
+                // Open the therapeutic area detail drawer
+                openAreaDetailDrawer(area, {
+                    entries: area.entries,
+                    areaName: area.area,
+                    totalDrugs: area.totalDrugs,
+                    uniqueCompanies: area.uniqueCompanies.size,
+                    uniqueCandidates: area.uniqueCandidates.size,
+                    clinicalTrials: area.clinicalTrials,
+                    vouchersAwarded: area.vouchersAwarded,
+                    indications: area.indications
                 });
             };
 
@@ -825,3 +851,10 @@
 
 <!-- Remove the chart-container div and SVG element since we're using the parent's SVG -->
 <!-- Remove the RPDTooltip component since we're using the parent's tooltip -->
+
+<!-- Remove the TherapeuticAreaDetailDrawer component -->
+<!-- <TherapeuticAreaDetailDrawer 
+    isOpen={isAreaDetailDrawerOpen}
+    areaDetail={selectedAreaDetail}
+    onClose={closeAreaDetailDrawer}
+/> -->

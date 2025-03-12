@@ -42,6 +42,9 @@
   import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
   import constellationDataRaw from '$lib/data/rpdprvdash/RPDConstellationData.json';
 
+  // Import the TherapeuticAreaDetailDrawer component
+  import TherapeuticAreaDetailDrawer from '$lib/rpdprvdash/components/TherapeuticAreaDetailDrawer.svelte';
+
   // Interface definitions
   interface DrawerProps {
     isCompanyView?: boolean;
@@ -158,6 +161,11 @@
     companyUrl: ''
   };
 
+  // Add state for therapeutic area drawer
+  let isTherapeuticAreaDrawerOpen = false;
+  let selectedTherapeuticAreaDetail: any = null;
+
+  // Update handleCompanyHover to also handle therapeutic area data
   function handleCompanyHover(data) {
     if (Array.isArray(data)) {
       // Old format - just array of entries
@@ -305,6 +313,21 @@
 
   // Add reference to infinite canvas
   let infiniteCanvas: { resetView: () => void };
+
+  // Add function to handle therapeutic area detail
+  function handleShowTherapeuticAreaDetail(detail: any) {
+    selectedTherapeuticAreaDetail = detail;
+    isTherapeuticAreaDrawerOpen = true;
+  }
+  
+  // Add function to close therapeutic area drawer
+  function handleCloseTherapeuticAreaDrawer() {
+    isTherapeuticAreaDrawerOpen = false;
+    // Optional: clear the selection after a delay
+    setTimeout(() => {
+      selectedTherapeuticAreaDetail = null;
+    }, 300);
+  }
 
   onMount(() => {
     try {
@@ -576,7 +599,7 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row relative">
             <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-12rem)] relative">
+            <div class="w-full h-[calc(100vh-2rem)] relative">
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
@@ -587,6 +610,7 @@
                     onLeave={handleLeave}
                     onShowDrugDetail={handleShowDrugDetail}
                     onShowCompanyDetail={handleShowCompanyDetail}
+                    onShowTherapeuticAreaDetail={handleShowTherapeuticAreaDetail}
                     {mainGroup}
                     {showTooltip}
                     {hideTooltip}
@@ -862,6 +886,16 @@
       color={drawerProps.color}
     />
   {/if}
+{/if}
+
+<!-- Add the TherapeuticAreaDetailDrawer component at the end of the file -->
+{#if isTherapeuticAreaDrawerOpen}
+  <TherapeuticAreaDetailDrawer 
+    isOpen={isTherapeuticAreaDrawerOpen}
+    areaDetail={selectedTherapeuticAreaDetail}
+    onClose={handleCloseTherapeuticAreaDrawer}
+    onShowDrugDetail={handleShowDrugDetail}
+  />
 {/if}
 
 <style>
