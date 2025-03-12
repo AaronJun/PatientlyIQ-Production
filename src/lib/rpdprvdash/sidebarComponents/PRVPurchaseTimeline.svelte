@@ -1,19 +1,25 @@
 <!-- PRVPurchaseTimeline.svelte - Timeline focused on transaction values by year -->
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
+    import { ChevronDown } from 'carbon-icons-svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
-    import { ChevronDown } from 'carbon-icons-svelte';
+    
+    // Create event dispatcher
+    const dispatch = createEventDispatcher<{
+        yearSelect: { year: string };
+    }>();
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
-    export let selectedYear: string | null = null;
+    export let selectedYear: string = "All";
     export let transactionYearSelected: (year: string) => void = () => {};
     
     let svg: SVGElement;
     let isMobile = false;
     let isTablet = false;
     let isDropdownOpen = false;
+    let dropdownRef: HTMLDivElement;
     
     // Responsive dimensions
     let margin = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -46,40 +52,39 @@
     onMount(() => {
         updateDimensions();
         window.addEventListener('resize', updateDimensions);
-        return () => window.removeEventListener('resize', updateDimensions);
+        document.addEventListener('click', handleClickOutside);
+        
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
     
-    function toggleDropdown(event: Event) {
-        event.stopPropagation();
+    function toggleDropdown(e: MouseEvent) {
+        e.stopPropagation();
         isDropdownOpen = !isDropdownOpen;
     }
     
-    function handleYearSelect(year: string, event: Event) {
-        event.stopPropagation();
+    function handleYearSelect(year: string) {
+        selectedYear = year;
         onYearSelect(year);
         transactionYearSelected(year);
+        dispatch('yearSelect', { year });
         isDropdownOpen = false;
     }
     
     function handleClickOutside(event: MouseEvent) {
-        if (isDropdownOpen) {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
             isDropdownOpen = false;
         }
     }
     
-    onMount(() => {
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    });
-
     // Process data to filter for purchases with transaction values
     $: purchaseData = data.filter(entry => entry.Purchased === "Y" && entry["Purchase Year"]);
     
     // Process data to group by purchase year
     $: yearData = Object.entries(
-        purchaseData.reduce((acc, entry) => {
+        data.reduce((acc, entry) => {
             const year = entry["Purchase Year"];
             if (!year) return acc;
             
@@ -147,6 +152,15 @@
         };
     })
     .sort((a, b) => a.year.localeCompare(b.year));
+
+    // Create gradient strings for each year
+    $: yearGradients = yearData.reduce((acc, yearEntry) => {
+        const gradientColors = yearEntry.areas
+            .map(area => getTherapeuticAreaColor(area.area).fill)
+            .join(', ');
+        acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
+        return acc;
+    }, {} as Record<string, string>);
 
     function createGradientId(year: string): string {
         return `purchase-gradient-${year}`;
@@ -516,10 +530,10 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="relative w-full">
+    <div class="dropdown-container relative w-full">
         <button 
-            class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
-            on:click={toggleDropdown}
+            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            on:click|stopPropagation={toggleDropdown}
         >
             <div class="flex items-center gap-2">
                 {#if selectedYear === "All"}
@@ -528,7 +542,7 @@
                 {:else}
                     {#each yearData as yearEntry}
                         {#if yearEntry.year === selectedYear}
-                            <div class="w-5 h-5 rounded-full" style="background: url(#purchase-gradient-{yearEntry.year})"></div>
+                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
                             <span>{yearEntry.year} Transactions</span>
                         {/if}
                     {/each}
@@ -541,56 +555,28 @@
         </button>
 
         {#if isDropdownOpen}
-            <div class="absolute left-0 z-10 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto">
-                <div class="py-1">
-                    <!-- All Years option -->
-                    <button 
-                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
-                        on:click={(e) => handleYearSelect('All', e)}
+            <div 
+                class="dropdown-menu absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                bind:this={dropdownRef}
+            >
+                <div class="py-1 max-h-60 overflow-auto">
+                    <!-- All years option -->
+                    <button
+                        class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100' : ''}"
+                        on:click={() => handleYearSelect('All')}
                     >
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <defs>
-                                <linearGradient id="dropdown-purchase-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#667EEA" />
-                                    <stop offset="25%" stop-color="#764BA2" />
-                                    <stop offset="50%" stop-color="#FF6B6B" />
-                                    <stop offset="75%" stop-color="#38B2AC" />
-                                    <stop offset="100%" stop-color="#68D391" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-purchase-all-years)" stroke="#37587e" stroke-width="1" />
-                        </svg>
-                        All Transaction Years
+                        <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
+                        <span>All Transaction Years</span>
                     </button>
                     
                     <!-- Year options -->
                     {#each yearData as yearEntry}
-                        <button 
-                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
-                            on:click={(e) => handleYearSelect(yearEntry.year, e)}
+                        <button
+                            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100' : ''}"
+                            on:click={() => handleYearSelect(yearEntry.year)}
                         >
-                            <svg width="20" height="20" viewBox="0 0 20 20">
-                                <defs>
-                                    <linearGradient id="dropdown-purchase-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        {#each yearEntry.areas as area, i}
-                                            {#if i === 0}
-                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            {/if}
-                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                        {/each}
-                                    </linearGradient>
-                                </defs>
-                                <circle 
-                                    cx="10" 
-                                    cy="10" 
-                                    r="{Math.max(4, Math.min(8, yearEntry.totalValue / 50))}" 
-                                    fill="url(#dropdown-purchase-{yearEntry.year})" 
-                                    stroke="#37587e" 
-                                    stroke-width="1" 
-                                />
-                            </svg>
-                            {yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})
+                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
+                            <span>{yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})</span>
                         </button>
                     {/each}
                 </div>
@@ -619,6 +605,16 @@
 
     :global(.year-group) {
         transition: all 0.3s ease;
+    }
+    
+    /* Dropdown styles */
+    .dropdown-container {
+        position: relative;
+        z-index: 30;
+    }
+    
+    .dropdown-menu {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
     
     /* Media query for mobile devices */

@@ -1,6 +1,6 @@
 <!-- RPDPRVVerticalTimeline.svelte -->
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from './utils/colorDefinitions';
     import * as Dialog from "$lib/components/ui/dialog";
@@ -15,11 +15,17 @@
     let isMobile = false;
     let isTablet = false;
     let isDropdownOpen = false;
+    let dropdownRef: HTMLDivElement;
     
     // Responsive dimensions
     let margin = { top: 12, right: 20, bottom: 20, left: 40 };
     let width = 125;
     let height = 800;
+    
+    // Create event dispatcher
+    const dispatch = createEventDispatcher<{
+        yearSelect: { year: string };
+    }>();
     
     // Update dimensions based on screen size
     function updateDimensions() {
@@ -47,7 +53,12 @@
     onMount(() => {
         updateDimensions();
         window.addEventListener('resize', updateDimensions);
-        return () => window.removeEventListener('resize', updateDimensions);
+        document.addEventListener('click', handleClickOutside);
+        
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
     
     function isYearRestricted(year: string): boolean {
@@ -59,24 +70,18 @@
         isDropdownOpen = !isDropdownOpen;
     }
     
-    function handleYearSelect(year: string, event: Event) {
-        event.stopPropagation();
+    function handleYearSelect(year: string) {
+        selectedYear = year;
         onYearSelect(year);
+        dispatch('yearSelect', { year });
         isDropdownOpen = false;
     }
     
     function handleClickOutside(event: MouseEvent) {
-        if (isDropdownOpen) {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
             isDropdownOpen = false;
         }
     }
-    
-    onMount(() => {
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    });
     
     $: yearData = Object.entries(
         data.reduce((acc, entry) => {
@@ -109,6 +114,15 @@
             .sort((a, b) => b.percentage - a.percentage)
     }))
     .sort((a, b) => a.year.localeCompare(b.year));
+
+    // Create gradient strings for each year
+    $: yearGradients = yearData.reduce((acc, yearEntry) => {
+        const gradientColors = yearEntry.areas
+            .map(area => getTherapeuticAreaColor(area.area).fill)
+            .join(', ');
+        acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
+        return acc;
+    }, {} as Record<string, string>);
 
     function createGradientId(year: string): string {
         return `gradient-${year}`;
@@ -502,10 +516,10 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="relative w-full">
+    <div class="dropdown-container relative w-full">
         <button 
-            class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
-            on:click={toggleDropdown}
+            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            on:click|stopPropagation={toggleDropdown}
         >
             <div class="flex items-center gap-2">
                 {#if selectedYear === "All"}
@@ -514,7 +528,7 @@
                 {:else}
                     {#each yearData as yearEntry}
                         {#if yearEntry.year === selectedYear}
-                            <div class="w-5 h-5 rounded-full" style="background: url(#gradient-{yearEntry.year})"></div>
+                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
                             <span>{yearEntry.year}</span>
                         {/if}
                     {/each}
@@ -527,12 +541,15 @@
         </button>
 
         {#if isDropdownOpen}
-            <div class="absolute left-0 z-10 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto">
+            <div 
+                class="dropdown-menu absolute left-0 z-20 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
+                bind:this={dropdownRef}
+            >
                 <div class="py-1">
                     <!-- All Years option -->
                     <button 
                         class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
-                        on:click={(e) => handleYearSelect('All', e)}
+                        on:click|stopPropagation={(e) => handleYearSelect('All')}
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20">
                             <defs>
@@ -553,7 +570,7 @@
                     {#each yearData as yearEntry}
                         <button 
                             class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
-                            on:click={(e) => handleYearSelect(yearEntry.year, e)}
+                            on:click|stopPropagation={(e) => handleYearSelect(yearEntry.year)}
                         >
                             <svg width="20" height="20" viewBox="0 0 20 20">
                                 <defs>
@@ -629,6 +646,16 @@
 
     :global(.year-group) {
         transition: all 0.3s ease;
+    }
+    
+    /* Dropdown styles */
+    .dropdown-container {
+        position: relative;
+        z-index: 30;
+    }
+    
+    .dropdown-menu {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
     
     /* Media query for mobile devices */
