@@ -276,6 +276,7 @@
     />
   </div>
   
+  <!-- Navigation controls moved to top left and arranged vertically -->
   <div class="navigation-controls">
     <button on:click={zoomIn} class="nav-button" title="Zoom In">
       <svg viewBox="0 0 24 24" width="24" height="24">
@@ -317,15 +318,17 @@
     z-index: 1000;
   }
 
+  /* Updated navigation controls styles for vertical layout on top left */
   .navigation-controls {
     position: absolute;
-    top: 4px;
-    right: 8px;
+    top: 16px;
+    left: 16px;
     display: flex;
+    flex-direction: column;
     border: 1px solid #549E7D;
     gap: 8px;
     background: white;
-    padding: 4px;
+    padding: 8px;
     border-radius: 5.245px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
@@ -346,11 +349,11 @@
 
   .nav-button:hover {
     background: #549E7D;
-    color: #333;
+    color: white;
   }
 
   .nav-button:active {
     background: #e0e0e0;
-    transform: translateY(1px);
+    transform: translateX(1px);
   }
-</style> 
+</style>

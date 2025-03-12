@@ -314,7 +314,7 @@
         activeStage = null;
         
         // Reset all visual elements
-        d3.selectAll(".area-label text")
+        d3.selectAll(".area-label-text text")
             .transition()
             .duration(500)
             .attr("fill", "#4A5568")
@@ -331,7 +331,7 @@
         if (area) {
             const areaId = (area.area || area).replace(/\s+/g, '-').toLowerCase();
                 
-            d3.select(`#area-label-${areaId} text`)
+            d3.select(`#area-label-${areaId} .area-label-text text`)
                 .transition()
                 .duration(500)
                 .attr("fill", "#2D3748")
@@ -588,15 +588,13 @@
             // Create label with text using the placement information
             const isRightSide = labelPlacement.isRightSide;
             const textAnchor = isRightSide ? "start" : "end";
-            // Adjust xOffset to align text better with the connection point
-            const xOffset = isRightSide ? 8 : -8;
+            const xOffset = isRightSide ? 10 : -10;
             
             labelGroup.append("text")
                 .attr("class", "area-label-text")
                 .attr("text-anchor", textAnchor)
                 .attr("dx", xOffset)
-                .attr("dy", "0.32em") // Adjust vertical alignment to align with connection line
-                .attr("dominant-baseline", "middle") // Ensure text is vertically centered on the connection point
+                .attr("dy", "0.35em")
                 .text(truncateText(area.area, maxLabelWidth))
                 .attr("fill", "#4A5568")
                 .attr("font-size", sizeConfig.labelFontSize)

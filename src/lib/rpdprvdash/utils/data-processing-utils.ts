@@ -729,3 +729,93 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     console.log(`Sampled data: ${sampledData.length} entries from original ${data.length} entries`);
     return sampledData;
 }
+
+/**
+ * Samples data for the therapeutic area view to reduce rendering load
+ * @param data The full dataset
+ * @param maxAreas Maximum number of therapeutic areas to include (prioritizes those with more drugs)
+ * @param maxDrugsPerArea Maximum number of drugs to show per therapeutic area
+ * @returns Sampled dataset for lighter rendering
+ */
+export function sampleDataForTherapeuticAreaView(data: any[], maxAreas: number = 15, maxDrugsPerArea: number = 5): any[] {
+    // First process the data to get therapeutic area information
+    const areasMap = new Map();
+    
+    data.forEach(entry => {
+        const area = entry.TherapeuticArea1;
+        if (!area) return; // Skip entries without therapeutic area
+        
+        if (!areasMap.has(area)) {
+            areasMap.set(area, {
+                area,
+                entries: [],
+                totalDrugs: 0,
+                hasPRV: false
+            });
+        }
+        
+        const areaData = areasMap.get(area);
+        areaData.entries.push(entry);
+        areaData.totalDrugs++;
+        
+        // Track if this area has any PRV entries
+        if (hasPRVAward(entry)) {
+            areaData.hasPRV = true;
+        }
+    });
+    
+    // Sort areas by total drugs (descending) and take top N
+    const topAreas = Array.from(areasMap.values())
+        .sort((a, b) => {
+            // Prioritize areas with PRV entries
+            if (a.hasPRV && !b.hasPRV) return -1;
+            if (!a.hasPRV && b.hasPRV) return 1;
+            // Then sort by total drugs
+            return b.totalDrugs - a.totalDrugs;
+        })
+        .slice(0, maxAreas)
+        .map(area => area.area);
+    
+    // Create a set for faster lookups
+    const topAreaSet = new Set(topAreas);
+    
+    // Filter and sample the data
+    const sampledData: any[] = [];
+    const areaDrugCounts: Record<string, number> = {};
+    
+    // Initialize drug counts for each area
+    topAreas.forEach(area => {
+        areaDrugCounts[area] = 0;
+    });
+    
+    // Prioritize PRV entries first
+    const prvEntries = data.filter(entry => hasPRVAward(entry) && topAreaSet.has(entry.TherapeuticArea1));
+    prvEntries.forEach(entry => {
+        const area = entry.TherapeuticArea1;
+        if (areaDrugCounts[area] < maxDrugsPerArea) {
+            sampledData.push(entry);
+            areaDrugCounts[area]++;
+        }
+    });
+    
+    // Then add other entries until we reach the limit for each area
+    data.forEach(entry => {
+        const area = entry.TherapeuticArea1;
+        
+        // Skip if not in top areas or already at max drugs for this area
+        if (!topAreaSet.has(area) || areaDrugCounts[area] >= maxDrugsPerArea) {
+            return;
+        }
+        
+        // Skip if it's a PRV entry (already added)
+        if (hasPRVAward(entry)) {
+            return;
+        }
+        
+        sampledData.push(entry);
+        areaDrugCounts[area]++;
+    });
+    
+    console.log(`Sampled therapeutic area data: ${sampledData.length} entries from original ${data.length} entries`);
+    return sampledData;
+}

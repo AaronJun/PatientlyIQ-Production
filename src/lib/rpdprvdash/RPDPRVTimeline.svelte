@@ -683,7 +683,7 @@
         height: 100%;
         width: 100%;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         position: relative;
     }
     

@@ -34,7 +34,6 @@
 
   import { ArrowUpRight, Bee, DashboardReference, Globe, Analytics } from 'carbon-icons-svelte';
   import { Balanced } from 'carbon-pictograms-svelte';
-  import { ChevronDown } from 'carbon-icons-svelte';
 
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
@@ -43,6 +42,9 @@
 
   // Import the TherapeuticAreaDetailDrawer component
   import TherapeuticAreaDetailDrawer from '$lib/rpdprvdash/components/TherapeuticAreaDetailDrawer.svelte';
+  
+  // Import the new VerticalSidebar component
+  import VerticalSidebar from '$lib/rpdprvdash/sidebarComponents/NavSidebar.svelte';
 
   // Interface definitions
   interface DrawerProps {
@@ -82,7 +84,7 @@
   let selectedYear = "2024"; // Default year
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
-  let isSidebarCollapsed = false; // Add state for sidebar collapse
+  let isSidebarCollapsed = true; // Default to collapsed for vertical sidebar
   let isHowToReadOpen = false; // New state variable for How to Read modal
   let isDropdownOpen = false; // New state variable for dropdown menu
   let isMobileSidebarExpanded = false; // New state variable for mobile sidebar expansion
@@ -163,6 +165,15 @@
   // Add state for therapeutic area drawer
   let isTherapeuticAreaDrawerOpen = false;
   let selectedTherapeuticAreaDetail: any = null;
+
+  // Handle vertical sidebar events
+  function handleTabSelect(event) {
+    setActiveTab(event.detail);
+  }
+  
+  function handleSidebarToggle(event) {
+    isSidebarCollapsed = event.detail;
+  }
 
   // Update handleCompanyHover to also handle therapeutic area data
   function handleCompanyHover(data) {
@@ -405,91 +416,49 @@
     </button>
     </div>
     
-    <nav class="nav-bar justify-stretch bg-slate-50 w-full h-full py-2 px-2">
-      <div class="flex place-items-baseline gap-4 justify-between min-w-full mx-auto">
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex">
-          {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions', 'Program Overview'] as tab}
-            <button
-              class="tab-button px-4 py-2 text-xs transition-colors duration-300 ease-in-out tracking-relaxed 
-              {activeTab === tab ? 
-                'text-[#FF5501] px-2 font-bold border-b-2 border-[#FF5501] active-tab' : 
-                'hover:text-[#e05501] text-slate-400 px-2 hover:text-orange-500'}"
-              on:click={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          {/each}
+    <div class="px-4 py-2 bg-slate-50 flex justify-between items-center">
+      <!-- Search and Dashboard Buttons -->
+      <div class="flex gap-2 items-stretch ml-auto">
+        <!-- Search component with responsive width -->
+        <div class="w-full md:w-48 lg:w-64">
+          <RpdprvSearch
+            data={rpddData}
+            onShowDrugDetail={handleShowDrugDetail}
+            onShowCompanyDetail={handleShowCompanyDetail}
+          />
         </div>
-
-        <!-- Mobile Navigation -->
-        <div class="relative md:hidden">
-          <button
-            class="flex items-center gap-2 px-2 py-2 text-xs font-medium text-slate-700 bg-white rounded-sm ring-1 ring-emerald-200 shadow-sm hover:bg-slate-50 focus:outline-none"
-            on:click={toggleDropdown}
-          >
-            {activeTab}
-            <ChevronDown
-              size={16}
-              class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
-            />
-          </button>
-
-          {#if isDropdownOpen}
-            <div
-              class="absolute left-0 mt-2 rounded-sm shadow-lg bg-white ring-2 ring-emerald-500 px-2 z-50"
-              on:click|stopPropagation
-            >
-              <div class="py-1" role="menu" aria-orientation="vertical">
-                {#each ['By Sponsor', 'By Therapeutic Area', 'By Transactions', 'Program Overview'] as tab}
-                  <button
-                    class="block w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-100 hover:text-[#FF5501]
-                    {activeTab === tab ? 'bg-emerald-200 text-[#FF5501] font-medium' : ''}"
-                    on:click={(e) => handleMobileTabSelect(tab, e)}
-                    role="menuitem"
-                  >
-                    {tab}
-                  </button>
-                {/each}
-              </div>
-            </div>
-          {/if}
-        </div>
-
-        <!-- Search and Dashboard Buttons -->
-        <div class="flex gap-2 items-stretch">
-          <!-- Search component with responsive width -->
-          <div class="w-full md:w-48 lg:w-64">
-            <RpdprvSearch
-              data={rpddData}
-              onShowDrugDetail={handleShowDrugDetail}
-              onShowCompanyDetail={handleShowCompanyDetail}
-            />
-          </div>
-          
-          <!-- Dashboard button with responsive design -->
-          <button 
-            class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-            on:click={handleDashboardClick}
-          >
-            <DashboardReference size={16}/>
-            <span class="hidden lg:inline">Dashboard</span>
-          </button>
-          
-          <!-- Mobile Dashboard Icon Button -->
-          <button 
-            class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
-            on:click={handleDashboardClick}
-          >
-            <DashboardReference size={16}/>
-          </button>
-        </div>
+        
+        <!-- Dashboard button with responsive design -->
+        <button 
+          class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
+          on:click={handleDashboardClick}
+        >
+          <DashboardReference size={16}/>
+          <span class="hidden lg:inline">Dashboard</span>
+        </button>
+        
+        <!-- Mobile Dashboard Icon Button -->
+        <button 
+          class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
+          on:click={handleDashboardClick}
+        >
+          <DashboardReference size={16}/>
+        </button>
       </div>
-    </nav>
+    </div>
   </div>
   
+  <!-- Vertical Sidebar Navigation -->
+  <VerticalSidebar 
+  {activeTab} 
+  isCollapsed={isSidebarCollapsed}
+  on:tabSelect={handleTabSelect}
+  on:toggleCollapse={handleSidebarToggle}
+/>
+  
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 mt-4 pb-8 relative">
+  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
+        style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
       <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
@@ -537,7 +506,7 @@
             </div>
 
             <!-- Left timeline sidebar for By Sponsor tab -->
-            <div class="absolute left-0 top-0 w-auto h-auto z-10">
+            <div class="absolute left-0 top-32 w-auto h-auto z-10">
               <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
                 <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
@@ -551,7 +520,7 @@
 
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-              <div class="absolute right-0 top-16 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-0 top-25 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
