@@ -4,6 +4,7 @@
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from './utils/colorDefinitions';
     import * as Dialog from "$lib/components/ui/dialog";
+    import { ChevronDown } from 'carbon-icons-svelte';
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
@@ -12,6 +13,8 @@
     let svg: SVGElement;
     let showRestrictedModal = false;
     let isMobile = false;
+    let isTablet = false;
+    let isDropdownOpen = false;
     
     // Responsive dimensions
     let margin = { top: 12, right: 20, bottom: 20, left: 40 };
@@ -21,7 +24,13 @@
     // Update dimensions based on screen size
     function updateDimensions() {
         isMobile = window.innerWidth < 768;
+        isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+        
         if (isMobile) {
+            width = Math.min(window.innerWidth - 40, 800);
+            height = 75;
+            margin = { top: 6, right: 12, bottom: 10, left: 12 };
+        } else if (isTablet) {
             width = Math.min(window.innerWidth - 40, 800);
             height = 75;
             margin = { top: 6, right: 12, bottom: 10, left: 12 };
@@ -44,6 +53,30 @@
     function isYearRestricted(year: string): boolean {
         return parseInt(year) < 2023;
     }
+    
+    function toggleDropdown(event: Event) {
+        event.stopPropagation();
+        isDropdownOpen = !isDropdownOpen;
+    }
+    
+    function handleYearSelect(year: string, event: Event) {
+        event.stopPropagation();
+        onYearSelect(year);
+        isDropdownOpen = false;
+    }
+    
+    function handleClickOutside(event: MouseEvent) {
+        if (isDropdownOpen) {
+            isDropdownOpen = false;
+        }
+    }
+    
+    onMount(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    });
     
     $: yearData = Object.entries(
         data.reduce((acc, entry) => {
@@ -467,32 +500,113 @@
     }
 </script>
 
-<div class="timeline-container">
-    <svg
-        bind:this={svg}
-        width={width}
-        height={height}
-        viewBox="0 0 {width} {height}"
-        class="w-full h-auto"
-    />
-</div>
+{#if isMobile || isTablet}
+    <!-- Dropdown menu for mobile and tablet -->
+    <div class="relative w-full">
+        <button 
+            class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            on:click={toggleDropdown}
+        >
+            <div class="flex items-center gap-2">
+                {#if selectedYear === "All"}
+                    <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
+                    <span>All Years</span>
+                {:else}
+                    {#each yearData as yearEntry}
+                        {#if yearEntry.year === selectedYear}
+                            <div class="w-5 h-5 rounded-full" style="background: url(#gradient-{yearEntry.year})"></div>
+                            <span>{yearEntry.year}</span>
+                        {/if}
+                    {/each}
+                {/if}
+            </div>
+            <ChevronDown 
+                size={16} 
+                class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
+            />
+        </button>
 
+        {#if isDropdownOpen}
+            <div class="absolute left-0 z-10 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto">
+                <div class="py-1">
+                    <!-- All Years option -->
+                    <button 
+                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
+                        on:click={(e) => handleYearSelect('All', e)}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <defs>
+                                <linearGradient id="dropdown-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667EEA" />
+                                    <stop offset="25%" stop-color="#764BA2" />
+                                    <stop offset="50%" stop-color="#FF6B6B" />
+                                    <stop offset="75%" stop-color="#38B2AC" />
+                                    <stop offset="100%" stop-color="#68D391" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-all-years)" stroke="#37587e" stroke-width="1" />
+                        </svg>
+                        All Years
+                    </button>
+                    
+                    <!-- Year options -->
+                    {#each yearData as yearEntry}
+                        <button 
+                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
+                            on:click={(e) => handleYearSelect(yearEntry.year, e)}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <defs>
+                                    <linearGradient id="dropdown-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        {#each yearEntry.areas as area, i}
+                                            {#if i === 0}
+                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            {/if}
+                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                        {/each}
+                                    </linearGradient>
+                                </defs>
+                                <circle 
+                                    cx="10" 
+                                    cy="10" 
+                                    r="{Math.max(4, Math.min(8, yearEntry.count / 5))}" 
+                                    fill="url(#dropdown-{yearEntry.year})" 
+                                    stroke="#37587e" 
+                                    stroke-width="1" 
+                                />
+                            </svg>
+                            {yearEntry.year}
+                        </button>
+                    {/each}
+                </div>
+            </div>
+        {/if}
+    </div>
+{:else}
+    <!-- Original vertical timeline for desktop -->
+    <svg bind:this={svg} width={width} height={height}></svg>
+{/if}
+
+<!-- Restricted Year Modal -->
 <Dialog.Root bind:open={showRestrictedModal}>
     <Dialog.Content class="sm:max-w-md">
         <Dialog.Header>
-            <Dialog.Title>Restricted Access</Dialog.Title>
+            <Dialog.Title>Restricted Year</Dialog.Title>
             <Dialog.Description>
-                Historical data prior to 2023 requires full access.
+                Data for years prior to 2023 is restricted in this preview version.
             </Dialog.Description>
         </Dialog.Header>
-        <div class="flex flex-col gap-4 py-4">
-            <p class="text-left text-primary">
-                For full access to the 500+ drug candidates in the RPD PRV database, please contact us at team@patiently.studio
+        <div class="p-4 bg-amber-50 rounded-md">
+            <p class="text-amber-800 text-sm">
+                Please contact your administrator for access to historical data.
             </p>
         </div>
         <Dialog.Footer>
-            <Dialog.Close class="bg-slate-500 text-primary-foreground hover:bg-orange-500/90 px-4 py-2 rounded-md">
-                Close
+            <Dialog.Close asChild>
+                <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-md text-sm font-medium">
+                    Close
+                </button>
             </Dialog.Close>
         </Dialog.Footer>
     </Dialog.Content>

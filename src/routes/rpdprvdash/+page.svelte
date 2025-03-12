@@ -202,7 +202,7 @@
     currentArea = null;
     areaMetrics = null;
   }
-
+ 
   function handleLeave() {
     // Keep the current view if we want to persist data
     // currentEntries = [];
@@ -495,7 +495,7 @@
 
             <!-- Left timeline sidebar for By Sponsor tab -->
             <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/80 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+              <div class="h-full bg-white/80 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
                 <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
                     data={rpddData}
@@ -618,7 +618,7 @@
 
             <!-- Left timeline sidebar for By Therapeutic Area tab -->
             <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
                 <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
                     data={rpddData}
@@ -713,7 +713,7 @@
             
             <!-- Left timeline sidebar for By Transactions tab -->
             <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col">
+              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
                 <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <PRVPurchaseTimeline 
                     data={rpddData}

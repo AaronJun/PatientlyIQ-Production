@@ -3,6 +3,7 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
+    import { ChevronDown } from 'carbon-icons-svelte';
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
@@ -11,6 +12,8 @@
     
     let svg: SVGElement;
     let isMobile = false;
+    let isTablet = false;
+    let isDropdownOpen = false;
     
     // Responsive dimensions
     let margin = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -20,7 +23,13 @@
     // Update dimensions based on screen size
     function updateDimensions() {
         isMobile = window.innerWidth < 768;
+        isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+        
         if (isMobile) {
+            width = Math.min(window.innerWidth - 40, 800);
+            height = 125;
+            margin = { top: 20, right: 20, bottom: 40, left: 20 };
+        } else if (isTablet) {
             width = Math.min(window.innerWidth - 40, 800);
             height = 125;
             margin = { top: 20, right: 20, bottom: 40, left: 20 };
@@ -38,6 +47,31 @@
         updateDimensions();
         window.addEventListener('resize', updateDimensions);
         return () => window.removeEventListener('resize', updateDimensions);
+    });
+    
+    function toggleDropdown(event: Event) {
+        event.stopPropagation();
+        isDropdownOpen = !isDropdownOpen;
+    }
+    
+    function handleYearSelect(year: string, event: Event) {
+        event.stopPropagation();
+        onYearSelect(year);
+        transactionYearSelected(year);
+        isDropdownOpen = false;
+    }
+    
+    function handleClickOutside(event: MouseEvent) {
+        if (isDropdownOpen) {
+            isDropdownOpen = false;
+        }
+    }
+    
+    onMount(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
 
     // Process data to filter for purchases with transaction values
@@ -480,21 +514,93 @@
     }
 </script>
 
-<div class="timeline-container">
-    <div class="sidebar-header ml-2 flex gap-2 uppercase place-items-center">      
-        <h4 class="text-sm capitalize font-medium text-slate-800">
-            Select Year             
-            </h4>
-    </div>    
-    <svg
-        bind:this={svg}
-        width={width}
-        height={height}
-        viewBox="0 0 {width} {height}"
-        class="w-full h-auto"
-    />
-</div>
+{#if isMobile || isTablet}
+    <!-- Dropdown menu for mobile and tablet -->
+    <div class="relative w-full">
+        <button 
+            class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            on:click={toggleDropdown}
+        >
+            <div class="flex items-center gap-2">
+                {#if selectedYear === "All"}
+                    <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
+                    <span>All Transaction Years</span>
+                {:else}
+                    {#each yearData as yearEntry}
+                        {#if yearEntry.year === selectedYear}
+                            <div class="w-5 h-5 rounded-full" style="background: url(#purchase-gradient-{yearEntry.year})"></div>
+                            <span>{yearEntry.year} Transactions</span>
+                        {/if}
+                    {/each}
+                {/if}
+            </div>
+            <ChevronDown 
+                size={16} 
+                class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
+            />
+        </button>
 
+        {#if isDropdownOpen}
+            <div class="absolute left-0 z-10 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto">
+                <div class="py-1">
+                    <!-- All Years option -->
+                    <button 
+                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
+                        on:click={(e) => handleYearSelect('All', e)}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <defs>
+                                <linearGradient id="dropdown-purchase-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667EEA" />
+                                    <stop offset="25%" stop-color="#764BA2" />
+                                    <stop offset="50%" stop-color="#FF6B6B" />
+                                    <stop offset="75%" stop-color="#38B2AC" />
+                                    <stop offset="100%" stop-color="#68D391" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-purchase-all-years)" stroke="#37587e" stroke-width="1" />
+                        </svg>
+                        All Transaction Years
+                    </button>
+                    
+                    <!-- Year options -->
+                    {#each yearData as yearEntry}
+                        <button 
+                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
+                            on:click={(e) => handleYearSelect(yearEntry.year, e)}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <defs>
+                                    <linearGradient id="dropdown-purchase-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        {#each yearEntry.areas as area, i}
+                                            {#if i === 0}
+                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            {/if}
+                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                        {/each}
+                                    </linearGradient>
+                                </defs>
+                                <circle 
+                                    cx="10" 
+                                    cy="10" 
+                                    r="{Math.max(4, Math.min(8, yearEntry.totalValue / 50))}" 
+                                    fill="url(#dropdown-purchase-{yearEntry.year})" 
+                                    stroke="#37587e" 
+                                    stroke-width="1" 
+                                />
+                            </svg>
+                            {yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})
+                        </button>
+                    {/each}
+                </div>
+            </div>
+        {/if}
+    </div>
+{:else}
+    <!-- Original vertical timeline for desktop -->
+    <svg bind:this={svg} width={width} height={height}></svg>
+{/if}
 
 <style>
     .timeline-container {
