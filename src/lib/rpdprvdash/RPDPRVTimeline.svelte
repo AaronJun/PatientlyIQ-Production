@@ -78,7 +78,7 @@
     }
     
     function handleClickOutside(event: MouseEvent) {
-        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node) && isDropdownOpen) {
             isDropdownOpen = false;
         }
     }
@@ -519,7 +519,7 @@
     <div class="dropdown-container relative w-full">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
-            on:click|stopPropagation={toggleDropdown}
+            on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
                 {#if selectedYear === "All"}
@@ -549,7 +549,7 @@
                     <!-- All Years option -->
                     <button 
                         class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
-                        on:click|stopPropagation={(e) => handleYearSelect('All')}
+                        on:click={() => handleYearSelect('All')}
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20">
                             <defs>
@@ -570,7 +570,7 @@
                     {#each yearData as yearEntry}
                         <button 
                             class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
-                            on:click|stopPropagation={(e) => handleYearSelect(yearEntry.year)}
+                            on:click={() => handleYearSelect(yearEntry.year)}
                         >
                             <svg width="20" height="20" viewBox="0 0 20 20">
                                 <defs>

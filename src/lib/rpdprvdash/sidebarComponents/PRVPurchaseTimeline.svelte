@@ -74,7 +74,7 @@
     }
     
     function handleClickOutside(event: MouseEvent) {
-        if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+        if (dropdownRef && !dropdownRef.contains(event.target as Node) && isDropdownOpen) {
             isDropdownOpen = false;
         }
     }
@@ -533,7 +533,7 @@
     <div class="dropdown-container relative w-full">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
-            on:click|stopPropagation={toggleDropdown}
+            on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
                 {#if selectedYear === "All"}
@@ -556,7 +556,7 @@
 
         {#if isDropdownOpen}
             <div 
-                class="dropdown-menu absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                class="dropdown-menu absolute z-20 mt-1 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-[60vh] overflow-y-auto"
                 bind:this={dropdownRef}
             >
                 <div class="py-1 max-h-60 overflow-auto">

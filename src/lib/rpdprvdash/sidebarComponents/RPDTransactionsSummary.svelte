@@ -1,5 +1,7 @@
 <!-- RPDTransactionSummaryView.svelte -->
 <script lang="ts">
+    import { hasPRVAward } from '../utils/data-processing-utils';
+    
     // A component to display summary statistics for PRV transactions
     export let data: any[] = []; // Full dataset for the selected year
     export let year = ""; // Selected year
@@ -81,6 +83,50 @@
     
     // Calculate percentages for total value comparison
     $: totalValuePercentage = totalValueAllTime > 0 ? (totalValueInYear / totalValueAllTime * 100) : 0;
+    
+    // Unsold vouchers section
+    $: unsoldVouchers = data.filter(entry => 
+      hasPRVAward(entry) && (!entry.Purchased || entry.Purchased !== "Y")
+    );
+    
+    $: unsoldVouchersInYear = unsoldVouchers.filter(entry => 
+      entry["PRV Year"] === year
+    );
+    
+    // Prepare data for the table
+    $: unsoldVouchersData = (year ? unsoldVouchersInYear : unsoldVouchers).map(entry => ({
+      company: entry.Company || "Unknown",
+      candidate: entry.Candidate || "Unknown",
+      indication: entry.Indication || "Unknown",
+      prvYear: entry["PRV Year"] || "Unknown",
+      stage: entry["Current Development Stage"] || "Unknown"
+    }));
+    
+    // Sorting functionality
+    let sortField = "company";
+    let sortDirection = 1; // 1 for ascending, -1 for descending
+    
+    function sortTable(field: string) {
+      if (sortField === field) {
+        // Toggle direction if clicking the same field
+        sortDirection = -sortDirection;
+      } else {
+        // New field, default to ascending
+        sortField = field;
+        sortDirection = 1;
+      }
+    }
+    
+    $: sortedVouchers = [...unsoldVouchersData].sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return aValue.localeCompare(bValue) * sortDirection;
+      }
+      
+      return ((aValue > bValue) ? 1 : -1) * sortDirection;
+    });
   </script>
   
   <div class="summary-view">    
@@ -166,7 +212,7 @@
           <div class="chart-container flex flex-col w-full place-items-start">
             <!-- Labels -->
             <div class="flex flex-col justify-evenly gap-1 items-center mb-1">
-              <div class="flex items-center w-full">
+              <div class="flex items-center w-full place-items">
                 <span class="inline-block ring-1 ring-emerald-800 w-2 h-2 rounded-full bg-emerald-200 mr-1"></span>
                 <span class="text-xs text-slate-500">All-time</span>
                 <span class="text-xs font-medium text-slate-700 ml-2">
@@ -199,7 +245,7 @@
     </div>
     
     <!-- Companies section -->
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-2 gap-3 mb-4">
       <div class="bg-white rounded-md shadow-sm p-3">
         <h4 class="text-xs font-medium text-slate-600 mb-2">Buyers, {year}</h4>
         <div class="flex flex-col items-left">
@@ -214,6 +260,63 @@
           <p class="text-2xl font-bold text-slate-700">{sellersInYear.size}</p>
           <p class="text-xs text-slate-500">companies</p>
         </div>
+      </div>
+    </div>
+    
+    <!-- Unsold Vouchers Table Section -->
+    <div class="bg-white rounded-md shadow-sm mb-4">
+      <div class="p-3">
+        <h4 class="text-xs font-medium text-slate-700 mb-2">
+          Unsold Vouchers {year ? `(${year})` : '(All Time)'}
+          <span class="text-emerald-600 ml-1">({sortedVouchers.length})</span>
+        </h4>
+        
+        {#if sortedVouchers.length > 0}
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="border-b border-slate-200">
+                  <th class="text-left py-2 font-medium text-slate-600 cursor-pointer" on:click={() => sortTable('company')}>
+                    Company
+                    {#if sortField === 'company'}
+                      <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
+                    {/if}
+                  </th>
+                  <th class="text-left py-2 font-medium text-slate-600 cursor-pointer" on:click={() => sortTable('candidate')}>
+                    Candidate
+                    {#if sortField === 'candidate'}
+                      <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
+                    {/if}
+                  </th>
+                  <th class="text-left py-2 font-medium text-slate-600 cursor-pointer" on:click={() => sortTable('prvYear')}>
+                    PRV Year
+                    {#if sortField === 'prvYear'}
+                      <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
+                    {/if}
+                  </th>
+                  <th class="text-left py-2 font-medium text-slate-600 cursor-pointer" on:click={() => sortTable('stage')}>
+                    Stage
+                    {#if sortField === 'stage'}
+                      <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
+                    {/if}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each sortedVouchers as voucher}
+                  <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="py-2 text-slate-700">{voucher.company}</td>
+                    <td class="py-2 text-slate-700">{voucher.candidate}</td>
+                    <td class="py-2 text-slate-700">{voucher.prvYear}</td>
+                    <td class="py-2 text-slate-700">{voucher.stage}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        {:else}
+          <p class="text-center text-slate-500 text-sm py-4">No unsold vouchers available</p>
+        {/if}
       </div>
     </div>
   
@@ -268,5 +371,22 @@
     
     .bar-fill {
       transition: width 0.5s ease-out;
+    }
+    
+    /* Table styles */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th {
+      position: sticky;
+      top: 0;
+      background-color: white;
+      z-index: 10;
+    }
+    
+    th:hover {
+      background-color: #f8fafc; /* slate-50 */
     }
   </style>
