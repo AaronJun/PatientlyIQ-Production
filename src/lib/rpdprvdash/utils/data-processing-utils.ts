@@ -158,7 +158,7 @@ export function formatCompanyName(companyName: string): string {
     const phrasesToRemove = [
         'Life Sciences', 'Life Science', 'Pharmaceuticals', 'Biotechnology',
         'Therapeutics', 'Sciences', 'Biometrics', 'Partners', 'Science', 'Biologics', 'Gene Therapies',
-        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences', 'Biotechnologies'
+        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences',  'Bioscience', 'Biotechnologies'
     ];
     
     let formattedName = companyName;

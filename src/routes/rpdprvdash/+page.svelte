@@ -416,7 +416,8 @@
     </button>
     </div>
     
-    <div class="px-4 py-2 bg-slate-50 flex justify-between items-center">
+    <div class="px-2 py-2 bg-slate-50 flex justify-between items-center">
+ 
       <!-- Search and Dashboard Buttons -->
       <div class="flex gap-2 items-stretch ml-auto">
         <!-- Search component with responsive width -->
@@ -437,6 +438,7 @@
           <span class="hidden lg:inline">Dashboard</span>
         </button>
         
+        
         <!-- Mobile Dashboard Icon Button -->
         <button 
           class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
@@ -447,21 +449,29 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Vertical Sidebar Navigation -->
-  <VerticalSidebar 
-  {activeTab} 
-  isCollapsed={isSidebarCollapsed}
-  on:tabSelect={handleTabSelect}
-  on:toggleCollapse={handleSidebarToggle}
-/>
-  
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
+
         style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
       <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
+        <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+          <RPDPRVVerticalTimeline 
+            data={rpddData}
+            selectedYear={selectedYear}
+            onYearSelect={handleYearSelect}
+          />
+          <VerticalSidebar 
+          {activeTab} 
+          isCollapsed={isSidebarCollapsed}
+          on:tabSelect={handleTabSelect}
+          on:toggleCollapse={handleSidebarToggle}
+        />
+          
+        </div>
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow relative">
             <!-- Main visualization area taking full width -->
@@ -505,22 +515,11 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Left timeline sidebar for By Sponsor tab -->
-            <div class="absolute left-0 top-32 w-auto h-auto z-10">
-              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
-                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                  <RPDPRVVerticalTimeline 
-                    data={rpddData}
-                    selectedYear={selectedYear}
-                    onYearSelect={handleYearSelect}
-                  />
-                </div>
-              </div>
-            </div>
-
+       
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
               <div class="absolute right-0 top-25 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+                
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
@@ -627,19 +626,6 @@
                   </g>
                 {/if}
               </InfiniteCanvasWrapper>
-            </div>
-
-            <!-- Left timeline sidebar for By Therapeutic Area tab -->
-            <div class="absolute left-0 top-0 w-auto h-auto z-10">
-              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
-                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                  <RPDPRVVerticalTimeline 
-                    data={rpddData}
-                    selectedYear={selectedYear}
-                    onYearSelect={handleYearSelect}
-                  />
-                </div>
-              </div>
             </div>
 
             <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->

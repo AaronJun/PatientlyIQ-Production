@@ -34,7 +34,7 @@
   </script>
   
   <div 
-    class="vertical-sidebar-container fixed left-0 top-0 z-40 pt-20 h-screen bg-slate-800 shadow-xl transition-all duration-300 ease-in-out"
+    class="vertical-sidebar-containe z-50 fixed left-0 top-0 z-40 pt-20 h-full bg-slate-800 shadow-xl transition-all duration-300 ease-in-out"
     class:w-16={isCollapsed && !isHovered}
     class:w-64={!isCollapsed || isHovered}
     on:mouseenter={() => isHovered = true}

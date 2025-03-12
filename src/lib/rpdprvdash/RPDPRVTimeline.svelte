@@ -10,17 +10,16 @@
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string | null = null;
     
-    let svg: SVGElement;
+    let svg: SVGElement | null = null;
+    let container: HTMLDivElement;
     let showRestrictedModal = false;
     let isMobile = false;
     let isTablet = false;
     let isDropdownOpen = false;
-    let dropdownRef: HTMLDivElement;
+    let dropdownRef: HTMLDivElement | null = null;
     
-    // Responsive dimensions
-    let margin = { top: 12, right: 20, bottom: 20, left: 40 };
-    let width = 125;
-    let height = 800;
+    // Responsive margins with relative values
+    let margin = { top: 5, right: 5, bottom: 5, left: 5 };
     
     // Create event dispatcher
     const dispatch = createEventDispatcher<{
@@ -32,18 +31,10 @@
         isMobile = window.innerWidth < 768;
         isTablet = window.innerWidth >= 768 && window.innerWidth < 1200;
         
-        if (isMobile) {
-            width = Math.min(window.innerWidth - 40, 800);
-            height = 75;
-            margin = { top: 6, right: 12, bottom: 10, left: 12 };
-        } else if (isTablet) {
-            width = Math.min(window.innerWidth - 40, 800);
-            height = 75;
-            margin = { top: 6, right: 12, bottom: 10, left: 12 };
+        if (isMobile || isTablet) {
+            margin = { top: 6, right: 12, bottom: 30, left: 12 };
         } else {
-            width = 125;
-            height = 800;
-            margin = { top: 20, right: 20, bottom: 20, left: 40 };
+            margin = { top: 20, right: 20, bottom: 40, left: 20 };
         }
         
         // Only create visualization if we're in desktop mode or if data is available for mobile dropdown
@@ -108,8 +99,21 @@
     $: yearData = calculateYearData(data);
     $: yearGradients = calculateYearGradients(yearData);
     
+    // Add resize observer
+    let resizeObserver: ResizeObserver;
+    
     onMount(() => {
-        updateDimensions();
+        // Initialize ResizeObserver to watch container size changes
+        resizeObserver = new ResizeObserver(() => {
+            if (svg) {
+                createVisualization();
+            }
+        });
+        
+        if (container) {
+            resizeObserver.observe(container);
+        }
+        
         window.addEventListener('resize', updateDimensions);
         document.addEventListener('click', handleClickOutside);
         
@@ -131,6 +135,9 @@
         return () => {
             window.removeEventListener('resize', updateDimensions);
             document.removeEventListener('click', handleClickOutside);
+            if (resizeObserver) {
+                resizeObserver.disconnect();
+            }
         };
     });
     
@@ -179,26 +186,31 @@
         const svgElement = d3.select(svg);
         svgElement.selectAll("*").remove();
 
+        // Get the SVG dimensions from its computed style
+        const svgNode = svg as SVGSVGElement;
+        const width = svgNode.clientWidth;
+        const height = svgNode.clientHeight;
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        // Create scale based on orientation
-        const mainScale = isMobile 
-            ? d3.scalePoint()
-                .domain(yearData.map(d => d.year))
-                .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
-                .padding(0.5)
-            : d3.scalePoint()
-                .domain(yearData.map(d => d.year))
-                .range([margin.top, innerHeight - 60]) // Leave space at bottom for "All Years"
-                .padding(0.5);
+        // Update viewBox to match container size
+        svgElement
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        // Create scale based on orientation - now horizontal
+        const mainScale = d3.scalePoint()
+            .domain(yearData.map(d => d.year))
+            .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
+            .padding(0.5);
 
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.count) || 0])
             .range([4, 16]);
 
         const g = svgElement.append("g")
-            .attr("transform", isMobile ? `translate(0,${margin.top})` : `translate(${margin.left},0)`);
+            .attr("transform", `translate(0,${margin.top})`);
 
         // Create gradients
         const defs = svgElement.append("defs");
@@ -225,7 +237,7 @@
                     .attr("stop-color", colorCombo.fill);
             });
         });
-        
+
         // Create a special gradient for "All Years"
         const allYearsGradient = defs.append("linearGradient")
             .attr("id", "gradient-all-years")
@@ -233,7 +245,7 @@
             .attr("y1", "0%")
             .attr("x2", "100%")
             .attr("y2", "100%");
-            
+
         // Get all unique therapeutic areas
         const allAreas = new Set<string>();
         yearData.forEach(yearEntry => {
@@ -241,7 +253,7 @@
                 allAreas.add(area.area);
             });
         });
-        
+
         // Add all therapeutic areas to the gradient
         const uniqueAreas = Array.from(allAreas);
         uniqueAreas.forEach((area, index) => {
@@ -277,24 +289,13 @@
         feMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
 
-        // Add connecting line
-        g.append("line")
-            .attr("x1", isMobile ? margin.left : innerWidth / 2)
-            .attr("x2", isMobile ? innerWidth - 10 : innerWidth / 2)
-            .attr("y1", isMobile ? innerHeight / 2 : margin.top - 10)
-            .attr("y2", isMobile ? innerHeight / 2 : innerHeight - 10)
-            .attr("stroke", "#666666")
-            .attr("stroke-width", 0.5)
-            .attr("stroke-dasharray", "3,3");
 
-        // Create year groups
+        // Create year groups - positioned horizontally
         const yearGroups = g.selectAll(".year-group")
             .data(yearData)
             .join("g")
             .attr("class", "year-group")
-            .attr("transform", d => isMobile 
-                ? `translate(${mainScale(d.year)},${innerHeight / 2})` 
-                : `translate(${innerWidth / 2},${mainScale(d.year)})`);
+            .attr("transform", d => `translate(${mainScale(d.year)},${innerHeight / 2})`);
 
         // Add highlight circles
         yearGroups.append("circle")
@@ -319,7 +320,6 @@
             })
             .on("mouseenter", function(event, d) {
                 if (d.year !== selectedYear) {
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     const parentElement = d3.select(this).node()?.parentElement;
                     if (parentElement) {
                         d3.select(parentElement)
@@ -335,7 +335,6 @@
                         .attr("stroke-width", 2)
                         .style("filter", "url(#glow)");
 
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     if (parentElement) {
                         d3.select(parentElement)
                             .select(".year-label")
@@ -343,21 +342,11 @@
                             .duration(200)
                             .attr("font-weight", "600")
                             .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#FF1515");
-                        
-                        // Check if count-label exists before selecting it
-                        if (d3.select(parentElement).select(".count-label").size() > 0) {
-                            d3.select(parentElement)
-                                .select(".count-label")
-                                .transition()
-                                .duration(200)
-                                .attr("opacity", 1);
-                        }
                     }
                 }
             })
             .on("mouseleave", function(event, d) {
                 if (d.year !== selectedYear) {
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     const parentElement = d3.select(this).node()?.parentElement;
                     if (parentElement) {
                         d3.select(parentElement)
@@ -373,7 +362,6 @@
                         .attr("stroke-width", 1.5)
                         .style("filter", "none");
 
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     if (parentElement) {
                         d3.select(parentElement)
                             .select(".year-label")
@@ -381,44 +369,32 @@
                             .duration(200)
                             .attr("font-weight", "400")
                             .attr("fill", isYearRestricted(d.year) ? "#9CA3AF" : "#718096");
-                        
-                        // Check if count-label exists before selecting it
-                        if (d3.select(parentElement).select(".count-label").size() > 0) {
-                            d3.select(parentElement)
-                                .select(".count-label")
-                                .transition()
-                                .duration(200)
-                                .attr("opacity", 0.6);
-                        }
                     }
                 }
             });
 
-        // Add year labels
+        // Add year labels - now below circles
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", isMobile ? 0 : -radiusScale(d3.max(yearData, d => d.count) || 0))
-            .attr("y", isMobile ? 30 : -40) // Position based on orientation
+            .attr("x", 0)
+            .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0) + 20)
             .attr("text-anchor", "middle")
-            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", isMobile ? "hanging" : "end")
+            .style("dominant-baseline", "top")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
             
-        // Create "All Years" circle at the bottom/right
+        // Create "All Years" circle at the right
         const allYearsGroup = g.append("g")
             .attr("class", "all-years-group")
-            .attr("transform", isMobile 
-                ? `translate(${innerWidth - 30}, ${innerHeight / 2})` 
-                : `translate(${innerWidth / 2}, ${innerHeight + 10})`)
+            .attr("transform", `translate(${innerWidth - 30}, ${innerHeight / 2})`)
             .attr("cursor", "pointer");
             
         // Create highlight circle for "All Years"
         allYearsGroup.append("circle")
             .attr("class", "highlight-circle")
-            .attr("r", 25) // Larger than regular circles
+            .attr("r", 25)
             .attr("fill", "none")
             .attr("stroke", "#4fd1c5")
             .attr("stroke-width", 5)
@@ -427,7 +403,7 @@
         // Create main circle for "All Years"
         allYearsGroup.append("circle")
             .attr("class", "year-circle")
-            .attr("r", 22) // Larger than regular circles
+            .attr("r", 22)
             .attr("fill", "url(#gradient-all-years)")
             .attr("stroke", "#565656")
             .attr("stroke-width", selectedYear === "All" ? 4 : 2.5)
@@ -477,15 +453,15 @@
                 }
             });
             
-        // Add "All Years" label
+        // Add "All Years" label - now below circle
         allYearsGroup.append("text")
             .attr("class", "year-label")
-            .attr("y", isMobile ? 30 : -42) // Position based on orientation
+            .attr("x", 0)
+            .attr("y", 30)
             .attr("text-anchor", "middle")
-            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", isMobile ? "hanging" : "end")
+            .style("dominant-baseline", "hanging")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text("All");
 
@@ -557,11 +533,32 @@
     $: if (data.length > 0 && svg) {
         createVisualization();
     }
+
+    // Add these new functions to handle hover states
+    function handleYearHover(yearEntry: any) {
+        if (yearEntry.year !== selectedYear) {
+            // The hover effects are now handled by CSS
+        }
+    }
+
+    function handleYearLeave(yearEntry: any) {
+        if (yearEntry.year !== selectedYear) {
+            // The leave effects are now handled by CSS
+        }
+    }
+
+    // Helper function to calculate circle radius
+    function radiusScale(count: number): number {
+        const minRadius = 8;
+        const maxRadius = 22;
+        const maxCount = Math.max(...yearData.map(d => d.count));
+        return minRadius + (maxRadius - minRadius) * (count / maxCount);
+    }
 </script>
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container bg-white relative w-full" style="min-height: 40px;">
+    <div class="dropdown-container bg-white relative w-full" style="min-height: 20px;">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
@@ -576,7 +573,7 @@
                         <span>{yearEntry.year}</span>
                     {/each}
                 {:else}
-                    <div class="w-5 h-5 rounded-full" style="background: gray"></div>
+                    <div class="w-5 h-5 rounded-full"></div>
                     <span>Select Year</span>
                 {/if}
             </div>
@@ -648,10 +645,145 @@
         {/if}
     </div>
 {:else}
-    <!-- Original vertical timeline for desktop -->
-     <div class="bg-white/80 backdrop-blur-sm shadow-md pb-8">
-    <svg bind:this={svg} width={width} height={height}></svg>
-</div>
+    <!-- Timeline for desktop - now using CSS Grid -->
+    <div class="timeline-container backdrop-blur-sm shadow-md" bind:this={container}>
+        <!-- SVG definitions for gradients -->
+        <svg width="0" height="0" aria-hidden="true">
+            <defs>
+                <!-- Gradients for each year -->
+                {#each yearData as yearEntry}
+                    <linearGradient id="gradient-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        {#each yearEntry.areas as area, i}
+                            <stop 
+                                offset="{i * (100 / yearEntry.areas.length)}%" 
+                                stop-color={getTherapeuticAreaColor(area.area).fill}
+                            />
+                            <stop 
+                                offset="{(i + 1) * (100 / yearEntry.areas.length)}%" 
+                                stop-color={getTherapeuticAreaColor(area.area).fill}
+                            />
+                        {/each}
+                    </linearGradient>
+                {/each}
+                
+                <!-- Special gradient for "All Years" -->
+                <linearGradient id="gradient-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
+                    {#each Array.from(new Set(yearData.flatMap(y => y.areas.map(a => a.area)))) as area, i}
+                        <stop 
+                            offset="{i * (100 / yearData.length)}%" 
+                            stop-color={getTherapeuticAreaColor(area).fill}
+                        />
+                    {/each}
+                </linearGradient>
+                
+                <!-- Glow filter -->
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+        </svg>
+
+        <div class="timeline-grid">
+            {#each yearData as yearEntry}
+                <div class="year-item">
+                    <button 
+                        class="circle-container"
+                        class:restricted={isYearRestricted(yearEntry.year)}
+                        class:selected={yearEntry.year === selectedYear}
+                        on:click={() => handleYearClick(yearEntry)}
+                        on:mouseenter={() => handleYearHover(yearEntry)}
+                        on:mouseleave={() => handleYearLeave(yearEntry)}
+                        on:keydown={(e) => e.key === 'Enter' && handleYearClick(yearEntry)}
+                        aria-label={`Select year ${yearEntry.year}`}
+                        type="button"
+                    >
+                        <!-- Highlight circle -->
+                        <div 
+                            class="highlight-circle"
+                            style="
+                                width: {(radiusScale(yearEntry.count) + 4) * 2}px;
+                                height: {(radiusScale(yearEntry.count) + 4) * 2}px;
+                                opacity: {yearEntry.year === selectedYear ? 0.5 : 0};
+                            "
+                        ></div>
+                        <!-- Main circle with SVG gradient -->
+                        <svg 
+                            class="main-circle-svg"
+                            width={radiusScale(yearEntry.count) * 2}
+                            height={radiusScale(yearEntry.count) * 2}
+                            style="filter: {yearEntry.year === selectedYear ? 'url(#glow)' : 'none'};"
+                        >
+                            <circle 
+                                cx={radiusScale(yearEntry.count)}
+                                cy={radiusScale(yearEntry.count)}
+                                r={radiusScale(yearEntry.count) - 1.5}
+                                fill="url(#gradient-{yearEntry.year})"
+                                stroke="#37587e"
+                                stroke-width="1.5"
+                            />
+                        </svg>
+                    </button>
+                    <div 
+                        class="year-label"
+                        class:selected={yearEntry.year === selectedYear}
+                        class:restricted={isYearRestricted(yearEntry.year)}
+                    >
+                        {yearEntry.year}
+                    </div>
+                </div>
+            {/each}
+
+            <!-- "All Years" item -->
+            <div class="year-item all-years">
+                <button 
+                    class="circle-container"
+                    class:selected={"All" === selectedYear}
+                    on:click={() => handleYearClick({ year: "All" })}
+                    on:mouseenter={() => handleYearHover({ year: "All" })}
+                    on:mouseleave={() => handleYearLeave({ year: "All" })}
+                    on:keydown={(e) => e.key === 'Enter' && handleYearClick({ year: "All" })}
+                    aria-label="Select all years"
+                    type="button"
+                >
+                    <!-- Highlight circle -->
+                    <div 
+                        class="highlight-circle"
+                        style="
+                            width: 50px;
+                            height: 50px;
+                            opacity: {"All" === selectedYear ? 0.5 : 0};
+                        "
+                    ></div>
+                    <!-- Main circle with SVG gradient -->
+                    <svg 
+                        class="main-circle-svg"
+                        width="44"
+                        height="44"
+                        style="filter: {"All" === selectedYear ? 'url(#glow)' : 'none'};"
+                    >
+                        <circle 
+                            cx="22"
+                            cy="22"
+                            r="20.5"
+                            fill="url(#gradient-all-years)"
+                            stroke="#565656"
+                            stroke-width="1.5"
+                        />
+                    </svg>
+                </button>
+                <div 
+                    class="year-label"
+                    class:selected={"All" === selectedYear}
+                >
+                    All
+                </div>
+            </div>
+        </div>
+    </div>
 {/if}
 
 <!-- Restricted Year Modal -->
@@ -680,47 +812,115 @@
 
 <style>
     .timeline-container {
-        height: 100%;
         width: 100%;
-        display: flex;
-        flex-direction: row;
         position: relative;
-    }
-    
-    .timeline-header {
-        margin-bottom: 0.5rem;
-        text-align: center;
-        letter-spacing: 0.05em;
+        overflow: hidden;
     }
 
-    :global(.year-group) {
+    .timeline-grid {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        padding: 2rem;
+        align-items: center;
+        position: relative;
+    }
+
+    .timeline-grid::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 2rem;
+        right: 2rem;
+        height: 1px;
+        background: #666666;
+        border-top: 1px dashed #666666;
+        transform: translateY(-50%);
+        z-index: 0;
+    }
+
+    .year-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .circle-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .highlight-circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 5px solid #4fd1c5;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .main-circle-svg {
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .circle-container:hover .highlight-circle {
+        opacity: 0.325 !important;
+    }
+
+    .circle-container:hover .main-circle-svg {
+        filter: url(#glow) !important;
+    }
+
+    .circle-container:hover .main-circle-svg circle {
+        stroke-width: 2px;
+    }
+
+    .year-label {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 9.75px;
+        color: #718096;
         transition: all 0.3s ease;
     }
-    
-    /* Dropdown styles */
-    .dropdown-container {
-        position: relative;
-        z-index: 30;
+
+    .year-label.selected {
+        color: #FF1515;
+        font-weight: 600;
     }
-    
-    .dropdown-menu {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 50;
+
+    .restricted .main-circle-svg circle {
+        opacity: 0.5;
     }
-    
-    /* Media query for mobile devices */
+
+    .restricted .year-label {
+        color: #9CA3AF;
+    }
+
+    .all-years {
+        margin-left: auto;
+    }
+
     @media (max-width: 768px) {
-        .timeline-container {
-            flex-direction: column;
+        .timeline-grid {
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        .year-label {
+            font-size: 8px;
         }
         
-        .dropdown-menu {
-            position: absolute;
-            width: 100%;
+        .timeline-container {
+            padding: 0.5rem 1rem;
         }
     }
 </style>
