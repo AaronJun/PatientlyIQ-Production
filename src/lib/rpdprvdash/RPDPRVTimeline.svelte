@@ -45,15 +45,88 @@
             height = 800;
             margin = { top: 20, right: 20, bottom: 20, left: 40 };
         }
-        if (data.length > 0 && svg) {
-            createVisualization();
+        
+        // Only create visualization if we're in desktop mode or if data is available for mobile dropdown
+        if (data.length > 0) {
+            if (!isMobile && !isTablet && svg) {
+                createVisualization();
+            } else if ((isMobile || isTablet) && yearData.length === 0) {
+                // Force reactive update of yearData for mobile view
+                yearData = calculateYearData(data);
+                yearGradients = calculateYearGradients(yearData);
+            }
         }
     }
+    
+    // Extract yearData calculation to a separate function for reuse
+    function calculateYearData(inputData: any[]): Array<{year: string; count: number; areas: Array<{area: string; count: number; percentage: number}>}> {
+        return Object.entries(
+            inputData.reduce((acc: Record<string, { count: number; areas: Record<string, number> }>, entry: any) => {
+                const year = entry["PRV Issue Year"] || entry["RPDD Year"];
+                if (!year) return acc;
+                
+                if (!acc[year]) {
+                    acc[year] = {
+                        count: 0,
+                        areas: {}
+                    };
+                }
+                acc[year].count += 1;
+                const area = entry.TherapeuticArea1;
+                if (area) {
+                    acc[year].areas[area] = (acc[year].areas[area] || 0) + 1;
+                }
+                return acc;
+            }, {} as Record<string, { count: number; areas: Record<string, number> }>)
+        )
+        .map(([year, data]) => ({
+            year,
+            count: (data as any).count,
+            areas: Object.entries((data as any).areas)
+                .map(([area, count]) => ({
+                    area,
+                    count: count as number,
+                    percentage: (count as number) / (data as any).count
+                }))
+                .sort((a, b) => b.percentage - a.percentage)
+        }))
+        .sort((a, b) => a.year.localeCompare(b.year));
+    }
+    
+    // Extract yearGradients calculation to a separate function for reuse
+    function calculateYearGradients(yearDataInput: Array<{year: string; count: number; areas: Array<{area: string; count: number; percentage: number}>}>): Record<string, string> {
+        return yearDataInput.reduce((acc: Record<string, string>, yearEntry) => {
+            const gradientColors = yearEntry.areas
+                .map((area: {area: string; count: number; percentage: number}) => getTherapeuticAreaColor(area.area).fill)
+                .join(', ');
+            acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
+            return acc;
+        }, {} as Record<string, string>);
+    }
+    
+    // Use the extracted functions for reactive declarations
+    $: yearData = calculateYearData(data);
+    $: yearGradients = calculateYearGradients(yearData);
     
     onMount(() => {
         updateDimensions();
         window.addEventListener('resize', updateDimensions);
         document.addEventListener('click', handleClickOutside);
+        
+        // Ensure yearData is initialized for mobile view
+        if ((isMobile || isTablet) && data.length > 0 && yearData.length === 0) {
+            yearData = calculateYearData(data);
+            yearGradients = calculateYearGradients(yearData);
+        }
+        
+        // Log initial state for debugging
+        console.log('Component mounted:', {
+            isMobile,
+            isTablet,
+            dataLength: data.length,
+            yearDataLength: yearData.length,
+            selectedYear
+        });
         
         return () => {
             window.removeEventListener('resize', updateDimensions);
@@ -68,6 +141,19 @@
     function toggleDropdown(event: Event) {
         event.stopPropagation();
         isDropdownOpen = !isDropdownOpen;
+        
+        // Force a DOM update to ensure the dropdown is properly rendered
+        setTimeout(() => {
+            if (isDropdownOpen && dropdownRef) {
+                // Ensure the dropdown is visible
+                dropdownRef.style.display = 'block';
+                dropdownRef.style.visibility = 'visible';
+                dropdownRef.style.opacity = '1';
+                
+                // Log for debugging
+                console.log('Dropdown toggled:', isDropdownOpen, dropdownRef);
+            }
+        }, 0);
     }
     
     function handleYearSelect(year: string) {
@@ -83,47 +169,6 @@
         }
     }
     
-    $: yearData = Object.entries(
-        data.reduce((acc, entry) => {
-            const year = entry["PRV Issue Year"] || entry["RPDD Year"];
-            if (!year) return acc;
-            
-            if (!acc[year]) {
-                acc[year] = {
-                    count: 0,
-                    areas: {}
-                };
-            }
-            acc[year].count += 1;
-            const area = entry.TherapeuticArea1;
-            if (area) {
-                acc[year].areas[area] = (acc[year].areas[area] || 0) + 1;
-            }
-            return acc;
-        }, {} as Record<string, { count: number; areas: Record<string, number> }>)
-    )
-    .map(([year, data]) => ({
-        year,
-        count: (data as any).count,
-        areas: Object.entries((data as any).areas)
-            .map(([area, count]) => ({
-                area,
-                count: count as number,
-                percentage: (count as number) / (data as any).count
-            }))
-            .sort((a, b) => b.percentage - a.percentage)
-    }))
-    .sort((a, b) => a.year.localeCompare(b.year));
-
-    // Create gradient strings for each year
-    $: yearGradients = yearData.reduce((acc, yearEntry) => {
-        const gradientColors = yearEntry.areas
-            .map(area => getTherapeuticAreaColor(area.area).fill)
-            .join(', ');
-        acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
-        return acc;
-    }, {} as Record<string, string>);
-
     function createGradientId(year: string): string {
         return `gradient-${year}`;
     }
@@ -516,7 +561,7 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container relative w-full">
+    <div class="dropdown-container relative w-full" style="min-height: 40px;">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
@@ -525,13 +570,14 @@
                 {#if selectedYear === "All"}
                     <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
                     <span>All Years</span>
-                {:else}
-                    {#each yearData as yearEntry}
-                        {#if yearEntry.year === selectedYear}
-                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
-                            <span>{yearEntry.year}</span>
-                        {/if}
+                {:else if selectedYear && yearData.length > 0}
+                    {#each yearData.filter(entry => entry.year === selectedYear) as yearEntry}
+                        <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year] || 'gray'}"></div>
+                        <span>{yearEntry.year}</span>
                     {/each}
+                {:else}
+                    <div class="w-5 h-5 rounded-full" style="background: gray"></div>
+                    <span>Select Year</span>
                 {/if}
             </div>
             <ChevronDown 
@@ -542,8 +588,9 @@
 
         {#if isDropdownOpen}
             <div 
-                class="dropdown-menu absolute left-0 z-20 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
+                class="dropdown-menu absolute left-0 right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
                 bind:this={dropdownRef}
+                style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
             >
                 <div class="py-1">
                     <!-- All Years option -->
@@ -656,12 +703,22 @@
     
     .dropdown-menu {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 50;
     }
     
     /* Media query for mobile devices */
     @media (max-width: 768px) {
         .timeline-container {
             flex-direction: column;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            width: 100%;
         }
     }
 </style>
