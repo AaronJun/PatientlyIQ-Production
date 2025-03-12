@@ -121,17 +121,6 @@
     max-height: 80vh;
   }
   
-  /* Tablet-specific styles */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .mobile-sidebar {
-      max-height: 90vh;
-    }
-    
-    .content {
-      max-height: calc(85vh - 3.5rem) !important;
-    }
-  }
-  
   .handle {
     position: relative;
   }
