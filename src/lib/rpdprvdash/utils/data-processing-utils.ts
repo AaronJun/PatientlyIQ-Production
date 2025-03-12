@@ -421,6 +421,12 @@ export function getSizeConfig(isAllYearView: boolean) {
         connectionOpacity: isAllYearView ? 0.4025 : 0.325,
         highlightedNodeRadius: isAllYearView ? 8 : 10.25, 
         highlightedNodePosition: isAllYearView ? 1.25 : 1.25,
+        // New optimized settings for all year view
+        useShadowEffects: !isAllYearView, // Disable shadow effects in all year view
+        useAnimations: !isAllYearView, // Disable animations in all year view
+        transitionDuration: isAllYearView ? 0 : 200, // No transitions in all year view
+        renderPRVIndicators: !isAllYearView, // Only render PRV indicators in regular view
+        simplifiedConnections: isAllYearView, // Use simplified connections in all year view
     };
 }
 
@@ -661,4 +667,65 @@ export function createLabelGroup(
         group: labelGroup,
         textElement
     };
+}
+
+/**
+ * Samples data for the all year view to reduce rendering load
+ * @param data The full dataset
+ * @param maxCompanies Maximum number of companies to include (prioritizes those with more drugs)
+ * @param maxDrugsPerCompany Maximum number of drugs to show per company
+ * @returns Sampled dataset for lighter rendering
+ */
+export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100, maxDrugsPerCompany: number = 5): any[] {
+    // First process the data to get company information
+    const companies = processDataForLayout(data);
+    
+    // Sort companies by total drugs (descending) and take top N
+    const topCompanies = companies
+        .sort((a, b) => b.totalDrugs - a.totalDrugs)
+        .slice(0, maxCompanies)
+        .map(company => company.company);
+    
+    // Create a set for faster lookups
+    const topCompanySet = new Set(topCompanies);
+    
+    // Filter and sample the data
+    const sampledData: any[] = [];
+    const companyDrugCounts: Record<string, number> = {};
+    
+    // Initialize drug counts for each company
+    topCompanies.forEach(company => {
+        companyDrugCounts[company] = 0;
+    });
+    
+    // Prioritize PRV entries first
+    const prvEntries = data.filter(entry => hasPRVAward(entry) && topCompanySet.has(entry.Company));
+    prvEntries.forEach(entry => {
+        const company = entry.Company;
+        if (companyDrugCounts[company] < maxDrugsPerCompany) {
+            sampledData.push(entry);
+            companyDrugCounts[company]++;
+        }
+    });
+    
+    // Then add other entries until we reach the limit for each company
+    data.forEach(entry => {
+        const company = entry.Company;
+        
+        // Skip if not in top companies or already at max drugs for this company
+        if (!topCompanySet.has(company) || companyDrugCounts[company] >= maxDrugsPerCompany) {
+            return;
+        }
+        
+        // Skip if it's a PRV entry (already added)
+        if (hasPRVAward(entry)) {
+            return;
+        }
+        
+        sampledData.push(entry);
+        companyDrugCounts[company]++;
+    });
+    
+    console.log(`Sampled data: ${sampledData.length} entries from original ${data.length} entries`);
+    return sampledData;
 }

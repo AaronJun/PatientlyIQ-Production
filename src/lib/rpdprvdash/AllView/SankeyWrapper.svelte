@@ -210,10 +210,7 @@
           </div>
         </div>
         
-        <div class="mt-4 text-center text-sm text-slate-500">
-          <p>The Rare Pediatric Disease Priority Review Voucher (PRV) Program has facilitated the development of
-            {totalPRVs} approved treatments for rare pediatric diseases since its inception.</p>
-        </div>
+
       </div>
     {/if}
   </section>
