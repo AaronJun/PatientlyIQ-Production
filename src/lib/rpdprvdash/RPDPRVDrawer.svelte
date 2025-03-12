@@ -220,9 +220,6 @@
         </div>
 
         <div class="drawer-content">
-            <h3 class="text-[9.725px] font-semibold text-slate-800">
-                {year}
-            </h3>
 
             <div class="header flex gap-4 my-4 pb-4 w-full items-baseline justify-between">
                 <h2 class="text-2xl max-w-96 capitalize font-light text-slate-800" 

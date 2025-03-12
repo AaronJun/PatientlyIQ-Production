@@ -30,7 +30,7 @@
     // Update dimensions based on screen size
     function updateDimensions() {
         isMobile = window.innerWidth < 768;
-        isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+        isTablet = window.innerWidth >= 768 && window.innerWidth < 1200;
         
         if (isMobile) {
             width = Math.min(window.innerWidth - 40, 800);
@@ -561,9 +561,9 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container relative w-full" style="min-height: 40px;">
+    <div class="dropdown-container bg-white relative w-full" style="min-height: 40px;">
         <button 
-            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
@@ -595,7 +595,7 @@
                 <div class="py-1">
                     <!-- All Years option -->
                     <button 
-                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
+                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
                         on:click={() => handleYearSelect('All')}
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20">
@@ -649,7 +649,9 @@
     </div>
 {:else}
     <!-- Original vertical timeline for desktop -->
+     <div class="bg-white/80 backdrop-blur-sm shadow-md pb-8">
     <svg bind:this={svg} width={width} height={height}></svg>
+</div>
 {/if}
 
 <!-- Restricted Year Modal -->

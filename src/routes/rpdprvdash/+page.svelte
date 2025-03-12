@@ -322,7 +322,7 @@
       // Check if we're in mobile view
       const checkMobileView = () => {
         isMobileView = window.innerWidth < 768; // 768px is the md breakpoint in Tailwind
-        isTabletView = window.innerWidth >= 768 && window.innerWidth < 1440; // iPad-sized devices
+        isTabletView = window.innerWidth >= 768 && window.innerWidth <1200; // iPad-sized devices
       };
       
       // Initial check
@@ -495,7 +495,7 @@
 
             <!-- Left timeline sidebar for By Sponsor tab -->
             <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/80 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
+              <div class="h-full flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
                 <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
                     data={rpddData}

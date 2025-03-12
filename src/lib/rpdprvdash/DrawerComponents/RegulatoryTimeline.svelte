@@ -6,15 +6,15 @@
     // Props
     export let drugData: any;
     export let width = 580;
-    export let height = 180;
-    export let margin = { top: 40, right: 40, bottom: 30, left: 40 };
+    export let height = 200; // Increased height for better spacing
+    export let margin = { top: 40, right: 40, bottom: 40, left: 40 }; // Increased bottom margin
   
     // DOM node references
-    let timelineContainer;
-    let events = [];
+    let timelineContainer: HTMLElement;
+    let events: Array<any> = [];
     
     // Event colors based on app's color theme
-    const eventColors = {
+    const eventColors: {[key: string]: string} = {
       "ODD granted": "#4285F4",      // Blue
       "IND submission": "#34A853",   // Green
       "FTD granted": "#FBBC05",      // Yellow
@@ -37,7 +37,7 @@
     });
   
     // Handle window resize to make timeline responsive
-    let resizeObserver;
+    let resizeObserver: ResizeObserver | null = null;
     
     afterUpdate(() => {
       if (drugData && timelineContainer) {
@@ -63,11 +63,11 @@
       };
     });
   
-    function processTimelineData(data) {
+    function processTimelineData(data: any) {
       events = [];
       
       // Add regulatory milestone events
-      const milestones = {
+      const milestones: {[key: string]: string} = {
         "ODD granted": data["ODD granted"],
         "IND submission": data["IND submission "],
         "FTD granted": data["FTD granted"],
@@ -138,7 +138,7 @@
         .filter(event => event.date && event.date.trim() !== "" && event.date !== "#N/A")
         .map(event => {
           try {
-            const [month, day, year] = event.date.split("-").map(part => part.trim());
+            const [month, day, year] = event.date.split("-").map((part: string) => part.trim());
             
             // Handle 2-digit years
             let fullYear = year;
@@ -165,7 +165,7 @@
           }
         })
         .filter(event => event !== null)
-        .sort((a, b) => a.dateObj - b.dateObj);
+        .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
     }
   
     function drawTimeline() {
@@ -198,13 +198,13 @@
         
       dropShadow.append("feGaussianBlur")
         .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 1)
+        .attr("stdDeviation", 1.5) // Increased blur for better shadow
         .attr("result", "blur");
         
       dropShadow.append("feOffset")
         .attr("in", "blur")
-        .attr("dx", 0.5)
-        .attr("dy", 0.5)
+        .attr("dx", 1)
+        .attr("dy", 1)
         .attr("result", "offsetBlur");
         
       const feMerge = dropShadow.append("feMerge");
@@ -218,7 +218,7 @@
       const lastDate = events[events.length - 1].dateObj;
       
       // Add buffer to dates for better visualization
-      const timeBuffer = Math.max((lastDate - firstDate) * 0.1, 7776000000); // 10% buffer or at least 90 days
+      const timeBuffer = Math.max((lastDate.getTime() - firstDate.getTime()) * 0.1, 7776000000); // 10% buffer or at least 90 days
       const timeScale = d3.scaleTime()
         .domain([
           new Date(firstDate.getTime() - timeBuffer),
@@ -233,19 +233,19 @@
   
       const timelineAxis = d3.axisBottom(timeScale)
         .ticks(d3.timeYear.every(1))
-        .tickFormat(d3.timeFormat("%Y"))
+        .tickFormat(d3.timeFormat("%Y") as any)
         .tickSize(0);
   
-      timelineAxisGroup.call(timelineAxis)
+      timelineAxisGroup.call(timelineAxis as any)
         .selectAll("text")
-        .attr("font-size", "9.25px")
+        .attr("font-size", "11px") // Increased font size
         .attr("font-weight", "600")
         .attr("fill", "#4A5568");
         
       // Style the axis
       timelineAxisGroup.select(".domain")
         .attr("stroke", "#CBD5E0")
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", .4825);
         
       timelineAxisGroup.selectAll(".tick line")
         .attr("stroke", "#CBD5E0")
@@ -258,17 +258,20 @@
         .attr("x2", containerWidth - margin.right)
         .attr("y2", height - margin.bottom)
         .attr("stroke", "#37587e")
-        .attr("stroke-width", 1.5)
-        .attr("stroke-opacity", 0.6);
+        .attr("stroke-width", 0) // Thicker line
+        .attr("stroke-opacity", 0.7);
   
       // Draw the events
       const eventGroup = svg.append("g").attr("class", "events");
       
+      // Calculate vertical positions for staggered labels to prevent overlap
+      const labelPositions = calculateLabelPositions(events, timeScale, containerWidth);
+      
       events.forEach((event, i) => {
         const xPos = timeScale(event.dateObj);
         const yPos = height - margin.bottom;
-        const textYOffset = -35;
-        const lineYOffset = -18;
+        const textYOffset = labelPositions[i].yOffset;
+        const lineYOffset = textYOffset + 20; // Connect line to the label
         
         // Event group
         const eventNode = eventGroup.append("g")
@@ -277,7 +280,7 @@
         
         // Event dot with shadow
         eventNode.append("circle")
-          .attr("r", 8.25)
+          .attr("r", 10) // Larger dot
           .attr("fill", event.color)
           .attr("stroke", "#fff")
           .attr("stroke-width", 2.5)
@@ -290,37 +293,21 @@
           .attr("x2", 0)
           .attr("y2", lineYOffset)
           .attr("stroke", "#666")
-          .attr("stroke-width", 0.75)
-          .attr("stroke-dasharray", "2,1");
+          .attr("stroke-width", 1)
+          .attr("stroke-dasharray", "2,1")
+          .attr("z-index", 0);
         
         // Event text with background
         const labelNode = eventNode.append("g")
-          .attr("transform", `translate(0, ${textYOffset})`);
+          .attr("transform", `translate(0, ${textYOffset})`)
+          .attr("transform", 'rotate(-90)');
         
-        // Calculate text width (approximate)
-        const labelWidth = event.label.length * 5.5 + 10;
-        const dateWidth = event.formattedDate.length * 5 + 10;
-        const bgWidth = Math.max(labelWidth, dateWidth);
-        
-        // Text background
-        labelNode.append("rect")
-          .attr("x", -bgWidth/2)
-          .attr("y", -18)
-          .attr("width", bgWidth)
-          .attr("height", 28)
-          .attr("rx", 3)
-          .attr("ry", 3)
-          .attr("fill", "#fff")
-          .attr("stroke", event.color)
-          .attr("stroke-width", 0.75)
-          .attr("fill-opacity", 0.95)
-          .style("filter", "url(#event-shadow)");
-        
+  
         // Event label
         labelNode.append("text")
           .attr("text-anchor", "middle")
           .attr("y", -6)
-          .attr("font-size", "8px")
+          .attr("font-size", "11.245px") // Increased font size
           .attr("font-weight", "600")
           .attr("fill", "#333")
           .text(event.label);
@@ -328,11 +315,58 @@
         // Event date
         labelNode.append("text")
           .attr("text-anchor", "middle")
-          .attr("y", 7)
-          .attr("font-size", "7px")
+          .attr("y", 10) // Adjusted spacing
+          .attr("font-size", "14.25px") // Increased font size
           .attr("fill", "#666")
           .text(event.formattedDate);
       });
+    }
+    
+    // Helper function to calculate vertical positions for labels to prevent overlap
+    function calculateLabelPositions(events: any[], timeScale: any, containerWidth: number) {
+      const positions: {yOffset: number}[] = [];
+      const minDistance = 80; // Minimum horizontal distance between labels
+      const rows = [-40, -80, -120, -160]; // Possible vertical positions
+      
+      // Sort events by horizontal position
+      const sortedEvents = [...events].map((event, index) => ({
+        event,
+        index,
+        xPos: timeScale(event.dateObj)
+      })).sort((a, b) => a.xPos - b.xPos);
+      
+      // Assign rows to prevent overlap
+      sortedEvents.forEach((item, i) => {
+        let rowIndex = 0;
+        let placed = false;
+        
+        // Try to find a row where this label won't overlap with previous labels
+        while (!placed && rowIndex < rows.length) {
+          placed = true;
+          
+          // Check against all previously placed labels
+          for (let j = 0; j < i; j++) {
+            const prevItem = sortedEvents[j];
+            const prevPos = positions[prevItem.index];
+            
+            // If previous label is in the same row and too close horizontally
+            if (prevPos.yOffset === rows[rowIndex] && 
+                Math.abs(item.xPos - prevItem.xPos) < minDistance) {
+              placed = false;
+              rowIndex++;
+              break;
+            }
+          }
+        }
+        
+        // If we couldn't find a non-overlapping row, use the last row
+        if (!placed) rowIndex = rows.length - 1;
+        
+        // Store the position for this event
+        positions[item.index] = { yOffset: rows[rowIndex] };
+      });
+      
+      return positions;
     }
   </script>
   
@@ -342,7 +376,7 @@
     </h3>
     
     {#if events.length > 0}
-      <div bind:this={timelineContainer} class="timeline-container mb-2"></div>
+      <div bind:this={timelineContainer} class="timeline-container mb-4"></div>
       
       <!-- Legend -->
       <div class="legend">
@@ -359,7 +393,7 @@
       </div>
     {:else}
       <div class="empty-timeline">
-        <p class="text-[9.25px] text-slate-500 font-normal">No timeline data available</p>
+        <p class="text-sm text-slate-500 font-normal">No timeline data available</p>
       </div>
     {/if}
   </div>
@@ -371,9 +405,9 @@
     
     .timeline-container {
       width: 100%;
-      min-height: 160px;
+      min-height: 240px; /* Increased height */
       border-radius: 4px;
-      padding: 0.25rem;
+      padding: 0.5rem; /* Increased padding */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -389,40 +423,44 @@
     }
     
     .legend {
-      margin-top: 0.25rem;
+      margin-top: 0.5rem;
     }
     
     .legend-items {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px; /* Increased gap */
     }
     
     .legend-item {
       display: flex;
       align-items: center;
-      font-size: 9.25px;
+      font-size: 11px; /* Increased font size */
       color: #4A5568;
+      padding: 4px 8px; /* Added padding */
     }
     
     .color-dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
+      width: 8px; /* Larger dot */
+      height: 8px; /* Larger dot */
       border-radius: 50%;
-      margin-right: 4px;
-      border: 0.5px solid #fff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      margin-right: 6px; /* More spacing */
+      border: 0.5px solid #565656;
     }
     
     :global(.timeline-axis path) {
       stroke: #4A5568;
-      stroke-width: 1.25;
+      stroke-width: 1.5;
     }
     
     :global(.timeline-axis line) {
       stroke: #CBD5E0;
       stroke-width: 0.5;
+    }
+    
+    :global(.timeline-axis text) {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
     .section-title {
