@@ -21,7 +21,8 @@
         getLabelConfig,
         getStageRadii,
         getStageLabelConfig,
-        hasPRVAward
+        hasPRVAward,
+        isPRVTerminatedOrLiquidated
     } from '../utils/data-processing-utils';
 
 
@@ -446,13 +447,22 @@
 
                     // Determine stroke color - use gold for transacted PRVs
                     const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
+                    
+                    // Check if PRV is terminated or liquidated
+                    const isTerminatedOrLiquidated = isPRVTerminatedOrLiquidated(drug);
+                    
+                    // Use greyed out colors for terminated or liquidated PRVs
+                    const fillColor = isTerminatedOrLiquidated ? "#CCCCCC" : areaColors.fill;
+                    const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
+                    const opacity = isTerminatedOrLiquidated ? 0.7 : 1;
 
                     // Drug circle
                     drugGroup.append("circle")
                         .attr("r", sizeConfig.drugNodeRadius)
-                        .attr("fill", areaColors.fill)
-                        .attr("stroke", strokeColor)
+                        .attr("fill", fillColor)
+                        .attr("stroke", finalStrokeColor)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
+                        .attr("opacity", opacity)
                         .style("filter", filterUrl); // Apply appropriate filter
 
                     // Add keyboard event handler for accessibility

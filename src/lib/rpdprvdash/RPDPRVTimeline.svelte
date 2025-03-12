@@ -62,7 +62,7 @@
     });
     
     function isYearRestricted(year: string): boolean {
-        return parseInt(year) < 2023;
+        return parseInt(year) < 2020;
     }
     
     function toggleDropdown(event: Event) {

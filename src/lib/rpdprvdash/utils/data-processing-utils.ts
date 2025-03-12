@@ -20,6 +20,18 @@ export function hasPRVAward(entry: any): boolean {
 }
 
 /**
+ * Checks if an entry has a terminated or liquidated PRV status
+ * @param entry The data entry to check
+ * @returns True if the entry's PRV Status is "Terminated" or "Liquidated", false otherwise
+ */
+export function isPRVTerminatedOrLiquidated(entry: any): boolean {
+    if (!entry) return false;
+    
+    // Check if PRV Status is set to "Terminated" or "Liquidated"
+    return entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated";
+}
+
+/**
  * Determines the stage code from an entry
  */
 export function getStage(entry: any): string {
