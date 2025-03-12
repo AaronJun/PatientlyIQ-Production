@@ -322,7 +322,7 @@
       // Check if we're in mobile view
       const checkMobileView = () => {
         isMobileView = window.innerWidth < 768; // 768px is the md breakpoint in Tailwind
-        isTabletView = window.innerWidth >= 768 && window.innerWidth < 1024; // iPad-sized devices
+        isTabletView = window.innerWidth >= 768 && window.innerWidth < 1125; // iPad-sized devices
       };
       
       // Initial check
