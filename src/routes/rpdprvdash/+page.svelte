@@ -85,6 +85,7 @@
   let isDropdownOpen = false; // New state variable for dropdown menu
   let isMobileSidebarExpanded = false; // New state variable for mobile sidebar expansion
   let isMobileView = false; // Track if we're in mobile view
+  let isTabletView = false; // Track if we're in tablet/iPad view
   
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
@@ -321,6 +322,7 @@
       // Check if we're in mobile view
       const checkMobileView = () => {
         isMobileView = window.innerWidth < 768; // 768px is the md breakpoint in Tailwind
+        isTabletView = window.innerWidth >= 768 && window.innerWidth < 1024; // iPad-sized devices
       };
       
       // Initial check
@@ -504,8 +506,8 @@
               </div>
             </div>
 
-            <!-- Desktop right sidebar - only show on non-mobile -->
-            {#if !isMobileView}
+            <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
+            {#if !isMobileView && !isTabletView}
               <div class="absolute right-0 top-16 h-fit max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -554,12 +556,12 @@
               </div>
             {/if}
             
-            <!-- Mobile bottom sidebar - only show on mobile -->
-            {#if isMobileView}
-              <MobileSponsorSidebar
-                {currentView}
+            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
+            {#if isMobileView || isTabletView}
+              <MobileTherapeuticAreaSidebar
                 {currentEntries}
-                {currentCompanyMetrics}
+                {currentArea}
+                {areaMetrics}
                 colorMap={colorMap}
                 onShowDrugDetail={handleShowDrugDetail}
                 fullYearData={filteredData}
@@ -627,8 +629,8 @@
               </div>
             </div>
 
-            <!-- Desktop right information sidebar - only show on non-mobile -->
-            {#if !isMobileView}
+            <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->
+            {#if !isMobileView && !isTabletView}
               <div class="absolute right-0 top-16 h-fit max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -677,8 +679,8 @@
               </div>
             {/if}
             
-            <!-- Mobile bottom sidebar - only show on mobile -->
-            {#if isMobileView}
+            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
+            {#if isMobileView || isTabletView}
               <MobileTherapeuticAreaSidebar
                 {currentEntries}
                 {currentArea}
@@ -697,7 +699,7 @@
         {:else if activeTab === 'By Transactions'}
           <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row relative">
-            <div class="w-{isMobileView ? 'full' : (isSidebarCollapsed ? '11/12' : '4/5')} {isMobileView ? '' : 'pl-32'} transition-all duration-300">
+            <div class="w-{isMobileView || isTabletView ? 'full' : (isSidebarCollapsed ? '11/12' : '4/5')} {isMobileView || isTabletView ? '' : 'pl-32'} transition-all duration-300">
               <SellerBuyerChord 
                 data={rpddData}
                 stockData={rpdCompanyValues}
@@ -723,8 +725,8 @@
               </div>
             </div>
             
-            <!-- Desktop sidebar - only show on non-mobile -->
-            {#if !isMobileView}
+            <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
+            {#if !isMobileView && !isTabletView}
               <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -777,8 +779,8 @@
               </div>
             {/if}
             
-            <!-- Mobile bottom sidebar - only show on mobile -->
-            {#if isMobileView}
+            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
+            {#if isMobileView || isTabletView}
               <MobileTransactionSidebar
                 data={rpddData}
                 selectedYear={selectedTransactionYear}

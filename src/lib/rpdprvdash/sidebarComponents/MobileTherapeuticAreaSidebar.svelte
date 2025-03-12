@@ -15,6 +15,27 @@
     export let selectedYear: string = "";
     export let isExpanded: boolean = false;
     
+    // Detect if we're on a tablet device (for styling adjustments)
+    let isTablet = false;
+    
+    import { onMount } from 'svelte';
+    
+    onMount(() => {
+      // Check if we're on a tablet device (iPad)
+      isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+      
+      // Update on resize
+      const handleResize = () => {
+        isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    });
+    
     // Handle drug card click
     function handleDrugClick(entry: any) {
       onShowDrugDetail({
@@ -58,7 +79,7 @@
   </div>
   
   <!-- Content area -->
-  <div class="content p-4 overflow-y-auto" style="max-height: calc(70vh - 3.5rem)">
+  <div class="content p-4 overflow-y-auto" style="max-height: calc({isTablet ? '80vh' : '70vh'} - 3.5rem)">
     <div class="space-y-4">
       {#if currentEntries.length > 0 && currentArea && areaMetrics}
         <!-- Display area metrics -->
@@ -98,6 +119,17 @@
 <style>
   .mobile-sidebar {
     max-height: 80vh;
+  }
+  
+  /* Tablet-specific styles */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .mobile-sidebar {
+      max-height: 90vh;
+    }
+    
+    .content {
+      max-height: calc(85vh - 3.5rem) !important;
+    }
   }
   
   .handle {
