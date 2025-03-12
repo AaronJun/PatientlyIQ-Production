@@ -5,9 +5,9 @@
     
     // Props
     export let drugData: any;
-    export let width = 580;
-    export let height = 200; // Increased height for better spacing
-    export let margin = { top: 40, right: 40, bottom: 40, left: 40 }; // Increased bottom margin
+    export let width = 500;
+    export let height = 300; // Increased height for better spacing
+    export let margin = { top: 40, right: 40, bottom: 60, left: 40 }; // Increased bottom margin
   
     // DOM node references
     let timelineContainer: HTMLElement;
@@ -198,7 +198,7 @@
         
       dropShadow.append("feGaussianBlur")
         .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 1.5) // Increased blur for better shadow
+        .attr("stdDeviation", .725) // Increased blur for better shadow
         .attr("result", "blur");
         
       dropShadow.append("feOffset")
@@ -211,6 +211,31 @@
       feMerge.append("feMergeNode")
         .attr("in", "offsetBlur");
       feMerge.append("feMergeNode")
+        .attr("in", "SourceGraphic");
+        
+      // Create enhanced drop shadow filter for hover state
+      const hoverShadow = defs.append("filter")
+        .attr("id", "event-hover-shadow")
+        .attr("width", "200%")
+        .attr("height", "200%")
+        .attr("x", "-20%")
+        .attr("y", "-20%");
+        
+      hoverShadow.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", 3) // Larger blur for hover state
+        .attr("result", "blur");
+        
+      hoverShadow.append("feOffset")
+        .attr("in", "blur")
+        .attr("dx", 1)
+        .attr("dy", 2)
+        .attr("result", "offsetBlur");
+        
+      const hoverMerge = hoverShadow.append("feMerge");
+      hoverMerge.append("feMergeNode")
+        .attr("in", "offsetBlur");
+      hoverMerge.append("feMergeNode")
         .attr("in", "SourceGraphic");
   
       // Define time scale using container width
@@ -238,14 +263,14 @@
   
       timelineAxisGroup.call(timelineAxis as any)
         .selectAll("text")
-        .attr("font-size", "11px") // Increased font size
+        .attr("font-size", "12px") // Increased font size
         .attr("font-weight", "600")
         .attr("fill", "#4A5568");
         
       // Style the axis
       timelineAxisGroup.select(".domain")
         .attr("stroke", "#CBD5E0")
-        .attr("stroke-width", .4825);
+        .attr("stroke-width", 1);
         
       timelineAxisGroup.selectAll(".tick line")
         .attr("stroke", "#CBD5E0")
@@ -258,7 +283,7 @@
         .attr("x2", containerWidth - margin.right)
         .attr("y2", height - margin.bottom)
         .attr("stroke", "#37587e")
-        .attr("stroke-width", 0) // Thicker line
+        .attr("stroke-width", 2) // Thicker line
         .attr("stroke-opacity", 0.7);
   
       // Draw the events
@@ -271,7 +296,7 @@
         const xPos = timeScale(event.dateObj);
         const yPos = height - margin.bottom;
         const textYOffset = labelPositions[i].yOffset;
-        const lineYOffset = textYOffset + 20; // Connect line to the label
+        const lineYOffset = Math.abs(textYOffset); // Connect line to the label
         
         // Event group
         const eventNode = eventGroup.append("g")
@@ -280,10 +305,10 @@
         
         // Event dot with shadow
         eventNode.append("circle")
-          .attr("r", 10) // Larger dot
+          .attr("r", 8) // Larger dot
           .attr("fill", event.color)
           .attr("stroke", "#fff")
-          .attr("stroke-width", 2.5)
+          .attr("stroke-width", 2)
           .style("filter", "url(#event-shadow)");
         
         // Event vertical line
@@ -291,42 +316,89 @@
           .attr("x1", 0)
           .attr("y1", 0)
           .attr("x2", 0)
-          .attr("y2", lineYOffset)
+          .attr("y2", -lineYOffset)
           .attr("stroke", "#666")
           .attr("stroke-width", 1)
-          .attr("stroke-dasharray", "2,1")
-          .attr("z-index", 0);
+          .attr("stroke-dasharray", "2,1");
         
-        // Event text with background
+        // Event text background for better readability
+        const labelWidth = event.label.length * 7 + 30; // Estimate width based on text length
+        const labelHeight = 48; // Height for two lines of text
+        
+        // Create label group
         const labelNode = eventNode.append("g")
+          .attr("class", "event-label")
           .attr("transform", `translate(0, ${textYOffset})`)
-          .attr("transform", 'rotate(-90)');
+          .style("transition", "all 0.2s ease-in-out")
+          .style("cursor", "pointer");
         
+        // Add background rectangle for label
+        const labelRect = labelNode.append("rect")
+          .attr("x", -labelWidth / 2)
+          .attr("y", -24)
+          .attr("width", labelWidth)
+          .attr("height", labelHeight)
+          .attr("fill", "#fff")
+          .attr("stroke", event.color)
+          .attr("stroke-width", 1)
+          .attr("opacity", 0.9);
   
         // Event label
-        labelNode.append("text")
+        const labelText = labelNode.append("text")
           .attr("text-anchor", "middle")
-          .attr("y", -6)
-          .attr("font-size", "11.245px") // Increased font size
+          .attr("y", -5)
+          .attr("font-size", "12px")
           .attr("font-weight", "600")
           .attr("fill", "#333")
           .text(event.label);
         
         // Event date
-        labelNode.append("text")
+        const dateText = labelNode.append("text")
           .attr("text-anchor", "middle")
-          .attr("y", 10) // Adjusted spacing
-          .attr("font-size", "14.25px") // Increased font size
+          .attr("y", 15) // Adjusted spacing
+          .attr("font-size", "11px")
           .attr("fill", "#666")
           .text(event.formattedDate);
+          
+        // Add hover effects to bring label forward
+        labelNode
+          .on("mouseenter", function() {
+            // Bring this element to front by moving it to the end of its parent's children
+            const node = d3.select(this.parentNode);
+            node.raise(); // Move to end of parent's children list
+            
+            // Apply enhanced styles
+            d3.select(this)
+              .style("z-index", 10)
+              .transition()
+              .duration(200)
+              .attr("transform", `translate(0, ${textYOffset - 2})`) // Slight upward movement
+              .select("rect")
+                .attr("stroke-width", 2)
+                .attr("opacity", 1);
+          })
+          .on("mouseleave", function() {
+            // Restore original styles
+            d3.select(this)
+              .style("z-index", 1)
+              .transition()
+              .duration(200)
+              .attr("transform", `translate(0, ${textYOffset})`)
+              .select("rect")
+                .attr("stroke-width", 1)
+                .attr("opacity", 0.9);
+          });
       });
     }
     
-    // Helper function to calculate vertical positions for labels to prevent overlap
+    // Enhanced function to calculate vertical positions for labels to prevent overlap
     function calculateLabelPositions(events: any[], timeScale: any, containerWidth: number) {
       const positions: {yOffset: number}[] = [];
-      const minDistance = 80; // Minimum horizontal distance between labels
-      const rows = [-40, -80, -120, -160]; // Possible vertical positions
+      const minDistance = 100; // Minimum horizontal distance between labels (increased)
+      
+      // Create more rows for better vertical distribution
+      // Negative values position labels above the timeline
+      const rows = [-60, -100, -140, -180, -220, -260];
       
       // Sort events by horizontal position
       const sortedEvents = [...events].map((event, index) => ({
@@ -335,7 +407,7 @@
         xPos: timeScale(event.dateObj)
       })).sort((a, b) => a.xPos - b.xPos);
       
-      // Assign rows to prevent overlap
+      // Assign rows to prevent overlap using an improved algorithm
       sortedEvents.forEach((item, i) => {
         let rowIndex = 0;
         let placed = false;
@@ -360,10 +432,15 @@
         }
         
         // If we couldn't find a non-overlapping row, use the last row
-        if (!placed) rowIndex = rows.length - 1;
-        
-        // Store the position for this event
-        positions[item.index] = { yOffset: rows[rowIndex] };
+        // and slightly adjust it to create more space
+        if (!placed) {
+          rowIndex = rows.length - 1;
+          // Add a small random offset to prevent perfect alignment
+          const randomOffset = Math.random() * 10 - 5;
+          positions[item.index] = { yOffset: rows[rowIndex] + randomOffset };
+        } else {
+          positions[item.index] = { yOffset: rows[rowIndex] };
+        }
       });
       
       return positions;
@@ -377,24 +454,6 @@
     
     {#if events.length > 0}
       <div bind:this={timelineContainer} class="timeline-container mb-4"></div>
-      
-      <!-- Legend -->
-      <div class="legend">
-        <div class="legend-items">
-          {#each events.filter((e, i, arr) => 
-            arr.findIndex(event => event.label === e.label) === i
-          ) as event}
-            <div class="legend-item">
-              <span class="color-dot" style="background-color: {event.color};"></span>
-              <span class="label">{event.label}</span>
-            </div>
-          {/each}
-        </div>
-      </div>
-    {:else}
-      <div class="empty-timeline">
-        <p class="text-sm text-slate-500 font-normal">No timeline data available</p>
-      </div>
     {/if}
   </div>
   
@@ -405,7 +464,7 @@
     
     .timeline-container {
       width: 100%;
-      min-height: 240px; /* Increased height */
+      min-height: 300px; /* Increased height */
       border-radius: 4px;
       padding: 0.5rem; /* Increased padding */
       display: flex;
@@ -423,29 +482,33 @@
     }
     
     .legend {
-      margin-top: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border-top: 1px solid #edf2f7;
     }
     
     .legend-items {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px; /* Increased gap */
+      gap: 16px; /* Increased gap */
+      justify-content: center;
     }
     
     .legend-item {
       display: flex;
       align-items: center;
-      font-size: 11px; /* Increased font size */
+      font-size: 12px; /* Increased font size */
       color: #4A5568;
       padding: 4px 8px; /* Added padding */
+      background-color: #f8fafc;
     }
     
     .color-dot {
       display: inline-block;
-      width: 8px; /* Larger dot */
-      height: 8px; /* Larger dot */
+      width: 10px; /* Larger dot */
+      height: 10px; /* Larger dot */
       border-radius: 50%;
-      margin-right: 6px; /* More spacing */
+      margin-right: 8px; /* More spacing */
       border: 0.5px solid #565656;
     }
     
@@ -466,5 +529,14 @@
     .section-title {
       padding-bottom: .25rem;
       border-bottom: .525px dotted #666666;
+    }
+    
+    /* Add styles for hover effects */
+    :global(.event-label) {
+      transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+    }
+    
+    :global(.event-label:hover) {
+      z-index: 100;
     }
   </style>
