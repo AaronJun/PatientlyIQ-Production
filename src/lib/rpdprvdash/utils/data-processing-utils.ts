@@ -103,7 +103,7 @@ export function getStage(entry: any): string {
 }
 
 // Maps for stage and company status codes
-export const stageCodeMap = {
+export const stageCodeMap: Record<string, string> = {
     'PRE': 'Preclinical',
     'P1': 'Phase 1',
     'P1/2': 'Phase 1/2',
@@ -118,14 +118,28 @@ export const stageCodeMap = {
  * Get the stage radii configuration
  */
 export function getStageRadii(radius: number) {
-    return {
-        'PRE': radius * 0.925,
-        'P1': radius * 0.8125,
+    // Define the main stage circles
+    const stageRadii = {
+        'PRE': radius * 0.955,
+        'P1': radius * 0.845,
         'P2': radius * 0.7125,
         'P3': radius * 0.5725,
         'FILED': radius * 0.4325,
-        'PRV': radius * 0.2725,
+        'PRV': radius * 0.255,
     };
+    
+    // Define midpoints between stages for drug node placement
+    const midpoints = {
+        'PRE_MID': (stageRadii.PRE + stageRadii.P1) / 2,
+        'P1_MID': (stageRadii.P1 + stageRadii.P2) / 2,
+        'P2_MID': (stageRadii.P2 + stageRadii.P3) / 2,
+        'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 2,
+        'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2,
+        'PRV_MID': stageRadii.PRV * 0.6, // Special case for PRV - place at 60% of PRV radius
+    };
+    
+    // Return only the main stage radii, not the midpoints
+    return stageRadii;
 }
 
 /**
@@ -143,8 +157,8 @@ export function formatCompanyName(companyName: string): string {
     
     const phrasesToRemove = [
         'Life Sciences', 'Life Science', 'Pharmaceuticals', 'Biotechnology',
-        'Therapeutics', 'Biometrics', 'Partners', 'Science', 'Biologics',
-        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences'
+        'Therapeutics', 'Sciences', 'Biometrics', 'Partners', 'Science', 'Biologics', 'Gene Therapies',
+        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences', 'Biotechnologies'
     ];
     
     let formattedName = companyName;
@@ -204,9 +218,10 @@ export function calculateCompanyAngles(companies: any[], angleBuffer: number) {
 export function calculateOptimalLabelPlacement(companies: any[], companyAngles: Map<string, any>, labelConfig: any) {
     const labels: any[] = [];
     const labelHeight = labelConfig.textHeight;
-    const minDistanceBetweenLabels = labelHeight * 1.5; // Minimum spacing between labels
+    const minDistanceBetweenLabels = labelHeight * 2.5; // Minimum spacing between labels
+    const isAlternatingLabels = companies.length > 80;
 
-    companies.forEach(company => {
+    companies.forEach((company, index) => {
         const angle = companyAngles.get(company.company);
         if (!angle) return;
         
@@ -215,8 +230,9 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
         // Determine if label should be on left or right side
         const isRightSide = Math.cos(centerAngle) > 0;
         
-        // Calculate initial radius based on angle
-        let baseRadius = labelConfig.minRadius;
+        // Calculate initial radius based on angle and whether we're alternating positions
+        const shouldPositionCloser = isAlternatingLabels && (index % 2 === 0);
+        let baseRadius = shouldPositionCloser ? labelConfig.minRadius : labelConfig.alternateRadius;
         
         // Find a position that doesn't overlap with existing labels
         let currentRadius = baseRadius;
@@ -243,7 +259,8 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
                     x,
                     y,
                     angle: centerAngle,
-                    isRightSide
+                    isRightSide,
+                    isCloserPosition: shouldPositionCloser
                 });
                 break;
             }
@@ -263,7 +280,8 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
                 x,
                 y,
                 angle: centerAngle,
-                isRightSide
+                isRightSide,
+                isCloserPosition: shouldPositionCloser
             });
         }
     });
@@ -391,16 +409,16 @@ export function getSizeConfig(isAllYearView: boolean) {
     return {
         // When all years view is active, use smaller sizes
         labelFontSize: isAllYearView ? "6.425px" : "7.725px",
-        labelFontWeight: isAllYearView ? "600" : "400",
-        companyNodeWidth: isAllYearView ? 5.25 : 7.725,
-        companyNodeHeight: isAllYearView ? 5.25 : 7.725,
+        labelFontWeight: isAllYearView ? "400" : "400",
+        companyNodeWidth: isAllYearView ? 4.25 : 7.725,
+        companyNodeHeight: isAllYearView ? 4.25 : 7.725,
         drugNodeRadius: isAllYearView ? 2.7125 : 6.125,
         drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,
         dotSpacing: isAllYearView ? 0 : 0,
-        connectionStrokeWidth: isAllYearView ? 0.625 : 0.5625,
-        connectionOpacity: isAllYearView ? 0.3025 : 0.225,
+        connectionStrokeWidth: isAllYearView ? 0.25 : 0.7625,
+        connectionOpacity: isAllYearView ? 0.4025 : 0.325,
         highlightedNodeRadius: isAllYearView ? 8 : 10.25, 
         highlightedNodePosition: isAllYearView ? 1.25 : 1.25,
     };
@@ -411,10 +429,11 @@ export function getSizeConfig(isAllYearView: boolean) {
  */
 export function getLabelConfig(radius: number, isAllYearView: boolean) {
     return {
-        minRadius: radius * 1.15, // Position outside the main circles
-        maxRadius: radius * 1.25, // Maximum radius for labels
-        padding: 8.25,
-        minAngleDiff: Math.PI / 60, // Minimum angle between labels
+        minRadius: radius * 1.0125, // Position closest to the outermost circle
+        maxRadius: radius * 1.10, // Maximum radius for labels
+        alternateRadius: radius * 1.15, // Alternate position for better legibility with many entries
+        padding: 10.25,
+        minAngleDiff: Math.PI / 30, // Minimum angle between labels
         textHeight: 10,
         maxDotsPerRow: 0, // For pipeline dots
         dotRowHeight: 0 // For pipeline dots
@@ -503,21 +522,25 @@ export function processDataForTherapeuticAreas(data: any[]) {
 export function getAreaStatistics(data: any[]) {
     const areas = processDataForTherapeuticAreas(data);
     
-    return areas.map(area => ({
-        name: area.area,
-        totalDrugs: area.totalDrugs,
-        companies: area.uniqueCompanies.size,
-        candidates: area.uniqueCandidates.size,
-        indications: area.indications.size,
-        clinicalTrials: area.clinicalTrials,
-        vouchersAwarded: area.vouchersAwarded,
-        transactedVouchers: area.transactedVouchers,  // Add transacted vouchers to statistics
-        // Count drugs by stage
-        stages: Array.from(area.stages.entries()).reduce((acc, [stage, drugs]) => {
-            acc[stage] = drugs.length;
-            return acc;
-        }, {})
-    }));
+    return areas.map(area => {
+        // Create stages object with counts
+        const stages: Record<string, number> = {};
+        area.stages.forEach((drugs: any[], stage: string) => {
+            stages[stage] = drugs.length;
+        });
+        
+        return {
+            name: area.area,
+            totalDrugs: area.totalDrugs,
+            companies: area.uniqueCompanies.size,
+            candidates: area.uniqueCandidates.size,
+            indications: area.indications.size,
+            clinicalTrials: area.clinicalTrials,
+            vouchersAwarded: area.vouchersAwarded,
+            transactedVouchers: area.transactedVouchers,
+            stages
+        };
+    });
 }
 
 /**

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly, fade } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icons-svelte';
+import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icons-svelte';
   // Import our new enhanced stock price chart instead of the original
   import EnhancedStockPriceChart from './StockPriceChart.svelte';
   import { hasPRVAward } from './utils/data-processing-utils';

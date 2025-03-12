@@ -37,7 +37,7 @@
 
     // SVG and dimension configuration
     let svg: SVGElement;
-    const width = 920;
+    const width = 1200;
     const height = width;
     const radius = Math.min(width, height) / 2 - 60;
     const maxLabelWidth = 85;
@@ -371,10 +371,26 @@
                 const stageRadius = stageRadii[stage as keyof StageRadii];
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
 
+                // Calculate midpoint radius for drug placement
+                let midpointRadius = stageRadius;
+                if (stage === 'PRE' && stageRadii['P1']) {
+                    midpointRadius = (stageRadius + stageRadii['P1']) / 2;
+                } else if (stage === 'P1' && stageRadii['P2']) {
+                    midpointRadius = (stageRadius + stageRadii['P2']) / 2;
+                } else if (stage === 'P2' && stageRadii['P3']) {
+                    midpointRadius = (stageRadius + stageRadii['P3']) / 2;
+                } else if (stage === 'P3' && stageRadii['FILED']) {
+                    midpointRadius = (stageRadius + stageRadii['FILED']) / 2;
+                } else if (stage === 'FILED' && stageRadii['PRV']) {
+                    midpointRadius = (stageRadius + stageRadii['PRV']) / 2;
+                } else if (stage === 'PRV') {
+                    midpointRadius = stageRadius * 0.6;
+                }
+
                 drugs.forEach((drug: Drug, i: number) => {
                     const drugAngle = angle.start + drugSpacing * (i + 1);
-                    const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
-                    const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
+                    const drugX = midpointRadius * Math.cos(drugAngle - Math.PI/2);
+                    const drugY = midpointRadius * Math.sin(drugAngle - Math.PI/2);
 
                     // Create unique ID for drug
                     const drugId = `${company.company}-${drug.Candidate}-${i}`.replace(/\s+/g, '-').toLowerCase();

@@ -32,14 +32,13 @@
 
   // Initialize zoom behavior with proper typing
   const zoom = d3.zoom<SVGSVGElement, unknown>()
-    .scaleExtent([0.1, 4])
-    .on('zoom', (event) => {
-      transform = event.transform;
-      if (mainGroup) {
-        mainGroup.attr('transform', event.transform.toString());
-      }
-    });
-
+  .scaleExtent([0.5, 3.5]) // Increased minimum scale to 0.5 to limit zoom out
+  .on('zoom', (event) => {
+    transform = event.transform;
+    if (mainGroup) {
+      mainGroup.attr('transform', event.transform.toString());
+    }
+  });
   // Navigation control functions
   function zoomIn() {
     if (svg) {

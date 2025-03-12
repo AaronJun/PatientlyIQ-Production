@@ -343,8 +343,29 @@
       
       // Check if we're in mobile view
       const checkMobileView = () => {
+        // Standard width detection
         isMobileView = window.innerWidth < 768; // 768px is the md breakpoint in Tailwind
-        isTabletView = window.innerWidth >= 768 && window.innerWidth <1200; // iPad-sized devices
+        isTabletView = window.innerWidth >= 768 && window.innerWidth < 1200; // iPad-sized devices
+        
+        // Additional Safari-specific detection
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                        /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        
+        // Force sidebar visibility for Safari
+        if (isSafari) {
+          // Add a small delay to ensure DOM is ready
+          setTimeout(() => {
+            // Force repaint of sidebars for Safari
+            const sidebars = document.querySelectorAll('.absolute');
+            sidebars.forEach(sidebar => {
+              sidebar.style.display = 'none';
+              // Force reflow
+              void sidebar.offsetHeight;
+              sidebar.style.display = '';
+            });
+          }, 100);
+        }
       };
       
       // Initial check
@@ -468,10 +489,10 @@
   </div>
   
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 mt-4 pb-8">
+  <main class="flex-1 mt-4 pb-8 relative">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'}">
+      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
         {#if activeTab === 'By Sponsor'}
           <div class="flex flex-row flex-grow relative">
             <!-- Main visualization area taking full width -->
@@ -516,9 +537,9 @@
             </div>
 
             <!-- Left timeline sidebar for By Sponsor tab -->
-            <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
-                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+            <div class="absolute left-0 top-0 w-auto h-auto z-10">
+              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
+                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
                     data={rpddData}
                     selectedYear={selectedYear}
@@ -530,7 +551,7 @@
 
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView && !isTabletView}
-              <div class="absolute right-0 top-16 h-fit max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-0 top-16 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
@@ -640,9 +661,9 @@
             </div>
 
             <!-- Left timeline sidebar for By Therapeutic Area tab -->
-            <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
-                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+            <div class="absolute left-0 top-0 w-auto h-auto z-10">
+              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
+                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <RPDPRVVerticalTimeline 
                     data={rpddData}
                     selectedYear={selectedYear}
@@ -654,7 +675,7 @@
 
             <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView && !isTabletView}
-              <div class="absolute right-0 top-16 h-fit max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-0 top-16 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
@@ -735,9 +756,9 @@
             </div>
             
             <!-- Left timeline sidebar for By Transactions tab -->
-            <div class="absolute left-0 top-0 h-fit w-fit z-10">
-              <div class="h-full bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-6 flex flex-col {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : ''}">
-                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+            <div class="absolute left-0 top-0 w-auto h-auto z-10">
+              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
+                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                   <PRVPurchaseTimeline 
                     data={rpddData}
                     selectedYear={selectedTransactionYear}
@@ -966,9 +987,10 @@
     padding: .25rem 1rem 1rem 0;
   }
 
-  /* Custom scrollbar styles */
+  /* Custom scrollbar styles with Safari support */
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
+    height: 6px; /* Add height for horizontal scrollbars */
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
@@ -995,5 +1017,24 @@
   /* For Edge */
   .scrollbar-thin {
     -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+  
+  /* Safari-specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices and Safari */
+    .scrollbar-thin {
+      /* Ensure scrollbars are visible in Safari */
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix for absolute positioning in Safari */
+    .absolute {
+      position: absolute;
+      /* Force hardware acceleration */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
   }
 </style>

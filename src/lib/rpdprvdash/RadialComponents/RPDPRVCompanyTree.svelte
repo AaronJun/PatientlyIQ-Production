@@ -56,7 +56,7 @@
     const stageLabelConfig = getStageLabelConfig();
 
     // Connection highlight color
-    const highlightColor = "#FFD700"; // Gold color for highlighted connections
+    const highlightColor = "#2B6CB0"; // Blue color for highlighted connections
     const highlightWidth = isAllYearView ? 1.75 : 2.25; // Width for highlighted connections
 
     // Active selection tracking
@@ -297,32 +297,41 @@
             // Create sanitized ID for the company
             const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
 
-            // Calculate node position (where lines connect)
-            const nodeRadius = radius * 1;
+            // Calculate position for connecting lines (where the PRE stage is)
+            const preStageRadius = stageRadii['PRE'];
             const nodeAngle = angle.center - Math.PI/2; // Adjust for SVG coordinates
-            const nodeX = nodeRadius * Math.cos(nodeAngle);
-            const nodeY = nodeRadius * Math.sin(nodeAngle);
+            const nodeX = preStageRadius * Math.cos(nodeAngle);
+            const nodeY = preStageRadius * Math.sin(nodeAngle);
 
             // Get company status color
             const statusColor = getCompanyStatusColor(company.status);
 
-            // Create company node with keyboard accessibility support
-            const nodeGroup = companyLabelsGroup.append("g")
-                .attr("transform", `translate(${nodeX},${nodeY})`)
+            // Get the label placement from our calculated positions
+            const labelPlacement = labelPlacements.find(lp => lp.company === company.company);
+            
+            // If we have a calculated placement, use it; otherwise calculate directly
+            const labelX = labelPlacement ? labelPlacement.x : (radius * 1.05) * Math.cos(nodeAngle);
+            const labelY = labelPlacement ? labelPlacement.y : (radius * 1.05) * Math.sin(nodeAngle);
+            const isRightSide = labelPlacement ? labelPlacement.isRightSide : Math.cos(nodeAngle) > 0;
+            const isCloserPosition = labelPlacement ? labelPlacement.isCloserPosition : false;
+
+            // Create label with alignment to connecting line
+            const labelGroup = companyLabelsGroup.append("g")
+                .attr("transform", `translate(${labelX},${labelY})`)
                 .attr("cursor", "pointer")
-                .attr("class", "company-node")
-                .attr("id", `company-node-${companyId}`)
-                .attr("tabindex", "0") // Use tabindex="0" for all company nodes to include them in natural tab order
+                .attr("class", "company-label")
+                .attr("id", `company-label-${companyId}`)
+                .attr("tabindex", "0") // Make label focusable for keyboard accessibility
                 .attr("role", "button")
                 .attr("aria-label", `Company ${company.company} with ${company.totalDrugs} drugs`);
 
             // Ensure SVG element can receive focus
-            const nodeElement = nodeGroup.node();
-            if (nodeElement) {
-                nodeElement.setAttribute("focusable", "true");
+            const labelElement = labelGroup.node();
+            if (labelElement) {
+                labelElement.setAttribute("focusable", "true");
                 // Store reference for keyboard navigation
                 focusableElements.push({
-                    element: nodeElement,
+                    element: labelElement,
                     type: 'company',
                     company: company.company,
                     isSelected: false,
@@ -330,31 +339,6 @@
                     drugNodes: []
                 });
             }
-
-            nodeGroup.append("rect")
-                .attr("width", sizeConfig.companyNodeWidth)
-                .attr("height", sizeConfig.companyNodeHeight)
-                .attr("fill", statusColor.fill)
-                .attr("stroke", statusColor.stroke)
-                .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
-                .attr("stroke-width", 0.725)
-                .attr("rx", 2);
-
-            // Calculate label position aligned with node angle
-            // Use outer position from node (not the center of the chart)
-            const labelDistance = radius * 1.05; // Position labels outside the outermost stage circle
-            const labelX = nodeX + (labelDistance - nodeRadius) * Math.cos(nodeAngle);
-            const labelY = nodeY + (labelDistance - nodeRadius) * Math.sin(nodeAngle);
-
-            // Determine if label should be on left or right side based on position in circle
-            const isRightSide = Math.cos(nodeAngle) > 0;
-            
-            // Create label with alignment to connecting line
-            const labelGroup = companyLabelsGroup.append("g")
-                .attr("transform", `translate(${labelX},${labelY})`)
-                .attr("cursor", "pointer")
-                .attr("class", "company-label")
-                .attr("id", `company-label-${companyId}`);
 
             // Create rotated text container for better alignment
             const textContainer = labelGroup.append("g");
@@ -373,24 +357,60 @@
                 .attr("dy", "0.35em")
                 .text(formatCompanyName(company.company))
                 .attr("fill", "#4A5568")
-                .attr("font-size", sizeConfig.labelFontSize)
+                .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
                 .attr("font-weight", sizeConfig.labelFontWeight);
 
-            // Connect node to label with a direct line
-            linesGroup.append("path")
-                .attr("class", "company-path")
-                .attr("data-company", company.company)
-                .attr("d", `M${nodeX},${nodeY}L${labelX},${labelY}`)
-                .attr("stroke", "#37587e")
-                .attr("stroke-width", sizeConfig.connectionStrokeWidth)
-                .attr("stroke-opacity", sizeConfig.connectionOpacity)
-                .attr("fill", "none");
-
-            // Connect drugs to node
+            // Connect drugs directly to the label position (no company node)
             company.stages.forEach((drugs: any[], stage: string) => {
-                const stageRadius = stageRadii[stage as keyof typeof stageRadii];
+                if (drugs.length === 0) return;
+                
+                // Get the appropriate radius for this stage - calculate midpoint on the fly
+                let stageRadius = stageRadii[stage as keyof typeof stageRadii];
+                
+                // Calculate midpoint radius for drug placement
+                if (stage === 'PRE' && stageRadii['P1']) {
+                    stageRadius = (stageRadii['PRE'] + stageRadii['P1']) / 2;
+                } else if (stage === 'P1' && stageRadii['P2']) {
+                    stageRadius = (stageRadii['P1'] + stageRadii['P2']) / 2;
+                } else if (stage === 'P2' && stageRadii['P3']) {
+                    stageRadius = (stageRadii['P2'] + stageRadii['P3']) / 2;
+                } else if (stage === 'P3' && stageRadii['FILED']) {
+                    stageRadius = (stageRadii['P3'] + stageRadii['FILED']) / 2;
+                } else if (stage === 'FILED' && stageRadii['PRV']) {
+                    stageRadius = (stageRadii['FILED'] + stageRadii['PRV']) / 2;
+                } else if (stage === 'PRV') {
+                    stageRadius = stageRadii['PRV'] * 0.6;
+                }
+                
+                // Calculate the angular spacing for drugs
                 const drugSpacing = (angle.end - angle.start) / (drugs.length + 1);
+                
+                // Calculate the bracket point - a point closer to the drugs where connections branch
+                // Position it at a distance that creates a visually pleasing connection
+                const firstDrugAngle = angle.start + drugSpacing;
+                const lastDrugAngle = angle.start + drugSpacing * drugs.length;
+                const bracketAngle = (firstDrugAngle + lastDrugAngle) / 2;
 
+                // Calculate the bracket radius - position it at 75% of the way from the stage radius to the label
+                const distanceToLabel = labelConfig.minRadius - stageRadius;
+                const bracketRadius = stageRadius + (distanceToLabel * 0.75);
+                const bracketX = bracketRadius * Math.cos(bracketAngle - Math.PI/2);
+                const bracketY = bracketRadius * Math.sin(bracketAngle - Math.PI/2);
+                
+                // Draw the main connection line from label to bracket point
+                if (drugs.length > 1) {
+                    linesGroup.append("path")
+                        .attr("class", "main-connection")
+                        .attr("data-company", company.company)
+                        .attr("d", `M${labelX},${labelY}L${bracketX},${bracketY}`)
+                        .attr("stroke", "#37587e")
+                        .attr("stroke-width", sizeConfig.connectionStrokeWidth * 1) // Slightly thicker
+                        .attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2) // Slightly more opaque
+                        .attr("stroke-dasharray", "none")
+                        .attr("fill", "none");
+                }
+                
+                // Create drug nodes with connections from the bracket point
                 drugs.forEach((drug: any, i: number) => {
                     const drugAngle = angle.start + drugSpacing * (i + 1);
                     const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
@@ -399,15 +419,19 @@
                     // Create unique ID for drug
                     const drugId = `${company.company}-${drug.Candidate}-${i}`.replace(/\s+/g, '-').toLowerCase();
 
-                    // Add connecting line from node to drug with data attributes for company and drug
+                    // Add connecting line - either from bracket point (if multiple drugs) or directly from label (if single drug)
+                    const startX = drugs.length > 1 ? bracketX : labelX;
+                    const startY = drugs.length > 1 ? bracketY : labelY;
+                    
                     linesGroup.append("path")
                         .attr("class", "drug-path")
                         .attr("data-company", company.company)
                         .attr("data-drug", drugId)
-                        .attr("d", `M${nodeX},${nodeY}L${drugX},${drugY}`)
+                        .attr("d", `M${startX},${startY}L${drugX},${drugY}`)
                         .attr("stroke", "#37587e")
                         .attr("stroke-width", sizeConfig.connectionStrokeWidth)
                         .attr("stroke-opacity", sizeConfig.connectionOpacity)
+                        .attr("stroke-dasharray", "none")
                         .attr("fill", "none");
 
                     const drugGroup = companyGroup.append("g")
@@ -421,11 +445,11 @@
 
                     // Ensure the SVG element can receive focus
                     const drugElement = drugGroup.node();
-                    if (drugElement && nodeElement) {
+                    if (drugElement && labelElement) {
                         drugElement.setAttribute("focusable", "true");
                         
                         // Store drug node reference in the company's drugNodes array
-                        const companyRef = focusableElements.find(item => item.element === nodeElement);
+                        const companyRef = focusableElements.find(item => item.element === labelElement);
                         if (companyRef && companyRef.drugNodes) {
                             companyRef.drugNodes.push({
                                 element: drugElement,
@@ -494,9 +518,9 @@
                                 companyUrl: drug["Link to CrunchBase"] || ""
                             });
                         } else if (event.key === "Escape") {
-                            // Return focus to company node
+                            // Return focus to company label
                             event.preventDefault();
-                            nodeElement?.focus();
+                            labelElement?.focus();
                         } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
                             // Navigate to next drug in the same company
                             event.preventDefault();
@@ -608,13 +632,13 @@
             });
 
             // Add keyboard event handler for accessibility
-            nodeGroup.on("keydown", function(event: KeyboardEvent) {
+            labelGroup.on("keydown", function(event: KeyboardEvent) {
                 if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     event.stopPropagation();
                     
                     // Toggle selection state
-                    const companyRef = focusableElements.find(item => item.element === nodeElement);
+                    const companyRef = focusableElements.find(item => item.element === labelElement);
                     if (companyRef) {
                         companyRef.isSelected = !companyRef.isSelected;
                         
@@ -652,8 +676,8 @@
                         transactedVouchers: company.transactedVouchers || 0
                     });
                 } else if (event.key === "Tab" && !event.shiftKey) {
-                    // When Tab is pressed on a company node, check if it's selected
-                    const companyRef = focusableElements.find(item => item.element === nodeElement);
+                    // When Tab is pressed on a company label, check if it's selected
+                    const companyRef = focusableElements.find(item => item.element === labelElement);
                     if (companyRef && companyRef.isSelected && companyRef.drugNodes && companyRef.drugNodes.length > 0) {
                         // If company is selected and has drug nodes, focus the first drug node
                         event.preventDefault();
@@ -663,20 +687,19 @@
             });
 
             // Add focus/blur handlers
-            nodeGroup.on("focus", function(event) {
+            labelGroup.on("focus", function(event) {
                 // Highlight connections
                 highlightCompanyConnections(company.company);
                 
-                // Enhance visual feedback
-                nodeGroup.select("rect")
+                // Enhance visual feedback for the label
+                labelText
                     .transition()
                     .duration(200)
-                    .attr("width", sizeConfig.companyNodeWidth * 1.15)
-                    .attr("height", sizeConfig.companyNodeHeight * 1.15)
-                    .attr("transform", `translate(${-(sizeConfig.companyNodeWidth * 1.15)/2}, ${-(sizeConfig.companyNodeHeight * 1.15)/2})`)
-                    .attr("stroke-width", 1.25);
+                    .attr("font-weight", "800")
+                    .attr("font-size", "10.25px")
+                    .attr("fill", "#2B6CB0"); // Highlight color
                 
-                // Show tooltip near the focused node
+                // Show tooltip near the focused label
                 showTooltip(event, {
                     company: company.company,
                     totalDrugs: company.totalDrugs,
@@ -687,16 +710,15 @@
                 setActiveCompany(company.company, company.entries);
             });
             
-            nodeGroup.on("blur", function() {
+            labelGroup.on("blur", function() {
                 // Only reset if not the active company
                 if (activeCompany !== company.company) {
-                    nodeGroup.select("rect")
+                    labelText
                         .transition()
                         .duration(200)
-                        .attr("width", sizeConfig.companyNodeWidth)
-                        .attr("height", sizeConfig.companyNodeHeight)
-                        .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
-                        .attr("stroke-width", 0.725);
+                        .attr("font-weight", sizeConfig.labelFontWeight)
+                        .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
+                        .attr("fill", "#4A5568");
                 }
                 
                 // Reset connections and hide tooltip
@@ -704,21 +726,12 @@
                 hideTooltip();
             });
 
-            // Add interaction handlers for both node and label
+            // Add interaction handlers for the label
             const handleMouseEnter = (event: MouseEvent) => {
                 // Highlight all connections for this company
                 highlightCompanyConnections(company.company);
                 
-                // Enhance visual feedback
-                nodeGroup.select("rect")
-                    .transition()
-                    .duration(200)
-                    .attr("width", sizeConfig.companyNodeWidth * 1.15)
-                    .attr("height", sizeConfig.companyNodeHeight * 1.15)
-                    .attr("transform", `translate(${-(sizeConfig.companyNodeWidth * 1.15)/2}, ${-(sizeConfig.companyNodeHeight * 1.15)/2})`)
-                    .attr("stroke-width", 1.25);
-                    
-                // Enhance node label text
+                // Enhance label text
                 labelText
                     .transition()
                     .duration(200)
@@ -756,21 +769,13 @@
             };
             
             const handleMouseLeave = () => {
-                // Reset node appearance if not active company
+                // Reset label appearance if not active company
                 if (activeCompany !== company.company) {
-                    nodeGroup.select("rect")
-                        .transition()
-                        .duration(200)
-                        .attr("width", sizeConfig.companyNodeWidth)
-                        .attr("height", sizeConfig.companyNodeHeight)
-                        .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`)
-                        .attr("stroke-width", 0.725);
-                    
-                    // Reset the label text
                     labelText
                         .transition()
                         .duration(200)
                         .attr("font-weight", sizeConfig.labelFontWeight)
+                        .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
                         .attr("fill", "#4A5568");
                 }
                 
@@ -788,7 +793,7 @@
                 hideTooltip();
                 
                 // Toggle selection state for keyboard navigation
-                const companyRef = focusableElements.find(item => item.element === nodeElement);
+                const companyRef = focusableElements.find(item => item.element === labelElement);
                 if (companyRef) {
                     companyRef.isSelected = !companyRef.isSelected;
                     
@@ -820,14 +825,7 @@
                 });
             };
 
-            // Apply handlers to the node group
-            nodeGroup
-                .on("mouseenter", handleMouseEnter)
-                .on("mousemove", handleMouseMove)
-                .on("mouseleave", handleMouseLeave)
-                .on("click", handleClick);
-                
-            // Apply the same handlers to the label group
+            // Apply handlers to the label group
             labelGroup
                 .on("mouseenter", handleMouseEnter)
                 .on("mousemove", handleMouseMove)
@@ -852,7 +850,7 @@
             .attr("role", "application")
             .attr("aria-label", "Company and drug visualization")
             .on("keydown", (event) => {
-                // When Tab is pressed in the SVG container, focus the first company node
+                // When Tab is pressed in the SVG container, focus the first company label
                 if (event.key === "Tab" && !event.shiftKey && focusableElements.length > 0) {
                     event.preventDefault();
                     // Use HTMLElement focus method on the element
@@ -860,7 +858,7 @@
                     currentFocusIndex = 0;
                 }
                 
-                // Add arrow key navigation between company nodes
+                // Add arrow key navigation between company labels
                 if (event.key === "ArrowRight" || event.key === "ArrowDown") {
                     event.preventDefault();
                     navigateToNextCompany();
@@ -882,7 +880,7 @@
     
     // Function to handle global keyboard navigation
     function handleGlobalKeydown(event: KeyboardEvent) {
-        // Only handle arrow keys when a company node is focused
+        // Only handle arrow keys when a company label is focused
         if (currentFocusIndex >= 0 && (
             event.key === "ArrowRight" || 
             event.key === "ArrowDown" || 
@@ -976,76 +974,33 @@
         activeStage = null;
         
         // Reset all visual elements
-        d3.selectAll(".company-node rect:first-child") // Select the first rect (node background)
-            .transition()
-            .duration(200)
-            .attr("width", sizeConfig.companyNodeWidth)
-            .attr("height", sizeConfig.companyNodeHeight)
-            .attr("transform", `translate(${-sizeConfig.companyNodeWidth/2}, ${-sizeConfig.companyNodeHeight/2})`);
-            
-        // Reset all node label styles
-        d3.selectAll(".label-group rect")
-            .transition()
-            .duration(300)
-            .attr("fill", "white")
-            .attr("stroke", "#E2E8F0")
-            .attr("stroke-width", 0.5);
-            
-        // Reset node label text styles
-        d3.selectAll(".company-node-label")
-            .transition()
-            .duration(300)
-            .attr("fill", "#1A202C")
-            .attr("font-weight", "600");
-            
-        // Reset company outer label styles
+        // Reset all company label text styles
         d3.selectAll(".company-label text")
             .transition()
             .duration(500)
             .attr("fill", "#4A5568")
             .attr("font-size", sizeConfig.labelFontSize)
             .attr("font-weight", sizeConfig.labelFontWeight);
-            
+        
         // Reset pipeline dots
         d3.selectAll(".pipeline-dots circle")
             .transition()
             .duration(200)
             .attr("r", 0)
             .attr("opacity", 0.7);
-            
+        
         // Highlight active company if selected
         if (company) {
             const companyId = company.replace(/\s+/g, '-').toLowerCase();
             
-            // Highlight company node
-            d3.select(`#company-node-${companyId} rect:first-child`)
-                .transition()
-                .duration(300)
-                .attr("stroke-width", 1.5);
-            
-            // Highlight node label if present
-            d3.select(`#company-node-${companyId} .label-group rect`)
-                .transition()
-                .duration(300)
-                .attr("fill", "#EBF8FF") // Light blue background
-                .attr("stroke", "#90CDF4")
-                .attr("stroke-width", 1.5);
-                
-            // Highlight node label text if present
-            d3.select(`#company-node-${companyId} .company-node-label`)
-                .transition()
-                .duration(300)
-                .attr("fill", "#2B6CB0") // Blue text
-                .attr("font-weight", "800");
-                
-            // Highlight company text label in outer ring
+            // Highlight company text label
             d3.select(`#company-label-${companyId} text`)
                 .transition()
                 .duration(500)
                 .attr("fill", "#2B6CB0")
-                .attr("font-size", sizeConfig.labelFontSize)
-                .attr("font-weight", sizeConfig.labelFontWeight);
-                
+                .attr("font-size", "10.25px")
+                .attr("font-weight", "800");
+            
             // Get company data to pass to callback
             const companyData = processDataForLayout(data).find(c => c.company === company);
             if (companyData) {
@@ -1111,7 +1066,8 @@
     function highlightCompanyConnections(companyName: string) {
         resetConnectionHighlights();
         
-        d3.selectAll(`path.company-path[data-company="${companyName}"], path.drug-path[data-company="${companyName}"]`)
+        // Highlight both main connections and drug paths
+        d3.selectAll(`path.main-connection[data-company="${companyName}"], path.drug-path[data-company="${companyName}"]`)
             .transition()
             .duration(300)
             .attr("stroke", highlightColor)
@@ -1121,17 +1077,46 @@
     
     function highlightDrugConnections(drugId: string) {
         resetConnectionHighlights();
+        
+        // Get the drug path
+        const drugPath = d3.select(`path.drug-path[data-drug="${drugId}"]`);
+        if (!drugPath.empty()) {
+            // Highlight the drug path
+            drugPath
+                .transition()
+                .duration(300)
+                .attr("stroke", highlightColor)
+                .attr("stroke-width", highlightWidth)
+                .attr("stroke-opacity", 1);
             
-        d3.select(`path.drug-path[data-drug="${drugId}"]`)
-            .transition()
-            .duration(300)
-            .attr("stroke", highlightColor)
-            .attr("stroke-width", highlightWidth)
-        .attr("stroke-opacity", 1); 
+            // Get the company name to highlight the main connection if needed
+            const companyName = drugPath.attr("data-company");
+            if (companyName) {
+                // Find all drug paths for this company to determine if we need to highlight the main connection
+                const drugPaths = d3.selectAll(`path.drug-path[data-company="${companyName}"]`);
+                if (drugPaths.size() > 1) {
+                    // If there are multiple drugs, also highlight the main connection
+                    d3.selectAll(`path.main-connection[data-company="${companyName}"]`)
+                        .transition()
+                        .duration(300)
+                        .attr("stroke", highlightColor)
+                        .attr("stroke-width", highlightWidth)
+                        .attr("stroke-opacity", 1);
+                }
+            }
+        }
     }
     
     function resetConnectionHighlights() {
-        d3.selectAll("path.company-path, path.drug-path")
+        // Reset both main connections and drug paths
+        d3.selectAll("path.main-connection")
+            .transition()
+            .duration(300)
+            .attr("stroke", "#37587e")
+            .attr("stroke-width", sizeConfig.connectionStrokeWidth * 1.2)
+            .attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+        
+        d3.selectAll("path.drug-path")
             .transition()
             .duration(300)
             .attr("stroke", "#37587e")
