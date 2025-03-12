@@ -191,6 +191,9 @@
     class="fixed inset-0 w-full min-w-[400px] h-full bg-black/60 z-[1000] flex justify-end cursor-pointer"
     on:click|self={onClose}
     transition:fly={{duration: 500, x: 420}}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-title"
 >
     <div 
         class="drawer relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] cursor-default"
@@ -202,6 +205,7 @@
                 class="flex gap-1 pr-3 pl-2 py-1 items-center justify-self-start text-xs font-semibold text-[#37587e] hover:text-emerald-800 hover:underline"
                 on:click={handleClose}
                 in:fly={{duration: 500, x: 420 }}
+                aria-label="Go back"
             >
                 <ArrowLeft size={16}/> Back
             </button>
@@ -210,6 +214,7 @@
                 class="flex gap-2 px-3 py-2 items-center justify-self-start text-xs font-semibold text-gray-100 ease-in-out {isTracked ? 'bg-emerald-600' : 'bg-[#37587e] hover:bg-green-800'}"
                 on:click={toggleTracking}
                 in:fly={{duration: 500, x: 420 }}
+                aria-label={isTracked ? "Remove from tracked drugs" : "Track this drug"}
             >
                 {#if isTracked}
                     <BookmarkFilled class="transition-transform" />
@@ -222,7 +227,7 @@
         <div class="drawer-content">
 
             <div class="header flex gap-4 my-4 pb-4 w-full items-baseline justify-between">
-                <h2 class="text-2xl max-w-96 capitalize font-light text-slate-800" 
+                <h2 id="drawer-title" class="text-2xl max-w-96 capitalize font-light text-slate-800" 
                     in:fly={{duration: 500, x: 420 }}>
                     {drugName}
                 </h2>
@@ -230,6 +235,7 @@
                     class="flex text-sm capitalize gap-1 font-semibold text-slate-800 hover:text-emerald-600"
                     on:click={handleCompanyClick}
                     in:fly={{duration: 500, x: 420 }}
+                    aria-label="View company details"
                 >
                     {Company} <ArrowUpRight size={16}/>
                 </button>
@@ -265,6 +271,7 @@
                                 <button 
                                     class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                     on:click={() => showStageView(currentStage)}
+                                    aria-label="View all drugs in this stage"
                                 >
                                     All <ArrowUpRight size={16} />
                                 </button>
@@ -294,6 +301,7 @@
                                 <button 
                                     class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                     on:click={() => showVoucherView(voucherAwardDate)}
+                                    aria-label="View all drugs with vouchers awarded in this year"
                                 >
                                     All <ArrowUpRight size={16} />
                                 </button>
@@ -333,6 +341,7 @@
                                     <button 
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showTherapeuticAreaView(therapeuticArea)}
+                                        aria-label="View all drugs in this therapeutic area"
                                     >
                                         All <ArrowUpRight size={16} />
                                     </button>
@@ -351,6 +360,7 @@
                                     <button 
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showIndicationView(indication)}
+                                        aria-label="View all drugs with this indication"
                                     >
                                         All <ArrowUpRight size={16} />
                                     </button>
@@ -380,6 +390,7 @@
                                     <button 
                                         class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showTreatmentClassView(treatmentClass)}
+                                        aria-label="View all drugs in this treatment class"
                                     >
                                         All <ArrowUpRight size={16} />
                                     </button>
@@ -398,6 +409,7 @@
                                     <button 
                                         class="flex align-top gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                         on:click={() => showMOAView(mechanismOfAction)}
+                                        aria-label="View all drugs with this mechanism of action"
                                     >
                                         All <ArrowUpRight size={16} />
                                     </button>
@@ -456,6 +468,7 @@
                                     mechanismOfAction = selectedDrug.MOA || "TBD";
                                 }
                             }}
+                            aria-label={`View details for ${row.drugName}`}
                         >
                             {cell.value}
                             <ArrowUpRight size={16} />

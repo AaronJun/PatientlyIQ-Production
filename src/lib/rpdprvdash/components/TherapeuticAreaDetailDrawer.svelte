@@ -67,8 +67,8 @@
   
   // Toggle accordion state
   function toggleAccordion(section) {
-    openAccordions[section] = !openAccordions.section;
-  }
+  openAccordions[section] = !openAccordions[section];
+}
 
   // Handle drug selection
   function handleDrugClick(drug) {
@@ -138,12 +138,15 @@
   class:open={isOpen}
   transition:fly={{ x: 400, duration: 300 }}
   bind:this={drawerElement}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="drawer-title"
 >
   {#if areaDetail}
     <div class="drawer-header" style="border-color: {areaColor.stroke}">
       <div class="area-color-indicator" style="background-color: {areaColor.fill}; border-color: {areaColor.stroke}"></div>
       <div class="header-content">
-        <h2>{areaDetail.areaName}</h2>
+        <h2 id="drawer-title">{areaDetail.areaName}</h2>
         <div class="year-selector">
           <span>Year:</span>
           <select 
@@ -160,14 +163,14 @@
           </select>
         </div>
       </div>
-      <button class="close-button" on:click={onClose}>×</button>
+      <button class="close-button" on:click={onClose} aria-label="Close">×</button>
     </div>
     
     <div class="drawer-content">
       <div class="stat-grid">
         <!-- Drug Candidates Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('drugCandidates')}>
+          <div class="stat-header" on:click={() => toggleAccordion('drugCandidates')} role="button" aria-expanded={openAccordions.drugCandidates} tabindex="0">
             <div>
               <h3>Drug Candidates</h3>
               <p class="stat-value">{formatNumber(areaDetail.totalDrugs)}</p>
@@ -189,7 +192,7 @@
                   <div class="drug-stage-header">Stage</div>
                 </div>
                 {#each areaDetail.entries.slice(0, 3) as drug}
-                  <div class="drug-item" on:click={() => handleDrugClick(drug)}>
+                  <div class="drug-item" on:click={() => handleDrugClick(drug)} role="button" tabindex="0">
                     <div class="drug-name">{drug.Candidate || 'Unnamed'}</div>
                     <div class="drug-company">{drug.Company || 'Unknown'}</div>
                     <div class="drug-stage">{drug["Current Development Stage"] || 'N/A'}</div>
@@ -204,7 +207,7 @@
             <div class="accordion-content">
               <div class="drugs-list">
                 {#each areaDetail.entries.slice(3, 15) as drug}
-                  <div class="drug-item" on:click={() => handleDrugClick(drug)}>
+                  <div class="drug-item" on:click={() => handleDrugClick(drug)} role="button" tabindex="0">
                     <div class="drug-name">{drug.Candidate || 'Unnamed'}</div>
                     <div class="drug-company">{drug.Company || 'Unknown'}</div>
                     <div class="drug-stage">{drug["Current Development Stage"] || 'N/A'}</div>
@@ -222,7 +225,7 @@
         
         <!-- Companies Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('companies')}>
+          <div class="stat-header" on:click={() => toggleAccordion('companies')} role="button" aria-expanded={openAccordions.companies} tabindex="0">
             <div>
               <h3>Companies</h3>
               <p class="stat-value">{formatNumber(areaDetail.uniqueCompanies)}</p>
@@ -274,7 +277,7 @@
         
         <!-- Indications Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('indications')}>
+          <div class="stat-header" on:click={() => toggleAccordion('indications')} role="button" aria-expanded={openAccordions.indications} tabindex="0">
             <div>
               <h3>Indications</h3>
               <p class="stat-value">{formatNumber(indicationCount)}</p>
@@ -326,7 +329,7 @@
         
         <!-- Development Stages Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('developmentStages')}>
+          <div class="stat-header" on:click={() => toggleAccordion('developmentStages')} role="button" aria-expanded={openAccordions.developmentStages} tabindex="0">
             <div>
               <h3>Development Stages</h3>
               <p class="stat-value">{stagesWithCounts.length}</p>

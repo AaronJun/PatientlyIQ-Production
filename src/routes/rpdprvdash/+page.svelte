@@ -27,7 +27,6 @@
   import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
-  import RpdprvCompanyDrawer from '$lib/rpdprvdash/RPDPRVCompanyDrawer.svelte';
   import InfiniteCanvasWrapper from '$lib/rpdprvdash/InfiniteCanvasWrapper.svelte';
 
   // New PRV Analytics Components
@@ -581,10 +580,10 @@
             
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
             {#if isMobileView || isTabletView}
-              <MobileTherapeuticAreaSidebar
+              <MobileSponsorSidebar
+                {currentView}
                 {currentEntries}
-                {currentArea}
-                {areaMetrics}
+                {currentCompanyMetrics}
                 colorMap={colorMap}
                 onShowDrugDetail={handleShowDrugDetail}
                 fullYearData={filteredData}
