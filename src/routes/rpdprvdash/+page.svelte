@@ -85,6 +85,7 @@
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   let isSidebarCollapsed = true; // Default to collapsed for vertical sidebar
+  let isRightSidebarCollapsed = true; // Default to collapsed for right sidebar
   let isHowToReadOpen = false; // New state variable for How to Read modal
   let isDropdownOpen = false; // New state variable for dropdown menu
   let isMobileSidebarExpanded = false; // New state variable for mobile sidebar expansion
@@ -173,6 +174,19 @@
   
   function handleSidebarToggle(event) {
     isSidebarCollapsed = event.detail;
+  }
+  
+  function handleHowToNavigate() {
+    isHowToReadOpen = true;
+  }
+  
+  function handleDashboard() {
+    isDashboardOpen = true;
+  }
+  
+  // Add a separate state for right sidebar
+  function toggleRightSidebar() {
+    isRightSidebarCollapsed = !isRightSidebarCollapsed;
   }
 
   // Update handleCompanyHover to also handle therapeutic area data
@@ -302,10 +316,6 @@
     isCompanyDetailDrawerOpen = false;
   }
 
-  function handleDashboardClick() {
-    isDashboardOpen = true;
-  }
-
   function handleDashboardClose() {
     isDashboardOpen = false;
   }
@@ -407,44 +417,16 @@
             RPDD + PRV Constellation
         </h1>
       </div>
-      <button 
-      class="interactive-element flex px-2 gap-2 align-middle items-center justify-center font-medium text-xs transition-colors text-slate-800 bg-emerald-200 hover:bg-[#FF4A4A] hover:text-slate-50"
-      on:click={() => isHowToReadOpen = true}
-    >
-      <Globe size={16}/>
-      How to Navigate
-    </button>
     </div>
     
     <div class="px-2 py-2 bg-slate-50 flex justify-between items-center">
- 
-      <!-- Search and Dashboard Buttons -->
-      <div class="flex gap-2 items-stretch ml-auto">
-        <!-- Dashboard button with responsive design -->
-        <button 
-          class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
-          on:click={handleDashboardClick}
-        >
-          <DashboardReference size={16}/>
-          <span class="hidden lg:inline">Dashboard</span>
-        </button>
-        
-        
-        <!-- Mobile Dashboard Icon Button -->
-        <button 
-          class="interactive-element md:hidden p-2 rounded-sm transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A]"
-          on:click={handleDashboardClick}
-        >
-          <DashboardReference size={16}/>
-        </button>
-      </div>
+      <!-- Empty space where the buttons used to be -->
     </div>
   </div>
 
   <!-- Vertical Sidebar Navigation -->
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
-
         style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
@@ -456,11 +438,13 @@
             onYearSelect={handleYearSelect}
           />
           <VerticalSidebar 
-          {activeTab} 
-          isCollapsed={isSidebarCollapsed}
-          on:tabSelect={handleTabSelect}
-          on:toggleCollapse={handleSidebarToggle}
-        />
+            {activeTab} 
+            isCollapsed={isSidebarCollapsed}
+            on:tabSelect={handleTabSelect}
+            on:toggleCollapse={handleSidebarToggle}
+            on:howToNavigate={handleHowToNavigate}
+            on:dashboard={handleDashboard}
+          />
           
         </div>
         {#if activeTab === 'By Sponsor'}
@@ -509,15 +493,15 @@
        
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-              <div class="absolute right-0 top-25 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-0 top-25 max-h-[1024px] {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
-                  title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  on:click={toggleRightSidebar}
+                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 >
                   <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -532,7 +516,7 @@
                   </svg>
                 </button>
           
-                <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
                   <!-- Search component in desktop sidebar -->
                   <div class="mb-4">
                     <RpdprvSearch
@@ -641,14 +625,14 @@
 
             <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView && !isTabletView}
-              <div class="absolute right-0 top-16 max-h-[1024px] {isSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-0 top-16 max-h-[1024px] {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
-                  title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  on:click={toggleRightSidebar}
+                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 >
                   <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -662,7 +646,7 @@
                     />
                   </svg>
                 </button>
-                <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
                   <!-- Search component in therapeutic area sidebar -->
                   <div class="mb-4">
                     <RpdprvSearch
@@ -728,7 +712,7 @@
         {:else if activeTab === 'By Transactions'}
           <!-- Updated Transactions Tab Layout -->
           <div class="flex flex-row relative">
-            <div class="w-{isMobileView || isTabletView ? 'full' : (isSidebarCollapsed ? '11/12' : '4/5')} {isMobileView || isTabletView ? '' : 'pl-32'} transition-all duration-300">
+            <div class="w-{isMobileView || isTabletView ? 'full' : (isRightSidebarCollapsed ? '11/12' : '4/5')} {isMobileView || isTabletView ? '' : 'pl-32'} transition-all duration-300">
               <SellerBuyerChord 
                 data={rpddData}
                 stockData={rpdCompanyValues}
@@ -756,14 +740,14 @@
             
             <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView && !isTabletView}
-              <div class="relative {isSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <div class="relative {isRightSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={() => isSidebarCollapsed = !isSidebarCollapsed}
-                  title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  on:click={toggleRightSidebar}
+                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 >
                   <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isSidebarCollapsed ? 'rotate-180' : ''}"
+                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -777,7 +761,7 @@
                     />
                   </svg>
                 </button>
-                <div class="sticky top-32 {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
+                <div class="sticky top-32 {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
                   <div class="sidebar-header mb-4">
                     <h4 class="text-xs uppercase font-semibold text-slate-600">                              
                       {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}

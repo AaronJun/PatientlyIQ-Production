@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Building, HealthCross, ArrowsHorizontal, ChartBubble } from 'carbon-icons-svelte';
+    import { Building, HealthCross, ArrowsHorizontal, ChartBubble, Globe, DashboardReference } from 'carbon-icons-svelte';
     import { slide } from 'svelte/transition';
     import { createEventDispatcher } from 'svelte';
   
@@ -30,6 +30,16 @@
     function toggleSidebar() {
       isCollapsed = !isCollapsed;
       dispatch('toggleCollapse', isCollapsed);
+    }
+    
+    // Handle how to navigate button click
+    function handleHowToNavigateClick() {
+      dispatch('howToNavigate');
+    }
+    
+    // Handle dashboard button click
+    function handleDashboardClick() {
+      dispatch('dashboard');
     }
   </script>
   
@@ -97,6 +107,53 @@
           {/if}
         </button>
       {/each}
+      
+      <!-- Divider -->
+      <div class="border-t border-slate-700 my-2"></div>
+      
+      <!-- How to Navigate button -->
+      <button
+        class="flex items-center gap-3 py-3 px-3 rounded-md transition-all duration-200 text-left relative text-slate-300 hover:bg-slate-700 hover:text-white"
+        on:click={handleHowToNavigateClick}
+        title={isCollapsed && !isHovered ? "How to Navigate" : ''}
+      >
+        <!-- Icon -->
+        <span class="text-center w-6 h-6 flex-shrink-0">
+          <Globe size={24} />
+        </span>
+        
+        <!-- Text label - only shown when expanded or hovered -->
+        {#if !isCollapsed || isHovered}
+          <span 
+            class="whitespace-nowrap text-sm font-medium"
+            transition:slide={{ duration: 200 }}
+          >
+            How to Navigate
+          </span>
+        {/if}
+      </button>
+      
+      <!-- Dashboard button -->
+      <button
+        class="flex items-center gap-3 py-3 px-3 rounded-md transition-all duration-200 text-left relative text-slate-300 hover:bg-slate-700 hover:text-white"
+        on:click={handleDashboardClick}
+        title={isCollapsed && !isHovered ? "Dashboard" : ''}
+      >
+        <!-- Icon -->
+        <span class="text-center w-6 h-6 flex-shrink-0">
+          <DashboardReference size={24} />
+        </span>
+        
+        <!-- Text label - only shown when expanded or hovered -->
+        {#if !isCollapsed || isHovered}
+          <span 
+            class="whitespace-nowrap text-sm font-medium"
+            transition:slide={{ duration: 200 }}
+          >
+            Dashboard
+          </span>
+        {/if}
+      </button>
     </nav>
   </div>
   
