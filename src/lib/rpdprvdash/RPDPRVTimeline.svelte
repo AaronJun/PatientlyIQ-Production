@@ -558,9 +558,9 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container ml-24 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-full" style="min-height: 20px;">
+    <div class="dropdown-container mx-24 justify-end rounded-sm ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
         <button 
-            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
