@@ -34,7 +34,7 @@
         if (isMobile || isTablet) {
             margin = { top: 6, right: 12, bottom: 30, left: 12 };
         } else {
-            margin = { top: 20, right: 20, bottom: 40, left: 20 };
+            margin = { top: 8, right: 8, bottom: 10, left: 10 };
         }
         
         // Only create visualization if we're in desktop mode or if data is available for mobile dropdown
@@ -377,8 +377,8 @@
         yearGroups.append("text")
             .attr("class", "year-label")
             .attr("x", 0)
-            .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0) + 20)
-            .attr("text-anchor", "middle")
+            .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0) + 10)
+            .attr("text-anchor", "end")
             .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
             .style("dominant-baseline", "top")
@@ -558,7 +558,7 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container z-50 mx-16 bg-white rounded-sm relative h-full w-full" style="min-height: 20px;">
+    <div class="dropdown-container ml-24 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-full" style="min-height: 20px;">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
@@ -646,7 +646,7 @@
     </div>
 {:else}
     <!-- Timeline for desktop - now using CSS Grid -->
-    <div class="timeline-container backdrop-blur-sm shadow-md" bind:this={container}>
+    <div class="timeline-container backdrop-blur-sm" bind:this={container}>
         <!-- SVG definitions for gradients -->
         <svg width="0" height="0" aria-hidden="true">
             <defs>
@@ -816,7 +816,7 @@
     }
 
     .timeline-container {
-        width: 100%;
+        width: 90%;
         position: relative;
         overflow: hidden;
     }

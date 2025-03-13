@@ -85,7 +85,7 @@
   let isCompanyDetailDrawerOpen = false;
   let selectedCompany = "";
   let isSidebarCollapsed = true; // Default to collapsed for vertical sidebar
-  let isRightSidebarCollapsed = true; // Default to collapsed for right sidebar
+  let isRightSidebarCollapsed = false; // Default to collapsed for right sidebar
   let isHowToReadOpen = false; // New state variable for How to Read modal
   let isDropdownOpen = false; // New state variable for dropdown menu
   let isMobileSidebarExpanded = false; // New state variable for mobile sidebar expansion
@@ -153,7 +153,7 @@
   function handleTransactionYearSelect(year: string) {
     selectedTransactionYear = year;
   }
-  
+
   let drawerProps: DrawerProps = {
     isCompanyView: false,
     Company: '',
@@ -394,21 +394,25 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
-<div class="flex flex-col min-h-screen bg-slate-100">
-  <div class="sticky flex align-baseline justify-between font-sans mt-4 pl-8 text-slate-50">
-  <RPDPRVHorizontalTimeline 
-      data={rpddData}
-      selectedYear={selectedYear}
-      onYearSelect={handleYearSelect}
-    />
+<div class="flex flex-col min-h-screen bg-slate-100/50">
+  <!-- Fixed header area with timeline -->
+  <div class="sticky top-0 left-0 right-0 z-10 backdrop-blur-sm shadow-sm">
+    <div class="w-full transition-all duration-300"
+         style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')}; padding-top: 0.75rem;">
+      <RPDPRVHorizontalTimeline 
+        data={rpddData}
+        selectedYear={selectedYear}
+        onYearSelect={handleYearSelect}
+      />
+    </div>
   </div>
 
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pb-8 relative transition-all duration-300" 
-    style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
+  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
+        style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full'} relative">
+      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
         <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
   
           <VerticalSidebar 
