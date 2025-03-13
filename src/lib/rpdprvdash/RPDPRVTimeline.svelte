@@ -300,18 +300,22 @@
         // Add highlight circles
         yearGroups.append("circle")
             .attr("class", "highlight-circle")
-            .attr("r", d => radiusScale(d.count) + 4)
+            .attr("r", d => isTransactionView 
+                ? radiusScale(d.totalValue || 0) + 4
+                : radiusScale(d.count) + 4)
             .attr("fill", "none")
-            .attr("stroke", "#4fd1c5")
+            .attr("stroke", isTransactionView ? "#55D88E" : "#4fd1c5") // Different colors for transaction vs regular
             .attr("stroke-width", 5)
             .attr("opacity", 0);
 
         // Add main circles
         yearGroups.append("circle")
             .attr("class", "year-circle")
-            .attr("r", d => radiusScale(d.count))
+            .attr("r", d => isTransactionView 
+                ? radiusScale(d.totalValue || 0)
+                : radiusScale(d.count))
             .attr("fill", d => `url(#${createGradientId(d.year)})`)
-            .attr("stroke", "#37587e")
+            .attr("stroke", isTransactionView ? "#565656" : "#37587e")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
             .style("opacity", d => isYearRestricted(d.year) ? 0.5 : 1)
@@ -558,9 +562,9 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container mx-24 justify-end rounded-sm ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
+    <div class="dropdown-container mx-24 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
         <button 
-            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none"
+            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
@@ -585,14 +589,14 @@
 
         {#if isDropdownOpen}
             <div 
-                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
+                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
                 bind:this={dropdownRef}
                 style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
             >
                 <div class="py-1">
                     <!-- All Years option -->
                     <button 
-                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
+                        class="flex items-center gap-2 text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
                         on:click={() => handleYearSelect('All')}
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20">

@@ -32,9 +32,6 @@
   // New PRV Analytics Components
   import RPDPRVAnalytics from '$lib/rpdprvdash/AllView/SankeyWrapper.svelte';
 
-  import { ArrowUpRight, Bee, DashboardReference, Globe, Analytics } from 'carbon-icons-svelte';
-  import { Balanced } from 'carbon-pictograms-svelte';
-
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
   import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
@@ -65,6 +62,43 @@
     country?: string;
     publicPrivate?: string;
     marketCap?: string;
+  }
+
+  interface TabSelectEvent {
+    detail: string;
+  }
+
+  interface SidebarToggleEvent {
+    detail: boolean;
+  }
+
+  interface CompanyHoverData {
+    entries?: any[];
+    areaName?: string;
+    totalDrugs?: number;
+    uniqueCompanies?: number;
+    uniqueCandidates?: number;
+    companyName?: string;
+    clinicalTrials?: number;
+    vouchersAwarded?: number;
+    uniqueIndications?: number;
+    uniqueAreas?: number;
+  }
+
+  interface DataEntry {
+    'RPDD Year': string;
+    'RPDD Date': string;
+    'PRV Date': string;
+    Company: string;
+    Candidate: string;
+    Indication: string;
+    TherapeuticArea1: string;
+    [key: string]: string | number | boolean | undefined; // Index signature for other potential fields
+  }
+
+  interface HTMLElementWithStyle extends HTMLElement {
+    style: CSSStyleDeclaration;
+    offsetHeight: number;
   }
 
   // State variables
@@ -168,11 +202,11 @@
   let selectedTherapeuticAreaDetail: any = null;
 
   // Handle vertical sidebar events
-  function handleTabSelect(event) {
+  function handleTabSelect(event: TabSelectEvent) {
     setActiveTab(event.detail);
   }
   
-  function handleSidebarToggle(event) {
+  function handleSidebarToggle(event: SidebarToggleEvent) {
     isSidebarCollapsed = event.detail;
   }
   
@@ -190,7 +224,7 @@
   }
 
   // Update handleCompanyHover to also handle therapeutic area data
-  function handleCompanyHover(data) {
+  function handleCompanyHover(data: CompanyHoverData | any[]) {
     if (Array.isArray(data)) {
       // Old format - just array of entries
       currentEntries = data;
@@ -204,8 +238,8 @@
       currentArea = data.areaName;
       areaMetrics = {
         totalDrugs: data.totalDrugs || data.entries.length,
-        uniqueCompanies: data.uniqueCompanies || new Set(data.entries.map(d => d.Company)).size,
-        uniqueCandidates: data.uniqueCandidates || new Set(data.entries.map(d => d.Candidate)).size
+        uniqueCompanies: data.uniqueCompanies || new Set(data.entries.map((d: any) => d.Company)).size,
+        uniqueCandidates: data.uniqueCandidates || new Set(data.entries.map((d: any) => d.Candidate)).size
       };
       currentView = 'Area View';
       currentCompanyMetrics = null;
@@ -217,8 +251,8 @@
         totalDrugs: data.totalDrugs || data.entries.length,
         clinicalTrials: data.clinicalTrials || 0,
         vouchersAwarded: data.vouchersAwarded || 0,
-        uniqueIndications: data.uniqueIndications || new Set(data.entries.map(d => d.Indication)).size,
-        uniqueAreas: data.uniqueAreas || new Set(data.entries.map(d => d.TherapeuticArea1)).size
+        uniqueIndications: data.uniqueIndications || new Set(data.entries.map((d: any) => d.Indication)).size,
+        uniqueAreas: data.uniqueAreas || new Set(data.entries.map((d: any) => d.TherapeuticArea1)).size
       };
       currentView = 'Company View';
       currentArea = null;
@@ -226,7 +260,7 @@
     }
   }
 
-  function handleStageHover(entries) {
+  function handleStageHover(entries: any[]) {
     currentEntries = entries;
     currentView = 'Stage View';
     // Reset company metrics when viewing stages
@@ -258,12 +292,12 @@
   }
   
   // Window click handler to reset sidebar
-  function handleWindowClick(event) {
+  function handleWindowClick(event: MouseEvent) {
     // Check if click was on an interactive element
-    const isInteractiveElement = event.target.closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
+    const isInteractiveElement = (event.target as Element).closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
     
     // Skip if click was on an interactive element or sidebar
-    if (isInteractiveElement || event.target.closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
+    if (isInteractiveElement || (event.target as Element).closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
       return;
     }
     
@@ -316,7 +350,15 @@
     }, {} as Record<string, number>)
   ).map(([area, count]) => ({ area, count }));
 
-  const colorScale = (area: string) => colorMap[area] || '#999999';
+  // Define the therapeutic area color map type
+  type TherapeuticAreaColorMap = {
+    [key in keyof typeof colorMap]: string;
+  };
+
+  const colorScale = (area: string) => {
+    const key = area as keyof typeof colorMap;
+    return colorMap[key] || '#999999';
+  };
 
   // Add reference to infinite canvas
   let infiniteCanvas: { resetView: () => void };
@@ -334,6 +376,27 @@
     setTimeout(() => {
       selectedTherapeuticAreaDetail = null;
     }, 300);
+  }
+
+  function updateSidebarHeight() {
+    const sidebar = document.querySelector('.sidebar') as HTMLElementWithStyle;
+    const header = document.querySelector('.header') as HTMLElementWithStyle;
+    if (sidebar && header) {
+        sidebar.style.height = `calc(100vh - ${header.offsetHeight}px)`;
+    }
+  }
+
+  function processData(data: DataEntry[]) {
+    // ... existing code ...
+    const rpddYear = entry['RPDD Year'] || '';
+    if (rpddYear) {
+        handleYearSelect(rpddYear);
+    }
+    
+    // Update date handling
+    const rpddDate = entry['RPDD Date'];
+    const prvDate = entry['PRV Date'];
+    // ... rest of the code ...
   }
 
   onMount(() => {
@@ -394,22 +457,27 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
-<div class="flex flex-col min-h-screen bg-slate-100/50">
-  <!-- Fixed header area with timeline -->
-  <div class="sticky top-0 left-0 right-0 z-10 backdrop-blur-sm shadow-sm">
-    <div class="w-full transition-all duration-300"
-         style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')}; padding-top: 0.75rem;">
-      <RPDPRVHorizontalTimeline 
-        data={rpddData}
-        selectedYear={selectedYear}
-        onYearSelect={handleYearSelect}
-      />
-    </div>
-  </div>
-
+<div class="flex flex-col min-h-screen">
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
         style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
+        <div class="w-full transition-all duration-300"
+         style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+      {#if activeTab === 'By Transactions'}
+        <PRVPurchaseTimeline 
+          data={rpddData}
+          selectedYear={selectedTransactionYear}
+          onYearSelect={handleTransactionYearSelect}
+          transactionYearSelected={handleTransactionYearSelect}
+        />
+      {:else}
+        <RPDPRVHorizontalTimeline 
+          data={rpddData}
+          selectedYear={selectedYear}
+          onYearSelect={handleYearSelect}
+        />
+      {/if}
+    </div>
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
       <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
@@ -702,23 +770,9 @@
               />
             </div>
             
-            <!-- Left timeline sidebar for By Transactions tab -->
-            <div class="absolute left-0 top-0 w-auto h-auto z-10">
-              <div class="flex flex-col bg-white/70 ring-1 ring-slate-100 backdrop-blur-sm shadow-lg rounded-r-lg py-4 {isMobileView || isTabletView ? 'px-4 max-w-[90vw]' : 'px-2'}">
-                <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                  <PRVPurchaseTimeline 
-                    data={rpddData}
-                    selectedYear={selectedTransactionYear}
-                    onYearSelect={handleTransactionYearSelect}
-                    transactionYearSelected={handleTransactionYearSelect}
-                  />
-                </div>
-              </div>
-            </div>
-            
             <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView && !isTabletView}
-              <div class="relative {isRightSidebarCollapsed ? 'w-1/12' : 'w-1/5'} transition-all duration-300 pr-8 pl-12">
+              <div class="relative {isRightSidebarCollapsed ? 'w-1/12' : 'w-1/4'} transition-all duration-300 pr-8 pl-12">
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={toggleRightSidebar}

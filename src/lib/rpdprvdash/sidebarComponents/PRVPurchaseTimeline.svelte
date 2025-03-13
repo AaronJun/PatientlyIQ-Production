@@ -1,68 +1,185 @@
 <!-- PRVPurchaseTimeline.svelte - Timeline focused on transaction values by year -->
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
-    import { ChevronDown } from 'carbon-icons-svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
-    
-    // Create event dispatcher
-    const dispatch = createEventDispatcher<{
-        yearSelect: { year: string };
-    }>();
+    import * as Dialog from "$lib/components/ui/dialog";
+    import { ChevronDown } from 'carbon-icons-svelte';
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string = "All";
     export let transactionYearSelected: (year: string) => void = () => {};
     
-    let svg: SVGElement;
+    let svg: SVGElement | null = null;
+    let container: HTMLDivElement;
+    let isDropdownOpen = false;
+    let dropdownRef: HTMLDivElement | null = null;
     let isMobile = false;
     let isTablet = false;
-    let isDropdownOpen = false;
-    let dropdownRef: HTMLDivElement;
     
-    // Responsive dimensions
-    let margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    let width = 125;
-    let height = 800;
+    // Responsive margins with relative values
+    let margin = { top: 5, right: 5, bottom: 5, left: 5 };
+    
+    // Create event dispatcher
+    const dispatch = createEventDispatcher<{
+        yearSelect: { year: string };
+    }>();
     
     // Update dimensions based on screen size
     function updateDimensions() {
         isMobile = window.innerWidth < 768;
-        isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+        isTablet = window.innerWidth >= 768 && window.innerWidth < 1200;
         
-        if (isMobile) {
-            width = Math.min(window.innerWidth - 40, 800);
-            height = 125;
-            margin = { top: 20, right: 20, bottom: 40, left: 20 };
-        } else if (isTablet) {
-            width = Math.min(window.innerWidth - 40, 800);
-            height = 125;
-            margin = { top: 20, right: 20, bottom: 40, left: 20 };
+        if (isMobile || isTablet) {
+            margin = { top: 6, right: 12, bottom: 30, left: 12 };
         } else {
-            width = 125;
-            height = 800;
-            margin = { top: 20, right: 20, bottom: 20, left: 40 };
+            margin = { top: 8, right: 8, bottom: 10, left: 10 };
         }
-        if (data.length > 0 && svg) {
-            createVisualization();
+        
+        // Only create visualization if we're in desktop mode or if data is available for mobile dropdown
+        if (data.length > 0) {
+            if (!isMobile && !isTablet && svg) {
+                createVisualization();
+            } else if ((isMobile || isTablet) && yearData.length === 0) {
+                yearData = calculateYearData(data);
+                yearGradients = calculateYearGradients(yearData);
+            }
         }
     }
     
+    // Process data to filter for purchases with transaction values
+    $: purchaseData = data.filter(entry => entry.Purchased === "Y" && entry["Purchase Year"]);
+    
+    // Process data to group by purchase year
+    function calculateYearData(inputData: any[]) {
+        return Object.entries(
+            inputData.reduce((acc, entry) => {
+                const year = entry["Purchase Year"];
+                if (!year) return acc;
+                
+                // Parse sale price
+                let salePrice = 0;
+                if (entry["Sale Price (USD Millions)"] && entry["Sale Price (USD Millions)"] !== "Undisclosed") {
+                    salePrice = parseFloat(entry["Sale Price (USD Millions)"]);
+                }
+                
+                if (!acc[year]) {
+                    acc[year] = {
+                        count: 0,
+                        totalValue: 0,
+                        areas: {}
+                    };
+                }
+                acc[year].count += 1;
+                acc[year].totalValue += salePrice;
+                
+                const area = entry.TherapeuticArea1;
+                if (area) {
+                    if (!acc[year].areas[area]) {
+                        acc[year].areas[area] = {
+                            count: 0,
+                            value: 0
+                        };
+                    }
+                    acc[year].areas[area].count += 1;
+                    acc[year].areas[area].value += salePrice;
+                }
+                return acc;
+            }, {} as Record<string, { 
+                count: number; 
+                totalValue: number;
+                areas: Record<string, { count: number; value: number }> 
+            }>)
+        )
+        .map(([year, data]) => {
+            const yearInfo = data as { 
+                count: number; 
+                totalValue: number; 
+                areas: Record<string, { count: number; value: number }> 
+            };
+            
+            const areaEntries = Object.entries(yearInfo.areas)
+                .map(([area, areaData]) => {
+                    const stats = areaData as { count: number; value: number };
+                    return {
+                        area,
+                        count: stats.count,
+                        value: stats.value,
+                        percentage: yearInfo.totalValue > 0 ? stats.value / yearInfo.totalValue : stats.count / yearInfo.count
+                    };
+                })
+                .sort((a, b) => b.value - a.value);
+                
+            return {
+                year,
+                count: yearInfo.count,
+                totalValue: yearInfo.totalValue,
+                areas: areaEntries
+            };
+        })
+        .sort((a, b) => a.year.localeCompare(b.year));
+    }
+    
+    // Calculate gradients for each year
+    function calculateYearGradients(yearDataInput: any[]) {
+        return yearDataInput.reduce((acc, yearEntry) => {
+            const gradientColors = yearEntry.areas
+                .map(area => getTherapeuticAreaColor(area.area).fill)
+                .join(', ');
+            acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
+            return acc;
+        }, {} as Record<string, string>);
+    }
+    
+    // Use the extracted functions for reactive declarations
+    $: yearData = calculateYearData(purchaseData);
+    $: yearGradients = calculateYearGradients(yearData);
+    
+    // Add resize observer
+    let resizeObserver: ResizeObserver;
+    
     onMount(() => {
-        updateDimensions();
+        // Initialize ResizeObserver to watch container size changes
+        resizeObserver = new ResizeObserver(() => {
+            if (svg) {
+                createVisualization();
+            }
+        });
+        
+        if (container) {
+            resizeObserver.observe(container);
+        }
+        
         window.addEventListener('resize', updateDimensions);
         document.addEventListener('click', handleClickOutside);
+        
+        // Ensure yearData is initialized for mobile view
+        if ((isMobile || isTablet) && data.length > 0 && yearData.length === 0) {
+            yearData = calculateYearData(purchaseData);
+            yearGradients = calculateYearGradients(yearData);
+        }
         
         return () => {
             window.removeEventListener('resize', updateDimensions);
             document.removeEventListener('click', handleClickOutside);
+            if (resizeObserver) {
+                resizeObserver.disconnect();
+            }
         };
     });
     
-    function toggleDropdown(e: MouseEvent) {
-        e.stopPropagation();
+    function toggleDropdown(event: Event) {
+        event.stopPropagation();
         isDropdownOpen = !isDropdownOpen;
+        
+        setTimeout(() => {
+            if (isDropdownOpen && dropdownRef) {
+                dropdownRef.style.display = 'block';
+                dropdownRef.style.visibility = 'visible';
+                dropdownRef.style.opacity = '1';
+            }
+        }, 0);
     }
     
     function handleYearSelect(year: string) {
@@ -79,89 +196,6 @@
         }
     }
     
-    // Process data to filter for purchases with transaction values
-    $: purchaseData = data.filter(entry => entry.Purchased === "Y" && entry["Purchase Year"]);
-    
-    // Process data to group by purchase year
-    $: yearData = Object.entries(
-        data.reduce((acc, entry) => {
-            const year = entry["Purchase Year"];
-            if (!year) return acc;
-            
-            // Parse sale price
-            let salePrice = 0;
-            if (entry["Sale Price (USD Millions)"] && entry["Sale Price (USD Millions)"] !== "Undisclosed") {
-                salePrice = parseFloat(entry["Sale Price (USD Millions)"]);
-            }
-            
-            if (!acc[year]) {
-                acc[year] = {
-                    count: 0,
-                    totalValue: 0,
-                    areas: {}
-                };
-            }
-            acc[year].count += 1;
-            acc[year].totalValue += salePrice;
-            
-            const area = entry.TherapeuticArea1;
-            if (area) {
-                if (!acc[year].areas[area]) {
-                    acc[year].areas[area] = {
-                        count: 0,
-                        value: 0
-                    };
-                }
-                acc[year].areas[area].count += 1;
-                acc[year].areas[area].value += salePrice;
-            }
-            return acc;
-        }, {} as Record<string, { 
-            count: number; 
-            totalValue: number;
-            areas: Record<string, { count: number; value: number }> 
-        }>)
-    )
-    .map(([year, data]) => {
-        // Type assertion to help TypeScript understand the structure
-        const yearInfo = data as { 
-            count: number; 
-            totalValue: number; 
-            areas: Record<string, { count: number; value: number }> 
-        };
-        
-        // Calculate area percentages based on value
-        const areaEntries = Object.entries(yearInfo.areas)
-            .map(([area, areaData]) => {
-                // Type assertion for area data
-                const stats = areaData as { count: number; value: number };
-                return {
-                    area,
-                    count: stats.count,
-                    value: stats.value,
-                    percentage: yearInfo.totalValue > 0 ? stats.value / yearInfo.totalValue : stats.count / yearInfo.count
-                };
-            })
-            .sort((a, b) => b.value - a.value);
-            
-        return {
-            year,
-            count: yearInfo.count,
-            totalValue: yearInfo.totalValue,
-            areas: areaEntries
-        };
-    })
-    .sort((a, b) => a.year.localeCompare(b.year));
-
-    // Create gradient strings for each year
-    $: yearGradients = yearData.reduce((acc, yearEntry) => {
-        const gradientColors = yearEntry.areas
-            .map(area => getTherapeuticAreaColor(area.area).fill)
-            .join(', ');
-        acc[yearEntry.year] = `linear-gradient(135deg, ${gradientColors})`;
-        return acc;
-    }, {} as Record<string, string>);
-
     function createGradientId(year: string): string {
         return `purchase-gradient-${year}`;
     }
@@ -172,27 +206,31 @@
         const svgElement = d3.select(svg);
         svgElement.selectAll("*").remove();
 
+        // Get the SVG dimensions from its computed style
+        const svgNode = svg as SVGSVGElement;
+        const width = svgNode.clientWidth;
+        const height = svgNode.clientHeight;
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
-        // Create scale based on orientation
-        const mainScale = isMobile 
-            ? d3.scalePoint()
-                .domain(yearData.map(d => d.year))
-                .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
-                .padding(0.5)
-            : d3.scalePoint()
-                .domain(yearData.map(d => d.year))
-                .range([margin.top, innerHeight - 60]) // Leave space at bottom for "All Years"
-                .padding(0.5);
+        // Update viewBox to match container size
+        svgElement
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", "100%")
+            .attr("height", "100%");
 
-        // Scale for circle radius based on total transaction value
+        // Create scale based on orientation - now horizontal
+        const mainScale = d3.scalePoint()
+            .domain(yearData.map(d => d.year))
+            .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
+            .padding(0.5);
+
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.totalValue) || 0])
-            .range([1, 20]);
+            .range([4, 16]);
 
         const g = svgElement.append("g")
-            .attr("transform", isMobile ? `translate(0,${margin.top})` : `translate(${margin.left},0)`);
+            .attr("transform", `translate(0,${margin.top})`);
 
         // Create gradients
         const defs = svgElement.append("defs");
@@ -219,15 +257,15 @@
                     .attr("stop-color", colorCombo.fill);
             });
         });
-        
+
         // Create a special gradient for "All Years"
         const allYearsGradient = defs.append("linearGradient")
             .attr("id", "purchase-gradient-all-years")
-            .attr("x1", "10%")
-            .attr("y1", "20%")
+            .attr("x1", "0%")
+            .attr("y1", "0%")
             .attr("x2", "100%")
             .attr("y2", "100%");
-            
+
         // Get all unique therapeutic areas
         const allAreas = new Set<string>();
         yearData.forEach(yearEntry => {
@@ -235,7 +273,7 @@
                 allAreas.add(area.area);
             });
         });
-        
+
         // Add all therapeutic areas to the gradient
         const uniqueAreas = Array.from(allAreas);
         uniqueAreas.forEach((area, index) => {
@@ -271,31 +309,19 @@
         feMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
 
-        // Add connecting line
-        g.append("line")
-            .attr("x1", isMobile ? margin.left : innerWidth / 2)
-            .attr("x2", isMobile ? innerWidth - 10 : innerWidth / 2)
-            .attr("y1", isMobile ? innerHeight / 2 : margin.top - 10)
-            .attr("y2", isMobile ? innerHeight / 2 : innerHeight - 10)
-            .attr("stroke", "#666666")
-            .attr("stroke-width", 0.5)
-            .attr("stroke-dasharray", "3,3");
-
-        // Create year groups
+        // Create year groups - positioned horizontally
         const yearGroups = g.selectAll(".year-group")
             .data(yearData)
             .join("g")
             .attr("class", "year-group")
-            .attr("transform", d => isMobile 
-                ? `translate(${mainScale(d.year)},${innerHeight / 2})` 
-                : `translate(${innerWidth / 2},${mainScale(d.year)})`);
+            .attr("transform", d => `translate(${mainScale(d.year)},${innerHeight / 2})`);
 
         // Add highlight circles
         yearGroups.append("circle")
             .attr("class", "highlight-circle")
             .attr("r", d => radiusScale(d.totalValue) + 4)
             .attr("fill", "none")
-            .attr("stroke", "#55D88E") // Using orange for purchase highlight
+            .attr("stroke", "#55D88E")
             .attr("stroke-width", 5)
             .attr("opacity", 0);
 
@@ -308,14 +334,10 @@
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
             .on("click", (event, d) => {
-                selectedYear = d.year;
-                onYearSelect(d.year);
-                transactionYearSelected(d.year);
-                updateSelection();
+                handleYearSelect(d.year);
             })
             .on("mouseenter", function(event, d) {
                 if (d.year !== selectedYear) {
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     const parentElement = d3.select(this).node()?.parentElement;
                     if (parentElement) {
                         d3.select(parentElement)
@@ -331,20 +353,18 @@
                         .attr("stroke-width", 2)
                         .style("filter", "url(#purchase-glow)");
 
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     if (parentElement) {
                         d3.select(parentElement)
                             .select(".year-label")
                             .transition()
                             .duration(200)
                             .attr("font-weight", "600")
-                            .attr("fill", "#FF9F1C");
+                            .attr("fill", "#FF1515");
                     }
                 }
             })
             .on("mouseleave", function(event, d) {
                 if (d.year !== selectedYear) {
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     const parentElement = d3.select(this).node()?.parentElement;
                     if (parentElement) {
                         d3.select(parentElement)
@@ -360,7 +380,6 @@
                         .attr("stroke-width", 1.5)
                         .style("filter", "none");
 
-                    // Use d3.select(this).node()?.parentElement instead of this.parentNode
                     if (parentElement) {
                         d3.select(parentElement)
                             .select(".year-label")
@@ -372,31 +391,28 @@
                 }
             });
 
-        // Add year labels
+        // Add year labels - now below circles
         yearGroups.append("text")
             .attr("class", "year-label")
-            .attr("x", isMobile ? 0 : -radiusScale(d3.max(yearData, d => d.count) || 0))
-            .attr("y", isMobile ? 30 : -42) // Position based on orientation
+            .attr("x", 0)
+            .attr("y", radiusScale(d3.max(yearData, d => d.totalValue) || 0) + 10)
             .attr("text-anchor", "middle")
-            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", isMobile ? "hanging" : "end")
+            .style("dominant-baseline", "top")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
             
-        // Create "All Years" circle at the bottom/right
+        // Create "All Years" circle at the right
         const allYearsGroup = g.append("g")
             .attr("class", "all-years-group")
-            .attr("transform", isMobile 
-                ? `translate(${innerWidth - 30}, ${innerHeight / 2})` 
-                : `translate(${innerWidth / 2}, ${innerHeight + 10})`)
+            .attr("transform", `translate(${innerWidth - 30}, ${innerHeight / 2})`)
             .attr("cursor", "pointer");
             
         // Create highlight circle for "All Years"
         allYearsGroup.append("circle")
             .attr("class", "highlight-circle")
-            .attr("r", 25) // Larger than regular circles
+            .attr("r", 25)
             .attr("fill", "none")
             .attr("stroke", "#55D88E")
             .attr("stroke-width", 5)
@@ -405,17 +421,14 @@
         // Create main circle for "All Years"
         allYearsGroup.append("circle")
             .attr("class", "year-circle")
-            .attr("r", 22) // Larger than regular circles
+            .attr("r", 22)
             .attr("fill", "url(#purchase-gradient-all-years)")
-            .attr("stroke", "#BC9533")
+            .attr("stroke", "#565656")
             .attr("stroke-width", selectedYear === "All" ? 4 : 2.5)
             .style("filter", selectedYear === "All" ? "url(#purchase-glow)" : "none")
             .style("cursor", "pointer")
             .on("click", () => {
-                selectedYear = "All";
-                onYearSelect("All");
-                transactionYearSelected("All");
-                updateSelection();
+                handleYearSelect("All");
             })
             .on("mouseenter", function() {
                 if (selectedYear !== "All") {
@@ -434,7 +447,7 @@
                         .transition()
                         .duration(200)
                         .attr("font-weight", "600")
-                        .attr("fill", "#FF9F1C");
+                        .attr("fill", "#FF1515");
                 }
             })
             .on("mouseleave", function() {
@@ -461,12 +474,12 @@
         // Add "All Years" label
         allYearsGroup.append("text")
             .attr("class", "year-label")
-            .attr("y", isMobile ? 30 : -42) // Position based on orientation
+            .attr("x", 0)
+            .attr("y", 30)
             .attr("text-anchor", "middle")
-            .attr("transform", isMobile ? "rotate(0)" : "rotate(-90)")
             .attr("fill", "#718096")
             .attr("font-size", "9.75px")
-            .style("dominant-baseline", isMobile ? "hanging" : "end")
+            .style("dominant-baseline", "hanging")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text("All");
 
@@ -530,22 +543,23 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container relative w-full">
+    <div class="dropdown-container mx-24 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
         <button 
-            class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white rounded-md shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
+            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
         >
             <div class="flex items-center gap-2">
                 {#if selectedYear === "All"}
                     <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
                     <span>All Transaction Years</span>
-                {:else}
-                    {#each yearData as yearEntry}
-                        {#if yearEntry.year === selectedYear}
-                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
-                            <span>{yearEntry.year} Transactions</span>
-                        {/if}
+                {:else if selectedYear && yearData.length > 0}
+                    {#each yearData.filter(entry => entry.year === selectedYear) as yearEntry}
+                        <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year] || 'gray'}"></div>
+                        <span>{yearEntry.year}</span>
                     {/each}
+                {:else}
+                    <div class="w-5 h-5 rounded-full"></div>
+                    <span>Select Transaction Year</span>
                 {/if}
             </div>
             <ChevronDown 
@@ -556,27 +570,59 @@
 
         {#if isDropdownOpen}
             <div 
-                class="dropdown-menu absolute z-20 mt-1 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-[60vh] overflow-y-auto"
+                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
                 bind:this={dropdownRef}
+                style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
             >
-                <div class="py-1 max-h-60 overflow-auto">
-                    <!-- All years option -->
-                    <button
-                        class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100' : ''}"
+                <div class="py-1">
+                    <!-- All Years option -->
+                    <button 
+                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
                         on:click={() => handleYearSelect('All')}
                     >
-                        <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
-                        <span>All Transaction Years</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <defs>
+                                <linearGradient id="dropdown-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667EEA" />
+                                    <stop offset="25%" stop-color="#764BA2" />
+                                    <stop offset="50%" stop-color="#FF6B6B" />
+                                    <stop offset="75%" stop-color="#38B2AC" />
+                                    <stop offset="100%" stop-color="#68D391" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-all-years)" stroke="#37587e" stroke-width="1" />
+                        </svg>
+                        All Transaction Years
                     </button>
                     
                     <!-- Year options -->
                     {#each yearData as yearEntry}
-                        <button
-                            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100' : ''}"
+                        <button 
+                            class="flex items-center gap-2 w-full text-left text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-50 font-medium' : ''}"
                             on:click={() => handleYearSelect(yearEntry.year)}
                         >
-                            <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year]}"></div>
-                            <span>{yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <defs>
+                                    <linearGradient id="dropdown-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        {#each yearEntry.areas as area, i}
+                                            {#if i === 0}
+                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            {/if}
+                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
+                                        {/each}
+                                    </linearGradient>
+                                </defs>
+                                <circle 
+                                    cx="10" 
+                                    cy="10" 
+                                    r="{Math.max(4, Math.min(8, yearEntry.count / 5))}" 
+                                    fill="url(#dropdown-{yearEntry.year})" 
+                                    stroke="#37587e" 
+                                    stroke-width="1" 
+                                />
+                            </svg>
+                            {yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})
                         </button>
                     {/each}
                 </div>
@@ -584,43 +630,77 @@
         {/if}
     </div>
 {:else}
-    <!-- Original vertical timeline for desktop -->
-    <svg bind:this={svg} width={width} height={height}></svg>
+    <!-- Timeline for desktop -->
+    <div class="timeline-container backdrop-blur-sm" bind:this={container}>
+        <svg bind:this={svg} width="100%" height="100%"></svg>
+    </div>
 {/if}
 
 <style>
     .timeline-container {
-        height: 100%;
         width: 100%;
-        display: flex;
-        flex-direction: column;
         position: relative;
-    }
-    
-    .timeline-header {
-        margin-bottom: 0.5rem;
-        text-align: center;
-        letter-spacing: 0.05em;
+        overflow: hidden;
     }
 
-    :global(.year-group) {
-        transition: all 0.3s ease;
-    }
-    
-    /* Dropdown styles */
     .dropdown-container {
+        z-index: 9999;
+    }
+
+    .year-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
         position: relative;
-        z-index: 30;
+        z-index: 1;
     }
-    
-    .dropdown-menu {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    .circle-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        padding: 0;
     }
-    
-    /* Media query for mobile devices */
+
+    .highlight-circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 5px solid #55D88E;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .main-circle-svg {
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .circle-container:hover .highlight-circle {
+        opacity: 0.325 !important;
+    }
+
+    .circle-container:hover .main-circle-svg {
+        filter: url(#purchase-glow) !important;
+    }
+
+    .circle-container:hover .main-circle-svg circle {
+        stroke-width: 2px;
+    }
+
     @media (max-width: 768px) {
-        .timeline-container {
-            flex-direction: column;
+        .timeline-grid {
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        .year-label {
+            font-size: 8px;
         }
     }
 </style>
