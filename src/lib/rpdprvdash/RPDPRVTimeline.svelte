@@ -558,7 +558,7 @@
 
 {#if isMobile || isTablet}
     <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container bg-white relative w-full" style="min-height: 20px;">
+    <div class="dropdown-container z-50 mx-16 bg-white rounded-sm relative h-full w-full" style="min-height: 20px;">
         <button 
             class="dropdown-toggle flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none"
             on:click={toggleDropdown}
@@ -585,7 +585,7 @@
 
         {#if isDropdownOpen}
             <div 
-                class="dropdown-menu absolute left-0 right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
+                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
                 bind:this={dropdownRef}
                 style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
             >
@@ -795,9 +795,9 @@
                 Data for years prior to 2023 is restricted in this preview version.
             </Dialog.Description>
         </Dialog.Header>
-        <div class="p-4 bg-amber-50 rounded-md">
-            <p class="text-amber-800 text-sm">
-                Please contact your administrator for access to historical data.
+        <div class="p-4">
+            <p class="text-slate-800 text-sm">
+                Please contact us at team@patiently.studio for access to historical data.
             </p>
         </div>
         <Dialog.Footer>
@@ -811,6 +811,10 @@
 </Dialog.Root>
 
 <style>
+    .dropdown-container {
+        z-index: 9999;
+    }
+
     .timeline-container {
         width: 100%;
         position: relative;

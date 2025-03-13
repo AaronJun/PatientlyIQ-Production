@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Building, HealthCross, ArrowsHorizontal, ChartBubble, Globe, DashboardReference } from 'carbon-icons-svelte';
+    import { Building, HealthCross, ArrowsHorizontal, ChartBubble, Information, DashboardReference } from 'carbon-icons-svelte';
     import { slide } from 'svelte/transition';
     import { createEventDispatcher } from 'svelte';
   
@@ -44,7 +44,7 @@
   </script>
   
   <div 
-    class="vertical-sidebar-containe z-50 fixed left-0 top-0 z-40 pt-20 h-full bg-slate-800 shadow-xl transition-all duration-300 ease-in-out"
+    class="vertical-sidebar-container z-50 fixed left-0 top-0 z-40 pt-20 h-full bg-slate-800 shadow-xl transition-all duration-300 ease-in-out"
     class:w-16={isCollapsed && !isHovered}
     class:w-64={!isCollapsed || isHovered}
     on:mouseenter={() => isHovered = true}
@@ -119,7 +119,7 @@
       >
         <!-- Icon -->
         <span class="text-center w-6 h-6 flex-shrink-0">
-          <Globe size={24} />
+          <Information size={24} />
         </span>
         
         <!-- Text label - only shown when expanded or hovered -->
@@ -159,6 +159,7 @@
   
   <style>
     .vertical-sidebar-container {
+      z-index: 10;
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
     }
   </style>

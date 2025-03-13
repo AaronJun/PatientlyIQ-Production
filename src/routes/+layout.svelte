@@ -18,6 +18,9 @@
   import "../app.css";
   import { ModeWatcher } from "mode-watcher";
   $: routeID = $page.url.pathname.split("/");
+  
+  // Check if current route is the RPDPRVDash page
+  $: isRPDPRVDashRoute = routeID[1] === "rpdprvdash";
 
   import { resetMode, setMode } from "mode-watcher";
   import Header from '$lib/layouts/Header.svelte';
@@ -113,13 +116,16 @@ injectSpeedInsights();
 
 <svelte:window bind:innerWidth={pageWidth} />
 
-<!-- {#if pageWidth > 1023 && routeID[1] === "examples"}
-  <Navbar />  
-{:else if routeID[1] === ""}
-  <Navbar />
-{/if} -->
-<Header />
+<!-- Only render the Header if not on the RPDPRVDash route -->
+{#if !isRPDPRVDashRoute}
+  <Header />
+{/if}
+
 <div>
   <slot />
 </div>
-<Footer />
+
+<!-- Conditionally render Footer based on route if needed -->
+{#if !isRPDPRVDashRoute}
+  <Footer />
+{/if}

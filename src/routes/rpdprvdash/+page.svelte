@@ -3,7 +3,7 @@
 
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   
-  import RPDPRVVerticalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
+  import RPDPRVHorizontalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
   import PRVPurchaseTimeline from '$lib/rpdprvdash/sidebarComponents/PRVPurchaseTimeline.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
@@ -272,19 +272,6 @@
     isDropdownOpen = false;
   }
 
-  // Function to handle dropdown toggle
-  function toggleDropdown(event: Event) {
-    event.stopPropagation();
-    isDropdownOpen = !isDropdownOpen;
-  }
-
-  // Function to handle mobile tab selection
-  function handleMobileTabSelect(tab: string, event: Event) {
-    event.stopPropagation();
-    setActiveTab(tab);
-    isDropdownOpen = false;
-  }
-
   function handleShowCompanyDetail(detail: any) {
     const companyEntries = detail.entries || rpddData.filter(entry => entry.Company === detail.Company);
     selectedCompany = detail.Company;
@@ -407,36 +394,23 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
-<div class="flex flex-col min-h-screen bg-slate-100/50">
-  <!-- Fixed header area -->
-  <div class="sticky top-0 left-0 right-0 z-50">
-    <div class="header flex align-baseline justify-between font-sans bg-slate-900 text-slate-50">
-      <div class="flex gap-2 justify-evenly items-center">
-        <Balanced class="p-2 max-h-12 max-w-12 text-slate-300" />
-        <h1 class="flex text-sm text-slate-300 font-medium tracking-wide uppercase">
-            RPDD + PRV Constellation
-        </h1>
-      </div>
-    </div>
-    
-    <div class="px-2 py-2 bg-slate-50 flex justify-between items-center">
-      <!-- Empty space where the buttons used to be -->
-    </div>
+<div class="flex flex-col min-h-screen bg-slate-100">
+  <div class="sticky flex align-baseline justify-between font-sans mt-4 pl-8 text-slate-50">
+  <RPDPRVHorizontalTimeline 
+      data={rpddData}
+      selectedYear={selectedYear}
+      onYearSelect={handleYearSelect}
+    />
   </div>
 
-  <!-- Vertical Sidebar Navigation -->
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
-        style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
+  <main class="flex-1 pb-8 relative transition-all duration-300" 
+    style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
+      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full'} relative">
         <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-          <RPDPRVVerticalTimeline 
-            data={rpddData}
-            selectedYear={selectedYear}
-            onYearSelect={handleYearSelect}
-          />
+  
           <VerticalSidebar 
             {activeTab} 
             isCollapsed={isSidebarCollapsed}
@@ -899,6 +873,10 @@
 {/if}
 
 <style>
+.header {
+  background-color: #e0e0e0;
+}
+
   .tab-button {
     border-bottom: 1px solid #e0e0e0;
     position: relative;
