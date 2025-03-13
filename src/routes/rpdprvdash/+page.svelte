@@ -420,15 +420,6 @@
  
       <!-- Search and Dashboard Buttons -->
       <div class="flex gap-2 items-stretch ml-auto">
-        <!-- Search component with responsive width -->
-        <div class="w-full md:w-48 lg:w-64">
-          <RpdprvSearch
-            data={rpddData}
-            onShowDrugDetail={handleShowDrugDetail}
-            onShowCompanyDetail={handleShowCompanyDetail}
-          />
-        </div>
-        
         <!-- Dashboard button with responsive design -->
         <button 
           class="interactive-element hidden md:flex px-2 justify-center place-items-center rounded-sm gap-1 align-middle font-normal text-xs transition-colors text-slate-50 bg-slate-600 hover:bg-[#FF4A4A] hover:text-slate-50"
@@ -542,6 +533,15 @@
                 </button>
           
                 <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                  <!-- Search component in desktop sidebar -->
+                  <div class="mb-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
+                  
                   <!-- Scrollable content area -->
                   <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
                     <!-- Use the updated sidebar component -->
@@ -579,7 +579,18 @@
                 selectedYear={selectedYear}
                 isExpanded={isMobileSidebarExpanded}
                 on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-              />
+              >
+                <!-- Add search component to mobile sponsor sidebar -->
+                {#if isMobileSidebarExpanded}
+                  <div class="mb-4 px-4 pt-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
+                {/if}
+              </MobileSponsorSidebar>
             {/if}
           </div>
 
@@ -652,6 +663,14 @@
                   </svg>
                 </button>
                 <div class="h-full {isSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                  <!-- Search component in therapeutic area sidebar -->
+                  <div class="mb-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
             
                   <!-- Scrollable content area -->
                   <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
@@ -690,7 +709,18 @@
                 selectedYear={selectedYear}
                 isExpanded={isMobileSidebarExpanded}
                 on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-              />
+              >
+                <!-- Add search component to mobile therapeutic area sidebar -->
+                {#if isMobileSidebarExpanded}
+                  <div class="mb-4 px-4 pt-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
+                {/if}
+              </MobileTherapeuticAreaSidebar>
             {/if}
           </div>
 
@@ -789,7 +819,18 @@
                 on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
                 on:transactionHover={(event) => highlightedTransaction = event.detail}
                 on:transactionLeave={() => highlightedTransaction = null}
-              />
+              >
+                <!-- Add search component to mobile transaction sidebar -->
+                {#if isMobileSidebarExpanded}
+                  <div class="mb-4 px-4 pt-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
+                {/if}
+              </MobileTransactionSidebar>
             {/if}
           </div>
           

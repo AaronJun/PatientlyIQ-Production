@@ -75,6 +75,9 @@
   <!-- Content area -->
   <div class="content p-4 overflow-y-auto" style="max-height: calc(70vh - 3.5rem)">
     <div class="space-y-4">
+      <!-- Slot for additional content like search -->
+      <slot></slot>
+      
       <div class="mb-4">
         {#if currentView === 'Company View' && currentCompanyMetrics}
           <!-- Display company metrics -->

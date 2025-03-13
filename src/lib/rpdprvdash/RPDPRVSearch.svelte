@@ -2,7 +2,7 @@
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
     import { Search, Building, Medication } from 'carbon-icons-svelte';
-    import { clickOutside } from '../click-outside';
+    import { onMount } from 'svelte';
 
     export let data: any[] = [];
     export let onShowDrugDetail: (detail: any) => void;
@@ -18,6 +18,23 @@
         companies: [],
         drugs: []
     };
+    
+    let searchContainer: HTMLElement;
+
+    onMount(() => {
+        // Add click outside handler
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchContainer && !searchContainer.contains(event.target as Node)) {
+                isOpen = false;
+            }
+        };
+        
+        document.addEventListener('click', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    });
 
     $: if (searchTerm.length > 0) {
         isOpen = true;
@@ -57,10 +74,6 @@
         searchResults = { companies: [], drugs: [] };
     }
 
-    function handleClickOutside() {
-        isOpen = false;
-    }
-
     function handleCompanyClick(company: string) {
         const companyEntries = data.filter(d => d.Company === company);
         onShowCompanyDetail({
@@ -97,7 +110,7 @@
     }
 </script>
 
-<div class="relative w-full max-w-lg" use:clickOutside on:click_outside={handleClickOutside}>
+<div class="relative w-full max-w-lg" bind:this={searchContainer}>
     <div class="relative">
         <Search size={20} class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
         <input

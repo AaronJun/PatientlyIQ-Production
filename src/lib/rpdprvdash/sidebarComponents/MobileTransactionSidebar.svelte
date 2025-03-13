@@ -45,23 +45,28 @@
   
   <!-- Content area -->
   <div class="content p-4 overflow-y-auto" style="max-height: calc(70vh - 3.5rem)">
-    <div class="flex flex-col gap-4">
-      <div class="bg-white rounded-lg shadow-sm p-4 mt-2 h-[35vh]">
-        <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
-        <VoucherBeeswarmPlot 
-          data={data}
-          {highlightedTransaction}
-          selectedYear={selectedYear}
-          onPointClick={onPointClick}
-          on:transactionHover={handleTransactionHover}
-          on:transactionLeave={handleTransactionLeave}
-        />
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-4">
-        <RPDTransactionSummaryView 
-          data={data}
-          year={selectedYear}
-        />
+    <div class="space-y-4">
+      <!-- Slot for additional content like search -->
+      <slot></slot>
+      
+      <div class="flex flex-col gap-4">
+        <div class="bg-white rounded-lg shadow-sm p-4 mt-2 h-[35vh]">
+          <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+          <VoucherBeeswarmPlot 
+            data={data}
+            {highlightedTransaction}
+            selectedYear={selectedYear}
+            onPointClick={onPointClick}
+            on:transactionHover={handleTransactionHover}
+            on:transactionLeave={handleTransactionLeave}
+          />
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-4">
+          <RPDTransactionSummaryView 
+            data={data}
+            year={selectedYear}
+          />
+        </div>
       </div>
     </div>
   </div>

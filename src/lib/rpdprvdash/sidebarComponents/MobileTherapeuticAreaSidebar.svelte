@@ -79,28 +79,33 @@
   </div>
   
   <!-- Content area -->
-  <div class="content p-4 overflow-y-auto" style="max-height: calc({isTablet ? '80vh' : '70vh'} - 3.5rem)">
+  <div class="content p-4 overflow-y-auto" style="max-height: calc(70vh - 3.5rem)">
     <div class="space-y-4">
-      {#if currentEntries.length > 0 && currentArea && areaMetrics}
-        <!-- Display area metrics -->
-        <AreaMetricsList 
-          metrics={{
-            areaName: currentArea,
-            totalDrugs: areaMetrics.totalDrugs,
-            uniqueCompanies: areaMetrics.uniqueCompanies,
-            uniqueCandidates: areaMetrics.uniqueCandidates
-          }}
-          color={getTherapeuticAreaStroke(currentArea)}
-        />
-      {:else if fullYearData.length > 0}
-        <!-- Display year summary when no specific selection is made -->
-        <RPDSummaryView data={fullYearData} year={selectedYear} />
-      {:else if currentEntries.length === 0}
-        <div class="text-center py-8 text-slate-500">
-          <p>Select a therapeutic area to view drugs</p>
-          <p class="text-xs mt-2">Tap on sections in the chart</p>
-        </div>
-      {/if}
+      <!-- Slot for additional content like search -->
+      <slot></slot>
+      
+      <div class="mb-4">
+        {#if currentEntries.length > 0 && currentArea && areaMetrics}
+          <!-- Display area metrics -->
+          <AreaMetricsList 
+            metrics={{
+              areaName: currentArea,
+              totalDrugs: areaMetrics.totalDrugs,
+              uniqueCompanies: areaMetrics.uniqueCompanies,
+              uniqueCandidates: areaMetrics.uniqueCandidates
+            }}
+            color={getTherapeuticAreaStroke(currentArea)}
+          />
+        {:else if fullYearData.length > 0}
+          <!-- Display year summary when no specific selection is made -->
+          <RPDSummaryView data={fullYearData} year={selectedYear} />
+        {:else if currentEntries.length === 0}
+          <div class="text-center py-8 text-slate-500">
+            <p>Select a therapeutic area to view drugs</p>
+            <p class="text-xs mt-2">Tap on sections in the chart</p>
+          </div>
+        {/if}
+      </div>
       
       <!-- Entries list -->
       <div class="space-y-3">
