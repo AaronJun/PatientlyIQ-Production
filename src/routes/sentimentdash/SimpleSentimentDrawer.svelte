@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
-    import { circInOut } from 'svelte/easing';
+    import { circInOut, cubicOut } from 'svelte/easing';
     import insightData from '$lib/data/diseaseInsights.json';
     import TopTopicsChart from './TopTopicsChart.svelte';
     import TopNegativeTopicsChart from './TopNegativeTopicsChart.svelte';

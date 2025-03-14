@@ -30,7 +30,13 @@ export default defineConfig({
 		mainFields: ['svelte', 'browser', 'module', 'main']
 	  },
 	  optimizeDeps: {
-		include: ['@xyflow/svelte']
+		include: [
+			'@xyflow/svelte',
+			'zwitch',
+			'hast-util-to-html',
+			'property-information',
+			'unist-util-is'
+		]
 	  }
 	// optimizeDeps:{
 	// 	disabled: 'dev',
