@@ -133,7 +133,11 @@
   $: filteredData = selectedYear === "All" 
     ? rpddData // Use all data when "All" is selected
     : rpddData.filter(entry => {
-        // If entry has PRV Status = "PRV Awarded" and a PRV Year, only show it in the PRV Year
+        // For transacted PRVs, show in the Purchase Year
+        if (entry["Purchase Year"] && entry["PRV Status"] === "PRV Awarded") {
+          return entry["Purchase Year"] === selectedYear;
+        }
+        // For non-transacted PRVs, show in the PRV Year
         if (entry["PRV Status"] === "PRV Awarded" && entry["PRV Year"] && entry["PRV Year"].trim() !== "") {
           return entry["PRV Year"] === selectedYear;
         }
@@ -460,27 +464,11 @@
 <div class="flex flex-col min-h-screen">
   <!-- Main content area with proper spacing -->
   <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
-        style="margin-left: {isSidebarCollapsed ? '4rem' : '16rem'};">
-        <div class="w-full transition-all duration-300"
-         style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
-      {#if activeTab === 'By Transactions'}
-        <PRVPurchaseTimeline 
-          data={rpddData}
-          selectedYear={selectedTransactionYear}
-          onYearSelect={handleTransactionYearSelect}
-          transactionYearSelected={handleTransactionYearSelect}
-        />
-      {:else}
-        <RPDPRVHorizontalTimeline 
-          data={rpddData}
-          selectedYear={selectedYear}
-          onYearSelect={handleYearSelect}
-        />
-      {/if}
-    </div>
+        style="margin-left: {isSidebarCollapsed ? '4rem' : '2rem'};">
+
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full px-8' : 'w-full px-4'} relative">
+      <div class="{activeTab === 'Program Overview' ? 'w-full' : 'w-full'} relative">
         <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
   
           <VerticalSidebar 
@@ -494,9 +482,16 @@
           
         </div>
         {#if activeTab === 'By Sponsor'}
-          <div class="flex flex-row flex-grow relative">
-            <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-2rem)] relative">
+        <div class="flex flex-row flex-grow relative">
+          <div class="w-full h-[calc(100vh-2rem)] relative">
+            <div class="w-fit transition-all duration-300"
+            style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+            <RPDPRVHorizontalTimeline 
+              data={rpddData}
+              selectedYear={selectedYear}
+              onYearSelect={handleYearSelect}
+            />
+         </div>
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
@@ -510,6 +505,8 @@
                     {mainGroup}
                     {showTooltip}
                     {hideTooltip}
+                    selectedYear={selectedYear}
+                    allYearsData={selectedYear === "All" ? rpddData : undefined}
                   />
                 {:else}
                   <!-- Loading spinner -->
@@ -539,7 +536,7 @@
        
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-              <div class="absolute right-0 top-25 max-h-[1024px] {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
                 
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -598,7 +595,7 @@
             {/if}
             
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
-            {#if isMobileView || isTabletView}
+            {#if isMobileView}
               <MobileSponsorSidebar
                 {currentView}
                 {currentEntries}
@@ -628,7 +625,15 @@
         {:else if activeTab === 'By Therapeutic Area'}
           <div class="flex flex-row relative">
             <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-2rem)] relative">
+            <div class="w-full h-[calc(100vh-10rem)] relative">
+              <div class="w-fit transition-all duration-300"
+              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+              <RPDPRVHorizontalTimeline 
+                data={rpddData}
+                selectedYear={selectedYear}
+                onYearSelect={handleYearSelect}
+              />
+           </div>
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
@@ -643,6 +648,8 @@
                     {mainGroup}
                     {showTooltip}
                     {hideTooltip}
+                    selectedYear={selectedYear}
+                    allYearsData={selectedYear === "All" ? rpddData : undefined}
                   />
                 {:else}
                   <!-- Loading state with spinner -->
@@ -756,98 +763,115 @@
 
         <!-- By Transactions Tab Layout -->
         {:else if activeTab === 'By Transactions'}
-          <!-- Updated Transactions Tab Layout -->
-          <div class="flex flex-row relative">
-            <div class="w-{isMobileView || isTabletView ? 'full' : (isRightSidebarCollapsed ? '11/12' : '4/5')} {isMobileView || isTabletView ? '' : 'pl-32'} transition-all duration-300">
-              <SellerBuyerChord 
+          <div class="flex flex-col h-[calc(100vh-4rem)] relative">
+            <!-- Timeline section -->
+            <div class="w-fit transition-all duration-300 mb-4"
+              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+              <PRVPurchaseTimeline 
                 data={rpddData}
-                stockData={rpdCompanyValues}
                 selectedYear={selectedTransactionYear}
-                {highlightedTransaction}
-                onShowDrugDetail={handleShowDrugDetail}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
+                onYearSelect={handleTransactionYearSelect}
+                transactionYearSelected={handleTransactionYearSelect}
               />
             </div>
-            
-            <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
-            {#if !isMobileView && !isTabletView}
-              <div class="relative {isRightSidebarCollapsed ? 'w-1/12' : 'w-1/4'} transition-all duration-300 pr-8 pl-12">
-                <button
-                  class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={toggleRightSidebar}
-                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                >
-                  <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-                <div class="sticky top-32 {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300">
-                  <div class="sidebar-header mb-4">
-                    <h4 class="text-xs uppercase font-semibold text-slate-600">                              
-                      {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
-                    </h4>
-                  </div>
 
-                  <!-- Show transaction summary when no transaction is selected -->
-                  <div class="flex flex-col gap-4">
-                    <div class="bg-white rounded-lg shadow-sm p-4 mt-4 h-[35vh]">
-                      <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
-                      <VoucherBeeswarmPlot 
-                        data={rpddData}
-                        {highlightedTransaction}
-                        selectedYear={selectedTransactionYear}
-                        onPointClick={handleShowDrugDetail}
-                        on:transactionHover={(event) => highlightedTransaction = event.detail}
-                        on:transactionLeave={() => highlightedTransaction = null}
+            <!-- Main content area -->
+            <div class="flex flex-1 relative">
+              <!-- Chord diagram section -->
+              <div class="flex-1 relative {!isMobileView && !isTabletView ? 'pr-[25%]' : ''} transition-all duration-300 ease-in-out" >
+                <SellerBuyerChord 
+                  data={rpddData}
+                  stockData={rpdCompanyValues}
+                  selectedYear={selectedTransactionYear}
+                  {highlightedTransaction}
+                  onShowDrugDetail={handleShowDrugDetail}
+                  on:transactionHover={(event) => highlightedTransaction = event.detail}
+                  on:transactionLeave={() => highlightedTransaction = null}
+                style="width: {isRightSidebarCollapsed ? 'calc(100% - 4rem)' : 'calc(100% - 25%)'}"
+                />
+              </div>
+              
+              <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
+              {#if !isMobileView && !isTabletView}
+                <div class="absolute right-0 top-0 h-full {isRightSidebarCollapsed ? 'w-16' : 'w-1/4'} transition-all duration-300">
+                  <button
+                    class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                    on:click={toggleRightSidebar}
+                    title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  >
+                    <svg
+                      class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
                       />
+                    </svg>
+                  </button>
+
+                  <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                    <div class="sidebar-header mb-4">
+                      <h4 class="text-xs uppercase font-semibold text-slate-600">                              
+                        {highlightedTransaction ? 'Transaction Details' : 'Transaction Overview'}
+                      </h4>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-4">
-                      <RPDTransactionSummaryView 
-                        data={rpddData}
-                        year={selectedTransactionYear}
-                      />
+
+                    <!-- Transaction content -->
+                    <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
+                      <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+                        <div class="h-[35vh]">
+                          <VoucherBeeswarmPlot 
+                            data={rpddData}
+                            {highlightedTransaction}
+                            selectedYear={selectedTransactionYear}
+                            onPointClick={handleShowDrugDetail}
+                            on:transactionHover={(event) => highlightedTransaction = event.detail}
+                            on:transactionLeave={() => highlightedTransaction = null}
+                          />
+                        </div>
+                      </div>
+                      <div class="bg-white rounded-lg shadow-sm p-4">
+                        <RPDTransactionSummaryView 
+                          data={rpddData}
+                          year={selectedTransactionYear}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            {/if}
-            
-            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
-            {#if isMobileView || isTabletView}
-              <MobileTransactionSidebar
-                data={rpddData}
-                selectedYear={selectedTransactionYear}
-                {highlightedTransaction}
-                onPointClick={handleShowDrugDetail}
-                isExpanded={isMobileSidebarExpanded}
-                on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-                on:transactionHover={(event) => highlightedTransaction = event.detail}
-                on:transactionLeave={() => highlightedTransaction = null}
-              >
-                <!-- Add search component to mobile transaction sidebar -->
-                {#if isMobileSidebarExpanded}
-                  <div class="mb-4 px-4 pt-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-                {/if}
-              </MobileTransactionSidebar>
-            {/if}
+              {/if}
+              
+              <!-- Mobile/Tablet bottom sidebar -->
+              {#if isMobileView || isTabletView}
+                <MobileTransactionSidebar
+                  data={rpddData}
+                  selectedYear={selectedTransactionYear}
+                  {highlightedTransaction}
+                  onPointClick={handleShowDrugDetail}
+                  isExpanded={isMobileSidebarExpanded}
+                  on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
+                  on:transactionHover={(event) => highlightedTransaction = event.detail}
+                  on:transactionLeave={() => highlightedTransaction = null}
+                >
+                  {#if isMobileSidebarExpanded}
+                    <div class="mb-4 px-4 pt-4">
+                      <RpdprvSearch
+                        data={rpddData}
+                        onShowDrugDetail={handleShowDrugDetail}
+                        onShowCompanyDetail={handleShowCompanyDetail}
+                      />
+                    </div>
+                  {/if}
+                </MobileTransactionSidebar>
+              {/if}
+            </div>
           </div>
           
         <!-- Program Overview (Analytics) Tab Layout -->

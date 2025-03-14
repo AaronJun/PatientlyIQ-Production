@@ -52,16 +52,7 @@
     role="navigation"
     aria-label="Main navigation sidebar"
   >
-  <div class="header-container flex items-center gap-2 px-2 pt-12">
-      <Network_4 size={24} class="text-orange-100" />
-      {#if !isCollapsed || isHovered}
-          <h1 class="text-slate-300 text-sm font-medium"
-              in:fade|local={{ duration: 200 }}
-              out:fade|local={{ duration: 50 }}>
-            RPD Constellation
-          </h1>
-      {/if}
-  </div>
+  
 
     <!-- Navigation items -->
     <nav class="flex flex-col gap-1 pt-20">
@@ -74,7 +65,7 @@
           class:text-emerald-400={activeTab === tab.id}
           class:hover:bg-emerald-300={activeTab !== tab.id}
           class:text-slate-300={activeTab !== tab.id}
-          class:hover:text-white={activeTab !== tab.id}
+          class:hover:text-slate-800={activeTab !== tab.id}
           on:click={() => handleTabSelect(tab.id)}
           title={isCollapsed && !isHovered ? tab.tooltip : ''}
         >

@@ -95,7 +95,7 @@ import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icon
 {#if isOpen}
 <div class="drawer-backdrop" on:click={handleCloseClick} transition:fade={{ duration: 300, easing: cubicOut }}>
   <div 
-    class="drawer {isMobile ? 'w-[94.275vw]' : 'w-65vw max-w-920px'}"
+    class="drawer {isMobile ? 'w-[94.275vw]' : 'w-65vw'}"
     on:click|stopPropagation={() => {}}
     transition:fly={{ x: 400, duration: 400, opacity: 1, easing: cubicOut }}
   >

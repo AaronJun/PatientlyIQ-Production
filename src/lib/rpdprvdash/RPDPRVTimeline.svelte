@@ -32,7 +32,7 @@
         isTablet = window.innerWidth >= 768 && window.innerWidth < 1200;
         
         if (isMobile || isTablet) {
-            margin = { top: 6, right: 12, bottom: 30, left: 12 };
+            margin = { top: 2, right: 2, bottom: 4, left: 2 };
         } else {
             margin = { top: 8, right: 8, bottom: 10, left: 10 };
         }
@@ -202,8 +202,7 @@
         // Create scale based on orientation - now horizontal
         const mainScale = d3.scalePoint()
             .domain(yearData.map(d => d.year))
-            .range([margin.left, innerWidth - 60]) // Leave space at right for "All Years"
-            .padding(0.5);
+            .padding(0.2);
 
         const radiusScale = d3.scaleSqrt()
             .domain([0, d3.max(yearData, d => d.count) || 0])
@@ -318,7 +317,7 @@
             .attr("stroke", isTransactionView ? "#565656" : "#37587e")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
-            .style("opacity", d => isYearRestricted(d.year) ? 0.5 : 1)
+            .style("opacity", d => isYearRestricted(d.year) ? 0.35 : 1)
             .on("click", (event, d) => {
                 handleYearClick(d);
             })
@@ -381,14 +380,14 @@
         yearGroups.append("text")
             .attr("class", "year-label")
             .attr("x", 0)
-            .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0) + 10)
+            .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0))
             .attr("text-anchor", "end")
             .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
             .style("dominant-baseline", "top")
             .style("font-family", "'IBM Plex Mono', monospace")
             .text(d => d.year);
-            
+        
         // Create "All Years" circle at the right
         const allYearsGroup = g.append("g")
             .attr("class", "all-years-group")
@@ -398,7 +397,7 @@
         // Create highlight circle for "All Years"
         allYearsGroup.append("circle")
             .attr("class", "highlight-circle")
-            .attr("r", 25)
+            .attr("r", 20)
             .attr("fill", "none")
             .attr("stroke", "#4fd1c5")
             .attr("stroke-width", 5)
@@ -513,6 +512,7 @@
                     .transition()
                     .duration(300)
                     .attr("stroke-width", isSelected ? 3 : 1.5)
+                    .attr("r", 1)
                     .style("filter", isSelected ? "url(#glow)" : "none")
                     .style("opacity", isRestricted ? 0.5 : 1);
 
@@ -560,97 +560,8 @@
     }
 </script>
 
-{#if isMobile || isTablet}
-    <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container mx-24 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
-        <button 
-            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none"
-            on:click={toggleDropdown}
-        >
-            <div class="flex items-center gap-2">
-                {#if selectedYear === "All"}
-                    <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
-                    <span>All Years</span>
-                {:else if selectedYear && yearData.length > 0}
-                    {#each yearData.filter(entry => entry.year === selectedYear) as yearEntry}
-                        <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year] || 'gray'}"></div>
-                        <span>{yearEntry.year}</span>
-                    {/each}
-                {:else}
-                    <div class="w-5 h-5 rounded-full"></div>
-                    <span>Select Year</span>
-                {/if}
-            </div>
-            <ChevronDown 
-                size={16} 
-                class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
-            />
-        </button>
-
-        {#if isDropdownOpen}
-            <div 
-                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
-                bind:this={dropdownRef}
-                style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
-            >
-                <div class="py-1">
-                    <!-- All Years option -->
-                    <button 
-                        class="flex items-center gap-2 text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
-                        on:click={() => handleYearSelect('All')}
-                    >
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <defs>
-                                <linearGradient id="dropdown-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#667EEA" />
-                                    <stop offset="25%" stop-color="#764BA2" />
-                                    <stop offset="50%" stop-color="#FF6B6B" />
-                                    <stop offset="75%" stop-color="#38B2AC" />
-                                    <stop offset="100%" stop-color="#68D391" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-all-years)" stroke="#37587e" stroke-width="1" />
-                        </svg>
-                        All Years
-                    </button>
-                    
-                    <!-- Year options -->
-                    {#each yearData as yearEntry}
-                        <button 
-                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-100 font-medium' : ''}"
-                            on:click={() => handleYearSelect(yearEntry.year)}
-                        >
-                            <svg width="20" height="20" viewBox="0 0 20 20">
-                                <defs>
-                                    <linearGradient id="dropdown-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        {#each yearEntry.areas as area, i}
-                                            {#if i === 0}
-                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            {/if}
-                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                        {/each}
-                                    </linearGradient>
-                                </defs>
-                                <circle 
-                                    cx="10" 
-                                    cy="10" 
-                                    r="{Math.max(4, Math.min(8, yearEntry.count / 5))}" 
-                                    fill="url(#dropdown-{yearEntry.year})" 
-                                    stroke="#37587e" 
-                                    stroke-width="1" 
-                                />
-                            </svg>
-                            {yearEntry.year}
-                        </button>
-                    {/each}
-                </div>
-            </div>
-        {/if}
-    </div>
-{:else}
     <!-- Timeline for desktop - now using CSS Grid -->
-    <div class="timeline-container backdrop-blur-sm" bind:this={container}>
+    <div class="backdrop-blur-sm" bind:this={container}>
         <!-- SVG definitions for gradients -->
         <svg width="0" height="0" aria-hidden="true">
             <defs>
@@ -788,7 +699,6 @@
             </div>
         </div>
     </div>
-{/if}
 
 <!-- Restricted Year Modal -->
 <Dialog.Root bind:open={showRestrictedModal}>
@@ -815,45 +725,41 @@
 </Dialog.Root>
 
 <style>
-    .dropdown-container {
-        z-index: 9999;
-    }
 
     .timeline-container {
-        width: 90%;
+        width: 100%;
         position: relative;
         overflow: hidden;
+        height: 45px; /* Default compact height */
+        transition: height 0.3s ease;
+    }
+
+    .timeline-container:hover {
+        height: 100px; /* Expanded height on hover */
     }
 
     .timeline-grid {
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: 1fr;
-        padding: 2rem;
         align-items: center;
         position: relative;
+        transition: all 0.3s ease;
     }
 
-    .timeline-grid::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 2rem;
-        right: 2rem;
-        height: 1px;
-        background: #666666;
-        border-top: 1px dashed #666666;
-        transform: translateY(-50%);
-        z-index: 0;
-    }
 
     .year-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
         position: relative;
         z-index: 1;
+        transform-origin: center center;
+        transition: transform 0.3s ease;
+    }
+
+    .timeline-container:hover .year-item {
+        transform: scale(1.1);
     }
 
     .circle-container {
@@ -866,6 +772,11 @@
         background: transparent;
         border: none;
         padding: 0;
+        transform: scale(0.825); /* Default smaller scale */
+    }
+
+    .timeline-container:hover .circle-container {
+        transform: scale(1); /* Return to normal scale on hover */
     }
 
     .highlight-circle {
@@ -898,11 +809,20 @@
         font-size: 9.75px;
         color: #718096;
         transition: all 0.3s ease;
+        opacity: 0; /* Start with opacity 0 */
+        transform: translateY(-4px);
+        pointer-events: none; /* Prevent labels from interfering with interactions */
+    }
+
+    .timeline-container:hover .year-label {
+        opacity: 1; /* Show labels on container hover */
+        transform: translateY(-4px) scale(1);
     }
 
     .year-label.selected {
         color: #FF1515;
         font-weight: 600;
+        opacity: 1; /* Always full opacity for selected */
     }
 
     .restricted .main-circle-svg circle {
@@ -914,12 +834,11 @@
     }
 
     .all-years {
-        margin-left: auto;
+        margin-left: 1.25rem;
     }
 
     @media (max-width: 768px) {
         .timeline-grid {
-            padding: 1rem;
             gap: 0.5rem;
         }
 
@@ -929,6 +848,19 @@
         
         .timeline-container {
             padding: 0.5rem 1rem;
+            height: auto; /* Don't compress on mobile */
+        }
+
+        .timeline-container:hover {
+            height: auto; /* Don't expand on mobile */
+        }
+
+        .circle-container {
+            transform: scale(1); /* Don't scale down on mobile */
+        }
+
+        .timeline-container:hover .year-item {
+            transform: none; /* No hover scaling on mobile */
         }
     }
 </style>

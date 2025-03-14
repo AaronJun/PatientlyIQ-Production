@@ -2,7 +2,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import * as d3 from 'd3';
-
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
 
@@ -41,7 +40,7 @@
   let selectedCompany = "";
 
   const width = 920;
-  const height = 920;
+  const height = width;
   const labelConfig = {
     radius: Math.min(width, height) * .420,
     padding: 12,
@@ -609,7 +608,7 @@
   });
 </script>
 
-<div class="chord-container relative">
+<div class="chord-container bg-slate-50 relative">
   <div class="flex justify-end items-center">
     {#if selectedYear}
     <div class="text-xs font-medium text-slate-800 flex items-left">
@@ -619,7 +618,7 @@
     {/if}
   </div>
 
-  <div class="bg-slate-50">
+  <div>
     <svg
       bind:this={svg}
       {width}
