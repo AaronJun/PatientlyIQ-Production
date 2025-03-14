@@ -1,0 +1,5 @@
+{
+  "installCommand": "npm install --no-save zwitch && npm ci",
+  "buildCommand": "npm run build",
+  "framework": "sveltekit"
+} 

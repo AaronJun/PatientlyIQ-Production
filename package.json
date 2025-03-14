@@ -80,5 +80,9 @@
 		"tailwind-variants": "^0.2.1",
 		"unist-util-is": "6.0.0",
 		"zwitch": "2.0.4"
+	},
+	"resolutions": {
+		"zwitch": "2.0.4",
+		"hast-util-to-html": "8.0.4"
 	}
 }
