@@ -13,12 +13,12 @@
 
     // Stage colors
     const stageColors = {
-        'PRE': '#E2E8F0',
-        'P1': '#CBD5E0',
-        'P2': '#A0AEC0',
-        'P3': '#718096',
+        'PRE': '#565656',
+        'P1': '#464646',
+        'P2': '#363636',
+        'P3': '#262626',
         'FILED': '#4A5568',
-        'PRV': '#2D3748',
+        'PRV': '#4e044e',
         'TRANS': '#1A202C' // Darker color for transacted vouchers
     };
 
@@ -45,7 +45,7 @@
                 .attr("stroke", stageColors[stage as keyof typeof stageColors] || "#E2E8F0")
                 .attr("stroke-width", isAllYearView ? 0.5 : 1)
                 .attr("stroke-opacity", 0.7)
-                .attr("stroke-dasharray", isAllYearView ? "1,1" : "none");
+                .attr("stroke-dasharray", isAllYearView ? "1,5" : "2,5");
             
             // Add stage label regardless of view mode, but with adjusted styling
             const labelAngle = stageLabelConfig.angle;
@@ -77,7 +77,7 @@
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.35em")
                 .attr("fill", stageColors[stage as keyof typeof stageColors] || "#718096")
-                .attr("font-size", isAllYearView ? "6.25px" : "10px")
+                .attr("font-size", isAllYearView ? "8.25px" : "10px")
                 .attr("font-weight", isAllYearView ? "400" : "normal")
                 .text(getStageDisplayName(stage));
             
@@ -107,9 +107,9 @@
                 .attr("stroke", stageColors['PRV'])
                 .attr("stroke-width", isAllYearView ? 0.75 : 1.5)
                 .attr("stroke-opacity", 0.9)
-                .attr("stroke-dasharray", isAllYearView ? "2,1" : "none");
+                .attr("stroke-dasharray", isAllYearView ? "1,3" : "1.25, 4");
                 
-            // Add PRV label if not in all year view
+            // Add PRV label if not in all year view    
             if (!isAllYearView) {
                 addSpecialStageLabel(stageGroup, 'PRV', prvRadius, stageLabelConfig.angle);
             }
@@ -124,6 +124,7 @@
                 .attr("fill", "none")
                 .attr("stroke", stageColors['TRANS'])
                 .attr("stroke-width", isAllYearView ? 0.75 : 1.5)
+                .attr("stroke-dasharray", isAllYearView ? "2,1" : "1.25, 4")
                 .attr("stroke-opacity", 0.9);
                 
             // Add TRANS label if not in all year view

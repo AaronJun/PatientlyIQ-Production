@@ -9,6 +9,7 @@
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
     export let selectedYear: string | null = null;
+    export let isTransactionView: boolean = false;
     
     let svg: SVGElement | null = null;
     let container: HTMLDivElement;

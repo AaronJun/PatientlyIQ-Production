@@ -164,7 +164,7 @@ export function getStageDisplayName(stageCode: string): string {
 export function getStageRadii(radius: number) {
     // Define the main stage circles
     const stageRadii = {
-        'PRE': radius * 0.955,
+        'PRE': radius * 0.9725,
         'P1': radius * 0.845,
         'P2': radius * 0.7125,
         'P3': radius * 0.5725,
@@ -197,7 +197,7 @@ export function formatCompanyName(companyName: string): string {
     const phrasesToRemove = [
         'Life Sciences', 'Life Science', 'Pharmaceuticals', 'Biotechnology',
         'Therapeutics', 'Sciences', 'Biometrics', 'Partners', 'Science', 'Biologics', 'Gene Therapies',
-        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences',  'Bioscience', 'Biotechnologies'
+        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences', 'BioTherapeutics',  'Bioscience', 'Biotechnologies', 'Biopharmaceuticals', 'Precision Medicines'
     ];
     
     let formattedName = companyName;
@@ -451,7 +451,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         labelFontWeight: isAllYearView ? "400" : "400",
         companyNodeWidth: isAllYearView ? 4.25 : 7.725,
         companyNodeHeight: isAllYearView ? 4.25 : 7.725,
-        drugNodeRadius: isAllYearView ? 2.7125 : 6.125,
+        drugNodeRadius: isAllYearView ? 4.7125 : 6.125,
         drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,

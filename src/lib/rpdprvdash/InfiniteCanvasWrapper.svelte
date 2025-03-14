@@ -253,7 +253,8 @@
   }
 </script>
 
-<div class="infinite-canvas-container" bind:this={container}>
+<div class="infinite-canvas-container" bind:this={container}>  
+  
   <svg
     bind:this={svg}
     {width}
@@ -303,6 +304,17 @@
     overflow: hidden;
     background-color: #fafafa;
     position: relative;
+  }
+
+  .timeline-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: linear-gradient(180deg, rgba(250, 250, 250, 0.95) 0%, rgba(250, 250, 250, 0.95) 85%, rgba(250, 250, 250, 0) 100%);
+    padding: 1rem 2rem;
+    pointer-events: auto;
   }
 
   svg {
