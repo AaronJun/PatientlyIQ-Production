@@ -43,7 +43,7 @@
         labelGroup = parentGroup.append("g")
             .attr("transform", `translate(${labelX},${labelY})`)
             .attr("cursor", "pointer")
-            .attr("class", "company-label")
+            .attr("class", `company-label${isCloserPosition ? " closer-position" : ""}`)
             .attr("id", `company-label-${companyId}`)
             .attr("tabindex", "0") // Make label focusable for keyboard accessibility
             .attr("role", "button")
@@ -149,7 +149,9 @@
                 .transition()
                 .duration(200)
                 .attr("font-weight", "800")
-                .attr("font-size", "10.25px")
+                .attr("font-size", isCloserPosition ? 
+                    (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px" : 
+                    (parseFloat(sizeConfig.companyLabelFontSize) * 1.2) + "px")
                 .attr("fill", "#2B6CB0") // Highlight color
                 .attr("opacity", 1); // Ensure full opacity for the focused label
             
@@ -190,7 +192,9 @@
                 .transition()
                 .duration(200)
                 .attr("font-weight", "800")
-                .attr("font-size", "10.25px")
+                .attr("font-size", isCloserPosition ? 
+                    (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px" : 
+                    (parseFloat(sizeConfig.companyLabelFontSize) * 1.2) + "px")
                 .attr("fill", "#2B6CB0") // Highlight color
                 .attr("opacity", 1); // Ensure full opacity for the hovered label
             

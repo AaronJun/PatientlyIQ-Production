@@ -487,14 +487,20 @@
         activeStage = null;
         
         // Reset all visual elements
-        // Reset all company label text styles
-        d3.selectAll(".company-label text")
-            .transition()
-            .duration(sizeConfig.useAnimations ? 500 : 0)
-            .attr("fill", "#4A5568")
-            .attr("font-size", sizeConfig.companyLabelFontSize)
-            .attr("font-weight", sizeConfig.labelFontWeight);
-
+        // Reset all company label text styles, respecting their positioning
+        d3.selectAll(".company-label").each(function() {
+            const group = d3.select(this);
+            const text = group.select("text");
+            const isCloserPosition = group.classed("closer-position");
+            
+            text.transition()
+                .duration(sizeConfig.useAnimations ? 500 : 0)
+                .attr("fill", "#4A5568")
+                .attr("font-size", isCloserPosition ? 
+                    sizeConfig.companyLabelFontSize : 
+                    (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px")
+                .attr("font-weight", sizeConfig.labelFontWeight);
+        });
         
         // Highlight active company if selected
         if (company) {
@@ -502,30 +508,39 @@
             const companyId = company.replace(/[\/\(\)\[\]\{\}\+\-\*\.\,\;\:\s]+/g, '-').toLowerCase();
             
             // Highlight company text label - first try with exact ID
-            const companyLabel = d3.select(`#company-label-${companyId} text`);
+            const companyLabelGroup = d3.select(`#company-label-${companyId}`);
             
-            if (!companyLabel.empty()) {
-                companyLabel
-                    .transition()
+            if (!companyLabelGroup.empty()) {
+                const text = companyLabelGroup.select("text");
+                const isCloserPosition = companyLabelGroup.classed("closer-position");
+                
+                text.transition()
                     .duration(sizeConfig.useAnimations ? 100 : 0)
                     .attr("fill", "#2B6CB0")
-                    .attr("font-size", sizeConfig.companyLabelFontSize)
+                    .attr("font-size", isCloserPosition ? 
+                        (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px" : 
+                        (parseFloat(sizeConfig.companyLabelFontSize) * 1.2) + "px")
                     .attr("font-weight", "800");
             } else {
                 // If not found by ID, try to find by text content
                 console.warn(`Company label not found by ID: ${companyId}, trying by text content`);
-                const allCompanyLabels = d3.selectAll(".company-label text");
+                const allCompanyLabels = d3.selectAll(".company-label");
                 let found = false;
                 
                 allCompanyLabels.each(function() {
-                    const label = d3.select(this);
-                    const text = label.text();
-                    if (text.toLowerCase().includes(company.toLowerCase())) {
-                        label
-                            .transition()
+                    const group = d3.select(this);
+                    const text = group.select("text");
+                    const textContent = text.text();
+                    
+                    if (textContent.toLowerCase().includes(company.toLowerCase())) {
+                        const isCloserPosition = group.classed("closer-position");
+                        
+                        text.transition()
                             .duration(sizeConfig.useAnimations ? 500 : 0)
                             .attr("fill", "#2B6CB0")
-                            .attr("font-size", sizeConfig.companyLabelFontSize)
+                            .attr("font-size", isCloserPosition ? 
+                                (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px" : 
+                                (parseFloat(sizeConfig.companyLabelFontSize) * 1.2) + "px")
                             .attr("font-weight", "800");
                         found = true;
                     }
@@ -540,13 +555,16 @@
                         
                         // Check if the ID contains the company name
                         if (id && id.toLowerCase().includes(companyId)) {
-                            const label = group.select("text");
-                            if (!label.empty()) {
-                                label
-                                    .transition()
+                            const text = group.select("text");
+                            const isCloserPosition = group.classed("closer-position");
+                            
+                            if (!text.empty()) {
+                                text.transition()
                                     .duration(sizeConfig.useAnimations ? 500 : 0)
                                     .attr("fill", "#2B6CB0")
-                                    .attr("font-size", sizeConfig.companyLabelFontSize)
+                                    .attr("font-size", isCloserPosition ? 
+                                        (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px" : 
+                                        (parseFloat(sizeConfig.companyLabelFontSize) * 1.2) + "px")
                                     .attr("font-weight", "800");
                             }
                         }

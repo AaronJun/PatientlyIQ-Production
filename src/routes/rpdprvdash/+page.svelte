@@ -679,8 +679,9 @@
             </div>
 
             <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->
-            {#if !isMobileView && !isTabletView}
-              <div class="absolute right-0 top-16 max-h-[1024px] {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+            {#if !isMobileView}
+            <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
+
                 <button
                   class="rounded-btn absolute -left-3 top-32 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                   on:click={toggleRightSidebar}
@@ -799,7 +800,7 @@
               </div>
               
               <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
-              {#if !isMobileView && !isTabletView}
+              {#if !isMobileView}
                 <div class="absolute right-0 top-0 h-full {isRightSidebarCollapsed ? 'w-16' : 'w-1/4'} transition-all duration-300">
                   <button
                     class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
