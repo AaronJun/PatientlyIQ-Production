@@ -18,6 +18,7 @@
     export let parentGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
     export let focusableElements: any[];
     export let companyRef: any;
+    export let setActiveCompany: (company: string, entries: any[]) => void = () => {};
 
     // Local state
     let drugGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -115,6 +116,9 @@
             // Highlight the connection line for this drug
             highlightDrugConnections(drugId);
             
+            // Highlight the company label text
+            highlightCompanyLabel();
+            
             // Show tooltip on focus
             showTooltip(event, drug);
         });
@@ -165,6 +169,9 @@
                 // Highlight the connection line for this drug
                 highlightDrugConnections(drugId);
                 
+                // Highlight the company label text
+                highlightCompanyLabel();
+                
                 // Show tooltip on hover
                 showTooltip(event, drug);
             })
@@ -207,6 +214,31 @@
             });
             
         return drugGroup;
+    }
+    
+    /**
+     * Highlights the company label text when a drug is hovered or focused
+     */
+    function highlightCompanyLabel() {
+        if (companyName) {
+            // Get the company ID for the selector
+            const companyId = companyName.replace(/\s+/g, '-').toLowerCase();
+            
+            // Highlight company text label
+            d3.select(`#company-label-${companyId} text`)
+                .transition()
+                .duration(sizeConfig.useAnimations ? 500 : 0)
+                .attr("fill", "#2B6CB0")
+                .attr("font-size", "10.25px")
+                .attr("font-weight", "800");
+            
+            // Call setActiveCompany to update sidebar if needed
+            if (companyRef && companyRef.element) {
+                // Use the company's entries if available
+                const entries = companyRef.entries || [];
+                setActiveCompany(companyName, entries);
+            }
+        }
     }
     
     /**

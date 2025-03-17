@@ -447,31 +447,31 @@ export function processDataForLayout(data: any[]) {
 export function getSizeConfig(isAllYearView: boolean) {
     return {
         // When all years view is active, use smaller sizes
-        labelFontSize: isAllYearView ? "6.425px" : "7.725px",
+        labelFontSize: isAllYearView ? "2.425px" : "7.725px",
         labelFontWeight: isAllYearView ? "400" : "400",
         companyNodeWidth: isAllYearView ? 4.25 : 7.725,
         companyNodeHeight: isAllYearView ? 4.25 : 7.725,
-        drugNodeRadius: isAllYearView ? 4.7125 : 6.125,
+        drugNodeRadius: isAllYearView ? 2.7125 : 6.125,
         drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,
         dotSpacing: isAllYearView ? 0 : 0,
-        connectionStrokeWidth: isAllYearView ? 0.25 : 0.7625,
+        connectionStrokeWidth: isAllYearView ? 0.125 : 0.7625,
         connectionOpacity: isAllYearView ? 0.4025 : 0.325,
         highlightedNodeRadius: isAllYearView ? 8 : 10.25, 
         highlightedNodePosition: isAllYearView ? 1.25 : 1.25,
         // Optimization settings
         useShadowEffects: !isAllYearView, // Disable shadow effects in all year view
         useAnimations: !isAllYearView, // Disable animations in all year view
-        transitionDuration: isAllYearView ? 0 : 200, // No transitions in all year view
+        transitionDuration: isAllYearView ? 0 : 0, // No transitions in all year view
         renderPRVIndicators: !isAllYearView, // Only render PRV indicators in regular view
         simplifiedConnections: isAllYearView, // Use simplified connections in all year view
         // New performance optimizations
-        maxCompaniesForAllYears: 100, // Maximum number of companies to show in all years view
-        maxDrugsPerCompany: 5, // Maximum number of drugs to show per company in all years view
+        maxCompaniesForAllYears: 350, // Maximum number of companies to show in all years view
+        maxDrugsPerCompany: 10, // Maximum number of drugs to show per company in all years view
         useProgressiveLoading: isAllYearView, // Use progressive loading for all years view
         batchSize: 20, // Number of companies to render in each batch
-        batchDelay: 10, // Delay between batches in ms
+        batchDelay: 100, // Delay between batches in ms
         useSimplifiedDrugNodes: isAllYearView, // Use simplified drug nodes in all years view
         skipNonEssentialEffects: isAllYearView, // Skip non-essential visual effects
     };

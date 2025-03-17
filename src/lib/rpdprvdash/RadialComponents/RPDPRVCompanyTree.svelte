@@ -476,7 +476,8 @@
                         resetConnectionHighlights: connectionLinesComponent.resetConnectionHighlights,
                         parentGroup: companyGroup,
                         focusableElements,
-                        companyRef
+                        companyRef,
+                        setActiveCompany
                     }
                 });
                 drugNodeComponent.createDrugNode();

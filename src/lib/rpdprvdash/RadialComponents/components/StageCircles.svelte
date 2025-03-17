@@ -103,7 +103,7 @@
         d3.selectAll(".stage-circle")
             .transition()
             .duration(isAllYearView ? 0 : 300)
-            .attr("stroke-width", isAllYearView ? 0.5 : .8725)
+            .attr("stroke-width", isAllYearView ? 0.5 : .8)
             .attr("stroke-opacity", 0.7)
             .attr("stroke-dasharray", isAllYearView ? "1,5" : "2,5");
         
