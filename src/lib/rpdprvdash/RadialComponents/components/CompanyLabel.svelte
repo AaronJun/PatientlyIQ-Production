@@ -33,8 +33,8 @@
     export function createCompanyLabel() {
         if (!parentGroup) return;
         
-        // Create sanitized ID for the company
-        const companyId = company.company.replace(/\s+/g, '-').toLowerCase();
+        // Create sanitized ID for the company - handle special characters
+        const companyId = company.company.replace(/[\/\(\)\[\]\{\}\+\-\*\.\,\;\:\s]+/g, '-').toLowerCase();
         
         // Get company status color
         const statusColor = getCompanyStatusColor(company.status);

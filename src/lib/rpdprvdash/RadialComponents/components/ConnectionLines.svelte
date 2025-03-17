@@ -89,16 +89,25 @@
             allLabels.attr("opacity", 0.3);
         }
         
-        // Apply low opacity to all drug nodes
+        // Apply reduced opacity to all drug nodes while respecting their initial opacity
         const allDrugNodes = d3.selectAll(".drug-node circle");
         
-        if (sizeConfig.useAnimations) {
-            allDrugNodes.transition()
-                .duration(sizeConfig.transitionDuration)
-                .attr("opacity", 0.3);
-        } else {
-            allDrugNodes.attr("opacity", 0.3);
-        }
+        // Process each node individually to respect its initial opacity
+        allDrugNodes.each(function() {
+            const node = d3.select(this);
+            // Get the initial opacity from the data attribute, default to 1
+            const initialOpacity = parseFloat(node.attr("data-initial-opacity") || "1");
+            // Reduce opacity to 40% of its original value, but not less than 0.2
+            const reducedOpacity = Math.max(initialOpacity * 0.4, 0.2);
+            
+            if (sizeConfig.useAnimations) {
+                node.transition()
+                    .duration(sizeConfig.transitionDuration)
+                    .attr("opacity", reducedOpacity);
+            } else {
+                node.attr("opacity", reducedOpacity);
+            }
+        });
         
         // If we have an active company, restore its elements
         if (activeCompany) {
@@ -128,13 +137,19 @@
             // Restore drug nodes for this company
             const companyDrugNodes = d3.selectAll(`.drug-node[id*="${activeCompany.toLowerCase().replace(/\s+/g, '-')}"] circle`);
             
-            if (sizeConfig.useAnimations) {
-                companyDrugNodes.transition()
-                    .duration(sizeConfig.transitionDuration)
-                    .attr("opacity", 1);
-            } else {
-                companyDrugNodes.attr("opacity", 1);
-            }
+            companyDrugNodes.each(function() {
+                const node = d3.select(this);
+                // Get the initial opacity from the data attribute, default to 1
+                const initialOpacity = parseFloat(node.attr("data-initial-opacity") || "1");
+                
+                if (sizeConfig.useAnimations) {
+                    node.transition()
+                        .duration(sizeConfig.transitionDuration)
+                        .attr("opacity", initialOpacity);
+                } else {
+                    node.attr("opacity", initialOpacity);
+                }
+            });
         }
         
         // If we have an active drug, restore its elements
@@ -152,15 +167,15 @@
                     drugPath.attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
                 }
                 
-                // Restore drug node opacity
+                // Restore drug node opacity to full (1.0) when it's the active drug
                 const drugNode = d3.select(`#${activeDrug} circle`);
                 
                 if (sizeConfig.useAnimations) {
                     drugNode.transition()
                         .duration(sizeConfig.transitionDuration)
-                        .attr("opacity", 1);
+                        .attr("opacity", 1); // Always full opacity for the active drug
                 } else {
-                    drugNode.attr("opacity", 1);
+                    drugNode.attr("opacity", 1); // Always full opacity for the active drug
                 }
                 
                 // Get the company name to restore its elements too
@@ -249,6 +264,23 @@
             // Get the company name to highlight the main connection if needed
             const companyName = drugPath.attr("data-company");
             if (companyName) {
+                // Always highlight the company label
+                const companyId = companyName.replace(/\s+/g, '-').toLowerCase();
+                const companyLabel = d3.select(`#company-label-${companyId} text`);
+                
+                if (!companyLabel.empty()) {
+                    // Apply immediate style changes for reliability
+                    companyLabel
+                        .attr("fill", "#2B6CB0")
+                        .attr("font-size", "10.25px")
+                        .attr("font-weight", "800");
+                    
+                    // Then apply transition if animations are enabled
+                    if (sizeConfig.useAnimations) {
+                        companyLabel.transition().duration(500);
+                    }
+                }
+                
                 // Find all drug paths for this company to determine if we need to highlight the main connection
                 const drugPaths = d3.selectAll(`path.drug-path[data-company="${companyName}"]`);
                 if (drugPaths.size() > 1) {
@@ -320,16 +352,23 @@
                 .attr("font-weight", sizeConfig.labelFontWeight);
         }
         
-        // Reset all drug nodes
+        // Reset all drug nodes to their initial opacity
         const allDrugNodes = d3.selectAll(".drug-node circle");
         
-        if (sizeConfig.useAnimations) {
-            allDrugNodes.transition()
-                .duration(sizeConfig.transitionDuration)
-                .attr("opacity", 1);
-        } else {
-            allDrugNodes.attr("opacity", 1);
-        }
+        // Process each node individually to respect its initial opacity
+        allDrugNodes.each(function() {
+            const node = d3.select(this);
+            // Get the initial opacity from the data attribute, default to 1
+            const initialOpacity = parseFloat(node.attr("data-initial-opacity") || "1");
+            
+            if (sizeConfig.useAnimations) {
+                node.transition()
+                    .duration(sizeConfig.transitionDuration)
+                    .attr("opacity", initialOpacity);
+            } else {
+                node.attr("opacity", initialOpacity);
+            }
+        });
     }
 </script>
 

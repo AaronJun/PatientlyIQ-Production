@@ -448,8 +448,8 @@
                 const drugX = stageRadius * Math.cos(drugAngle - Math.PI/2);
                 const drugY = stageRadius * Math.sin(drugAngle - Math.PI/2);
 
-                // Create unique ID for drug
-                const drugId = `${company.company}-${drug.Candidate}-${i}`.replace(/\s+/g, '-').toLowerCase();
+                // Create unique ID for drug - handle special characters
+                const drugId = `${company.company}-${drug.Candidate}-${i}`.replace(/[\/\(\)\[\]\{\}\+\-\*\.\,\;\:\s]+/g, '-').toLowerCase();
 
                 // Add connecting line - either from bracket point (if multiple drugs) or directly from label (if single drug)
                 const startX = drugs.length > 1 ? bracketX : labelX;
@@ -527,15 +527,61 @@
         
         // Highlight active company if selected
         if (company) {
-            const companyId = company.replace(/\s+/g, '-').toLowerCase();
+            // Sanitize company name for ID selector - handle special characters
+            const companyId = company.replace(/[\/\(\)\[\]\{\}\+\-\*\.\,\;\:\s]+/g, '-').toLowerCase();
             
-            // Highlight company text label
-            d3.select(`#company-label-${companyId} text`)
-                .transition()
-                .duration(sizeConfig.useAnimations ? 500 : 0)
-                .attr("fill", "#2B6CB0")
-                .attr("font-size", "10.25px")
-                .attr("font-weight", "800");
+            // Highlight company text label - first try with exact ID
+            const companyLabel = d3.select(`#company-label-${companyId} text`);
+            
+            if (!companyLabel.empty()) {
+                companyLabel
+                    .transition()
+                    .duration(sizeConfig.useAnimations ? 500 : 0)
+                    .attr("fill", "#2B6CB0")
+                    .attr("font-size", "10.25px")
+                    .attr("font-weight", "800");
+            } else {
+                // If not found by ID, try to find by text content
+                console.warn(`Company label not found by ID: ${companyId}, trying by text content`);
+                const allCompanyLabels = d3.selectAll(".company-label text");
+                let found = false;
+                
+                allCompanyLabels.each(function() {
+                    const label = d3.select(this);
+                    const text = label.text();
+                    if (text.toLowerCase().includes(company.toLowerCase())) {
+                        label
+                            .transition()
+                            .duration(sizeConfig.useAnimations ? 500 : 0)
+                            .attr("fill", "#2B6CB0")
+                            .attr("font-size", "10.25px")
+                            .attr("font-weight", "800");
+                        found = true;
+                    }
+                });
+                
+                // If still not found, try with the parent company label group
+                if (!found) {
+                    const allCompanyLabelGroups = d3.selectAll(".company-label");
+                    allCompanyLabelGroups.each(function() {
+                        const group = d3.select(this);
+                        const id = group.attr("id");
+                        
+                        // Check if the ID contains the company name
+                        if (id && id.toLowerCase().includes(companyId)) {
+                            const label = group.select("text");
+                            if (!label.empty()) {
+                                label
+                                    .transition()
+                                    .duration(sizeConfig.useAnimations ? 500 : 0)
+                                    .attr("fill", "#2B6CB0")
+                                    .attr("font-size", "10.25px")
+                                    .attr("font-weight", "800");
+                            }
+                        }
+                    });
+                }
+            }
             
             // Get company data to pass to callback
             const companyData = processDataForLayout(data).find(c => c.company === company);

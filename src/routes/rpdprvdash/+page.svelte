@@ -536,64 +536,64 @@
        
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-                
-                <button
-                  class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={toggleRightSidebar}
-                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                >
-                  <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+            <div class="absolute right-6 top-25 mt-8 w-96 z-50 transition-all duration-300">
+              <RpdprvSearch
+                data={rpddData}
+                onShowDrugDetail={handleShowDrugDetail}
+                onShowCompanyDetail={handleShowCompanyDetail}
+              />
+            </div>
           
-                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
-                  <!-- Search component in desktop sidebar -->
-                  <div class="mb-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-                  
-                  <!-- Scrollable content area -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    <!-- Use the updated sidebar component -->
-                    <SponsorSidebar
-                      {currentView}
-                      {currentEntries}
-                      {currentCompanyMetrics}
-                      colorMap={colorMap}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      fullYearData={filteredData}
-                      selectedYear={selectedYear}
-                    />
-                  </div>
-
-                  <!-- Legend stays at bottom -->
-                  <div class="flex-none mt-6 pt-4 border-t border-slate-200">
-                    <RPDRadialLegend 
-                      items={processedData}
-                      {colorScale}
-                    />
-                  </div>
+            <!-- Sidebar content with toggle -->
+            <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
+              <button
+                class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                on:click={toggleRightSidebar}
+                title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <svg
+                  class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              
+              <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <!-- Remove search from here since it's now always visible -->
+                
+                <!-- Scrollable content area -->
+                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                  <!-- Use the updated sidebar component -->
+                  <SponsorSidebar
+                    {currentView}
+                    {currentEntries}
+                    {currentCompanyMetrics}
+                    colorMap={colorMap}
+                    onShowDrugDetail={handleShowDrugDetail}
+                    fullYearData={filteredData}
+                    selectedYear={selectedYear}
+                  />
+                </div>
+          
+                <!-- Legend stays at bottom -->
+                <div class="flex-none mt-6 pt-4 border-t border-slate-200">
+                  <RPDRadialLegend 
+                    items={processedData}
+                    {colorScale}
+                  />
                 </div>
               </div>
-            {/if}
-            
+            </div>
+          {/if}
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
             {#if isMobileView}
               <MobileSponsorSidebar

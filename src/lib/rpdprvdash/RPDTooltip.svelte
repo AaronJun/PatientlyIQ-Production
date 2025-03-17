@@ -59,7 +59,7 @@
       pointer-events: none;
       font-family: 'IBM Plex Sans', sans-serif;
       transform: translate(0, 0);
-      animation: fade-in 0.2s ease-out;
+      animation: 0.1s ease-out;
   }
 
   .tooltip-header {
@@ -71,8 +71,6 @@
 
   .tooltip-title {
       margin: 0;
-      font-size: 13px;
-      font-weight: 600;
       color: #2d3748;
   }
 

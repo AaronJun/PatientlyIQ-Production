@@ -74,7 +74,9 @@
             .attr("fill", fillColor)
             .attr("stroke", finalStrokeColor)
             .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-            .attr("opacity", opacity);
+            .attr("opacity", opacity)
+            // Store the initial opacity as a data attribute for later reference
+            .attr("data-initial-opacity", opacity);
             
         // Add keyboard event handler for accessibility
         drugGroup.on("keydown", function(event: KeyboardEvent) {
@@ -99,24 +101,25 @@
             // Highlight the drug node
             const circle = drugGroup.select("circle");
             
-            // Use transitions only if animations are enabled
+            // Always set full opacity on focus for all nodes
             if (sizeConfig.useAnimations) {
                 circle.transition()
                     .duration(sizeConfig.transitionDuration)
                     .attr("r", sizeConfig.highlightedNodeRadius)
-                    .attr("opacity", 1); // Ensure full opacity for the focused drug
-                
-
+                    .attr("opacity", 1); // Full opacity for all focused drugs
             } else {
                 // Immediate update without transition
                 circle.attr("r", sizeConfig.highlightedNodeRadius)
-                    .attr("opacity", 1); // Ensure full opacity for the focused drug
+                    .attr("opacity", 1); // Full opacity for all focused drugs
             }
+            
+            // Log for debugging
+            console.log(`Focusing drug: ${drug.Candidate} from company: ${companyName}`);
             
             // Highlight the connection line for this drug
             highlightDrugConnections(drugId);
             
-            // Highlight the company label text
+            // Highlight the company label text - do this first to ensure it happens
             highlightCompanyLabel();
             
             // Show tooltip on focus
@@ -127,19 +130,24 @@
             // Reset drug node appearance
             const circle = drugGroup.select("circle");
             
+            // Get the initial opacity from the data attribute
+            const initialOpacity = circle.attr("data-initial-opacity") || "1";
+            
             // Use transitions only if animations are enabled
             if (sizeConfig.useAnimations) {
                 circle.transition()
                     .duration(sizeConfig.transitionDuration)
                     .attr("r", sizeConfig.drugNodeRadius)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", strokeColor);
+                    .attr("stroke", strokeColor)
+                    .attr("opacity", initialOpacity); // Restore original opacity
                 
             } else {
                 // Immediate update without transition
                 circle.attr("r", sizeConfig.drugNodeRadius)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", strokeColor);
+                    .attr("stroke", strokeColor)
+                    .attr("opacity", initialOpacity); // Restore original opacity
             }
             
             // Reset connection highlights
@@ -154,22 +162,25 @@
                 // Highlight the drug node
                 const circle = drugGroup.select("circle");
                 
-                // Use transitions only if animations are enabled
+                // Always set full opacity on hover for all nodes
                 if (sizeConfig.useAnimations) {
                     circle.transition()
                         .duration(sizeConfig.transitionDuration)
                         .attr("r", sizeConfig.highlightedNodeRadius)
-                        .attr("opacity", 1); // Ensure full opacity for the hovered drug
+                        .attr("opacity", 1); // Full opacity for all hovered drugs
                 } else {
                     // Immediate update without transition
                     circle.attr("r", sizeConfig.highlightedNodeRadius)
-                        .attr("opacity", 1); // Ensure full opacity for the hovered drug
+                        .attr("opacity", 1); // Full opacity for all hovered drugs
                 }
                 
                 // Highlight the connection line for this drug
                 highlightDrugConnections(drugId);
                 
-                // Highlight the company label text
+                // Log for debugging
+                console.log(`Hovering drug: ${drug.Candidate} from company: ${companyName}`);
+                
+                // Highlight the company label text - do this first to ensure it happens
                 highlightCompanyLabel();
                 
                 // Show tooltip on hover
@@ -183,19 +194,24 @@
                 // Reset drug node appearance
                 const circle = drugGroup.select("circle");
                 
+                // Get the initial opacity from the data attribute
+                const initialOpacity = circle.attr("data-initial-opacity") || "1";
+                
                 // Use transitions only if animations are enabled
                 if (sizeConfig.useAnimations) {
                     circle.transition()
                         .duration(sizeConfig.transitionDuration)
                         .attr("r", sizeConfig.drugNodeRadius)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                        .attr("stroke", strokeColor);
+                        .attr("stroke", strokeColor)
+                        .attr("opacity", initialOpacity); // Restore original opacity
                     
                 } else {
                     // Immediate update without transition
                     circle.attr("r", sizeConfig.drugNodeRadius)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                        .attr("stroke", strokeColor);
+                        .attr("stroke", strokeColor)
+                        .attr("opacity", initialOpacity); // Restore original opacity
                 }
                 
                 // Reset connection highlights
@@ -221,22 +237,78 @@
      */
     function highlightCompanyLabel() {
         if (companyName) {
-            // Get the company ID for the selector
-            const companyId = companyName.replace(/\s+/g, '-').toLowerCase();
+            // Get the company ID for the selector - handle special characters
+            const companyId = companyName.replace(/[\/\(\)\[\]\{\}\+\-\*\.\,\;\:\s]+/g, '-').toLowerCase();
             
-            // Highlight company text label
-            d3.select(`#company-label-${companyId} text`)
-                .transition()
-                .duration(sizeConfig.useAnimations ? 500 : 0)
-                .attr("fill", "#2B6CB0")
-                .attr("font-size", "10.25px")
-                .attr("font-weight", "800");
+            // Check if the company label exists
+            const companyLabel = d3.select(`#company-label-${companyId} text`);
             
-            // Call setActiveCompany to update sidebar if needed
-            if (companyRef && companyRef.element) {
-                // Use the company's entries if available
-                const entries = companyRef.entries || [];
-                setActiveCompany(companyName, entries);
+            if (!companyLabel.empty()) {
+                // Highlight company text label - use immediate update for reliability
+                companyLabel
+                    .attr("fill", "#2B6CB0")
+                    .attr("font-size", "10.25px")
+                    .attr("font-weight", "800");
+                
+                // Then apply transition if animations are enabled
+                if (sizeConfig.useAnimations) {
+                    companyLabel
+                        .transition()
+                        .duration(500);
+                }
+                
+                // Call setActiveCompany to update sidebar if needed
+                if (companyRef && companyRef.element) {
+                    // Use the company's entries if available
+                    const entries = companyRef.entries || [];
+                    setActiveCompany(companyName, entries);
+                } else {
+                    // If companyRef is missing, still try to update the sidebar
+                    // with minimal information
+                    setActiveCompany(companyName, [drug]);
+                }
+            } else {
+                console.warn(`Company label not found for: ${companyName} (ID: ${companyId})`);
+                // Try a more direct approach to find and highlight the company label
+                const allCompanyLabels = d3.selectAll(".company-label text");
+                let found = false;
+                
+                allCompanyLabels.each(function() {
+                    const label = d3.select(this);
+                    const text = label.text();
+                    // Check if the label text contains the company name (case insensitive)
+                    if (text.toLowerCase().includes(companyName.toLowerCase())) {
+                        label.attr("fill", "#2B6CB0")
+                            .attr("font-size", "10.25px")
+                            .attr("font-weight", "800");
+                        
+                        // Call setActiveCompany with the drug data
+                        setActiveCompany(companyName, [drug]);
+                        found = true;
+                    }
+                });
+                
+                // If still not found, try with the parent company label group
+                if (!found) {
+                    const allCompanyLabelGroups = d3.selectAll(".company-label");
+                    allCompanyLabelGroups.each(function() {
+                        const group = d3.select(this);
+                        const id = group.attr("id");
+                        
+                        // Check if the ID contains the company name
+                        if (id && id.toLowerCase().includes(companyId)) {
+                            const label = group.select("text");
+                            if (!label.empty()) {
+                                label.attr("fill", "#2B6CB0")
+                                    .attr("font-size", "10.25px")
+                                    .attr("font-weight", "800");
+                                
+                                // Call setActiveCompany with the drug data
+                                setActiveCompany(companyName, [drug]);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -287,17 +359,26 @@
         const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
         
         const circle = drugGroup.select("circle");
+        const initialOpacity = circle.attr("data-initial-opacity") || (isTerminatedOrLiquidated ? "0.7" : "1");
         
         if (isHighlighted) {
-            // Use transitions only if animations are enabled
+            // Always use full opacity when highlighted
             if (sizeConfig.useAnimations) {
                 circle.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.highlightedNodeRadius);
+                    .attr("r", sizeConfig.highlightedNodeRadius)
+                    .attr("opacity", 1); // Always full opacity when highlighted
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.highlightedNodeRadius);
+                circle.attr("r", sizeConfig.highlightedNodeRadius)
+                    .attr("opacity", 1); // Always full opacity when highlighted
             }
+            
+            // Also highlight the company label
+            highlightCompanyLabel();
+            
+            // Highlight the connection line for this drug
+            highlightDrugConnections(drugId);
         } else {
             // Use transitions only if animations are enabled
             if (sizeConfig.useAnimations) {
@@ -305,13 +386,18 @@
                     .duration(sizeConfig.transitionDuration)
                     .attr("r", sizeConfig.drugNodeRadius)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", finalStrokeColor);
+                    .attr("stroke", finalStrokeColor)
+                    .attr("opacity", initialOpacity); // Restore original opacity
             } else {
                 // Immediate update without transition
                 circle.attr("r", sizeConfig.drugNodeRadius)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", finalStrokeColor);
+                    .attr("stroke", finalStrokeColor)
+                    .attr("opacity", initialOpacity); // Restore original opacity
             }
+            
+            // Reset connection highlights
+            resetConnectionHighlights();
         }
     }
 </script>
