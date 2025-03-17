@@ -536,7 +536,7 @@
        
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-16' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
                 
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -779,6 +779,7 @@
             <div class="flex flex-1 relative">
               <!-- Chord diagram section -->
               <div class="flex-1 relative {!isMobileView && !isTabletView ? 'pr-[25%]' : ''} transition-all duration-300 ease-in-out" >
+                
                 <SellerBuyerChord 
                   data={rpddData}
                   stockData={rpdCompanyValues}

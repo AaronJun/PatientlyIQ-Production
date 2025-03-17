@@ -64,10 +64,143 @@
     }
     
     /**
+     * Desaturates all elements except those related to the specified company or drug
+     */
+    function desaturateOtherElements(activeCompany: string | null = null, activeDrug: string | null = null) {
+        // Apply low opacity to all connections
+        const allConnections = d3.selectAll("path.main-connection, path.drug-path");
+        
+        if (sizeConfig.useAnimations) {
+            allConnections.transition()
+                .duration(sizeConfig.transitionDuration)
+                .attr("stroke-opacity", 0.15);
+        } else {
+            allConnections.attr("stroke-opacity", 0.15);
+        }
+        
+        // Apply low opacity to all company labels
+        const allLabels = d3.selectAll(".company-label text");
+        
+        if (sizeConfig.useAnimations) {
+            allLabels.transition()
+                .duration(sizeConfig.transitionDuration)
+                .attr("opacity", 0.3);
+        } else {
+            allLabels.attr("opacity", 0.3);
+        }
+        
+        // Apply low opacity to all drug nodes
+        const allDrugNodes = d3.selectAll(".drug-node circle");
+        
+        if (sizeConfig.useAnimations) {
+            allDrugNodes.transition()
+                .duration(sizeConfig.transitionDuration)
+                .attr("opacity", 0.3);
+        } else {
+            allDrugNodes.attr("opacity", 0.3);
+        }
+        
+        // If we have an active company, restore its elements
+        if (activeCompany) {
+            // Restore company connections
+            const companyConnections = d3.selectAll(`path.main-connection[data-company="${activeCompany}"], path.drug-path[data-company="${activeCompany}"]`);
+            
+            if (sizeConfig.useAnimations) {
+                companyConnections.transition()
+                    .duration(sizeConfig.transitionDuration)
+                    .attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+            } else {
+                companyConnections.attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+            }
+            
+            // Restore company label
+            const companyId = activeCompany.replace(/\s+/g, '-').toLowerCase();
+            const companyLabel = d3.select(`#company-label-${companyId} text`);
+            
+            if (sizeConfig.useAnimations) {
+                companyLabel.transition()
+                    .duration(sizeConfig.transitionDuration)
+                    .attr("opacity", 1);
+            } else {
+                companyLabel.attr("opacity", 1);
+            }
+            
+            // Restore drug nodes for this company
+            const companyDrugNodes = d3.selectAll(`.drug-node[id*="${activeCompany.toLowerCase().replace(/\s+/g, '-')}"] circle`);
+            
+            if (sizeConfig.useAnimations) {
+                companyDrugNodes.transition()
+                    .duration(sizeConfig.transitionDuration)
+                    .attr("opacity", 1);
+            } else {
+                companyDrugNodes.attr("opacity", 1);
+            }
+        }
+        
+        // If we have an active drug, restore its elements
+        if (activeDrug) {
+            // Get the drug path
+            const drugPath = d3.select(`path.drug-path[data-drug="${activeDrug}"]`);
+            
+            if (!drugPath.empty()) {
+                // Restore drug path opacity
+                if (sizeConfig.useAnimations) {
+                    drugPath.transition()
+                        .duration(sizeConfig.transitionDuration)
+                        .attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+                } else {
+                    drugPath.attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+                }
+                
+                // Restore drug node opacity
+                const drugNode = d3.select(`#${activeDrug} circle`);
+                
+                if (sizeConfig.useAnimations) {
+                    drugNode.transition()
+                        .duration(sizeConfig.transitionDuration)
+                        .attr("opacity", 1);
+                } else {
+                    drugNode.attr("opacity", 1);
+                }
+                
+                // Get the company name to restore its elements too
+                const companyName = drugPath.attr("data-company");
+                if (companyName) {
+                    // Restore company label
+                    const companyId = companyName.replace(/\s+/g, '-').toLowerCase();
+                    const companyLabel = d3.select(`#company-label-${companyId} text`);
+                    
+                    if (sizeConfig.useAnimations) {
+                        companyLabel.transition()
+                            .duration(sizeConfig.transitionDuration)
+                            .attr("opacity", 1);
+                    } else {
+                        companyLabel.attr("opacity", 1);
+                    }
+                    
+                    // If there are multiple drugs, also restore the main connection
+                    const mainConnection = d3.selectAll(`path.main-connection[data-company="${companyName}"]`);
+                    
+                    if (sizeConfig.useAnimations) {
+                        mainConnection.transition()
+                            .duration(sizeConfig.transitionDuration)
+                            .attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+                    } else {
+                        mainConnection.attr("stroke-opacity", sizeConfig.connectionOpacity * 1.2);
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
      * Highlights all connections for a company
      */
     export function highlightCompanyConnections(companyName: string) {
         resetConnectionHighlights();
+        
+        // Desaturate all other elements
+        desaturateOtherElements(companyName, null);
         
         // Get all connections for this company
         const connections = d3.selectAll(`path.main-connection[data-company="${companyName}"], path.drug-path[data-company="${companyName}"]`);
@@ -92,6 +225,9 @@
      */
     export function highlightDrugConnections(drugId: string) {
         resetConnectionHighlights();
+        
+        // Desaturate all other elements
+        desaturateOtherElements(null, drugId);
         
         // Get the drug path
         const drugPath = d3.select(`path.drug-path[data-drug="${drugId}"]`);
@@ -166,6 +302,33 @@
                 .attr("stroke", "#37587e")
                 .attr("stroke-width", sizeConfig.connectionStrokeWidth)
                 .attr("stroke-opacity", sizeConfig.connectionOpacity);
+        }
+        
+        // Reset all company labels
+        const allLabels = d3.selectAll(".company-label text");
+        
+        if (sizeConfig.useAnimations) {
+            allLabels.transition()
+                .duration(sizeConfig.transitionDuration)
+                .attr("opacity", 1)
+                .attr("fill", "#4A5568")
+                .attr("font-weight", sizeConfig.labelFontWeight);
+        } else {
+            allLabels
+                .attr("opacity", 1)
+                .attr("fill", "#4A5568")
+                .attr("font-weight", sizeConfig.labelFontWeight);
+        }
+        
+        // Reset all drug nodes
+        const allDrugNodes = d3.selectAll(".drug-node circle");
+        
+        if (sizeConfig.useAnimations) {
+            allDrugNodes.transition()
+                .duration(sizeConfig.transitionDuration)
+                .attr("opacity", 1);
+        } else {
+            allDrugNodes.attr("opacity", 1);
         }
     }
 </script>

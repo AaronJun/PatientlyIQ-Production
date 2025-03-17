@@ -608,7 +608,7 @@
   });
 </script>
 
-<div class="chord-container bg-slate-50 relative">
+<div class="chord-container relative">
   <div class="flex justify-end items-center">
     {#if selectedYear}
     <div class="text-xs font-medium text-slate-800 flex items-left">

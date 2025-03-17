@@ -1,14 +1,13 @@
 <script lang="ts">
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../../utils/colorDefinitions';
-    import { hasPRVAward, isPRVTerminatedOrLiquidated } from '../../utils/data-processing-utils';
 
     // Props
     export let drug: any;
     export let x: number;
     export let y: number;
     export let drugId: string;
-    export let companyName: string;
+    export let areaName: string;
     export let sizeConfig: any;
     export let showTooltip: (event: MouseEvent | FocusEvent, data: any) => void;
     export let hideTooltip: () => void;
@@ -17,7 +16,7 @@
     export let resetConnectionHighlights: () => void;
     export let parentGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
     export let focusableElements: any[];
-    export let companyRef: any;
+    export let areaRef: any;
 
     // Local state
     let drugGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -34,18 +33,18 @@
             .attr("cursor", "pointer")
             .attr("class", "drug-node")
             .attr("id", drugId)
-            .attr("tabindex", "-1") // Initially not focusable until company is selected
+            .attr("tabindex", "-1") // Initially not focusable until area is selected
             .attr("role", "button")
-            .attr("aria-label", `Drug ${drug.Candidate} for ${drug.Indication || 'unknown indication'}, stage: ${drug["Current Development Stage"] || 'unknown stage'}`);
+            .attr("aria-label", `Drug ${drug["Drug Name"]} for ${drug.name || 'unknown therapeutic area'}, type: ${drug["Treatment Type"] || 'unknown type'}`);
 
         // Ensure the SVG element can receive focus
         const drugElement = drugGroup.node();
-        if (drugElement && companyRef) {
+        if (drugElement && areaRef) {
             drugElement.setAttribute("focusable", "true");
             
-            // Store drug node reference in the company's drugNodes array
-            if (companyRef.drugNodes) {
-                companyRef.drugNodes.push({
+            // Store drug node reference in the area's drugNodes array
+            if (areaRef.drugNodes) {
+                areaRef.drugNodes.push({
                     element: drugElement,
                     drug: drug
                 });
@@ -53,28 +52,27 @@
         }
 
         // Get therapeutic area color
-        const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
+        const areaColors = getTherapeuticAreaColor(drug.name);
 
-        // Determine stroke color - use gold for transacted PRVs
-        const isTransacted = drug["Purchase Year"] && drug["Purchase Year"].trim() !== "";
-        const strokeColor = areaColors.stroke;
-        
-        // Check if PRV is terminated or liquidated
-        const isTerminatedOrLiquidated = isPRVTerminatedOrLiquidated(drug);
-        
-        // Use greyed out colors for terminated or liquidated PRVs
-        const fillColor = isTerminatedOrLiquidated ? "#CCCCCC" : areaColors.fill;
-        const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
-        const opacity = isTerminatedOrLiquidated ? 0.7 : 1;
+        // We're not using shadow effects to match companytree styling
+        const filterUrl = "";
 
+        // Determine stroke color - use gold for purchased vouchers
+        const isPurchased = drug.Purchased === "Y";
+        const strokeColor = isPurchased ? "#FFD700" : areaColors.stroke;
+        
         // Drug circle
         const circle = drugGroup.append("circle")
             .attr("r", sizeConfig.drugNodeRadius)
-            .attr("fill", fillColor)
-            .attr("stroke", finalStrokeColor)
-            .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-            .attr("opacity", opacity);
+            .attr("fill", areaColors.fill)
+            .attr("stroke", strokeColor)
+            .attr("stroke-width", sizeConfig.drugNodeStrokeWidth);
             
+        // Only apply filter if shadow effects are enabled
+        if (sizeConfig.useShadowEffects && filterUrl) {
+            circle.style("filter", filterUrl);
+        }
+
         // Add keyboard event handler for accessibility
         drugGroup.on("keydown", function(event: KeyboardEvent) {
             if (event.key === "Enter" || event.key === " ") {
@@ -82,13 +80,12 @@
                 event.stopPropagation();
                 
                 // Open the drawer with drug details on Enter/Space
-                console.log("Opening drug drawer via keyboard:", drug.Candidate);
                 showDrugDetail();
             } else if (event.key === "Escape") {
-                // Return focus to company label
+                // Return focus to area label
                 event.preventDefault();
-                if (companyRef && companyRef.element) {
-                    (companyRef.element as HTMLElement).focus();
+                if (areaRef && areaRef.element) {
+                    (areaRef.element as HTMLElement).focus();
                 }
             }
         });
@@ -102,14 +99,15 @@
             if (sizeConfig.useAnimations) {
                 circle.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.highlightedNodeRadius)
-                    .attr("opacity", 1); // Ensure full opacity for the focused drug
+                    .attr("r", sizeConfig.highlightedNodeRadius);
                 
-
+                // Apply filter only if shadow effects are enabled
+                if (sizeConfig.useShadowEffects && filterUrl) {
+                    circle.style("filter", filterUrl);
+                }
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.highlightedNodeRadius)
-                    .attr("opacity", 1); // Ensure full opacity for the focused drug
+                circle.attr("r", sizeConfig.highlightedNodeRadius);
             }
             
             // Highlight the connection line for this drug
@@ -130,7 +128,6 @@
                     .attr("r", sizeConfig.drugNodeRadius)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("stroke", strokeColor);
-                
             } else {
                 // Immediate update without transition
                 circle.attr("r", sizeConfig.drugNodeRadius)
@@ -154,12 +151,15 @@
                 if (sizeConfig.useAnimations) {
                     circle.transition()
                         .duration(sizeConfig.transitionDuration)
-                        .attr("r", sizeConfig.highlightedNodeRadius)
-                        .attr("opacity", 1); // Ensure full opacity for the hovered drug
+                        .attr("r", sizeConfig.highlightedNodeRadius);
+                    
+                    // Apply filter only if shadow effects are enabled
+                    if (sizeConfig.useShadowEffects && filterUrl) {
+                        circle.style("filter", filterUrl);
+                    }
                 } else {
                     // Immediate update without transition
-                    circle.attr("r", sizeConfig.highlightedNodeRadius)
-                        .attr("opacity", 1); // Ensure full opacity for the hovered drug
+                    circle.attr("r", sizeConfig.highlightedNodeRadius);
                 }
                 
                 // Highlight the connection line for this drug
@@ -183,7 +183,6 @@
                         .attr("r", sizeConfig.drugNodeRadius)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .attr("stroke", strokeColor);
-                    
                 } else {
                     // Immediate update without transition
                     circle.attr("r", sizeConfig.drugNodeRadius)
@@ -213,79 +212,10 @@
      * Shows the drug detail drawer
      */
     function showDrugDetail() {
-        const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
-        const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
-        
-        onShowDrugDetail({
-            drugName: drug.Candidate,
-            year: drug["Purchase Year"] || drug["PRV Year"] || drug["RPDD Year"],
-            Company: drug.Company,
-            therapeuticArea: drug.TherapeuticArea1,
-            entries: [], // This would need to be passed from parent
-            color: areaColors.fill,
-            strokeColor: strokeColor,
-            currentStage: drug["Current Development Stage"],
-            indication: drug.Indication || "",
-            rpddAwardDate: drug["RPDD Year"],
-            voucherAwardDate: drug["PRV Year"] || "",
-            prvStatus: drug["PRV Status"] || "",
-            transactionDate: drug["Purchase Year"] || "",
-            purchaser: drug["Purchaser"] || "",
-            salePrice: drug["Sale Price (USD Millions)"] || "",
-            treatmentClass: drug.Class1 || "TBD",
-            mechanismOfAction: drug.MOA || "TBD",
-            companyUrl: drug["Link to CrunchBase"] || ""
-        });
-    }
-    
-    /**
-     * Updates the drug node's appearance
-     */
-    export function updateDrugNode(isHighlighted: boolean) {
-        if (!drugGroup) return;
-        
-        const areaColors = getTherapeuticAreaColor(drug.TherapeuticArea1);
-        const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
-        
-        // Check if PRV is terminated or liquidated
-        const isTerminatedOrLiquidated = isPRVTerminatedOrLiquidated(drug);
-        
-        // Use greyed out colors for terminated or liquidated PRVs
-        const fillColor = isTerminatedOrLiquidated ? "#CCCCCC" : areaColors.fill;
-        const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
-        
-        const circle = drugGroup.select("circle");
-        
-        if (isHighlighted) {
-            // Use transitions only if animations are enabled
-            if (sizeConfig.useAnimations) {
-                circle.transition()
-                    .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.highlightedNodeRadius);
-            } else {
-                // Immediate update without transition
-                circle.attr("r", sizeConfig.highlightedNodeRadius);
-            }
-        } else {
-            // Use transitions only if animations are enabled
-            if (sizeConfig.useAnimations) {
-                circle.transition()
-                    .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.drugNodeRadius)
-                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", finalStrokeColor);
-            } else {
-                // Immediate update without transition
-                circle.attr("r", sizeConfig.drugNodeRadius)
-                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("stroke", finalStrokeColor);
-            }
-        }
+        onShowDrugDetail(drug);
     }
 </script>
 
 <style>
-    .drug-node {
-        cursor: pointer;
-    }
+    /* No specific styles needed for this component */
 </style> 

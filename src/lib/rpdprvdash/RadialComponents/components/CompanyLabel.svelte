@@ -150,7 +150,8 @@
                 .duration(200)
                 .attr("font-weight", "800")
                 .attr("font-size", "10.25px")
-                .attr("fill", "#2B6CB0"); // Highlight color
+                .attr("fill", "#2B6CB0") // Highlight color
+                .attr("opacity", 1); // Ensure full opacity for the focused label
             
             // Show tooltip near the focused label
             showTooltip(event, {
@@ -190,7 +191,8 @@
                 .duration(200)
                 .attr("font-weight", "800")
                 .attr("font-size", "10.25px")
-                .attr("fill", "#2B6CB0"); // Highlight color
+                .attr("fill", "#2B6CB0") // Highlight color
+                .attr("opacity", 1); // Ensure full opacity for the hovered label
             
             // Show tooltip on hover
             showTooltip(event, {
