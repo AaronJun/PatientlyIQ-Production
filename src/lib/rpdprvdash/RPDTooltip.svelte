@@ -52,14 +52,13 @@
       position: absolute;
       z-index: 1000;
       min-width: 180px;
-      max-width: 325px;
+      max-width: 425px;
       background-color: white;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       border-left: 4.245px solid;
       pointer-events: none;
       font-family: 'IBM Plex Sans', sans-serif;
       transform: translate(0, 0);
-      animation: 0.1s ease-out;
   }
 
   .tooltip-header {

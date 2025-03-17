@@ -461,16 +461,15 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col bg-slate-50 min-h-screen">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300" 
-        style="margin-left: {isSidebarCollapsed ? '4rem' : '2rem'};">
+  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300 min-h-[80vh]" 
+        style="margin-left: {isSidebarCollapsed ? '2rem' : '0'};">
 
-    <div class="tab-content w-full h-full flex relative">
+    <div class="tab-content w-full h-full min-h-[80vh] flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full' : 'w-full'} relative">
-        <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-  
+      <div class="{activeTab === 'Program Overview' ? 'w-full' : 'w-full'} relative min-h-[80vh]">
+        <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 z-50 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
           <VerticalSidebar 
             {activeTab} 
             isCollapsed={isSidebarCollapsed}
@@ -483,9 +482,8 @@
         </div>
         {#if activeTab === 'By Sponsor'}
         <div class="flex flex-row flex-grow relative">
-          <div class="w-full h-[calc(100vh-2rem)] relative">
-            <div class="w-fit transition-all duration-300"
-            style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+          <div class="w-full h-full items-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
+            <div class="timeline-container sticky justify-center place-items-center z-50 px-4 py-2 rounded-lg bg-white/80 transition-all duration-300">
             <RPDPRVHorizontalTimeline 
               data={rpddData}
               selectedYear={selectedYear}
@@ -536,64 +534,64 @@
        
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
-            <div class="absolute right-6 top-25 mt-8 w-96 z-50 transition-all duration-300">
-              <RpdprvSearch
-                data={rpddData}
-                onShowDrugDetail={handleShowDrugDetail}
-                onShowCompanyDetail={handleShowCompanyDetail}
-              />
-            </div>
-          
-            <!-- Sidebar content with toggle -->
-            <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-              <button
-                class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                on:click={toggleRightSidebar}
-                title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                <svg
-                  class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-              
-              <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
-                <!-- Remove search from here since it's now always visible -->
+              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
                 
-                <!-- Scrollable content area -->
-                <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                  <!-- Use the updated sidebar component -->
-                  <SponsorSidebar
-                    {currentView}
-                    {currentEntries}
-                    {currentCompanyMetrics}
-                    colorMap={colorMap}
-                    onShowDrugDetail={handleShowDrugDetail}
-                    fullYearData={filteredData}
-                    selectedYear={selectedYear}
-                  />
-                </div>
+                <button
+                  class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                  on:click={toggleRightSidebar}
+                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
+                  <svg
+                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
           
-                <!-- Legend stays at bottom -->
-                <div class="flex-none mt-6 pt-4 border-t border-slate-200">
-                  <RPDRadialLegend 
-                    items={processedData}
-                    {colorScale}
-                  />
+                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                  <!-- Search component in desktop sidebar -->
+                  <div class="mb-4">
+                    <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
+                  </div>
+                  
+                  <!-- Scrollable content area -->
+                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
+                    <!-- Use the updated sidebar component -->
+                    <SponsorSidebar
+                      {currentView}
+                      {currentEntries}
+                      {currentCompanyMetrics}
+                      colorMap={colorMap}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      fullYearData={filteredData}
+                      selectedYear={selectedYear}
+                    />
+                  </div>
+
+                  <!-- Legend stays at bottom -->
+                  <div class="flex-none mt-6 pt-4 border-t border-slate-200">
+                    <RPDRadialLegend 
+                      items={processedData}
+                      {colorScale}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
+            
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
             {#if isMobileView}
               <MobileSponsorSidebar
@@ -623,17 +621,15 @@
 
         <!-- By Therapeutic Area Tab Layout -->  
         {:else if activeTab === 'By Therapeutic Area'}
-          <div class="flex flex-row relative">
-            <!-- Main visualization area taking full width -->
-            <div class="w-full h-[calc(100vh-10rem)] relative">
-              <div class="w-fit transition-all duration-300"
-              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
-              <RPDPRVHorizontalTimeline 
-                data={rpddData}
-                selectedYear={selectedYear}
-                onYearSelect={handleYearSelect}
-              />
-           </div>
+        <div class="flex flex-row flex-grow relative">
+          <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
+            <div class="timeline-container sticky justify-center place-items-center z-50 px-4 py-2 rounded-lg bg-white/80 transition-all duration-300">
+            <RPDPRVHorizontalTimeline 
+              data={rpddData}
+              selectedYear={selectedYear}
+              onYearSelect={handleYearSelect}
+            />
+         </div>
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
@@ -779,7 +775,6 @@
             <div class="flex flex-1 relative">
               <!-- Chord diagram section -->
               <div class="flex-1 relative {!isMobileView && !isTabletView ? 'pr-[25%]' : ''} transition-all duration-300 ease-in-out" >
-                
                 <SellerBuyerChord 
                   data={rpddData}
                   stockData={rpdCompanyValues}
@@ -960,6 +955,10 @@
   background-color: #e0e0e0;
 }
 
+.timeline-container {
+  border: .5px solid #549E7D;
+}
+  
   .tab-button {
     border-bottom: 1px solid #e0e0e0;
     position: relative;
@@ -983,6 +982,31 @@
     width: 100%;
     height: 2px;
     background-color: #FF5501;
+  }
+  
+  /* Add responsive sizing for canvas containers */
+  @media (max-width: 768px) {
+    /* Mobile specific styles */
+    .infinite-canvas-container, :global(.infinite-canvas-container) {
+      min-height: 70vh !important;
+      height: 100vh !important;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1200px) {
+    /* Tablet specific styles */
+    .infinite-canvas-container, :global(.infinite-canvas-container) {
+      min-height: 75vh !important;
+      height: 100vh !important;
+    }
+  }
+  
+  @media (min-width: 1201px) {
+    /* Desktop specific styles */
+    .infinite-canvas-container, :global(.infinite-canvas-container) {
+      min-height: 80vh !important;
+      height: 100vh !important;
+    }
   }
   
   /* Keep your other existing styles */

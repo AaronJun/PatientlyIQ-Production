@@ -382,7 +382,7 @@
             .attr("class", "year-label")
             .attr("x", 0)
             .attr("y", radiusScale(d3.max(yearData, d => d.count) || 0))
-            .attr("text-anchor", "end")
+            .attr("text-anchor", "middle")
             .attr("fill", d => isYearRestricted(d.year) ? "#9CA3AF" : "#718096")
             .attr("font-size", "9.75px")
             .style("dominant-baseline", "top")
@@ -552,10 +552,10 @@
         }
     }
 
-    // Helper function to calculate circle radius
+    // Helper function to calculate circle radius with responsive sizing for mobile
     function radiusScale(count: number): number {
-        const minRadius = 8;
-        const maxRadius = 22;
+        const minRadius = isMobile ? 6 : 8;
+        const maxRadius = isMobile ? 14 : 22;
         const maxCount = Math.max(...yearData.map(d => d.count));
         return minRadius + (maxRadius - minRadius) * (count / maxCount);
     }
@@ -669,22 +669,22 @@
                     <div 
                         class="highlight-circle"
                         style="
-                            width: 50px;
-                            height: 50px;
+                            width: {isMobile ? '40px' : '50px'};
+                            height: {isMobile ? '40px' : '50px'};
                             opacity: {"All" === selectedYear ? 0.5 : 0};
                         "
                     ></div>
                     <!-- Main circle with SVG gradient -->
                     <svg 
                         class="main-circle-svg"
-                        width="44"
-                        height="44"
+                        width={isMobile ? "36" : "44"}
+                        height={isMobile ? "36" : "44"}
                         style="filter: {"All" === selectedYear ? 'url(#glow)' : 'none'};"
                     >
                         <circle 
-                            cx="22"
-                            cy="22"
-                            r="20.5"
+                            cx={isMobile ? "18" : "22"}
+                            cy={isMobile ? "18" : "22"}
+                            r={isMobile ? "16.5" : "20.5"}
                             fill="url(#gradient-all-years)"
                             stroke="#565656"
                             stroke-width="1.5"
@@ -726,13 +726,9 @@
 </Dialog.Root>
 
 <style>
-
     .timeline-container {
-        width: 100%;
         position: relative;
         overflow: hidden;
-        height: 45px; /* Default compact height */
-        transition: height 0.3s ease;
     }
 
     .timeline-container:hover {
@@ -747,7 +743,6 @@
         position: relative;
         transition: all 0.3s ease;
     }
-
 
     .year-item {
         display: flex;
@@ -810,8 +805,7 @@
         font-size: 9.75px;
         color: #718096;
         transition: all 0.3s ease;
-        opacity: 0; /* Start with opacity 0 */
-        transform: translateY(-4px);
+        opacity: 0.5; /* Start with opacity 0 */
         pointer-events: none; /* Prevent labels from interfering with interactions */
     }
 
@@ -840,15 +834,16 @@
 
     @media (max-width: 768px) {
         .timeline-grid {
-            gap: 0.5rem;
+            gap: 0.25rem;
         }
 
         .year-label {
             font-size: 8px;
+            opacity: 1; /* Always show labels on mobile */
         }
         
         .timeline-container {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             height: auto; /* Don't compress on mobile */
         }
 
@@ -857,11 +852,23 @@
         }
 
         .circle-container {
-            transform: scale(1); /* Don't scale down on mobile */
+            transform: scale(0.9); /* Slightly smaller scale on mobile, but not as small as desktop default */
         }
 
         .timeline-container:hover .year-item {
             transform: none; /* No hover scaling on mobile */
+        }
+        
+        .all-years {
+            margin-left: 0.5rem; /* Reduced margin on mobile */
+        }
+        
+        .highlight-circle {
+            border-width: 3px; /* Thinner border on mobile */
+        }
+        
+        .main-circle-svg circle {
+            stroke-width: 1px; /* Thinner stroke on mobile */
         }
     }
 </style>

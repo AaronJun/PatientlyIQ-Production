@@ -4,7 +4,7 @@
   import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
 
   // Use default values instead of window properties for SSR compatibility
-  export let width = 1020;
+  export let width = 1200;
   export let height = width;
   
   // Tooltip state
@@ -62,9 +62,24 @@
   function updateDimensions() {
     if (container) {
       const rect = container.getBoundingClientRect();
+      const isMobile = window.innerWidth < 768;
+      
+      // Get the parent container's dimensions
+      const parentHeight = container.parentElement ? container.parentElement.getBoundingClientRect().height : window.innerHeight;
+      
+      // Set width based on container width
       width = rect.width || width;
-      height = rect.height || height;
-      console.log("Container dimensions:", width, height);
+      
+      // Set height with a minimum value to prevent shrinking too much
+      if (isMobile) {
+        // On mobile, use 80vh as minimum height
+        height = Math.max(parentHeight, window.innerHeight * 0.8) || height;
+      } else {
+        // On desktop, use parent height with a minimum of 60vh
+        height = Math.max(parentHeight, window.innerHeight * 0.6) || height;
+      }
+      
+      console.log("Container dimensions:", width, height, "isMobile:", isMobile, "parentHeight:", parentHeight);
     }
   }
 
@@ -127,7 +142,7 @@
     }
   }
 
-  onMount(async () => {
+  onMount(() => {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') return;
     
@@ -137,11 +152,17 @@
     }
     
     // Initialize the canvas
-    await initializeCanvas();
+    initializeCanvas();
     
     // Add resize observer
     if (container && typeof ResizeObserver !== 'undefined') {
+      let prevWidth = width;
+      let prevHeight = height;
+      
       const resizeObserver = new ResizeObserver(() => {
+        const oldWidth = width;
+        const oldHeight = height;
+        
         updateDimensions();
         
         // Update SVG dimensions
@@ -151,6 +172,25 @@
             .attr('width', width)
             .attr('height', height)
             .attr('viewBox', `0 0 ${width} ${height}`);
+            
+          // If size changed significantly (over 20%), adjust the view
+          const widthChange = Math.abs(width - prevWidth) / prevWidth;
+          const heightChange = Math.abs(height - prevHeight) / prevHeight;
+          
+          if (widthChange > 0.2 || heightChange > 0.2) {
+            console.log("Significant size change detected, resetting view");
+            // Save current transform scale
+            const currentScale = transform.k;
+            
+            // Reset view with current scale
+            setTimeout(() => {
+              resetView();
+            }, 100);
+            
+            // Update previous dimensions
+            prevWidth = width;
+            prevHeight = height;
+          }
         }
       });
       
@@ -260,6 +300,7 @@
     {width}
     {height}
     viewBox="0 0 {width} {height}"
+    preserveAspectRatio="xMidYMid meet"
     class="w-full h-full"
   >
     <slot {mainGroup} {showTooltip} {hideTooltip} />
@@ -280,7 +321,7 @@
   <!-- Navigation controls moved to top left and arranged vertically -->
   <div class="navigation-controls">
     <button on:click={zoomIn} class="nav-button" title="Zoom In">
-      <svg viewBox="0 0 24 24" width="24" height="24">
+      <svg viewBox="0 0 24 24" width="12" height="12">
         <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
       </svg>
     </button>
@@ -301,24 +342,24 @@
   .infinite-canvas-container {
     width: 100%;
     height: 100%;
+    min-height: 60vh; /* Add minimum height for small screens */
     overflow: hidden;
     background-color: #fafafa;
     position: relative;
   }
 
-  .timeline-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background: linear-gradient(180deg, rgba(250, 250, 250, 0.95) 0%, rgba(250, 250, 250, 0.95) 85%, rgba(250, 250, 250, 0) 100%);
-    padding: 1rem 2rem;
-    pointer-events: auto;
+  @media (max-width: 768px) {
+    .infinite-canvas-container {
+      min-height: 80vh; /* Increase min-height on mobile to ensure it displays properly */
+      height: 100vh; /* Set explicit height for mobile devices */
+    }
   }
 
   svg {
     cursor: grab;
+    width: 100%;
+    height: 100%;
+    min-height: inherit; /* Inherit the minimum height from the container */
   }
 
   :global(svg:active) {
@@ -333,7 +374,7 @@
   /* Updated navigation controls styles for vertical layout on top left */
   .navigation-controls {
     position: absolute;
-    top: 16px;
+    top: 52px;
     left: 16px;
     display: flex;
     flex-direction: column;
@@ -346,11 +387,12 @@
   }
 
   .nav-button {
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     border: none;
-    border-radius: 100px;
+    border-radius: 10px;
     background: white;
+    padding: 2px;
     color: #666;
     cursor: pointer;
     display: flex;
