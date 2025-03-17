@@ -8,7 +8,7 @@
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
   import RpdprvCompanyTree from '$lib/rpdprvdash/RadialComponents/RPDPRVCompanyTree.svelte';
-  import SellerBuyerChord from '$lib/rpdprvdash/SellerBuyerChord.svelte';
+  import SellerBuyerChord from '$lib/rpdprvdash/TransactionChord.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import { getTherapeuticAreaColor } from '$lib/rpdprvdash/utils/colorDefinitions';
   
@@ -463,7 +463,7 @@
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 mt-4 pb-8 relative transition-all duration-300 min-h-[80vh]" 
+  <main class="flex-1 pb-8 relative transition-all duration-300 min-h-[80vh]" 
         style="margin-left: {isSidebarCollapsed ? '2rem' : '0'};">
 
     <div class="tab-content w-full h-full min-h-[80vh] flex relative">
@@ -483,7 +483,7 @@
         {#if activeTab === 'By Sponsor'}
         <div class="flex flex-row flex-grow relative">
           <div class="w-full h-full items-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container sticky justify-center place-items-center z-50 px-4 py-2 rounded-lg bg-white/80 transition-all duration-300">
+            <div class="timeline-container sticky justify-center place-items-start z-50 px-4 py-2 bg-slate-100/80 transition-all duration-300">
             <RPDPRVHorizontalTimeline 
               data={rpddData}
               selectedYear={selectedYear}
@@ -594,6 +594,7 @@
             
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
             {#if isMobileView}
+            
               <MobileSponsorSidebar
                 {currentView}
                 {currentEntries}
@@ -605,6 +606,11 @@
                 isExpanded={isMobileSidebarExpanded}
                 on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
               >
+              <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
                 <!-- Add search component to mobile sponsor sidebar -->
                 {#if isMobileSidebarExpanded}
                   <div class="mb-4 px-4 pt-4">
@@ -623,7 +629,7 @@
         {:else if activeTab === 'By Therapeutic Area'}
         <div class="flex flex-row flex-grow relative">
           <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container sticky justify-center place-items-center z-50 px-4 py-2 rounded-lg bg-white/80 transition-all duration-300">
+            <div class="timeline-container sticky justify-center place-items-start z-50 px-4 py-2 bg-slate-100/80 transition-all duration-300">
             <RPDPRVHorizontalTimeline 
               data={rpddData}
               selectedYear={selectedYear}
@@ -731,7 +737,7 @@
             {/if}
             
             <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
-            {#if isMobileView || isTabletView}
+            {#if isMobileView}
               <MobileTherapeuticAreaSidebar
                 {currentEntries}
                 {currentArea}
@@ -743,6 +749,11 @@
                 isExpanded={isMobileSidebarExpanded}
                 on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
               >
+              <RpdprvSearch
+                      data={rpddData}
+                      onShowDrugDetail={handleShowDrugDetail}
+                      onShowCompanyDetail={handleShowCompanyDetail}
+                    />
                 <!-- Add search component to mobile therapeutic area sidebar -->
                 {#if isMobileSidebarExpanded}
                   <div class="mb-4 px-4 pt-4">
@@ -762,7 +773,7 @@
           <div class="flex flex-col h-[calc(100vh-4rem)] relative">
             <!-- Timeline section -->
             <div class="w-fit transition-all duration-300 mb-4"
-              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '4rem' : '16rem')};">
+              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '2rem' : '0rem')};">
               <PRVPurchaseTimeline 
                 data={rpddData}
                 selectedYear={selectedTransactionYear}
@@ -956,7 +967,8 @@
 }
 
 .timeline-container {
-  border: .5px solid #549E7D;
+  border-bottom: .5px solid #549E7D;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
   
   .tab-button {

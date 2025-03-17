@@ -445,114 +445,8 @@ async function createVisualization() {
 function createVisualEffects() {
     // Create filters for visual effects
     const defs = contentGroup.append("defs");
-    
-    // Create drop shadow filter
-    const dropShadow = defs.append("filter")
-        .attr("id", "dropshadow")
-        .attr("width", "200%")
-        .attr("height", "200%")
-        .attr("x", "-100%")
-        .attr("y", "-100%")
-        .attr("filterUnits", "userSpaceOnUse");
-    
-    // Create a shadow using blur and offset
-    dropShadow.append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 2.5)
-        .attr("result", "blur");
-        
-    dropShadow.append("feOffset")
-        .attr("in", "blur")
-        .attr("dx", 1.25)
-        .attr("dy", 1.5)
-        .attr("result", "offsetBlur");
-        
-    // Apply color to the shadow
-    dropShadow.append("feColorMatrix")
-        .attr("in", "offsetBlur")
-        .attr("type", "matrix")
-        .attr("values", "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0")
-        .attr("result", "shadowMatrixOut");
-    
-    // Merge with the original shape
-    const feMerge = dropShadow.append("feMerge");
-    feMerge.append("feMergeNode")
-        .attr("in", "shadowMatrixOut");
-    feMerge.append("feMergeNode")
-        .attr("in", "SourceGraphic");
-        
-    // Create green glow filter for purchased vouchers
-    const greenGlow = defs.append("filter")
-        .attr("id", "greenGlow")
-        .attr("width", "200%")
-        .attr("height", "200%")
-        .attr("x", "-50%")
-        .attr("y", "-50%")
-        .attr("filterUnits", "userSpaceOnUse");
-        
-    greenGlow.append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 3)
-        .attr("result", "blur");
-        
-    greenGlow.append("feOffset")
-        .attr("in", "blur")
-        .attr("dx", 0)
-        .attr("dy", 0)
-        .attr("result", "offsetBlur");
-        
-    // Apply green color
-    greenGlow.append("feColorMatrix")
-        .attr("in", "offsetBlur")
-        .attr("type", "matrix")
-        .attr("values", "0 0 0 0 0.2 0 0 0 0 0.8 0 0 0 0 0.2 0 0 0 1 0")
-        .attr("result", "coloredBlur");
-        
-    // Merge with the original shape
-    const greenMerge = greenGlow.append("feMerge");
-    greenMerge.append("feMergeNode")
-        .attr("in", "coloredBlur");
-    greenMerge.append("feMergeNode")
-        .attr("in", "SourceGraphic");
-        
-    // Create yellow glow filter for filed PRV status
-    const yellowGlow = defs.append("filter")
-        .attr("id", "yellowGlow")
-        .attr("width", "200%")
-        .attr("height", "200%")
-        .attr("x", "-50%")
-        .attr("y", "-50%")
-        .attr("filterUnits", "userSpaceOnUse");
-        
-    yellowGlow.append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 3)
-        .attr("result", "blur");
-        
-    yellowGlow.append("feOffset")
-        .attr("in", "blur")
-        .attr("dx", 0)
-        .attr("dy", 0)
-        .attr("result", "offsetBlur");
-        
-    // Apply yellow color
-    yellowGlow.append("feColorMatrix")
-        .attr("in", "offsetBlur")
-        .attr("type", "matrix")
-        .attr("values", "0 0 0 0 0.9 0 0 0 0 0.8 0 0 0 0 0.2 0 0 0 1 0")
-        .attr("result", "coloredBlur");
-        
-    // Merge with the original shape
-    const yellowMerge = yellowGlow.append("feMerge");
-    yellowMerge.append("feMergeNode")
-        .attr("in", "coloredBlur");
-    yellowMerge.append("feMergeNode")
-        .attr("in", "SourceGraphic");
 }
-
-/**
- * Creates stage circles and labels
- */
+    
 function createStageCircles() {
     const stagesGroup = contentGroup.append("g").attr("class", "stage-circles");
     
@@ -761,17 +655,10 @@ function renderArea(
                 }
 
                 // Determine visual effects based on drug status
-                let filterUrl = shouldRenderFullDetail ? "url(#dropshadow)" : "";
-                if (shouldRenderFullDetail) {
-                    if (drug.Purchased === "Y") {
-                        filterUrl = "url(#greenGlow)";
-                    } else if (drug["PRV Status"] === "Filed") {
-                        filterUrl = "url(#yellowGlow)";
-                    }
-                }
+                let filterUrl = ""; // Remove dropshadow effects completely
 
-                // Determine stroke color - use gold for transacted PRVs
-                const strokeColor = drug["Purchase Year"] ? "#FFD700" : areaColors.stroke;
+                // Determine stroke color - use standard color
+                const strokeColor = areaColors.stroke;
                 
                 // Check if PRV is terminated or liquidated
                 const isTerminatedOrLiquidated = isPRVTerminatedOrLiquidated(drug);
@@ -788,16 +675,13 @@ function renderArea(
                     .attr("stroke", finalStrokeColor)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("opacity", opacity)
-                    .style("filter", filterUrl);
+                    .style("filter", ""); // Remove filter URL completely
 
                 // Add PRV indicator if needed and rendering full details
                 if (shouldRenderFullDetail && hasPRVAward(drug)) {
                     drugGroup.append("circle")
                         .attr("r", sizeConfig.prvIndicatorRadius)
                         .attr("fill", "none")
-                        .attr("stroke", "#976201")
-                        .attr("stroke-width", "2")
-                        .attr("stroke-dasharray", "2,2")
                         .attr("opacity", 0.8);
                 }
 
@@ -812,7 +696,7 @@ function renderArea(
                 });
                 
                 drugGroup.on("blur", () => {
-                    handleDrugBlur(drug, drugGroup, finalStrokeColor, filterUrl);
+                    handleDrugBlur(drug, drugGroup, strokeColor, filterUrl);
                 });
                 
                 // Add mouse event handlers
@@ -824,7 +708,7 @@ function renderArea(
                         showTooltip(event, drug);
                     })
                     .on("mouseleave", () => {
-                        handleDrugMouseLeave(drug, drugGroup, finalStrokeColor, filterUrl);
+                        handleDrugMouseLeave(drug, drugGroup, strokeColor, filterUrl);
                     })
                     .on("click", (event: MouseEvent) => {
                         handleDrugClick(event, drug);
@@ -964,28 +848,36 @@ function handleDrugKeydown(event: KeyboardEvent, drug: any, areaName: string, dr
 }
 
 function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, drugId: string) {
-    // Highlight the drug node
+    // Highlight this drug node visually and in keyboard navigation
     drugGroup.select("circle")
         .transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("r", sizeConfig.highlightedNodeRadius);
+        .attr("r", sizeConfig.highlightedNodeRadius)
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5)
+        .attr("stroke", highlightColor);
     
-    // Highlight connections
+    // Highlight related connections
     highlightDrugConnections(drugId);
     
     // Show tooltip
-    showTooltip(event, drug);
+    showTooltip(event as unknown as MouseEvent, drug);
+    
+    // Track currently focused element for keyboard navigation
+    const areaRef = focusableElements.find(item => item.element === drugGroup.node());
+    if (areaRef) {
+        areaRef.isSelected = true;
+    }
 }
 
 function handleDrugBlur(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance
+    // Reset drug appearance (never apply shadow)
     drugGroup.select("circle")
         .transition()
         .duration(sizeConfig.transitionDuration)
         .attr("r", sizeConfig.drugNodeRadius)
-        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
         .attr("stroke", strokeColor)
-        .style("filter", filterUrl);
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
+        .style("filter", "");
     
     // Reset connections
     resetConnectionHighlights();
@@ -1009,14 +901,14 @@ function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Select
 }
 
 function handleDrugMouseLeave(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance
+    // Reset drug appearance (never apply shadow)
     drugGroup.select("circle")
         .transition()
         .duration(sizeConfig.transitionDuration)
         .attr("r", sizeConfig.drugNodeRadius)
-        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
         .attr("stroke", strokeColor)
-        .style("filter", filterUrl);
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
+        .style("filter", "");
     
     // Reset connections
     resetConnectionHighlights();
@@ -1511,14 +1403,13 @@ createVisualization();
 });
 
 // Reactive statements to handle changes
-$: if (data && data.length > 0 && mainGroup && (
-data.length !== previousDataLength || // Data changed
-(mainGroup.node()?.getBoundingClientRect().width || 0) !== previousSvgSize // Size changed
-)) {
-console.log("Data or size changed, recreating visualization");
-previousDataLength = data.length;
-previousSvgSize = mainGroup.node()?.getBoundingClientRect().width || 0;
-createVisualization();
+$: if (data && mainGroup) {
+    // Always recreate visualization when data reference changes
+    // This ensures proper updates when switching between years
+    setTimeout(() => {
+        console.log("Data changed, recreating visualization");
+        createVisualization();
+    }, 0);
 }
 
 // Clean up when component is destroyed

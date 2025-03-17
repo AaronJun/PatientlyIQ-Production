@@ -447,11 +447,12 @@ export function processDataForLayout(data: any[]) {
 export function getSizeConfig(isAllYearView: boolean) {
     return {
         // When all years view is active, use smaller sizes
-        labelFontSize: isAllYearView ? "2.425px" : "7.725px",
-        labelFontWeight: isAllYearView ? "400" : "400",
-        companyNodeWidth: isAllYearView ? 4.25 : 7.725,
-        companyNodeHeight: isAllYearView ? 4.25 : 7.725,
-        drugNodeRadius: isAllYearView ? 2.7125 : 6.125,
+        companyLabelFontSize: isAllYearView ? "4.425px" : "9.25px",
+        labelFontSize: isAllYearView ? "8.425px" : "10.25px", // Increased font size for therapeutic areas
+        labelFontWeight: isAllYearView ? "500" : "500", // Made fonts slightly bolder
+        companyNodeWidth: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeWidth
+        companyNodeHeight: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeHeight
+        drugNodeRadius: isAllYearView ? 3.7125 : 6.125,
         drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,
@@ -461,7 +462,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         highlightedNodeRadius: isAllYearView ? 8 : 10.25, 
         highlightedNodePosition: isAllYearView ? 1.25 : 1.25,
         // Optimization settings
-        useShadowEffects: !isAllYearView, // Disable shadow effects in all year view
+        useShadowEffects: false, // Disable shadow effects in both views
         useAnimations: !isAllYearView, // Disable animations in all year view
         transitionDuration: isAllYearView ? 0 : 0, // No transitions in all year view
         renderPRVIndicators: !isAllYearView, // Only render PRV indicators in regular view
@@ -474,6 +475,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         batchDelay: 100, // Delay between batches in ms
         useSimplifiedDrugNodes: isAllYearView, // Use simplified drug nodes in all years view
         skipNonEssentialEffects: isAllYearView, // Skip non-essential visual effects
+        useStandardStrokeColors: true, // Use standard stroke colors instead of different ones
     };
 }
 
@@ -640,30 +642,7 @@ export function createAreaLabelGroup(
         .attr("font-size", sizeConfig.labelFontSize)
         .attr("font-weight", sizeConfig.labelFontWeight);
     
-    // Create dots group with counter-rotation
-    const dotsGroup = labelGroup.append("g")
-        .attr("class", "area-drugs")
-        .attr("transform", `rotate(${-rotationAngle}) translate(${xOffset}, ${labelConfig.textHeight})`);
-    
-    const numDots = Math.min(area.totalDrugs, 20); // Limit dots for visual clarity
-    const dotsPerRow = Math.min(10, numDots);  // Maximum 10 dots per row
-    
-    for (let i = 0; i < numDots; i++) {
-        const row = Math.floor(i / dotsPerRow);
-        const col = i % dotsPerRow;
-        const x = textAnchor === "start" ? col * 6 : -(col * 6);
-        
-        dotsGroup.append("circle")
-            .attr("r", 0)
-            .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-            .attr("cy", row * 5)  // 5px spacing between rows
-            .attr("fill", areaColors.fill)
-            .attr("stroke", areaColors.stroke)
-            .attr("stroke-width", 0.5)
-            .attr("opacity", 0.8);
-    }
-    
-    return { labelGroup, textElement, dotsGroup };
+    return { labelGroup, textElement };
 }
 
 /**

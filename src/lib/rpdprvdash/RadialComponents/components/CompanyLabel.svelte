@@ -81,7 +81,7 @@
             .attr("dy", "0.35em")
             .text(formatCompanyName(company.company))
             .attr("fill", "#4A5568")
-            .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
+            .attr("font-size", isCloserPosition ? sizeConfig.companyLabelFontSize : (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px")
             .attr("font-weight", sizeConfig.labelFontWeight);
 
         // Add keyboard event handler for accessibility
@@ -171,7 +171,7 @@
                     .transition()
                     .duration(200)
                     .attr("font-weight", sizeConfig.labelFontWeight)
-                    .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
+                    .attr("font-size", isCloserPosition ? sizeConfig.companyLabelFontSize : (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px")
                     .attr("fill", "#4A5568");
             }
             
@@ -230,7 +230,7 @@
                     .transition()
                     .duration(200)
                     .attr("font-weight", sizeConfig.labelFontWeight)
-                    .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
+                    .attr("font-size", isCloserPosition ? sizeConfig.companyLabelFontSize : (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px")
                     .attr("fill", "#4A5568");
             }
             
@@ -308,7 +308,7 @@
                 .transition()
                 .duration(500)
                 .attr("fill", "#4A5568")
-                .attr("font-size", isCloserPosition ? sizeConfig.labelFontSize : (parseFloat(sizeConfig.labelFontSize) * 1.1) + "px")
+                .attr("font-size", isCloserPosition ? sizeConfig.companyLabelFontSize : (parseFloat(sizeConfig.companyLabelFontSize) * 1.1) + "px")
                 .attr("font-weight", sizeConfig.labelFontWeight);
         }
     }
@@ -316,9 +316,6 @@
 
 <style>
     .company-label {
-        font-size: 12px;
-        font-weight: 500;
-        fill: #333;
         text-anchor: middle;
         pointer-events: none;
     }

@@ -2,19 +2,8 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     
-    // Import the color definitions
-    import { 
-        getTherapeuticAreaColor, 
-        getStageColor, 
-        getCompanyStatusColor
-    } from '../utils/colorDefinitions';
-    
     // Import our utility functions
     import {
-        getStage,
-        getStageFullName,
-        getStageDisplayName,
-        formatCompanyName,
         calculateCompanyAngles,
         calculateOptimalLabelPlacement,
         processDataForLayout,
@@ -22,8 +11,6 @@
         getLabelConfig,
         getStageRadii,
         getStageLabelConfig,
-        hasPRVAward,
-        isPRVTerminatedOrLiquidated,
         sampleDataForAllYearView
     } from '../utils/data-processing-utils';
 
@@ -32,7 +19,6 @@
     import CompanyLabel from './components/CompanyLabel.svelte';
     import DrugNode from './components/DrugNode.svelte';
     import ConnectionLines from './components/ConnectionLines.svelte';
-    import VisualizationFilters from './components/VisualizationFilters.svelte';
     import KeyboardNavigation from './components/KeyboardNavigation.svelte';
 
     // Component props
@@ -88,7 +74,6 @@
     let stageCirclesComponent: StageCircles;
     let connectionLinesComponent: ConnectionLines;
     let keyboardNavigationComponent: KeyboardNavigation;
-    let visualizationFiltersComponent: VisualizationFilters;
     
     // Loading state
     let isLoading = false;
@@ -137,7 +122,8 @@
         
         // Add loading indicator
         const loadingGroup = contentGroup.append("g")
-            .attr("class", "loading-indicator");
+            .attr("class", "loading-indicator")
+            .attr("z-index", "9999");
             
         loadingGroup.append("rect")
             .attr("x", -100)
@@ -162,16 +148,7 @@
             .attr("font-size", "12px")
             .text("Preparing visualization...");
 
-        // Create SVG filters - only if not in all year view
-        if (!isAllYearView) {
-            visualizationFiltersComponent = new VisualizationFilters({
-                target: document.createElement('div'),
-                props: { contentGroup }
-            });
-            visualizationFiltersComponent.createFilters();
-        }
-
-        // Create connection lines group
+            // Create connection lines group
         connectionLinesComponent = new ConnectionLines({
             target: document.createElement('div'),
             props: { contentGroup, sizeConfig }
@@ -515,15 +492,9 @@
             .transition()
             .duration(sizeConfig.useAnimations ? 500 : 0)
             .attr("fill", "#4A5568")
-            .attr("font-size", sizeConfig.labelFontSize)
+            .attr("font-size", sizeConfig.companyLabelFontSize)
             .attr("font-weight", sizeConfig.labelFontWeight);
-        
-        // Reset pipeline dots
-        d3.selectAll(".pipeline-dots circle")
-            .transition()
-            .duration(sizeConfig.useAnimations ? 200 : 0)
-            .attr("r", 0)
-            .attr("opacity", 0.7);
+
         
         // Highlight active company if selected
         if (company) {
@@ -536,9 +507,9 @@
             if (!companyLabel.empty()) {
                 companyLabel
                     .transition()
-                    .duration(sizeConfig.useAnimations ? 500 : 0)
+                    .duration(sizeConfig.useAnimations ? 100 : 0)
                     .attr("fill", "#2B6CB0")
-                    .attr("font-size", "10.25px")
+                    .attr("font-size", sizeConfig.companyLabelFontSize)
                     .attr("font-weight", "800");
             } else {
                 // If not found by ID, try to find by text content
@@ -554,7 +525,7 @@
                             .transition()
                             .duration(sizeConfig.useAnimations ? 500 : 0)
                             .attr("fill", "#2B6CB0")
-                            .attr("font-size", "10.25px")
+                            .attr("font-size", sizeConfig.companyLabelFontSize)
                             .attr("font-weight", "800");
                         found = true;
                     }
@@ -575,7 +546,7 @@
                                     .transition()
                                     .duration(sizeConfig.useAnimations ? 500 : 0)
                                     .attr("fill", "#2B6CB0")
-                                    .attr("font-size", "10.25px")
+                                    .attr("font-size", sizeConfig.companyLabelFontSize)
                                     .attr("font-weight", "800");
                             }
                         }
@@ -646,9 +617,6 @@
     }
     
     .company-label {
-        font-size: 12px;
-        font-weight: 500;
-        fill: #333;
         text-anchor: middle;
         pointer-events: none;
     }

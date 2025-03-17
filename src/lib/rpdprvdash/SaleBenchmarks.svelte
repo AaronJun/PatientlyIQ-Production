@@ -1,6 +1,6 @@
 <!-- PRVTransactionsView.svelte -->
 <script lang="ts">
-  import PRVTransactionsChord from './SellerBuyerChord.svelte';
+  import PRVTransactionsChord from './TransactionChord.svelte';
 </script>
 
 <div class="transactions-container">

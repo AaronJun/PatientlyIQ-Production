@@ -25,7 +25,7 @@
     const dispatch = createEventDispatcher();
 </script>
 
-<div class="mobile-sidebar fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg rounded-t-xl transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
+<div class="mobile-sidebar fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-xl transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
   <!-- Handle to expand/collapse -->
   <div 
     class="handle flex justify-center items-center h-14 cursor-pointer bg-white rounded-t-xl border-t border-x border-slate-200"
@@ -75,10 +75,11 @@
 <style>
   .mobile-sidebar {
     max-height: 80vh;
+    z-index: 1000;
   }
   
   /* Tablet-specific styles */
-  @media (min-width: 768px) and (max-width: 1023px) {
+  @media (min-width: 768px) {
     .mobile-sidebar {
       max-height: 90vh;
     }

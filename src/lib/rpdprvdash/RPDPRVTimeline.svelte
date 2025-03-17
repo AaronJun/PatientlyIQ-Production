@@ -554,8 +554,8 @@
 
     // Helper function to calculate circle radius with responsive sizing for mobile
     function radiusScale(count: number): number {
-        const minRadius = isMobile ? 6 : 8;
-        const maxRadius = isMobile ? 14 : 22;
+        const minRadius = isMobile ? 2 : 8;
+        const maxRadius = isMobile ? 12 : 22;
         const maxCount = Math.max(...yearData.map(d => d.count));
         return minRadius + (maxRadius - minRadius) * (count / maxCount);
     }
@@ -838,8 +838,13 @@
         }
 
         .year-label {
-            font-size: 8px;
-            opacity: 1; /* Always show labels on mobile */
+            font-size: 7.25px;
+            opacity: .725; /* Always show labels on mobile */
+        }
+
+        .year-label.selected {
+            font-size: 10.25px;
+            opacity: 1;
         }
         
         .timeline-container {
@@ -852,7 +857,7 @@
         }
 
         .circle-container {
-            transform: scale(0.9); /* Slightly smaller scale on mobile, but not as small as desktop default */
+            transform: scale(0.825); /* Slightly smaller scale on mobile, but not as small as desktop default */
         }
 
         .timeline-container:hover .year-item {

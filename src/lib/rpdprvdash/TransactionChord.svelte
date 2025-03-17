@@ -16,8 +16,8 @@
     transactionLeave: void;
   }>();
 
-  let svg;
-  let ribbons;
+  let svg: SVGSVGElement;
+  let ribbons: d3.Selection<SVGPathElement, any, null, undefined>;
   let companies: string[] = [];
   let companyData: Map<string, any>;
   let transactions: any[];
@@ -47,7 +47,7 @@
     minAngleDiff: Math.PI / 32
   };
 
-  function formatCompanyName(companyName) {
+  function formatCompanyName(companyName: string): string {
   // If no company name, return empty string
   if (!companyName) return '';
   
@@ -173,16 +173,16 @@
       therapeuticArea: primaryArea,
       id: `${companyTransactions.length} transactions`
     };
-    tooltipBorderColor = therapeuticAreaColorScale(primaryArea);
+    tooltipBorderColor = therapeuticAreaColorScale(primaryArea) as string;
 
     // Highlight all ribbons involving this company
     ribbons
-      .style("opacity", d => {
+      .style("opacity", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         return (sourceCompany === company || targetCompany === company) ? 1 : 0.2;
       })
-      .attr("stroke-width", d => {
+      .attr("stroke-width", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         return (sourceCompany === company || targetCompany === company) ? 2 : 0.25;
@@ -190,12 +190,12 @@
 
     // Highlight nodes for this company as well
     d3.selectAll("circle.voucher-node")
-      .style("opacity", d => 
-        (d.Company === company || d.Purchaser === company) ? 1 : 0.2
-      )
-      .attr("r", d => 
-        (d.Company === company || d.Purchaser === company) ? 12 : 8
-      );
+      .style("opacity", function(this: SVGCircleElement, d: any) {
+        return (d.Company === company || d.Purchaser === company) ? 1 : 0.2;
+      })
+      .attr("r", function(this: SVGCircleElement, d: any) {
+        return (d.Company === company || d.Purchaser === company) ? 12 : 8;
+      });
 
     const rect = svg.getBoundingClientRect();
     tooltipX = event.clientX - rect.left;
@@ -215,12 +215,12 @@
 
   function highlightRibbon(transaction: { seller: string, buyer: string }) {
     ribbons
-      .style("opacity", d => {
+      .style("opacity", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 1 : 0.2;
       })
-      .attr("stroke-width", d => {
+      .attr("stroke-width", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 2 : 0.25;
@@ -228,12 +228,12 @@
 
     // Also highlight relevant nodes
     d3.selectAll("circle.voucher-node")
-      .style("opacity", d => 
-        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2
-      )
-      .attr("r", d => 
-        (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8
-      );
+      .style("opacity", function(this: SVGCircleElement, d: any) {
+        return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2;
+      })
+      .attr("r", function(this: SVGCircleElement, d: any) {
+        return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8;
+      });
   }
 
   // New function to highlight transactions for the selected year
@@ -260,13 +260,13 @@
     
     // Highlight the relevant ribbons
     ribbons
-      .style("opacity", d => {
+      .style("opacity", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         const key = `${sourceCompany}-${targetCompany}`;
         return relevantTransactions.has(key) ? 1 : 0.15;
       })
-      .attr("stroke-width", d => {
+      .attr("stroke-width", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
         const key = `${sourceCompany}-${targetCompany}`;
@@ -275,18 +275,18 @@
       
     // Highlight relevant nodes
     d3.selectAll("circle.voucher-node")
-      .style("opacity", d => {
+      .style("opacity", function(this: SVGCircleElement, d: any) {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key) ? 1 : 0.15;
       })
-      .attr("r", d => {
+      .attr("r", function(this: SVGCircleElement, d: any) {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key) ? 12 : 8;
       });
       
     // Add a pulsating effect to the highlighted nodes
     d3.selectAll("circle.voucher-node")
-      .filter(d => {
+      .filter(function(this: SVGCircleElement, d: any) {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key);
       })
@@ -425,29 +425,29 @@
 
     // Add ribbons first
     ribbons = svgElem.append("g")
-      .selectAll("path")
+      .selectAll<SVGPathElement, any>("path")
       .data(chords)
       .join("path")
-      .attr("d", d3.ribbon().radius(innerRadius))
-      .style("fill", d => {
+      .attr("d", d3.ribbon().radius(innerRadius) as any)
+      .style("fill", function(this: SVGPathElement, d: any): string {
         // Color based on the therapeutic area of the actual transaction
         const transaction = getTransaction(d.source.index, d.target.index);
-        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
+        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) as string : "#cccccc";
       })
       .style("mix-blend-mode", "multiply")
       .style("opacity", 0.6)
-      .attr("stroke", d => {
+      .attr("stroke", function(this: SVGPathElement, d: any): string {
         // Darker stroke of the same therapeutic area color
         const transaction = getTransaction(d.source.index, d.target.index);
         const color = transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
-        return d3.color(color)?.darker(0.5);
+        return d3.color(color as string)?.darker(0.5)?.toString() || '#999999';
       })
       .attr("stroke-width", 0.5)
-      .attr("stroke-dasharray", d => {
+      .attr("stroke-dasharray", (d: any) => {
         const transaction = getTransaction(d.source.index, d.target.index);
         return transaction && isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "4,4" : null;
       })
-      .on("mouseenter", (event, d) => {
+      .on("mouseenter", (event: MouseEvent, d: any) => {
         const transaction = getTransaction(d.source.index, d.target.index);
 
         if (transaction) {
@@ -468,7 +468,7 @@
             therapeuticArea: transaction.Candidate,
             id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
-          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1);
+          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1) as string;
 
           const rect = svg.getBoundingClientRect();
           tooltipX = event.clientX - rect.left;
@@ -489,20 +489,20 @@
 
     // Add background arcs 
     group.append("path")
-      .attr("fill", d => {
+      .attr("fill", function(this: SVGPathElement, d: any): string {
         // Get company's primary therapeutic area color
         const company = companies[d.index];
         const companyInfo = companyData.get(company);
-        return therapeuticAreaColorScale(companyInfo.therapeuticArea);
+        return therapeuticAreaColorScale(companyInfo.therapeuticArea) as string;
       })
       .attr("d", d3.arc()
         .innerRadius(innerRadius)
-        .outerRadius(outerRadius)
+        .outerRadius(outerRadius) as any
       )
       .attr("opacity", 0.2);
 
     // Add voucher nodes
-    group.each((d, i) => {
+    group.each(function(this: SVGGElement, d: any, i: number) {
       const company = companies[i];
       const companyTrans = companyData.get(company)?.transactions || [];
       
@@ -510,7 +510,7 @@
       
       const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
 
-      companyTrans.forEach((transaction, idx) => {
+      companyTrans.forEach((transaction: any, idx: number) => {
         const nodeAngle = d.startAngle + spacing * (idx + 1);
         const x = Math.cos(nodeAngle - Math.PI / 2) * outerRadius;
         const y = Math.sin(nodeAngle - Math.PI / 2) * outerRadius;
@@ -520,13 +520,13 @@
           .datum(transaction)
           .attr("r", nodeRadius)
           .attr("transform", `translate(${x},${y})`)
-          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
+          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1) as string)
           .attr("stroke", "#565656")
           .attr("stroke-width", 1.5)
           .attr("stroke-dasharray", isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "2,2" : null)
           .attr("cursor", "pointer")
           .style("opacity", 0.9)
-          .on("mouseenter", (event, d) => {
+          .on("mouseenter", (event: MouseEvent, d: any) => {
             dispatch('transactionHover', {
               seller: d.Company,
               buyer: d.Purchaser
@@ -544,7 +544,7 @@
             therapeuticArea: transaction.Candidate,
             id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
-            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1);
+            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1) as string;
 
             const rect = svg.getBoundingClientRect();
             tooltipX = event.clientX - rect.left;
@@ -560,7 +560,7 @@
     });
 
     // Add company labels
-    group.each((d, i) => {
+    group.each(function(this: SVGGElement, d: any, i: number) {
       const company = companies[i];
       const angle = (d.startAngle + d.endAngle) / 2;
       const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);

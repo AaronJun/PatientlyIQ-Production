@@ -272,7 +272,7 @@
                     // Apply immediate style changes for reliability
                     companyLabel
                         .attr("fill", "#2B6CB0")
-                        .attr("font-size", "10.25px")
+                        .attr("font-size", sizeConfig.companyLabelFontSize)
                         .attr("font-weight", "800");
                     
                     // Then apply transition if animations are enabled

@@ -31,7 +31,7 @@
         isMobile = window.innerWidth < 768;
         isTablet = window.innerWidth >= 768 && window.innerWidth < 1200;
         
-        if (isMobile || isTablet) {
+        if (isMobile) {
             margin = { top: 6, right: 12, bottom: 30, left: 12 };
         } else {
             margin = { top: 8, right: 8, bottom: 10, left: 10 };
@@ -39,7 +39,7 @@
         
         // Only create visualization if we're in desktop mode or if data is available for mobile dropdown
         if (data.length > 0) {
-            if (!isMobile && !isTablet && svg) {
+            if (!isMobile && svg) {
                 createVisualization();
             } else if ((isMobile || isTablet) && yearData.length === 0) {
                 yearData = calculateYearData(data);
@@ -163,7 +163,7 @@
         document.addEventListener('click', handleClickOutside);
         
         // Ensure yearData is initialized for mobile view
-        if ((isMobile || isTablet) && data.length > 0 && yearData.length === 0) {
+        if ((isMobile) && data.length > 0 && yearData.length === 0) {
             yearData = calculateYearData(purchaseData);
             yearGradients = calculateYearGradients(yearData);
         }
@@ -800,11 +800,10 @@
 
 <style>
     .timeline-container {
-        width: 100%;
         position: relative;
         overflow: hidden;
-        height: 45px; /* Default compact height */
-        transition: height 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
     .timeline-container:hover {
@@ -854,7 +853,7 @@
     .highlight-circle {
         position: absolute;
         border-radius: 50%;
-        border: 5px solid #55D88E;
+        border: 5px solid #4fd1c5;
         transition: all 0.3s ease;
         pointer-events: none;
     }
@@ -881,8 +880,7 @@
         font-size: 9.75px;
         color: #718096;
         transition: all 0.3s ease;
-        opacity: 0; /* Start with opacity 0 */
-        transform: translateY(-4px);
+        opacity: 0.5; /* Start with opacity 0 */
         pointer-events: none; /* Prevent labels from interfering with interactions */
     }
 

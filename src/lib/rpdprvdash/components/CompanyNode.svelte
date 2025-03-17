@@ -317,7 +317,7 @@
             .attr("dy", "0.35em")
             .text(formatCompanyName(company.company))
             .attr("fill", "#4A5568")
-            .attr("font-size", sizeConfig.labelFontSize)
+            .attr("font-size", sizeConfig.companyLabelFontSize)
             .attr("font-weight", sizeConfig.labelFontWeight);
         
         // Add explicit click handler to label
@@ -553,6 +553,16 @@
                     // Highlight the connection line for this drug
                     onHighlightDrugConnections(drugId);
                     
+                    // Also highlight the company label
+                    if (labelText) {
+                        labelText
+                            .transition()
+                            .duration(200)
+                            .attr("font-weight", "800")
+                            .attr("font-size", "11px")
+                            .attr("fill", "#2B6CB0");
+                    }
+                    
                     // Show tooltip near the node
                     const rect = (event.target as SVGGElement).getBoundingClientRect();
                     const fakeEvent = {
@@ -580,6 +590,16 @@
                             .duration(200)
                             .attr("r", sizeConfig.prvIndicatorRadius)
                             .attr("stroke-width", sizeConfig.isAllYearView ? "1.5" : "2");
+                    }
+                    
+                    // Reset company label appearance if not selected
+                    if (labelText && !isCompanySelected) {
+                        labelText
+                            .transition()
+                            .duration(200)
+                            .attr("font-weight", sizeConfig.labelFontWeight)
+                            .attr("font-size", sizeConfig.companyLabelFontSize)
+                            .attr("fill", "#4A5568");
                     }
                     
                     // Reset connection highlights
@@ -610,10 +630,16 @@
                         // Highlight the connection line for this drug
                         onHighlightDrugConnections(drugId);
                         
-                        onShowTooltip(event, drug);
-                    })
-                    .on("mousemove", (event) => {
-                        // Update tooltip position when mouse moves
+                        // Also highlight the company label
+                        if (labelText) {
+                            labelText
+                                .transition()
+                                .duration(200)
+                                .attr("font-weight", "800")
+                                .attr("font-size", "11px")
+                                .attr("fill", "#2B6CB0");
+                        }
+                        
                         onShowTooltip(event, drug);
                     })
                     .on("mouseleave", () => {
@@ -633,6 +659,16 @@
                                 .duration(200)
                                 .attr("r", sizeConfig.prvIndicatorRadius)
                                 .attr("stroke-width", sizeConfig.isAllYearView ? "1.5" : "2");
+                        }
+                        
+                        // Reset company label appearance if not selected
+                        if (labelText && !isCompanySelected) {
+                            labelText
+                                .transition()
+                                .duration(200)
+                                .attr("font-weight", sizeConfig.labelFontWeight)
+                                .attr("font-size", sizeConfig.companyLabelFontSize)
+                                .attr("fill", "#4A5568");
                         }
                         
                         // Reset connection highlights
