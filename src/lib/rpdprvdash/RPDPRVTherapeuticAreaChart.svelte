@@ -37,6 +37,7 @@ export let isAllYearView: boolean = false;
 export let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 export let showTooltip: (event: MouseEvent | FocusEvent, data: any, isCompany?: boolean) => void;
 export let hideTooltip: () => void;
+export let hoveredTherapeuticArea: string = "";
 
 // SVG and dimension configuration
 const width = 1020;
@@ -99,6 +100,13 @@ let previousSvgSize = 0;
 
 // Initialize data structures for area-based visualization
 const maxLabelWidth = 85; // Maximum width for area labels
+
+// Watch for therapeutic area hover changes and update highlighting
+$: if (hoveredTherapeuticArea && mainGroup && contentGroup) {
+    highlightTherapeuticArea(hoveredTherapeuticArea);
+} else if (!hoveredTherapeuticArea && mainGroup && contentGroup) {
+    resetTherapeuticAreaHighlight();
+}
 
 /**
  * Process data optimized for therapeutic areas
@@ -1428,6 +1436,98 @@ function openAreaDetailDrawer(area: any) {
         vouchersAwarded: area.vouchersAwarded || 0,
         transactedVouchers: area.transactedVouchers || 0
     });
+}
+
+/**
+ * Highlights a specific therapeutic area
+ */
+function highlightTherapeuticArea(area: string) {
+    if (!mainGroup || !contentGroup) return;
+    
+    // Reset any previous highlights first
+    resetTherapeuticAreaHighlight();
+    
+    // Find and highlight the area node
+    contentGroup.selectAll(".area-node-group")
+        .each(function() {
+            const nodeGroup = d3.select(this);
+            const areaName = nodeGroup.attr("data-area");
+            
+            if (areaName && areaName.toLowerCase() === area.toLowerCase()) {
+                // Highlight this area
+                nodeGroup.selectAll(".area-node, .area-star")
+                    .classed("highlighted-area", true)
+                    .transition()
+                    .duration(300)
+                    .attr("transform", "scale(1.2)");
+                    
+                // Make label stand out
+                nodeGroup.selectAll(".area-label")
+                    .classed("highlighted-label", true)
+                    .transition()
+                    .duration(300)
+                    .style("font-weight", "bold");
+                    
+                // Highlight connected drug nodes
+                nodeGroup.selectAll(".drug-node")
+                    .classed("highlighted-node", true)
+                    .transition()
+                    .duration(300)
+                    .attr("r", (d: any) => (d.radius || 4) * 1.2);
+            } else {
+                // Dim other areas
+                nodeGroup.selectAll(".area-node, .area-star, .drug-node")
+                    .classed("dimmed-node", true)
+                    .transition()
+                    .duration(300)
+                    .style("opacity", 0.35);
+                    
+                nodeGroup.selectAll(".area-label")
+                    .classed("dimmed-label", true)
+                    .transition()
+                    .duration(300)
+                    .style("opacity", 0.5);
+            }
+        });
+}
+
+/**
+ * Resets the therapeutic area highlighting
+ */
+function resetTherapeuticAreaHighlight() {
+    if (!mainGroup || !contentGroup) return;
+    
+    // Reset all highlighted area nodes
+    contentGroup.selectAll(".highlighted-area")
+        .classed("highlighted-area", false)
+        .transition()
+        .duration(300)
+        .attr("transform", null);
+        
+    // Reset all highlighted labels
+    contentGroup.selectAll(".highlighted-label")
+        .classed("highlighted-label", false)
+        .transition()
+        .duration(300)
+        .style("font-weight", null);
+        
+    // Reset all highlighted nodes
+    contentGroup.selectAll(".highlighted-node")
+        .classed("highlighted-node", false)
+        .transition()
+        .duration(300)
+        .attr("r", function() {
+            // Reset to original radius or default
+            return d3.select(this).attr("data-original-radius") || 4;
+        });
+        
+    // Reset all dimmed elements
+    contentGroup.selectAll(".dimmed-node, .dimmed-label")
+        .classed("dimmed-node", false)
+        .classed("dimmed-label", false)
+        .transition()
+        .duration(300)
+        .style("opacity", null);
 }
 
 // Lifecycle hooks

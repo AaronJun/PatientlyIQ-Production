@@ -126,6 +126,9 @@
   let isMobileView = false; // Track if we're in mobile view
   let isTabletView = false; // Track if we're in tablet/iPad view
   
+  // Track currently hovered therapeutic area for legend highlighting
+  let hoveredTherapeuticArea = "";
+  
   // Process stock data and store by company
   let stockDataByCompany: Record<string, any[]> = {};
   
@@ -238,6 +241,8 @@
       currentCompanyMetrics = null;
       currentArea = null;
       areaMetrics = null;
+      // Try to get therapeutic area from first entry
+      hoveredTherapeuticArea = data.length > 0 ? data[0].TherapeuticArea1 || "" : "";
     } else if (data.entries && data.areaName) {
       // New format with therapeutic area metrics
       currentEntries = data.entries;
@@ -249,6 +254,7 @@
       };
       currentView = 'Area View';
       currentCompanyMetrics = null;
+      hoveredTherapeuticArea = data.areaName;
     } else if (data.entries) {
       // Company format with additional metrics
       currentEntries = data.entries;
@@ -263,6 +269,17 @@
       currentView = 'Company View';
       currentArea = null;
       areaMetrics = null;
+      // Try to get most common therapeutic area from entries
+      const areaCounter: Record<string, number> = {};
+      data.entries.forEach((entry: any) => {
+        if (entry.TherapeuticArea1) {
+          areaCounter[entry.TherapeuticArea1] = (areaCounter[entry.TherapeuticArea1] || 0) + 1;
+        }
+      });
+      // Find the most common area
+      hoveredTherapeuticArea = Object.entries(areaCounter)
+        .sort((a, b) => b[1] - a[1])
+        .map(([area]) => area)[0] || "";
     }
   }
 
@@ -273,18 +290,32 @@
     currentCompanyMetrics = null;
     currentArea = null;
     areaMetrics = null;
+    
+    // Extract and count therapeutic areas from entries
+    const areaCounter: Record<string, number> = {};
+    entries.forEach(entry => {
+      if (entry.TherapeuticArea1) {
+        areaCounter[entry.TherapeuticArea1] = (areaCounter[entry.TherapeuticArea1] || 0) + 1;
+      }
+    });
+    // Find the most common area
+    hoveredTherapeuticArea = Object.entries(areaCounter)
+      .sort((a, b) => b[1] - a[1])
+      .map(([area]) => area)[0] || "";
   }
  
   function handleLeave() {
     // Keep the current view if we want to persist data
-    // currentEntries = [];
-    // currentView = null;
+    // Reset hovered area when mouse leaves
+    hoveredTherapeuticArea = "";
   }
 
   function setActiveTab(tab: string) {
     activeTab = tab;
     // Reset views when changing tabs
     resetSidebarView();
+    // Also reset the hovered area
+    hoveredTherapeuticArea = "";
   }
   
   // New function to reset the sidebar to default view
@@ -295,6 +326,7 @@
     currentArea = null;
     areaMetrics = null;
     highlightedTransaction = null;
+    hoveredTherapeuticArea = "";
   }
   
   // Window click handler to reset sidebar
@@ -405,6 +437,44 @@
     // ... rest of the code ...
   }
 
+  function handleLegendAreaClick(area: string) {
+    // Find entries for this therapeutic area
+    const areaEntries = filteredData.filter(d => d.TherapeuticArea1 === area);
+    
+    // Calculate metrics for this area
+    const uniqueCompanies = new Set(areaEntries.map(d => d.Company)).size;
+    const uniqueCandidates = new Set(areaEntries.map(d => d.Candidate)).size;
+    const indications = new Set(areaEntries.filter(d => d.Indication).map(d => d.Indication));
+    
+    // Count clinical trials (phases 1-3)
+    const clinicalTrials = areaEntries.filter(d => 
+      d["Current Development Stage"]?.startsWith("P1") || 
+      d["Current Development Stage"]?.startsWith("P2") || 
+      d["Current Development Stage"]?.startsWith("P3")
+    ).length;
+    
+    // Count vouchers awarded
+    const vouchersAwarded = areaEntries.filter(d => 
+      d["PRV Status"] === "PRV Awarded" || d["PRV Year"]
+    ).length;
+    
+    // Create detail object for the drawer
+    const areaDetail = {
+      areaName: area,
+      entries: areaEntries,
+      totalDrugs: areaEntries.length,
+      uniqueCompanies,
+      uniqueCandidates,
+      clinicalTrials,
+      vouchersAwarded,
+      indications
+    };
+    
+    // Open the therapeutic area drawer
+    selectedTherapeuticAreaDetail = areaDetail;
+    isTherapeuticAreaDrawerOpen = true;
+  }
+
   onMount(() => {
     try {
       // Process stock data on mount
@@ -505,6 +575,7 @@
                     {showTooltip}
                     {hideTooltip}
                     selectedYear={selectedYear}
+                    hoveredTherapeuticArea={hoveredTherapeuticArea}
                     allYearsData={selectedYear === "All" ? rpddData : undefined}
                   />
                 {:else}
@@ -593,6 +664,10 @@
                       }))}
                       selectedYear={selectedYear}
                       showYearCounts={selectedYear !== "All"}
+                      hoveredArea={hoveredTherapeuticArea}
+                      on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
+                      on:areaLeave={() => hoveredTherapeuticArea = ""}
+                      on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
                       {colorScale}
                     />
                   </div>
@@ -659,6 +734,7 @@
                     {showTooltip}
                     {hideTooltip}
                     selectedYear={selectedYear}
+                    hoveredTherapeuticArea={hoveredTherapeuticArea}
                     allYearsData={selectedYear === "All" ? rpddData : undefined}
                   />
                 {:else}
@@ -745,6 +821,10 @@
                       }))}
                       selectedYear={selectedYear}
                       showYearCounts={selectedYear !== "All"}
+                      hoveredArea={hoveredTherapeuticArea}
+                      on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
+                      on:areaLeave={() => hoveredTherapeuticArea = ""}
+                      on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
                       {colorScale}
                     />
                   </div>

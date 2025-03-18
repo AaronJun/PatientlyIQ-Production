@@ -49,10 +49,6 @@
     $: stageRadii = getStageRadii(radius);
     const stageLabelConfig = getStageLabelConfig();
 
-    // Connection highlight color
-    const highlightColor = "#2B6CB0"; // Blue color for highlighted connections
-    const highlightWidth = isAllYearView ? 1.75 : 2.25; // Width for highlighted connections
-
     // Active selection tracking
     let activeCompany: string | null = null;
     let activeStage: string | null = null;
@@ -394,7 +390,9 @@
             } else if (stage === 'FILED' && stageRadii['PRV']) {
                 stageRadius = (stageRadii['FILED'] + stageRadii['PRV']) / 2;
             } else if (stage === 'PRV') {
-                stageRadius = stageRadii['PRV'] * 0.6;
+                stageRadius = stageRadii['PRV'] * .825;
+            } else if (stage === 'TRANS') {
+                stageRadius = stageRadii['TRANS'] * .625;
             }
             
             // Calculate the angular spacing for drugs

@@ -1,8 +1,15 @@
 <!-- RPDRadialLegend.svelte -->
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import { getTherapeuticAreaColor, therapeuticAreaColors } from './utils/colorDefinitions';
     import { createSplitColorStarSVG } from './utils/svg-utils';
+    
+    // Set up event dispatcher
+    const dispatch = createEventDispatcher<{
+        areaHover: { area: string };
+        areaLeave: void;
+        areaClick: { area: string };
+    }>();
     
     interface LegendItem {
         area: string;
@@ -25,6 +32,9 @@
     // Whether to show year-specific counts
     export let showYearCounts = false;
     
+    // Currently hovered area from parent component
+    export let hoveredArea: string = "";
+    
     // colorScale is now optional since we'll use the imported color function by default
     export let colorScale: (area: string) => string = (area) => getTherapeuticAreaColor(area).fill;
     
@@ -32,6 +42,23 @@
     let containerWidth = 0;
     let legendContainer: HTMLElement;
     let columns = 3;
+
+    // Handle hovering over a legend item
+    function handleAreaHover(area: string) {
+        hoveredArea = area;
+        dispatch('areaHover', { area });
+    }
+    
+    // Handle leaving a legend item
+    function handleAreaLeave() {
+        hoveredArea = "";
+        dispatch('areaLeave');
+    }
+    
+    // Handle clicking on a legend item
+    function handleAreaClick(area: string) {
+        dispatch('areaClick', { area });
+    }
 
     // Watch container size and update columns
     function updateColumns() {
@@ -110,7 +137,17 @@
         Therapeutic Areas {selectedYear && showYearCounts ? `(${selectedYear})` : ''}
     </h3>
     {#each displayItems as d}
-        <div class="legend-row flex flex-row justify-start align-middle legend-item">
+        <div 
+            class="legend-row flex flex-row justify-start align-middle legend-item transition-all duration-200"
+            class:highlighted={hoveredArea && hoveredArea === d.area}
+            class:dimmed={hoveredArea && hoveredArea !== d.area}
+            on:mouseenter={() => handleAreaHover(d.area)}
+            on:mouseleave={handleAreaLeave}
+            on:focus={() => handleAreaHover(d.area)}
+            on:blur={handleAreaLeave}
+            on:click={() => handleAreaClick(d.area)}
+            tabindex="0"
+        >
             <div class="legend-star w-4 h-4">
                 {@html getStarSVG(d.area)}
             </div>
@@ -125,6 +162,7 @@
     .legend-row {
         margin-bottom: 0.425rem;
         padding-bottom: .25rem;
+        cursor: pointer;
     }
 
     .legend-item {
@@ -147,5 +185,15 @@
     .legend-container {
         border-top: .325px solid #161616;
         padding-top: .5625rem;
+    }
+    
+    .highlighted {
+        transform: scale(1.05);
+        font-weight: 600;
+        opacity: 1;
+    }
+    
+    .dimmed {
+        opacity: 0.45;
     }
 </style>

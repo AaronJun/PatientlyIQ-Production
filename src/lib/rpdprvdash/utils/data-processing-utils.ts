@@ -169,8 +169,8 @@ export function getStageRadii(radius: number) {
         'P2': radius * 0.7125,
         'P3': radius * 0.5725,
         'FILED': radius * 0.4325,
-        'PRV': radius * 0.325,
-        'TRANS': radius * 0.14275, // Add transacted voucher circle inside PRV
+        'PRV': radius * 0.3425,
+        'TRANS': radius * 0.2325, // Add transacted voucher circle inside PRV
     };
     
     // Define midpoints between stages for drug node placement
@@ -181,7 +181,7 @@ export function getStageRadii(radius: number) {
         'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 2,
         'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2,
         'PRV_MID': (stageRadii.PRV + stageRadii.TRANS) / 2, // Update PRV midpoint
-        'TRANS_MID': stageRadii.TRANS / 2// Add midpoint for transacted vouchers
+        'TRANS_MID': stageRadii.TRANS / 1.2// Add midpoint for transacted vouchers
     };
     
     // Return only the main stage radii, not the midpoints
@@ -452,7 +452,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         labelFontWeight: isAllYearView ? "500" : "500", // Made fonts slightly bolder
         companyNodeWidth: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeWidth
         companyNodeHeight: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeHeight
-        drugNodeRadius: isAllYearView ? 3.7125 : 6.125,
+        drugNodeRadius: isAllYearView ? 4.7125 : 9.125,
         drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,
