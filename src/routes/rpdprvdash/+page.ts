@@ -2,9 +2,9 @@
 export const load = () => {
   return {
     metadata: {
-      title: "The FDA's Rare Disease Research Garden is Blooming",
-      description: "The FDA's Priority Review Voucher Program has planted the seeds for 56 new rare disease treatments, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.",
-      image: "https://patientlyiq.com/rpd-program-preview.png",
+      title: "A Constellation of Hope for Rare Pediatric Disease",
+      description: "The FDA's Priority Review Voucher Program has helped 57 new treatments bring light to familiies living with rare pediatric disease. Our Constellation Chart maps a brightening sky of innovation and hope. With hundreds of new potential therapies on the horizon, we invite you to explore the chart, and join us in advocating for the continued funding of this vital program.",
+      image: "https://patientlyiq.com/rpd-constellation-preview.png",
       url: "https://patientlyiq.com/rpdprvdash"
     }
   };

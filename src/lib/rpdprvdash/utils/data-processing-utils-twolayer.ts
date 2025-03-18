@@ -159,33 +159,76 @@ export function getStageDisplayName(stageCode: string): string {
 }
 
 /**
- * Get the stage radii configuration
+ * Get the stage radii based on radius
  */
-export function getStageRadii(radius: number) {
-    // Define the main stage circles
-    const stageRadii = {
-        'PRE': radius * 0.9725,
-        'P1': radius * 0.845,
-        'P2': radius * 0.7125,
-        'P3': radius * 0.5725,
-        'FILED': radius * 0.4325,
-        'PRV': radius * 0.325,
-        'TRANS': radius * 0.14275, // Add transacted voucher circle inside PRV
-    };
+export function getStageRadii(radius: number, isAllYearView: boolean = false) {
+    // Define the main stage circles with proportions optimized for different views
+    const stageRadii = isAllYearView ? 
+        // All-year view: optimize space distribution to show more data
+        {
+            'PRE': radius * 1.325,    // Larger outer ring for more space
+            'P1': radius * 0.95,      // Increase the space between rings
+            'P2': radius * 0.825,     // for better visualization of more data
+            'P3': radius * 0.745,      
+            'FILED': radius * 0.5125,  
+            'PRV': radius * 0.4925,     
+            'TRANS': radius * 0.3925,  // Increase innermost ring for transacted vouchers
+        } : 
+        // Single-year view: original proportions
+        {
+            'PRE': radius * 1.125,
+            'P1': radius * 0.8725,
+            'P2': radius * 0.7725,
+            'P3': radius * 0.6525,
+            'FILED': radius * 0.4325,
+            'PRV': radius * 0.325,
+            'TRANS': radius * 0.14275,
+        };
     
     // Define midpoints between stages for drug node placement
-    const midpoints = {
-        'PRE_MID': (stageRadii.PRE + stageRadii.P1) / 2,
-        'P1_MID': (stageRadii.P1 + stageRadii.P2) / 2,
-        'P2_MID': (stageRadii.P2 + stageRadii.P3) / 2,
-        'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 2,
-        'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2,
-        'PRV_MID': (stageRadii.PRV + stageRadii.TRANS) / 2, // Update PRV midpoint
-        'TRANS_MID': stageRadii.TRANS / 2// Add midpoint for transacted vouchers
-    };
-    
-    // Return only the main stage radii, not the midpoints
-    return stageRadii;
+    // For all-year view, create two sets of midpoints for staggered placement
+    if (isAllYearView) {
+        // Create primary and secondary midpoints for staggered drug placement
+        const midpoints = {
+            // Primary midpoints (closer to outer ring)
+            'PRE_MID': (stageRadii.PRE + stageRadii.P1) / 2 * 1.05,
+            'P1_MID': (stageRadii.P1 + stageRadii.P2) / 2 * 1.04,
+            'P2_MID': (stageRadii.P2 + stageRadii.P3) / 2 * 1.04,
+            'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 2 * 1.04,
+            'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2 * 1.04,
+            'PRV_MID': (stageRadii.PRV + stageRadii.TRANS) / 2 * 1.2,
+            'TRANS_MID': stageRadii.TRANS * 0.6,
+            
+            // Secondary midpoints (closer to inner ring) - for staggered placement
+            'PRE_MID2': (stageRadii.PRE + stageRadii.P1) / 2 * 1,
+            'P1_MID2': (stageRadii.P1 + stageRadii.P2) / 2 * 0.96,
+            'P2_MID2': (stageRadii.P2 + stageRadii.P3) / 2 * 0.96,
+            'P3_MID2': (stageRadii.P3 + stageRadii.FILED) / 2 * 0.96,
+            'FILED_MID2': (stageRadii.FILED + stageRadii.PRV) / 2 * 0.96,
+            'PRV_MID2': (stageRadii.PRV + stageRadii.TRANS) / 2 * 0.96,
+            'TRANS_MID2': stageRadii.TRANS * .75,
+        };
+        
+        // Add midpoints to the returned object for all-year view
+        return {
+            ...stageRadii,
+            ...midpoints
+        };
+    } else {
+        // Standard midpoints for single-year view
+        const midpoints = {
+            'PRE_MID': (stageRadii.PRE + stageRadii.P1) / 1.25,
+            'P1_MID': (stageRadii.P1 + stageRadii.P2) / 1.25,
+            'P2_MID': (stageRadii.P2 + stageRadii.P3) / 1.25,
+            'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 1.25,
+            'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2,
+            'PRV_MID': (stageRadii.PRV + stageRadii.TRANS) / 2,
+            'TRANS_MID': stageRadii.TRANS * 0.6,
+        };
+        
+        // Return only the main stage radii for single-year view (backward compatibility)
+        return stageRadii;
+    }
 }
 
 /**
@@ -196,8 +239,8 @@ export function formatCompanyName(companyName: string): string {
     
     const phrasesToRemove = [
         'Life Sciences', 'Life Science', 'Pharmaceuticals', 'Biotechnology',
-        'Therapeutics', 'Sciences', 'Biometrics', 'Partners', 'Science', 'Biologics', 'Gene Therapies',
-        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences', 'BioTherapeutics',  'Bioscience', 'Biotechnologies', 'Biopharmaceuticals', 'Precision Medicines'
+        'Therapeutics', 'Biometrics', 'Partners', 'Science', 'Biologics', 'Gene Therapies', ', Institute of Zoology, Chinese Academy of Sciences',
+        'Pharma', 'Biotech', 'Genetic', 'Bio', 'Biosciences', 'BioTherapeutics', 'Theranostics',  'Bioscience', 'Biotechnologies', 'Biopharmaceuticals', 'Precision Medicines'
     ];
     
     let formattedName = companyName;
@@ -259,6 +302,11 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
     const labelHeight = labelConfig.textHeight;
     const minDistanceBetweenLabels = labelHeight * 2.5; // Minimum spacing between labels
     const isAlternatingLabels = companies.length > 80;
+    const isAllYearView = labelConfig.textHeight < 9; // Detect all-year view based on text height
+
+    // Get the stage radii based on the labelConfig's minRadius (which is based on the overall radius)
+    const overallRadius = labelConfig.minRadius / (isAllYearView ? 1.25 : 1.125); // Reverse-engineer the original radius
+    const stageRadii = getStageRadii(overallRadius, isAllYearView);
 
     companies.forEach((company, index) => {
         const angle = companyAngles.get(company.company);
@@ -269,15 +317,50 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
         // Determine if label should be on left or right side
         const isRightSide = Math.cos(centerAngle) > 0;
         
-        // Calculate initial radius based on angle and whether we're alternating positions
+        // CUSTOM PLACEMENT BASED ON STAGES
+        // Determine which stages this company has
+        const hasPreStage = company.stages.has('PRE') && company.stages.get('PRE').length > 0;
+        const hasP1Stage = company.stages.has('P1') && company.stages.get('P1').length > 0;
+        const hasP2Stage = company.stages.has('P2') && company.stages.get('P2').length > 0;
+        const hasP3Stage = company.stages.has('P3') && company.stages.get('P3').length > 0;
+        const hasPRVStage = company.stages.has('PRV') && company.stages.get('PRV').length > 0;
+        const hasTransStage = company.stages.has('TRANS') && company.stages.get('TRANS').length > 0;
+        const hasFiledStage = company.stages.has('FILED') && company.stages.get('FILED').length > 0;
+
+        // Determine category for company placement
+        const onlyPreStage = hasPreStage && !hasP1Stage && !hasP2Stage && !hasP3Stage && !hasPRVStage && !hasTransStage && !hasFiledStage;
+        const onlyEarlyStages = (hasP1Stage || hasP2Stage || hasP3Stage) && !hasPreStage && !hasPRVStage && !hasTransStage && !hasFiledStage;
+        const onlyLateStages = (hasPRVStage || hasTransStage || hasFiledStage) && !hasPreStage && !hasP1Stage && !hasP2Stage && !hasP3Stage;
+
+        // Calculate initial radius based on category and alternating pattern
         const shouldPositionCloser = isAlternatingLabels && (index % 2 === 0);
-        let baseRadius = shouldPositionCloser ? labelConfig.minRadius : labelConfig.alternateRadius;
+        let baseRadius;
+        
+        if (onlyPreStage) {
+            // Place outside PRE radial
+            baseRadius = shouldPositionCloser ? labelConfig.minRadius : labelConfig.alternateRadius;
+        } else if (onlyEarlyStages) {
+            // Place between PRE and P1 radials - calculate midpoint
+            const preP1Midpoint = (stageRadii['PRE'] + stageRadii['P1']) / 2;
+            // Use a slightly different scaling for all-year view to prevent overlap
+            const scaleFactor = isAllYearView ? 0.95 : 0.98;
+            baseRadius = shouldPositionCloser ? preP1Midpoint : preP1Midpoint * scaleFactor;
+        } else if (onlyLateStages) {
+            // Place between P3 and PRV radials - calculate midpoint
+            const p3PRVMidpoint = (stageRadii['P3'] + stageRadii['PRV']) / 2;
+            // Use a slightly different scaling for all-year view to prevent overlap
+            const scaleFactor = isAllYearView ? 0.985 : 0.918;
+            baseRadius = shouldPositionCloser ? p3PRVMidpoint : p3PRVMidpoint * scaleFactor;
+        } else {
+            // Default placement for companies with mixed stages
+            baseRadius = shouldPositionCloser ? labelConfig.minRadius : labelConfig.alternateRadius;
+        }
         
         // Find a position that doesn't overlap with existing labels
         let currentRadius = baseRadius;
         let overlap = true;
         let attempts = 0;
-        const maxAttempts = 10; // Limit attempts to find non-overlapping position
+        const maxAttempts = isAllYearView ? 15 : 10; // More attempts for all-year view
         
         while (overlap && attempts < maxAttempts) {
             // Calculate position based on angle and current radius
@@ -305,7 +388,8 @@ export function calculateOptimalLabelPlacement(companies: any[], companyAngles: 
             }
             
             // Try a slightly different radius if there's overlap
-            currentRadius += labelConfig.padding;
+            // Use smaller increments in all-year view to find placement more precisely
+            currentRadius += isAllYearView ? labelConfig.padding * 0.8 : labelConfig.padding;
             attempts++;
         }
         
@@ -447,13 +531,14 @@ export function processDataForLayout(data: any[]) {
 export function getSizeConfig(isAllYearView: boolean) {
     return {
         // When all years view is active, use smaller sizes
-        companyLabelFontSize: isAllYearView ? "4.425px" : "9.25px",
+        companyLabelFontSize: isAllYearView ? "8.425px" : "9.25px",
         labelFontSize: isAllYearView ? "8.425px" : "10.25px", // Increased font size for therapeutic areas
-        labelFontWeight: isAllYearView ? "500" : "500", // Made fonts slightly bolder
-        companyNodeWidth: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeWidth
+        labelFontWeight: isAllYearView ? "400" : "500", // Made fonts slightly bolder
+        companyNodeWidth: isAllYearView ? 7.25 : 7.725, // Add back the companyNodeWidth
         companyNodeHeight: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeHeight
-        drugNodeRadius: isAllYearView ? 3.7125 : 6.125,
-        drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
+        drugNodeRadius: isAllYearView ? 4.7125 : 8.125,
+        drugNodeStrokeWidth: isAllYearView ? 1.225 : 1.5125,
+        // Radius of the circular indicator shown around PRV-awarded drug nodes
         prvIndicatorRadius: isAllYearView ? 9 : 11.25,
         dotSize: isAllYearView ? 0 : 0,
         dotSpacing: isAllYearView ? 0 : 0,
@@ -472,7 +557,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         maxDrugsPerCompany: 10, // Maximum number of drugs to show per company in all years view
         useProgressiveLoading: isAllYearView, // Use progressive loading for all years view
         batchSize: 20, // Number of companies to render in each batch
-        batchDelay: 100, // Delay between batches in ms
+        batchDelay: 200, // Delay between batches in ms
         useSimplifiedDrugNodes: isAllYearView, // Use simplified drug nodes in all years view
         skipNonEssentialEffects: isAllYearView, // Skip non-essential visual effects
         useStandardStrokeColors: true, // Use standard stroke colors instead of different ones
@@ -480,16 +565,21 @@ export function getSizeConfig(isAllYearView: boolean) {
 }
 
 /**
- * Get the label configuration object based on view mode and radius
+ * Get label configuration based on radius
  */
 export function getLabelConfig(radius: number, isAllYearView: boolean) {
+    // Adjust the radii values for the all-year view to work with expanded radials
+    const minRadiusFactor = isAllYearView ? 1.725 : 1.4525;
+    const maxRadiusFactor = isAllYearView ? 1.06 : 1.10;  // Closer to stage radials in all-year view
+    const alternateRadiusFactor = isAllYearView ? 1.525 : 1.15;
+    
     return {
-        minRadius: radius * 1.0125, // Position closest to the outermost circle
-        maxRadius: radius * 1.10, // Maximum radius for labels
-        alternateRadius: radius * 1.15, // Alternate position for better legibility with many entries
-        padding: 10.25,
-        minAngleDiff: Math.PI / 30, // Minimum angle between labels
-        textHeight: 10,
+        minRadius: radius * minRadiusFactor, // Position closest to the outermost circle
+        maxRadius: radius * maxRadiusFactor, // Maximum radius for labels
+        alternateRadius: radius * alternateRadiusFactor, // Alternate position for better legibility with many entries
+        padding: isAllYearView ? 8.5 : 10.25, // Smaller padding in all-year view
+        minAngleDiff: isAllYearView ? Math.PI / 60 : Math.PI / 30, // Tighter angle difference in all-year view
+        textHeight: isAllYearView ? 8 : 10, // Smaller text height in all-year view
         maxDotsPerRow: 0, // For pipeline dots
         dotRowHeight: 0 // For pipeline dots
     };
@@ -703,8 +793,33 @@ export function createLabelGroup(
  * @param maxDrugsPerCompany Maximum number of drugs to show per company
  * @returns Sampled dataset for lighter rendering
  */
-export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100, maxDrugsPerCompany: number = 5): any[] {
+export function sampleDataForAllYearView(data: any[], maxCompanies: number = 350, maxDrugsPerCompany: number = 10): any[] {
     console.time('sampleDataForAllYearView');
+    
+    // Filter data for years 2020-2025 and exclude terminated/canceled entries
+    const filteredData = data.filter(entry => {
+        // Check year
+        const year = entry["PRV Year"] || entry["RPDD Year"] || entry["Purchase Year"];
+        if (!year) return false;
+        const yearNum = parseInt(year);
+        if (yearNum < 2020 || yearNum > 2025) return false;
+        
+        // Check for terminated/canceled status
+        // Exclude if PRV is terminated/liquidated
+        if (isPRVTerminatedOrLiquidated(entry)) return false;
+        
+        // Exclude if drug development is terminated/canceled/discontinued
+        if (entry["PRV Status"] === "Terminated" || 
+            entry["PRV Status"] === "Liquidated" ||
+            entry["PRV Status"] === "Canceled" ||
+            entry["Current Development Stage"] === "Terminated" || 
+            entry["Current Development Stage"] === "Discontinued" || 
+            entry["Current Development Stage"] === "Canceled") {
+            return false;
+        }
+        
+        return true;
+    });
     
     // First process the data to get company information
     // Use a more efficient approach to group by company
@@ -717,7 +832,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     }>();
     
     // First pass: count drugs and check for PRV entries and transactions
-    data.forEach(entry => {
+    filteredData.forEach(entry => {
         const company = entry.Company;
         if (!company) return;
         
@@ -769,7 +884,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     
     // First pass: include PRV entries and transacted vouchers
     const sampledData: any[] = [];
-    const priorityEntries = data.filter(entry => 
+    const priorityEntries = filteredData.filter(entry => 
         (hasPRVAward(entry) || (entry["Purchase Year"] && entry["Purchase Year"].trim() !== "")) && 
         topCompanySet.has(entry.Company)
     );
@@ -784,7 +899,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     
     // Second pass: include entries in later stages
     const stageOrder = ['APRV', 'FILED', 'P3', 'P2', 'P1', 'PRE'];
-    const remainingEntries = data.filter(entry => 
+    const remainingEntries = filteredData.filter(entry => 
         !hasPRVAward(entry) && 
         !(entry["Purchase Year"] && entry["Purchase Year"].trim() !== "") && 
         topCompanySet.has(entry.Company) &&
@@ -808,7 +923,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     });
     
     console.timeEnd('sampleDataForAllYearView');
-    console.log(`Sampled data: ${sampledData.length} entries from original ${data.length} entries`);
+    console.log(`Sampled data: ${sampledData.length} entries from original ${data.length} entries (2020-2025 only, excluding terminated/canceled)`);
     return sampledData;
 }
 
@@ -1010,4 +1125,57 @@ export function generateSampledData(data: any[], maxElements: number = 500, prio
     
     console.log(`Sampled data: ${sampledData.length} entries from original ${data.length} entries`);
     return sampledData;
+}
+
+/**
+ * Calculate an adjusted drug node radius based on the number of drugs in a stage
+ * to prevent overcrowding in dense areas of the visualization
+ */
+export function getAdjustedNodeRadius(
+    sizeConfig: any, 
+    drugsCount: number, 
+    angleWidth: number, 
+    stageRadius: number
+): number {
+    // Base radius from config
+    const baseRadius = sizeConfig.drugNodeRadius;
+    
+    // If few drugs or this is a non-critical number, return the base radius
+    if (drugsCount <= 5) {
+        return baseRadius;
+    }
+    
+    // Calculate the approximate circumference portion this company occupies at this stage
+    const arcLength = angleWidth * stageRadius;
+    
+    // Calculate approximate space available per drug
+    const spacePerDrug = arcLength / drugsCount;
+    
+    // Ideal minimum space between drug nodes (based on 2x the node diameter)
+    const idealSpace = baseRadius * 4;
+    
+    // Calculate scaling factor based on available space vs ideal space
+    const scaleFactor = Math.min(1, spacePerDrug / idealSpace);
+    
+    // Use a non-linear scaling to avoid too small nodes
+    // This ensures that nodes don't get smaller than 50% of their original size
+    const adjustedScaleFactor = 0.5 + (scaleFactor * 0.5);
+    
+    // Calculate the adjusted radius
+    let adjustedRadius = baseRadius * adjustedScaleFactor;
+    
+    // For moderately crowded stages (6-12 drugs), use a more gradual scale
+    if (drugsCount <= 12) {
+        // Linear interpolation between full size at 5 drugs and adjusted size at 12 drugs
+        const t = (drugsCount - 5) / 7; // normalized position between 5 and 12
+        adjustedRadius = baseRadius * (1 - (t * (1 - adjustedScaleFactor)));
+    }
+    
+    // For extremely crowded stages, make them even smaller
+    if (drugsCount > 20) {
+        adjustedRadius = Math.max(baseRadius * 0.4, adjustedRadius * 0.8);
+    }
+    
+    // Ensure the radius doesn't go below a minimum threshold
+    return Math.max(baseRadius * 0.4, adjustedRadius);
 }

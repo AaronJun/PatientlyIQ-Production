@@ -215,7 +215,7 @@
     {/if}
   </section>
   
-  <!-- Section 2: PRV Program Flow (Sankey Diagram) -->
+  <!-- Section 2: PRV Program Flow (Sankey Diagram)
   <section class="mb-6">
     <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
          on:click={() => toggleSection('sankey')}>
@@ -240,7 +240,7 @@
         </div>
       </div>
     {/if}
-  </section>
+  </section> -->
   
   <!-- Section 3: PRV Value Trends -->
   <section class="mb-6">
