@@ -51,15 +51,15 @@
       {year} Year Summary
     </h3>
     
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="stat-card">
         <span class="text-3xl font-bold text-slate-500">{totalRPDDs}</span>
-        <p class="text-xs text-slate-500 mt-1">Total RPDDs</p>
+        <p class="text-xs text-slate-500">Total RPDDs</p>
       </div>
       
       <div class="stat-card">
         <span class="text-3xl font-bold text-emerald-700">{prvsAwarded}</span>
-        <p class="text-xs text-slate-500 mt-1">PRVs Awarded</p>
+        <p class="text-xs text-slate-500">PRVs Awarded</p>
       </div>
     </div>
     
@@ -83,7 +83,7 @@
     </div>
     
     {#if topAreas.length > 0}
-      <div>
+      <div class="metric-list space-y-2 mt-2 pt-2">
         <h4 class="text-xs font-medium text-slate-600 mb-2">Most Active Therapeutic Areas</h4>
         <div class="space-y-2">
           {#each topAreas as area}
@@ -135,4 +135,6 @@
       transform: translateY(-2px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
+    
   </style>
