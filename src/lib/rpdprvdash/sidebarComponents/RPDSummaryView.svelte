@@ -51,7 +51,7 @@
       {year} Year Summary
     </h3>
     
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-2 gap-4">
       <div class="stat-card">
         <span class="text-3xl font-bold text-slate-500">{totalRPDDs}</span>
         <p class="text-xs text-slate-500 mt-1">Total RPDDs</p>

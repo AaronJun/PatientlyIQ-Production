@@ -2,10 +2,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { getTherapeuticAreaColor, therapeuticAreaColors } from './utils/colorDefinitions';
+    import { createSplitColorStarSVG } from './utils/svg-utils';
     
     interface LegendItem {
         area: string;
         count: number;
+        yearCount?: number; // Optional count for specific year
     }
 
     // Get all areas from the colorDefinitions file
@@ -16,6 +18,12 @@
     
     // Optionally filter items to only show areas with counts > 0
     export let showOnlyWithCounts = false;
+    
+    // Selected year (if applicable)
+    export let selectedYear: string = "";
+    
+    // Whether to show year-specific counts
+    export let showYearCounts = false;
     
     // colorScale is now optional since we'll use the imported color function by default
     export let colorScale: (area: string) => string = (area) => getTherapeuticAreaColor(area).fill;
@@ -61,8 +69,36 @@
         };
     });
 
-    // Filtered items
-    $: displayItems = showOnlyWithCounts ? items.filter(item => item.count > 0) : items;
+    // Filter items based on whether they have counts
+    $: filteredItems = showOnlyWithCounts ? items.filter(item => 
+        showYearCounts 
+            ? (item.yearCount && item.yearCount > 0) 
+            : (item.count > 0)
+    ) : items;
+    
+    // Sort items by the appropriate count in descending order
+    $: sortedItems = filteredItems.sort((a, b) => {
+        if (showYearCounts) {
+            return (b.yearCount || 0) - (a.yearCount || 0);
+        } else {
+            return b.count - a.count;
+        }
+    });
+    
+    // The final items to display
+    $: displayItems = sortedItems;
+    
+    // Generate star SVG for each area
+    function getStarSVG(area: string): string {
+        const areaColors = getTherapeuticAreaColor(area);
+        return createSplitColorStarSVG(
+            16, // Size in pixels, increased from 12px
+            areaColors.fill,
+            areaColors.stroke,
+            "#161616", // Border color
+            area.replace(/\s+/g, '-').toLowerCase() // Use sanitized area name as unique ID
+        );
+    }
 </script>
 
 <div 
@@ -70,19 +106,16 @@
     style="grid-template-columns: repeat({columns}, minmax(0, 1fr));"
     bind:this={legendContainer}
 >
-    <h3 class="text-xs font-semibold text-slate-800 capitalize mb-4" style="grid-column: span {columns};">Therapeutic Areas</h3>
+    <h3 class="text-xs font-semibold text-slate-800 capitalize mb-4" style="grid-column: span {columns};">
+        Therapeutic Areas {selectedYear && showYearCounts ? `(${selectedYear})` : ''}
+    </h3>
     {#each displayItems as d}
         <div class="legend-row flex flex-row justify-start align-middle legend-item">
-            <div class="legend-color w-3 h-3 rounded-full relative overflow-hidden">
-                <div class="absolute inset-0 right-1/2 bg-left-half" 
-                     style="background-color: {colorScale(d.area)};">
-                </div>
-                <div class="absolute inset-0 left-1/2 bg-right-half" 
-                     style="background-color: {getTherapeuticAreaColor(d.area).stroke};">
-                </div>
+            <div class="legend-star w-4 h-4">
+                {@html getStarSVG(d.area)}
             </div>
-            <span class="text-[9.725px] text-slate-800 font-sans font-base">
-                {d.area}{d.count > 0 ? ` | ${d.count}` : ''}
+            <span class="text-xs text-slate-700 font-sans font-base">
+                {d.area}{showYearCounts && d.yearCount !== undefined ? ` | ${d.yearCount}` : d.count > 0 ? ` | ${d.count}` : ''}
             </span>
         </div>
     {/each}
@@ -97,13 +130,18 @@
     .legend-item {
         display: flex;
         align-items: center;
-        gap: 0.32725rem;
+        gap: 0.52725rem;
     }
 
-    .legend-color {
-        border: 1px solid #161616;
+    .legend-star {
         display: flex;
-
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        top: .25px; /* Slight adjustment for vertical alignment */
+        width: 14px;
+        height: 14px;
+        min-width: 14px;
     }
    
     .legend-container {

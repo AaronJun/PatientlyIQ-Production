@@ -558,7 +558,7 @@
                   </svg>
                 </button>
           
-                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg px-4 pt-6 flex flex-col">
                   <!-- Search component in desktop sidebar -->
                   <div class="mb-4">
                     <RpdprvSearch
@@ -585,7 +585,14 @@
                   <!-- Legend stays at bottom -->
                   <div class="flex-none mt-6 pt-4 border-t border-slate-200">
                     <RPDRadialLegend 
-                      items={processedData}
+                      items={processedData.map(item => ({
+                        ...item,
+                        yearCount: selectedYear === "All" ? 
+                          item.count : 
+                          filteredData.filter(d => d.TherapeuticArea1 === item.area).length
+                      }))}
+                      selectedYear={selectedYear}
+                      showYearCounts={selectedYear !== "All"}
                       {colorScale}
                     />
                   </div>
@@ -730,7 +737,14 @@
                   <!-- Legend stays at bottom -->
                   <div class="flex-none mt-6 pt-4 border-t border-slate-200">
                     <RPDRadialLegend 
-                      items={processedData}
+                      items={processedData.map(item => ({
+                        ...item,
+                        yearCount: selectedYear === "All" ? 
+                          item.count : 
+                          filteredData.filter(d => d.TherapeuticArea1 === item.area).length
+                      }))}
+                      selectedYear={selectedYear}
+                      showYearCounts={selectedYear !== "All"}
                       {colorScale}
                     />
                   </div>

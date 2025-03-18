@@ -41,7 +41,7 @@
   let isCompanyDrawerOpen = false;
   let selectedCompany = "";
 
-  const width = 920;
+  const width = 850;
   const height = width;
   const labelConfig = {
     radius: Math.min(width, height) * .420,

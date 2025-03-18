@@ -2,6 +2,7 @@
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../../utils/colorDefinitions';
     import { hasPRVAward, isPRVTerminatedOrLiquidated } from '../../utils/data-processing-utils';
+    import { createStarShape } from '../../utils/svg-utils';
 
     // Props
     export let drug: any;
@@ -68,15 +69,18 @@
         const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
         const opacity = isTerminatedOrLiquidated ? 0.7 : 1;
 
-        // Drug circle
-        const circle = drugGroup.append("circle")
-            .attr("r", sizeConfig.drugNodeRadius)
-            .attr("fill", fillColor)
-            .attr("stroke", finalStrokeColor)
-            .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-            .attr("opacity", opacity)
-            // Store the initial opacity as a data attribute for later reference
-            .attr("data-initial-opacity", opacity);
+        // Create star shape instead of circle
+        const star = createStarShape(
+            drugGroup,
+            sizeConfig.drugNodeRadius,
+            fillColor,
+            finalStrokeColor,
+            sizeConfig.drugNodeStrokeWidth,
+            opacity
+        );
+        
+        // Store the initial opacity as a data attribute for later reference
+        star.attr("data-initial-opacity", opacity);
             
         // Add keyboard event handler for accessibility
         drugGroup.on("keydown", function(event: KeyboardEvent) {
@@ -99,22 +103,22 @@
         // Add focus handlers for keyboard navigation
         drugGroup.on("focus", function(event: FocusEvent) {
             // Highlight the drug node
-            const circle = drugGroup.select("circle");
+            const star = drugGroup.select("path");
             
             // FORCE full opacity for all nodes on focus
-            circle.attr("opacity", 1);
+            star.attr("opacity", 1);
             
             // Highlight the company label text FIRST
             highlightCompanyLabel();
             
-            // Then apply other visual changes
+            // Apply visual changes - scale the star to highlight it
             if (sizeConfig.useAnimations) {
-                circle.transition()
+                star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.highlightedNodeRadius);
+                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.highlightedNodeRadius);
+                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
             }
             
             // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
@@ -128,24 +132,24 @@
         
         drugGroup.on("blur", function() {
             // Reset drug node appearance
-            const circle = drugGroup.select("circle");
+            const star = drugGroup.select("path");
             
             // Get the initial opacity from the data attribute
-            const initialOpacity = circle.attr("data-initial-opacity") || "1";
+            const initialOpacity = star.attr("data-initial-opacity") || "1";
             
             // FORCE immediate opacity reset before any transitions
-            circle.attr("opacity", initialOpacity);
+            star.attr("opacity", initialOpacity);
             
-            // Then apply other visual changes
+            // Reset the scale
             if (sizeConfig.useAnimations) {
-                circle.transition()
+                star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.drugNodeRadius)
+                    .attr("transform", "scale(1)")
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("stroke", strokeColor);
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.drugNodeRadius)
+                star.attr("transform", "scale(1)")
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("stroke", strokeColor);
             }
@@ -160,22 +164,22 @@
         drugGroup
             .on("mouseenter", (event: MouseEvent) => {
                 // Highlight the drug node
-                const circle = drugGroup.select("circle");
+                const star = drugGroup.select("path");
                 
                 // FORCE full opacity for all nodes on hover
-                circle.attr("opacity", 1);
+                star.attr("opacity", 1);
                 
                 // Highlight the company label text FIRST
                 highlightCompanyLabel();
                 
-                // Then apply other visual changes
+                // Apply visual changes - scale the star
                 if (sizeConfig.useAnimations) {
-                    circle.transition()
+                    star.transition()
                         .duration(sizeConfig.transitionDuration)
-                        .attr("r", sizeConfig.highlightedNodeRadius);
+                        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
                 } else {
                     // Immediate update without transition
-                    circle.attr("r", sizeConfig.highlightedNodeRadius);
+                    star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
                 }
                 
                 // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
@@ -192,24 +196,24 @@
             })
             .on("mouseleave", () => {
                 // Reset drug node appearance
-                const circle = drugGroup.select("circle");
+                const star = drugGroup.select("path");
                 
                 // Get the initial opacity from the data attribute
-                const initialOpacity = circle.attr("data-initial-opacity") || "1";
+                const initialOpacity = star.attr("data-initial-opacity") || "1";
                 
                 // FORCE immediate opacity reset before any transitions
-                circle.attr("opacity", initialOpacity);
+                star.attr("opacity", initialOpacity);
                 
-                // Then apply other visual changes
+                // Reset the scale
                 if (sizeConfig.useAnimations) {
-                    circle.transition()
+                    star.transition()
                         .duration(sizeConfig.transitionDuration)
-                        .attr("r", sizeConfig.drugNodeRadius)
+                        .attr("transform", "scale(1)")
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .attr("stroke", strokeColor);
                 } else {
                     // Immediate update without transition
-                    circle.attr("r", sizeConfig.drugNodeRadius)
+                    star.attr("transform", "scale(1)")
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .attr("stroke", strokeColor);
                 }
@@ -336,37 +340,37 @@
         const fillColor = isTerminatedOrLiquidated ? "#CCCCCC" : areaColors.fill;
         const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
         
-        const circle = drugGroup.select("circle");
-        const initialOpacity = circle.attr("data-initial-opacity") || (isTerminatedOrLiquidated ? "0.7" : "1");
+        const star = drugGroup.select("path");
+        const initialOpacity = star.attr("data-initial-opacity") || (isTerminatedOrLiquidated ? "0.7" : "1");
         
         if (isHighlighted) {
             // FORCE full opacity when highlighted
-            circle.attr("opacity", 1);
+            star.attr("opacity", 1);
             
             // Highlight the company label text FIRST
             highlightCompanyLabel();
             
-            // Then apply other visual changes
+            // Apply visual changes - scale the star
             if (sizeConfig.useAnimations) {
-                circle.transition()
+                star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.highlightedNodeRadius);
+                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.highlightedNodeRadius);
+                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
             }
         } else {
             // Use transitions only if animations are enabled
             if (sizeConfig.useAnimations) {
-                circle.transition()
+                star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("r", sizeConfig.drugNodeRadius)
+                    .attr("transform", "scale(1)")
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("stroke", finalStrokeColor)
                     .attr("opacity", initialOpacity); // Restore original opacity
             } else {
                 // Immediate update without transition
-                circle.attr("r", sizeConfig.drugNodeRadius)
+                star.attr("transform", "scale(1)")
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                     .attr("stroke", finalStrokeColor)
                     .attr("opacity", initialOpacity); // Restore original opacity

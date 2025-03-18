@@ -22,6 +22,9 @@ import {
     getStageColor
 } from './utils/colorDefinitions';
 
+// Import SVG utilities for star shapes
+import { createStarShape, createStarPath } from './utils/svg-utils';
+
 // Component props
 export let data: any[] = [];
 export let onCompanyHover: (data: any) => void = () => {};
@@ -668,20 +671,28 @@ function renderArea(
                 const finalStrokeColor = isTerminatedOrLiquidated ? "#999999" : strokeColor;
                 const opacity = isTerminatedOrLiquidated ? 0.7 : 1;
 
-                // Draw drug circle
-                drugGroup.append("circle")
-                    .attr("r", sizeConfig.drugNodeRadius)
-                    .attr("fill", fillColor)
-                    .attr("stroke", finalStrokeColor)
-                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-                    .attr("opacity", opacity)
-                    .style("filter", ""); // Remove filter URL completely
+                // Draw drug node using star shape instead of circle
+                const star = createStarShape(
+                    drugGroup,
+                    sizeConfig.drugNodeRadius,
+                    fillColor,
+                    finalStrokeColor,
+                    sizeConfig.drugNodeStrokeWidth,
+                    opacity
+                );
+                
+                // Store initial opacity for reference in interactions
+                star.attr("data-initial-opacity", opacity);
 
                 // Add PRV indicator if needed and rendering full details
                 if (shouldRenderFullDetail && hasPRVAward(drug)) {
-                    drugGroup.append("circle")
-                        .attr("r", sizeConfig.prvIndicatorRadius)
+                    // Add a small outer ring to indicate PRV
+                    drugGroup.append("path")
+                        .attr("d", createStarPath(sizeConfig.drugNodeRadius * 1.3)) // 30% larger path
                         .attr("fill", "none")
+                        .attr("stroke", finalStrokeColor)
+                        .attr("stroke-width", 1)
+                        .attr("stroke-dasharray", "2,2")
                         .attr("opacity", 0.8);
                 }
 
@@ -849,11 +860,15 @@ function handleDrugKeydown(event: KeyboardEvent, drug: any, areaName: string, dr
 
 function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, drugId: string) {
     // Highlight this drug node visually and in keyboard navigation
-    drugGroup.select("circle")
-        .transition()
+    const star = drugGroup.select("path");
+    
+    // Force full opacity on focus
+    star.attr("opacity", 1);
+    
+    // Scale the star to highlight it
+    star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("r", sizeConfig.highlightedNodeRadius)
-        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5)
+        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`)
         .attr("stroke", highlightColor);
     
     // Highlight related connections
@@ -870,14 +885,21 @@ function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<a
 }
 
 function handleDrugBlur(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance (never apply shadow)
-    drugGroup.select("circle")
-        .transition()
+    // Reset drug appearance
+    const star = drugGroup.select("path");
+    
+    // Get the initial opacity from the data attribute
+    const initialOpacity = star.attr("data-initial-opacity") || "1";
+    
+    // Reset opacity first
+    star.attr("opacity", initialOpacity);
+    
+    // Reset scale and other properties
+    star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("r", sizeConfig.drugNodeRadius)
+        .attr("transform", "scale(1)")
         .attr("stroke", strokeColor)
-        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-        .style("filter", "");
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth);
     
     // Reset connections
     resetConnectionHighlights();
@@ -888,10 +910,16 @@ function handleDrugBlur(drug: any, drugGroup: d3.Selection<any, unknown, null, u
 
 function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, drugId: string) {
     // Highlight the drug node
-    drugGroup.select("circle")
-        .transition()
+    const star = drugGroup.select("path");
+    
+    // Force full opacity on hover
+    star.attr("opacity", 1);
+    
+    // Scale the star to highlight it
+    star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("r", sizeConfig.highlightedNodeRadius);
+        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`)
+        .attr("stroke", highlightColor);
     
     // Highlight connections
     highlightDrugConnections(drugId);
@@ -901,14 +929,21 @@ function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Select
 }
 
 function handleDrugMouseLeave(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance (never apply shadow)
-    drugGroup.select("circle")
-        .transition()
+    // Reset drug appearance
+    const star = drugGroup.select("path");
+    
+    // Get the initial opacity from the data attribute
+    const initialOpacity = star.attr("data-initial-opacity") || "1";
+    
+    // Reset opacity first
+    star.attr("opacity", initialOpacity);
+    
+    // Reset scale and other properties
+    star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("r", sizeConfig.drugNodeRadius)
+        .attr("transform", "scale(1)")
         .attr("stroke", strokeColor)
-        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
-        .style("filter", "");
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth);
     
     // Reset connections
     resetConnectionHighlights();
