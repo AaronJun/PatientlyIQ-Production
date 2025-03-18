@@ -164,7 +164,7 @@ export function getStageDisplayName(stageCode: string): string {
 export function getStageRadii(radius: number, isAllYearView: boolean = false) {
     // Define the main stage circles
     // Use larger multipliers for all-year view to spread out the visualization
-    const multiplier = isAllYearView ? 1.15 : 1.0; // 15% larger in all-year view
+    const multiplier = isAllYearView ? 1.45 : 1.0; // 15% larger in all-year view
     
     const stageRadii = {
         'PRE': radius * 0.9725 * multiplier,
@@ -458,7 +458,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         drugNodeRadius: isAllYearView ? 6.25 : 9.125, // Increased from 4.7125 to 6.25
         drugNodeStrokeWidth: isAllYearView ? 1.25 : 1.5125, // Increased from 0.925 to 1.25
         connectionStrokeWidth: isAllYearView ? 0.5 : 0.7625, // Increased from 0.125 to 0.5
-        connectionOpacity: isAllYearView ? 0.5 : 0.325, // Increased from 0.4025 to 0.5
+        connectionOpacity: isAllYearView ? 0.5 : 0.25, // Increased from 0.4025 to 0.5
         highlightedNodeRadius: isAllYearView ? 9.5 : 10.25, // Increased from 8 to 9.5
         highlightedNodePosition: isAllYearView ? 1.5 : 1.25, // Increased from 1.25 to 1.5
         // Optimization settings
@@ -467,8 +467,8 @@ export function getSizeConfig(isAllYearView: boolean) {
         transitionDuration: isAllYearView ? 0 : 0, // No transitions in all year view
         simplifiedConnections: isAllYearView, // Use simplified connections in all year view
         // New performance optimizations
-        maxCompaniesForAllYears: 350, // Maximum number of companies to show in all years view
-        maxDrugsPerCompany: 10, // Maximum number of drugs to show per company in all years view
+        maxCompaniesForAllYears: 360, // Maximum number of companies to show in all years view
+        maxDrugsPerCompany: 6, // Maximum number of drugs to show per company in all years view
         useProgressiveLoading: isAllYearView, // Use progressive loading for all years view
         batchSize: 20, // Number of companies to render in each batch
         batchDelay: 100, // Delay between batches in ms
@@ -483,12 +483,12 @@ export function getSizeConfig(isAllYearView: boolean) {
  */
 export function getLabelConfig(radius: number, isAllYearView: boolean) {
     // Use larger multipliers for labels in all-year view to match the increased stage radii
-    const multiplier = isAllYearView ? 1.15 : 1.0; // 15% larger in all-year view, matching stage radii
+    const multiplier = isAllYearView ? 1.45 : 1.0; // 15% larger in all-year view, matching stage radii
     
     return {
-        minRadius: radius * 1.0125 * multiplier, // Position closest to the outermost circle
+        minRadius: radius * 1.025 * multiplier, // Position closest to the outermost circle
         maxRadius: radius * 1.10 * multiplier, // Maximum radius for labels
-        alternateRadius: radius * 1.15 * multiplier, // Alternate position for better legibility with many entries
+        alternateRadius: radius * 1.1425 * multiplier, // Alternate position for better legibility with many entries
         padding: 10.25,
         minAngleDiff: Math.PI / 30, // Minimum angle between labels
         textHeight: 10,
@@ -708,6 +708,18 @@ export function createLabelGroup(
 export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100, maxDrugsPerCompany: number = 5): any[] {
     console.time('sampleDataForAllYearView');
     
+    // Filter out terminated or liquidated entries
+    const filteredData = data.filter(entry => {
+        // Exclude terminated or liquidated entries
+        const isTerminatedOrLiquidated = 
+            (entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated" ||
+             entry["Current Development Stage"] === "Terminated" || entry["Current Development Stage"] === "Liquidated");
+        
+        return !isTerminatedOrLiquidated;
+    });
+    
+    console.log(`Filtered out terminated/liquidated entries: ${data.length - filteredData.length} of ${data.length} entries`);
+    
     // First process the data to get company information
     // Use a more efficient approach to group by company
     const companyMap = new Map<string, { 
@@ -719,7 +731,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     }>();
     
     // First pass: count drugs and check for PRV entries and transactions
-    data.forEach(entry => {
+    filteredData.forEach(entry => {
         const company = entry.Company;
         if (!company) return;
         
@@ -771,7 +783,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     
     // First pass: include PRV entries and transacted vouchers
     const sampledData: any[] = [];
-    const priorityEntries = data.filter(entry => 
+    const priorityEntries = filteredData.filter(entry => 
         (hasPRVAward(entry) || (entry["Purchase Year"] && entry["Purchase Year"].trim() !== "")) && 
         topCompanySet.has(entry.Company)
     );
@@ -786,7 +798,7 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
     
     // Second pass: include entries in later stages
     const stageOrder = ['APRV', 'FILED', 'P3', 'P2', 'P1', 'PRE'];
-    const remainingEntries = data.filter(entry => 
+    const remainingEntries = filteredData.filter(entry => 
         !hasPRVAward(entry) && 
         !(entry["Purchase Year"] && entry["Purchase Year"].trim() !== "") && 
         topCompanySet.has(entry.Company) &&
@@ -822,10 +834,22 @@ export function sampleDataForAllYearView(data: any[], maxCompanies: number = 100
  * @returns Sampled dataset for lighter rendering
  */
 export function sampleDataForTherapeuticAreaView(data: any[], maxAreas: number = 15, maxDrugsPerArea: number = 5): any[] {
+    // Filter out terminated or liquidated entries
+    const filteredData = data.filter(entry => {
+        // Exclude terminated or liquidated entries
+        const isTerminatedOrLiquidated = 
+            (entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated" ||
+             entry["Current Development Stage"] === "Terminated" || entry["Current Development Stage"] === "Liquidated");
+        
+        return !isTerminatedOrLiquidated;
+    });
+    
+    console.log(`Filtered out terminated/liquidated entries: ${data.length - filteredData.length} of ${data.length} entries`);
+    
     // First process the data to get therapeutic area information
     const areasMap = new Map();
     
-    data.forEach(entry => {
+    filteredData.forEach(entry => {
         const area = entry.TherapeuticArea1;
         if (!area) return; // Skip entries without therapeutic area
         
@@ -873,7 +897,7 @@ export function sampleDataForTherapeuticAreaView(data: any[], maxAreas: number =
     });
     
     // Prioritize PRV entries first
-    const prvEntries = data.filter(entry => hasPRVAward(entry) && topAreaSet.has(entry.TherapeuticArea1));
+    const prvEntries = filteredData.filter(entry => hasPRVAward(entry) && topAreaSet.has(entry.TherapeuticArea1));
     prvEntries.forEach(entry => {
         const area = entry.TherapeuticArea1;
         if (areaDrugCounts[area] < maxDrugsPerArea) {
@@ -883,7 +907,7 @@ export function sampleDataForTherapeuticAreaView(data: any[], maxAreas: number =
     });
     
     // Then add other entries until we reach the limit for each area
-    data.forEach(entry => {
+    filteredData.forEach(entry => {
         const area = entry.TherapeuticArea1;
         
         // Skip if not in top areas or already at max drugs for this area
@@ -962,8 +986,20 @@ export function createRenderingBatches<T>(
  * @returns Sampled dataset
  */
 export function generateSampledData(data: any[], maxElements: number = 500, prioritizePRV: boolean = true): any[] {
-    if (data.length <= maxElements) {
-        return data; // No sampling needed
+    // Filter out terminated or liquidated entries
+    const filteredData = data.filter(entry => {
+        // Exclude terminated or liquidated entries
+        const isTerminatedOrLiquidated = 
+            (entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated" ||
+             entry["Current Development Stage"] === "Terminated" || entry["Current Development Stage"] === "Liquidated");
+        
+        return !isTerminatedOrLiquidated;
+    });
+    
+    console.log(`Filtered out terminated/liquidated entries: ${data.length - filteredData.length} of ${data.length} entries`);
+    
+    if (filteredData.length <= maxElements) {
+        return filteredData; // No sampling needed
     }
     
     // First, separate PRV entries if prioritizing them
@@ -971,7 +1007,7 @@ export function generateSampledData(data: any[], maxElements: number = 500, prio
     const nonPrvEntries: any[] = [];
     
     if (prioritizePRV) {
-        data.forEach(entry => {
+        filteredData.forEach(entry => {
             if (hasPRVAward(entry)) {
                 prvEntries.push(entry);
             } else {
@@ -979,7 +1015,7 @@ export function generateSampledData(data: any[], maxElements: number = 500, prio
             }
         });
     } else {
-        nonPrvEntries.push(...data);
+        nonPrvEntries.push(...filteredData);
     }
     
     // If we have more PRV entries than the max, sample them

@@ -174,10 +174,25 @@
         progressBar.attr("width", 20);
 
         // Process data for visualization
+        // Filter out terminated/liquidated entries in all-year view
+        let dataToProcess = data;
+        
+        if (isAllYearView) {
+            dataToProcess = dataToProcess.filter(entry => {
+                const isTerminatedOrLiquidated = 
+                    (entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated" ||
+                     entry["Current Development Stage"] === "Terminated" || entry["Current Development Stage"] === "Liquidated");
+                
+                return !isTerminatedOrLiquidated;
+            });
+            
+            console.log(`Filtered out terminated/liquidated entries: ${data.length - dataToProcess.length} of ${data.length} entries`);
+        }
+        
         // For All Years view, use sampling to reduce the dataset size
         const processedData = isAllYearView 
-            ? sampleDataForAllYearView(data, sizeConfig.maxCompaniesForAllYears, sizeConfig.maxDrugsPerCompany)
-            : data;
+            ? sampleDataForAllYearView(dataToProcess, sizeConfig.maxCompaniesForAllYears, sizeConfig.maxDrugsPerCompany)
+            : dataToProcess;
             
         // Update progress
         loadingProgress = 20;
@@ -378,21 +393,39 @@
             // Get the appropriate radius for this stage - calculate midpoint on the fly
             let stageRadius = stageRadii[stage as keyof typeof stageRadii];
             
+            // Store the original stage radius before modifying it
+            const originalStageRadius = stageRadius;
+            
             // Calculate midpoint radius for drug placement
+            let midpointRadius;
             if (stage === 'PRE' && stageRadii['P1']) {
-                stageRadius = (stageRadii['PRE'] + stageRadii['P1']) / 2;
+                midpointRadius = (stageRadii['PRE'] + stageRadii['P1']) / 2;
             } else if (stage === 'P1' && stageRadii['P2']) {
-                stageRadius = (stageRadii['P1'] + stageRadii['P2']) / 2;
+                midpointRadius = (stageRadii['P1'] + stageRadii['P2']) / 2;
             } else if (stage === 'P2' && stageRadii['P3']) {
-                stageRadius = (stageRadii['P2'] + stageRadii['P3']) / 2;
+                midpointRadius = (stageRadii['P2'] + stageRadii['P3']) / 2;
             } else if (stage === 'P3' && stageRadii['FILED']) {
-                stageRadius = (stageRadii['P3'] + stageRadii['FILED']) / 2;
+                midpointRadius = (stageRadii['P3'] + stageRadii['FILED']) / 2;
             } else if (stage === 'FILED' && stageRadii['PRV']) {
-                stageRadius = (stageRadii['FILED'] + stageRadii['PRV']) / 2;
+                midpointRadius = (stageRadii['FILED'] + stageRadii['PRV']) / 2;
             } else if (stage === 'PRV') {
-                stageRadius = stageRadii['PRV'] * .825;
+                midpointRadius = stageRadii['PRV'] * .825;
             } else if (stage === 'TRANS') {
-                stageRadius = stageRadii['TRANS'] * .625;
+                midpointRadius = stageRadii['TRANS'] * .625;
+            } else {
+                midpointRadius = stageRadius;
+            }
+            
+            // For PRE stage in all-year view, alternate placement between original radius and midpoint
+            if (isAllYearView && stage === 'PRE') {
+                // Use original stage radius for even-indexed companies, midpoint for odd-indexed companies
+                stageRadius = (index % 2 === 0) ? originalStageRadius : midpointRadius;
+                
+                // Log for debugging - only when PRE stage with alternating pattern is applied
+                console.log(`Company ${company.company} (index ${index}) - PRE stage placement: ${index % 2 === 0 ? 'outer radius' : 'inner radius'} (${stageRadius.toFixed(1)})`);
+            } else {
+                // For all other stages, use the midpoint as before
+                stageRadius = midpointRadius;
             }
             
             // Calculate the angular spacing for drugs

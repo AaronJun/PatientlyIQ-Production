@@ -125,9 +125,23 @@ async function processDataForTherapeuticAreas(): Promise<any[]> {
     
     // Apply data sampling if needed based on performance budget
     let dataToProcess = data;
-    if (data.length > MAX_ELEMENTS_RENDER) {
-        console.log(`Data exceeds performance budget (${data.length} > ${MAX_ELEMENTS_RENDER}), sampling...`);
-        dataToProcess = generateSampledData(data, MAX_ELEMENTS_RENDER, true);
+    
+    // Filter out terminated/liquidated entries in all-year view
+    if (isAllYearView) {
+        dataToProcess = dataToProcess.filter(entry => {
+            const isTerminatedOrLiquidated = 
+                (entry["PRV Status"] === "Terminated" || entry["PRV Status"] === "Liquidated" ||
+                 entry["Current Development Stage"] === "Terminated" || entry["Current Development Stage"] === "Liquidated");
+            
+            return !isTerminatedOrLiquidated;
+        });
+        
+        console.log(`Filtered out terminated/liquidated entries: ${data.length - dataToProcess.length} of ${data.length} entries`);
+    }
+    
+    if (dataToProcess.length > MAX_ELEMENTS_RENDER) {
+        console.log(`Data exceeds performance budget (${dataToProcess.length} > ${MAX_ELEMENTS_RENDER}), sampling...`);
+        dataToProcess = generateSampledData(dataToProcess, MAX_ELEMENTS_RENDER, true);
     }
     
     loadingProgress = 20;
