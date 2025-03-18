@@ -311,11 +311,8 @@
         // Add main circles
         yearGroups.append("circle")
             .attr("class", "year-circle")
-            .attr("r", d => isTransactionView 
-                ? radiusScale(d.totalValue || 0)
-                : radiusScale(d.count))
             .attr("fill", d => `url(#${createGradientId(d.year)})`)
-            .attr("stroke", isTransactionView ? "#565656" : "#37587e")
+            .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
             .style("cursor", "pointer")
             .style("opacity", d => isYearRestricted(d.year) ? 0.35 : 1)
@@ -336,7 +333,7 @@
                     d3.select(this)
                         .transition()
                         .duration(200)
-                        .attr("stroke-width", 2)
+                        .attr("stroke-width", 3)
                         .style("filter", "url(#glow)");
 
                     if (parentElement) {
@@ -805,7 +802,7 @@
         font-size: 9.75px;
         color: #718096;
         transition: all 0.3s ease;
-        opacity: 0.5; /* Start with opacity 0 */
+        opacity: 0.875; /* Start with opacity 0 */
         pointer-events: none; /* Prevent labels from interfering with interactions */
     }
 
@@ -821,11 +818,13 @@
     }
 
     .restricted .main-circle-svg circle {
-        opacity: 0.5;
+        opacity: 0.25;
+        cursor: not-allowed;
     }
 
     .restricted .year-label {
-        color: #9CA3AF;
+        color: #fff;
+        opacity: 0.15;
     }
 
     .all-years {

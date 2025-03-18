@@ -46,7 +46,7 @@
     // Get configuration from utility functions
     $: sizeConfig = getSizeConfig(isAllYearView);
     $: labelConfig = getLabelConfig(radius, isAllYearView);
-    $: stageRadii = getStageRadii(radius);
+    $: stageRadii = getStageRadii(radius, isAllYearView);
     const stageLabelConfig = getStageLabelConfig();
 
     // Active selection tracking

@@ -161,16 +161,19 @@ export function getStageDisplayName(stageCode: string): string {
 /**
  * Get the stage radii configuration
  */
-export function getStageRadii(radius: number) {
+export function getStageRadii(radius: number, isAllYearView: boolean = false) {
     // Define the main stage circles
+    // Use larger multipliers for all-year view to spread out the visualization
+    const multiplier = isAllYearView ? 1.15 : 1.0; // 15% larger in all-year view
+    
     const stageRadii = {
-        'PRE': radius * 0.9725,
-        'P1': radius * 0.845,
-        'P2': radius * 0.7125,
-        'P3': radius * 0.5725,
-        'FILED': radius * 0.4325,
-        'PRV': radius * 0.3425,
-        'TRANS': radius * 0.2325, // Add transacted voucher circle inside PRV
+        'PRE': radius * 0.9725 * multiplier,
+        'P1': radius * 0.845 * multiplier,
+        'P2': radius * 0.7125 * multiplier,
+        'P3': radius * 0.5725 * multiplier,
+        'FILED': radius * 0.4325 * multiplier,
+        'PRV': radius * 0.3425 * multiplier,
+        'TRANS': radius * 0.2325 * multiplier, // Add transacted voucher circle inside PRV
     };
     
     // Define midpoints between stages for drug node placement
@@ -181,7 +184,7 @@ export function getStageRadii(radius: number) {
         'P3_MID': (stageRadii.P3 + stageRadii.FILED) / 2,
         'FILED_MID': (stageRadii.FILED + stageRadii.PRV) / 2,
         'PRV_MID': (stageRadii.PRV + stageRadii.TRANS) / 2, // Update PRV midpoint
-        'TRANS_MID': stageRadii.TRANS / 1.2// Add midpoint for transacted vouchers
+        'TRANS_MID': stageRadii.TRANS / 2// Add midpoint for transacted vouchers
     };
     
     // Return only the main stage radii, not the midpoints
@@ -446,26 +449,22 @@ export function processDataForLayout(data: any[]) {
  */
 export function getSizeConfig(isAllYearView: boolean) {
     return {
-        // When all years view is active, use smaller sizes
-        companyLabelFontSize: isAllYearView ? "4.425px" : "9.25px",
-        labelFontSize: isAllYearView ? "8.425px" : "10.25px", // Increased font size for therapeutic areas
+        // When all years view is active, use larger sizes than before but still smaller than single year view
+        companyLabelFontSize: isAllYearView ? "7.25px" : "9.25px",
+        labelFontSize: isAllYearView ? "9.25px" : "10.25px", // Increased font size for therapeutic areas
         labelFontWeight: isAllYearView ? "500" : "500", // Made fonts slightly bolder
-        companyNodeWidth: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeWidth
-        companyNodeHeight: isAllYearView ? 4.25 : 7.725, // Add back the companyNodeHeight
-        drugNodeRadius: isAllYearView ? 4.7125 : 9.125,
-        drugNodeStrokeWidth: isAllYearView ? .925 : 1.5125,
-        prvIndicatorRadius: isAllYearView ? 9 : 11.25,
-        dotSize: isAllYearView ? 0 : 0,
-        dotSpacing: isAllYearView ? 0 : 0,
-        connectionStrokeWidth: isAllYearView ? 0.125 : 0.7625,
-        connectionOpacity: isAllYearView ? 0.4025 : 0.325,
-        highlightedNodeRadius: isAllYearView ? 8 : 10.25, 
-        highlightedNodePosition: isAllYearView ? 1.25 : 1.25,
+        companyNodeWidth: isAllYearView ? 5.25 : 7.025, // Increased from 3.125 to 5.25
+        companyNodeHeight: isAllYearView ? 6.25 : 7.725, // Increased from 4.25 to 6.25
+        drugNodeRadius: isAllYearView ? 6.25 : 9.125, // Increased from 4.7125 to 6.25
+        drugNodeStrokeWidth: isAllYearView ? 1.25 : 1.5125, // Increased from 0.925 to 1.25
+        connectionStrokeWidth: isAllYearView ? 0.5 : 0.7625, // Increased from 0.125 to 0.5
+        connectionOpacity: isAllYearView ? 0.5 : 0.325, // Increased from 0.4025 to 0.5
+        highlightedNodeRadius: isAllYearView ? 9.5 : 10.25, // Increased from 8 to 9.5
+        highlightedNodePosition: isAllYearView ? 1.5 : 1.25, // Increased from 1.25 to 1.5
         // Optimization settings
         useShadowEffects: false, // Disable shadow effects in both views
         useAnimations: !isAllYearView, // Disable animations in all year view
         transitionDuration: isAllYearView ? 0 : 0, // No transitions in all year view
-        renderPRVIndicators: !isAllYearView, // Only render PRV indicators in regular view
         simplifiedConnections: isAllYearView, // Use simplified connections in all year view
         // New performance optimizations
         maxCompaniesForAllYears: 350, // Maximum number of companies to show in all years view
@@ -483,10 +482,13 @@ export function getSizeConfig(isAllYearView: boolean) {
  * Get the label configuration object based on view mode and radius
  */
 export function getLabelConfig(radius: number, isAllYearView: boolean) {
+    // Use larger multipliers for labels in all-year view to match the increased stage radii
+    const multiplier = isAllYearView ? 1.15 : 1.0; // 15% larger in all-year view, matching stage radii
+    
     return {
-        minRadius: radius * 1.0125, // Position closest to the outermost circle
-        maxRadius: radius * 1.10, // Maximum radius for labels
-        alternateRadius: radius * 1.15, // Alternate position for better legibility with many entries
+        minRadius: radius * 1.0125 * multiplier, // Position closest to the outermost circle
+        maxRadius: radius * 1.10 * multiplier, // Maximum radius for labels
+        alternateRadius: radius * 1.15 * multiplier, // Alternate position for better legibility with many entries
         padding: 10.25,
         minAngleDiff: Math.PI / 30, // Minimum angle between labels
         textHeight: 10,

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
+  import { createSplitColorStarSVG } from '../utils/svg-utils';
   import { onMount, onDestroy } from 'svelte';
   
   export let isOpen = false;
@@ -131,10 +132,22 @@
   $: indicationsWithCounts = getDrugsByIndication();
   $: companiesWithCounts = getCompanyDistributionSorted();
   $: stagesWithCounts = getStageDistributionSorted();
+
+  // Generate star SVG for the area
+  function getStarSVG(area: string): string {
+    const areaColors = getTherapeuticAreaColor(area);
+    return createSplitColorStarSVG(
+      20, // Size in pixels
+      areaColors.fill,
+      areaColors.stroke,
+      "#161616", // Border color
+      area.replace(/\s+/g, '-').toLowerCase() // Use sanitized area name as unique ID
+    );
+  }
 </script>
 
 <div 
-  class="therapeutic-area-drawer"
+  class="therapeutic-area-drawer bg-slate-50"
   class:open={isOpen}
   transition:fly={{ x: 400, duration: 300 }}
   bind:this={drawerElement}
@@ -143,40 +156,34 @@
   aria-labelledby="drawer-title"
 >
   {#if areaDetail}
-    <div class="drawer-header" style="border-color: {areaColor.stroke}">
-      <div class="area-color-indicator" style="background-color: {areaColor.fill}; border-color: {areaColor.stroke}"></div>
+    <div class="drawer-header" 
+    style="border-color: {areaColor.stroke}">
+     
+    <div class="area-color-indicator">
+      {@html getStarSVG(areaDetail.areaName)}
+    </div>
       <div class="header-content">
         <h2 id="drawer-title">{areaDetail.areaName}</h2>
-        <div class="year-selector">
-          <span>Year:</span>
-          <select 
-            bind:value={selectedYear} 
-            on:change={() => onYearChange(selectedYear)}
-          >
-            {#if availableYears.length === 0}
-              <option value={selectedYear}>{selectedYear}</option>
-            {:else}
-              {#each availableYears as year}
-                <option value={year}>{year}</option>
-              {/each}
-            {/if}
-          </select>
-        </div>
       </div>
       <button class="close-button" on:click={onClose} aria-label="Close">×</button>
     </div>
     
     <div class="drawer-content">
       <div class="stat-grid">
-        <!-- Drug Candidates Card with Preview and Accordion -->
+        <!-- Drug Candidates Card with Preview and fa -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('drugCandidates')} role="button" aria-expanded={openAccordions.drugCandidates} tabindex="0">
+          <div class="stat-header" 
+            on:click={() => toggleAccordion('drugCandidates')} 
+            on:keydown={(e) => e.key === 'Enter' && toggleAccordion('drugCandidates')}
+            role="button" 
+            aria-expanded={openAccordions.drugCandidates} 
+            tabindex="0">
             <div>
-              <h3>Drug Candidates</h3>
               <p class="stat-value">{formatNumber(areaDetail.totalDrugs)}</p>
+              <h3>Drug Candidates</h3>
             </div>
             <div class="accordion-icon" class:open={openAccordions.drugCandidates}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>
@@ -225,10 +232,15 @@
         
         <!-- Companies Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('companies')} role="button" aria-expanded={openAccordions.companies} tabindex="0">
+          <div class="stat-header" 
+            on:click={() => toggleAccordion('companies')} 
+            on:keydown={(e) => e.key === 'Enter' && toggleAccordion('companies')}
+            role="button" 
+            aria-expanded={openAccordions.companies} 
+            tabindex="0">
             <div>
-              <h3>Companies</h3>
               <p class="stat-value">{formatNumber(areaDetail.uniqueCompanies)}</p>
+              <h3>Companies</h3>
             </div>
             <div class="accordion-icon" class:open={openAccordions.companies}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -277,10 +289,15 @@
         
         <!-- Indications Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('indications')} role="button" aria-expanded={openAccordions.indications} tabindex="0">
+          <div class="stat-header" 
+            on:click={() => toggleAccordion('indications')} 
+            on:keydown={(e) => e.key === 'Enter' && toggleAccordion('indications')}
+            role="button" 
+            aria-expanded={openAccordions.indications} 
+            tabindex="0">
             <div>
-              <h3>Indications</h3>
               <p class="stat-value">{formatNumber(indicationCount)}</p>
+              <h3>Indications</h3>
             </div>
             <div class="accordion-icon" class:open={openAccordions.indications}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -299,7 +316,7 @@
                 </div>
                 {#each indicationsWithCounts.slice(0, 3) as {indication, count}}
                   <div class="indication-item">
-                    <div class="indication-name">{indication}</div>
+                    <div class="indication-name capitalize">{indication}</div>
                     <div class="indication-count">{count}</div>
                   </div>
                 {/each}
@@ -329,10 +346,15 @@
         
         <!-- Development Stages Card with Preview and Accordion -->
         <div class="stat-card">
-          <div class="stat-header" on:click={() => toggleAccordion('developmentStages')} role="button" aria-expanded={openAccordions.developmentStages} tabindex="0">
+          <div class="stat-header flex justify-between items-center"  
+            on:click={() => toggleAccordion('developmentStages')} 
+            on:keydown={(e) => e.key === 'Enter' && toggleAccordion('developmentStages')}
+            role="button" 
+            aria-expanded={openAccordions.developmentStages} 
+            tabindex="0">
             <div>
-              <h3>Development Stages</h3>
               <p class="stat-value">{stagesWithCounts.length}</p>
+              <h3>Development Stages</h3>
             </div>
             <div class="accordion-icon" class:open={openAccordions.developmentStages}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -343,7 +365,7 @@
           
           <!-- Preview of first 3 stages always visible -->
           {#if stagesWithCounts.length > 0 && areaDetail.entries}
-            <div class="preview-content">
+            <div class="preview-content bg-slate-100">
               <div class="stages-chart">
                 <div class="stages-bars">
                   <div class="list-header">
@@ -387,18 +409,11 @@
           {/if}
         </div>
         
-        <!-- Clinical Trials Card -->
-        <div class="stat-card">
-          <h3>Clinical Trials</h3>
-          <p class="stat-value">{formatNumber(areaDetail.clinicalTrials)}</p>
-          <p class="stat-subtext">{calculatePercentage(areaDetail.clinicalTrials, areaDetail.totalDrugs)} of drugs</p>
-        </div>
-        
         <!-- Vouchers Awarded Card -->
         <div class="stat-card">
-          <h3>Vouchers Awarded</h3>
           <p class="stat-value">{formatNumber(areaDetail.vouchersAwarded)}</p>
-          <p class="stat-subtext">{calculatePercentage(areaDetail.vouchersAwarded, areaDetail.totalDrugs)} of drugs</p>
+          <h3>Vouchers Awarded</h3>
+          
         </div>
       </div>
     </div>
@@ -412,7 +427,6 @@
     right: -400px;
     width: 55.25vw;
     height: 100vh;
-    background-color: white;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     overflow-y: auto;
@@ -430,8 +444,7 @@
     border-bottom: 3px solid;
     position: sticky;
     top: 0;
-    background: white;
-    z-index: 10;
+    z-index: 50;
   }
   
   .header-content {
@@ -465,10 +478,11 @@
   }
   
   .area-color-indicator {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 12px;
   }
   

@@ -108,6 +108,9 @@
             // FORCE full opacity for all nodes on focus
             star.attr("opacity", 1);
             
+            // Bring the node to the front by moving it to the end of parent
+            drugGroup.raise();
+            
             // Highlight the company label text FIRST
             highlightCompanyLabel();
             
@@ -115,10 +118,12 @@
             if (sizeConfig.useAnimations) {
                 star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             } else {
                 // Immediate update without transition
-                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             }
             
             // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
@@ -169,6 +174,9 @@
                 // FORCE full opacity for all nodes on hover
                 star.attr("opacity", 1);
                 
+                // Bring the node to the front by moving it to the end of parent
+                drugGroup.raise();
+                
                 // Highlight the company label text FIRST
                 highlightCompanyLabel();
                 
@@ -176,10 +184,12 @@
                 if (sizeConfig.useAnimations) {
                     star.transition()
                         .duration(sizeConfig.transitionDuration)
-                        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
                 } else {
                     // Immediate update without transition
-                    star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                    star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
                 }
                 
                 // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
@@ -347,6 +357,9 @@
             // FORCE full opacity when highlighted
             star.attr("opacity", 1);
             
+            // Bring the node to the front
+            drugGroup.raise();
+            
             // Highlight the company label text FIRST
             highlightCompanyLabel();
             
@@ -354,10 +367,12 @@
             if (sizeConfig.useAnimations) {
                 star.transition()
                     .duration(sizeConfig.transitionDuration)
-                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                    .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             } else {
                 // Immediate update without transition
-                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`);
+                star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+                    .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             }
         } else {
             // Use transitions only if animations are enabled

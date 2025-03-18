@@ -66,7 +66,7 @@ const MAX_ELEMENTS_RENDER = isAllYearView ? 1000 : 3000;
 // Get configuration from utility functions
 $: sizeConfig = getSizeConfig(isAllYearView);
 $: labelConfig = getLabelConfig(radius, isAllYearView);
-$: stageRadii = getStageRadii(radius);
+$: stageRadii = getStageRadii(radius, isAllYearView);
 
 // Connection highlight color
 const highlightColor = "#2B6CB0";
@@ -692,18 +692,6 @@ function renderArea(
                 // Store initial opacity for reference in interactions
                 star.attr("data-initial-opacity", opacity);
 
-                // Add PRV indicator if needed and rendering full details
-                if (shouldRenderFullDetail && hasPRVAward(drug)) {
-                    // Add a small outer ring to indicate PRV
-                    drugGroup.append("path")
-                        .attr("d", createStarPath(sizeConfig.drugNodeRadius * 1.3)) // 30% larger path
-                        .attr("fill", "none")
-                        .attr("stroke", finalStrokeColor)
-                        .attr("stroke-width", 1)
-                        .attr("stroke-dasharray", "2,2")
-                        .attr("opacity", 0.8);
-                }
-
                 // Add keyboard event handler
                 drugGroup.on("keydown", (event: KeyboardEvent) => {
                     handleDrugKeydown(event, drug, area.area, drugId);
@@ -811,33 +799,6 @@ function createAreaLabel(
         .attr("fill", "#4A5568")
         .attr("font-size", sizeConfig.labelFontSize)
         .attr("font-weight", sizeConfig.labelFontWeight);
-    
-    // Create dots group with counter-rotation if showing detail
-    if (shouldRenderFullDetail) {
-        const dotsGroup = labelGroup.append("g")
-            .attr("class", "area-drugs")
-            .attr("transform", `rotate(${-rotationAngle}) translate(${xOffset}, ${labelConfig.textHeight})`);
-        
-        const numDots = Math.min(area.totalDrugs, 20); // Limit dots for visual clarity
-        const dotsPerRow = Math.min(10, numDots);
-        
-        for (let i = 0; i < numDots; i++) {
-            const row = Math.floor(i / dotsPerRow);
-            const col = i % dotsPerRow;
-            const x = textAnchor === "start" ? col * 6 : -(col * 6);
-            
-            dotsGroup.append("circle")
-                .attr("r", 0) // Start at 0 for animation
-                .attr("cx", x + (textAnchor === "start" ? 3 : -3))
-                .attr("cy", row * 5)
-                .attr("fill", areaColors.fill)
-                .attr("stroke", areaColors.stroke)
-                .attr("stroke-width", 0.5)
-                .attr("opacity", 0.8);
-        }
-    }
-    
-    return labelGroup;
 }
 
 /**
@@ -873,11 +834,15 @@ function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<a
     // Force full opacity on focus
     star.attr("opacity", 1);
     
-    // Scale the star to highlight it
+    // Bring the node to the front by moving it to end of parent
+    drugGroup.raise();
+    
+    // Scale the star to highlight it - increase the scale factor for more emphasis
     star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`)
-        .attr("stroke", highlightColor);
+        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+        .attr("stroke", highlightColor)
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
     
     // Highlight related connections
     highlightDrugConnections(drugId);
@@ -923,11 +888,15 @@ function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Select
     // Force full opacity on hover
     star.attr("opacity", 1);
     
-    // Scale the star to highlight it
+    // Bring the node to the front by moving it to end of parent
+    drugGroup.raise();
+    
+    // Scale the star to highlight it - increase the scale factor for more emphasis
     star.transition()
         .duration(sizeConfig.transitionDuration)
-        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius / sizeConfig.drugNodeRadius})`)
-        .attr("stroke", highlightColor);
+        .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
+        .attr("stroke", highlightColor)
+        .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
     
     // Highlight connections
     highlightDrugConnections(drugId);
