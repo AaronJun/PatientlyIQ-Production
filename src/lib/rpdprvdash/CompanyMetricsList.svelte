@@ -16,7 +16,7 @@
   <div class="company-metrics pt-0">
     <h3 class="text-base font-semibold text-slate-800 mb-3">{metrics.companyName}</h3>
     
-    <div class="metrics-list space-y-2">
+    <div class="metrics-list space-y-1">
       <div class="metric-item flex justify-between">
         <span class="text-xs text-slate-600 font-medium">In development</span>
         <span class="text-sm font-medium text-slate-800">{metrics.totalDrugs}</span>
@@ -37,11 +37,8 @@
   </div>
   
   <style>
-    .company-metrics {
-    }
     
     .metric-item {
       border-bottom: .25px solid #4A90E2;
-      padding-bottom: 0.25rem;
     }
   </style>
