@@ -103,7 +103,7 @@
 
   // State variables
   let activeTab = 'By Sponsor';
-  let selectedTransactionYear = "2024"; // Default transaction year
+  let selectedTransactionYear = "All"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: any | null = null;
   let processedConstellationData: any[] = [];
@@ -146,9 +146,11 @@
       });
   
   // Filter transaction data based on selected transaction year (for transaction tab)
-  $: filteredTransactionData = rpddData.filter(entry => 
-    entry.Purchased === "Y" && entry["Purchase Year"] === selectedTransactionYear
-  );
+  $: filteredTransactionData = selectedTransactionYear === "All"
+    ? rpddData.filter(entry => entry.Purchased === "Y") // Show all transactions when "All" is selected
+    : rpddData.filter(entry => 
+      entry.Purchased === "Y" && entry["Purchase Year"] === selectedTransactionYear
+    );
   
   // Define the therapeutic area color map
   const colorMap = {
@@ -463,7 +465,7 @@
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pb-8 relative transition-all duration-300 min-h-[80vh] pl-12">
+  <main class="flex-1 pb-8 relative transition-all duration-300 min-h-[80vh] pl-8">
 
     <div class="tab-content w-full h-full min-h-[80vh] flex relative">
       <!-- Main content area taking full width -->
@@ -772,8 +774,7 @@
         {:else if activeTab === 'By Transactions'}
           <div class="flex flex-col h-[calc(100vh-4rem)] relative">
             <!-- Timeline section -->
-            <div class="w-fit transition-all duration-300 mb-4"
-              style="margin-left: {isMobileView ? '0' : (isSidebarCollapsed ? '2rem' : '0rem')};">
+            <div class="timeline-container sticky justify-center place-items-start z-20 px-4 py-2 bg-slate-100 transition-all duration-300">
               <PRVPurchaseTimeline 
                 data={rpddData}
                 selectedYear={selectedTransactionYear}
@@ -785,7 +786,7 @@
             <!-- Main content area -->
             <div class="flex flex-1 h-full">
               <!-- Chord diagram section -->
-              <div class="flex-1 relative {!isMobileView && !isTabletView ? (isRightSidebarCollapsed ? 'pr-16' : 'pr-[25%]') : ''} transition-all duration-300 ease-in-out" >
+              <div class="flex-1 relative {!isMobileView ? (isRightSidebarCollapsed ? 'pr-16' : 'pr-[30%]') : ''} transition-all duration-300 ease-in-out" >
                 <SellerBuyerChord 
                   data={rpddData}
                   stockData={rpdCompanyValues}
@@ -799,7 +800,7 @@
               
               <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
               {#if !isMobileView}
-                <div class="absolute right-2 top-25 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} transition-all duration-300">
+                <div class="absolute right-2 top-24 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} transition-all duration-300">
                   <button
                     class="rounded-btn absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                     on:click={toggleRightSidebar}
@@ -821,11 +822,15 @@
                     </svg>
                   </button>
 
-                  <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                  <div class= "{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
                
                     <!-- Transaction content -->
                     <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
-                      <div class="bg-white rounded-lg shadow-sm p-4">
+
+                    <p class="text-xs text-slate-500 mt-4 text-left">
+                      Select transactions in the chord diagram to see details
+                    </p>
+                      <div class="rounded-lg shadow-sm p-4">
                         <div class="h-[10vh]">
                           <VoucherBeeswarmPlot 
                             data={rpddData}
@@ -837,7 +842,7 @@
                           />
                         </div>
                       </div>
-                      <div class="bg-white rounded-lg shadow-sm p-4">
+                      <div class="pt-8">
                         <RPDTransactionSummaryView 
                           data={rpddData}
                           year={selectedTransactionYear}

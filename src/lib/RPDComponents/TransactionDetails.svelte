@@ -57,7 +57,6 @@
   <style>
     .table-container {
       overflow-y: auto;
-      max-width: 95%;
       margin: 1.25rem 0 2.25rem 0;
     }
   

@@ -4,6 +4,7 @@
   import * as d3 from 'd3';
   import { Medication, Money, CalendarHeatMap } from 'carbon-icons-svelte';
   import { getTherapeuticAreaColor, getTherapeuticAreaFill, getTherapeuticAreaStroke } from './utils/colorDefinitions';
+  import type { Selection } from 'd3';
   
   export let data: any[];
   export let onPointClick: (detail: any) => void;
@@ -15,9 +16,9 @@
     transactionLeave: void;
   }>();
   
-  let svg;
-  let container;
-  let circles;
+  let svg: Selection<SVGSVGElement, unknown, null, undefined>;
+  let container: HTMLElement;
+  let circles: Selection<SVGCircleElement, any, SVGGElement, unknown>;
   let tooltipVisible = false;
   let tooltipX = 0;
   let tooltipY = 0;
@@ -31,16 +32,29 @@
     isUndisclosed: false
   };
   
-  const margin = { top: 10, right: 10, bottom: 20, left: 10 };
+  const margin = { top: 0, right: 0, bottom: 10, left: 0 };
   let width: number;
   let height: number;
 
-  function getPrice(d: any): number {
-    const price = d["Sale Price (USD Millions)"];
-    return price === "Undisclosed" ? 0 : parseFloat(price);
+  interface Transaction {
+    Company: string;
+    Purchaser: string;
+    "Sale Price (USD Millions)": string | number;
+    "Purchase Year": string;
+    TherapeuticArea1: string;
+    Candidate: string;
+    "Purchase Month": string;
+    "Purchase Date": string;
+    x?: number;
+    y?: number;
   }
 
-  function isUndisclosed(d: any): boolean {
+  function getPrice(d: Transaction): number {
+    const price = d["Sale Price (USD Millions)"];
+    return price === "Undisclosed" ? 0 : parseFloat(price.toString());
+  }
+
+  function isUndisclosed(d: Transaction): boolean {
     return d["Sale Price (USD Millions)"] === "Undisclosed";
   }
 
@@ -84,13 +98,13 @@
 
   function highlightTransaction(transaction: { seller: string, buyer: string }) {
     circles
-      .style("opacity", d => 
+      .style("opacity", (d: Transaction) => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2
       )
-      .attr("r", d => 
+      .attr("r", (d: Transaction) => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 7 : 5
       )
-      .style("filter", d => 
+      .style("filter", (d: Transaction) => 
         (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? "drop-shadow(0 0 3px rgba(0,0,0,0.3))" : "none"
       );
   }
@@ -102,13 +116,13 @@
     }
     
     circles
-      .style("opacity", d => 
+      .style("opacity", (d: Transaction) => 
         d["Purchase Year"] === year ? 1 : 0.2
       )
-      .attr("r", d => 
+      .attr("r", (d: Transaction) => 
         d["Purchase Year"] === year ? 7 : 5
       )
-      .style("filter", d => 
+      .style("filter", (d: Transaction) => 
         d["Purchase Year"] === year ? "drop-shadow(0 0 3px rgba(0,0,0,0.3))" : "none"
       );
   }
@@ -223,14 +237,14 @@
       .range([0, width])
       .nice();
 
-    const y = d3.scaleLinear()
-      .domain([-1, 1])
-      .range([height, 0]);
+    // Calculate number of ticks based on width
+    const pixelsPerTick = 100; // Minimum pixels between ticks
+    const numberOfTicks = Math.max(2, Math.floor(width / pixelsPerTick));
 
-    // Add x-axis with proper formatting
+    // Add x-axis with proper formatting and dynamic ticks
     const xAxis = d3.axisBottom(x)
       .tickFormat(d => `$${d}M`)
-      .ticks(5);
+      .ticks(numberOfTicks);
 
     g.append("g")
       .attr("class", "x-axis")
@@ -378,6 +392,28 @@
 
   :global(.x-axis text) {
     fill: #4a5568;
-    font-size: 10px;
+    font-size: 8.25px;
+    transition: font-size 0.2s ease;
+  }
+
+  /* Responsive text size for different widths */
+  @media (min-width: 640px) {
+    :global(.x-axis text) {
+      font-size: 9px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    :global(.x-axis text) {
+      font-size: 10px;
+    }
+  }
+
+  /* Adjust text angle for narrow screens */
+  @media (max-width: 480px) {
+    :global(.x-axis text) {
+      transform: rotate(-45deg);
+      text-anchor: end;
+    }
   }
 </style>

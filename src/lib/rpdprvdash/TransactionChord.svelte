@@ -55,17 +55,18 @@
   };
 
   // Update visualizations when the selected year changes
-  $: if (selectedYear && transactions) {
+  $: if (selectedYear && selectedYear !== "All" && transactions) {
     yearFilteredTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
     highlightTransactionsForYear();
-  } else if (selectedYear === "" && transactions) {
+  } else if ((selectedYear === "" || selectedYear === "All") && transactions) {
+    yearFilteredTransactions = transactions;
     resetAllHighlights();
   }
   
   // Watch selectedYear with an explicit statement to trigger the highlight
-  $: if (selectedYear && transactions) {
+  $: if (selectedYear && selectedYear !== "All" && transactions) {
     highlightTransactionsForYear();
-  } else if (selectedYear === "" && transactions) {
+  } else if ((selectedYear === "" || selectedYear === "All") && transactions) {
     resetAllHighlights();
   }
 
@@ -73,7 +74,7 @@
     highlightRibbon(highlightedTransaction);
   } else if (ribbons && !highlightedTransaction) {
     // Only reset if we're not filtering by year
-    if (!selectedYear) {
+    if (!selectedYear || selectedYear === "All") {
       resetAllHighlights();
     } else {
       highlightTransactionsForYear();
@@ -515,13 +516,34 @@
       const companyTrans = companyData.get(company)?.transactions || [];
       
       if (companyTrans.length === 0) return;
-      
-      const spacing = (d.endAngle - d.startAngle) / (companyTrans.length + 1);
 
-      companyTrans.forEach((transaction: any, idx: number) => {
-        const nodeAngle = d.startAngle + spacing * (idx + 1);
-        const x = Math.cos(nodeAngle - Math.PI / 2) * outerRadius;
-        const y = Math.sin(nodeAngle - Math.PI / 2) * outerRadius;
+      // Find all chords connected to this company
+      const companyChords = chords.filter((chord: any) => {
+        const sourceCompany = companies[chord.source.index];
+        const targetCompany = companies[chord.target.index];
+        return sourceCompany === company || targetCompany === company;
+      });
+
+      // For each transaction, find its corresponding chord and position
+      companyTrans.forEach((transaction: any) => {
+        // Find the chord for this transaction
+        const chord = companyChords.find((c: any) => {
+          const sourceCompany = companies[c.source.index];
+          const targetCompany = companies[c.target.index];
+          return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ||
+                 (targetCompany === transaction.Company && sourceCompany === transaction.Purchaser);
+        });
+
+        if (!chord) return;
+
+        // Determine if this company is the source or target
+        const isSource = companies[chord.source.index] === company;
+        const angle = isSource ? 
+          (chord.source.startAngle + chord.source.endAngle) / 2 :
+          (chord.target.startAngle + chord.target.endAngle) / 2;
+
+        const x = Math.cos(angle - Math.PI / 2) * outerRadius;
+        const y = Math.sin(angle - Math.PI / 2) * outerRadius;
 
         svgElem.append("circle")
           .attr("class", "voucher-node")

@@ -1,6 +1,7 @@
 <!-- RPDTransactionSummaryView.svelte -->
 <script lang="ts">
     import { hasPRVAward } from '../utils/data-processing-utils';
+    import { Arc, Chart, Svg } from 'layerchart';
     
     // A component to display summary statistics for PRV transactions
     export let data: any[] = []; // Full dataset for the selected year
@@ -86,144 +87,128 @@
     
   </script>
   
-  <div class="summary-view">    
+  <div class="summary-view"> 
+    
+        <!-- Companies section -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+           <!-- Gauge visualization using layerchart Arc -->
+           <div class="relative w-full h-36 flex pr-8 items-center justify-center">
+            <Chart>
+              <Svg center>
+                <!-- Background circle (full gauge) -->
+                <Arc
+                  startAngle={-Math.PI}
+                  endAngle={Math.PI}
+                  innerRadius={65}
+                  outerRadius={80}
+                  fill="#f1f5f9" 
+                  cornerRadius={0}
+                />
+                <!-- Value circle (percentage filled) -->
+                <Arc
+                  startAngle={-Math.PI}
+                  endAngle={-Math.PI + (2 * Math.PI * totalValuePercentage / 100)}
+                  innerRadius={65}
+                  outerRadius={80}
+                  fill="#10b981" 
+                  cornerRadius={0}
+                  opacity={0.8}
+                />
+              </Svg>
+            </Chart>
+            <!-- Replace percentage with year total value -->
+            <div class="absolute pr-8 inset-0 flex flex-col items-center justify-center">
+              {#if year === "All"}
+                <span class="text-lg font-bold text-slate-700">{formatMoney(totalValueAllTime)}</span>
+                <span class="text-xs text-slate-500 mt-1">All-time</span>
+              {:else}
+              <div class="flex flex-col align-middle items-center justify-center">
+                <span class="text-xl font-bold text-slate-700">{formatMoney(totalValueInYear)}</span>
+                <p class="text-xs text-slate-500 mt-1">Total, {year}</p>
+                </div>
+              {/if}
+            </div>
+          </div>
     <!-- Transaction visualization section -->
-    <div class="bg-white rounded-sm shadow-sm mb-4">
-      <div class="flex flex-col">
+    <div class="align-bottom mb-4">
+      <div class="flex flex-col h-36">
         <div class="transaction-counts text-xs text-slate-500 font-medium gap-2 flex justify-between align-middle">
-         <h4 class="text-sm text-slate-800 font-semibold"> {year}
-            </h4>
-          <div class="flex items-center gap-1">
-          <span class="text-emerald-600">{totalTransactionsInYear}</span> 
-          <span class="italic">of</span> 
-          <span>{totalTransactions}</span>
-          </div>
-        </div>
-
-        <div class="transaction-circles-container">
-          {#if totalTransactions > 0}
-          <div class="flex justify-between items-center mb-2">
-     
-          </div>
-          <div class="transaction-circles">
-            {#each transactionCircles as circle}
-            <div class="transaction-circle {circle.inSelectedYear ? 'in-year' : ''}"></div>
-              {/each}
-            </div>
-            <div class="flex items-center text-xs mt-4 mb-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-slate-300 mr-1"></span>
-              <span class="text-xs text-slate-500 mr-3">All-time</span>
-              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span>
-              <span class="text-slate-500">{year}</span>
-            </div>
-          {:else}
-            <p class="text-center text-slate-500 text-sm py-4">No transactions available</p>
-          {/if}
-        </div>
+          <h4 class="text-sm text-slate-800 font-semibold"> {year}
+             </h4>
+           <div class="flex items-center align-bottom gap-1">
+           <span class="text-emerald-600">{totalTransactionsInYear}</span> 
+           <span class="italic">of</span> 
+           <span>{totalTransactions}</span>
+           </div>
+         </div>
+ 
+         <div class="transaction-circles-container">
+           {#if totalTransactions > 0}
+           <div class="flex justify-between items-center mb-2">
+      
+           </div>
+           <div class="transaction-circles">
+             {#each transactionCircles as circle}
+             <div class="transaction-circle {circle.inSelectedYear ? 'in-year' : ''}"></div>
+               {/each}
+             </div>
+             <div class="flex items-center text-xs mt-4 mb-2">
+               <span class="inline-block w-2 h-2 rounded-sm bg-slate-300 mr-1"></span>
+               <span class="text-xs text-slate-500 mr-3">All-time</span>
+               <span class="inline-block w-2 h-2 rounded-sm bg-emerald-500 mr-1"></span>
+               <span class="text-slate-500">{year}</span>
+             </div>
+           {:else}
+             <p class="text-center text-slate-500 text-sm py-4">No transactions available</p>
+           {/if}
+         </div>
       </div>
     </div>
     
+      <div class="bg-white rounded-md shadow-sm p-3">
+          <p class="text-2xl font-bold text-slate-700">{buyersInYear.size}</p>
+        <h4 class="text-xs font-medium text-slate-600 mb-2">Buyers, {year}</h4>
+      </div>
+      
+      <div class="bg-white rounded-md shadow-sm p-3">
+        <p class="text-2xl font-bold text-slate-700">{sellersInYear.size}</p>
+        <h4 class="text-xs font-medium text-slate-600 mb-2">Sellers, {year}</h4>
+      </div>
+    </div>
     <!-- Metrics list section -->
     <div class="bg-white rounded-md shadow-sm mb-4">
-      <h4 class="text-xs font-medium text-slate-700 mb-2">Value Metrics</h4>
       <div class="space-y-2">
-        <!-- Average Value Comparison Chart -->
-        <div class="metric-item py-3 border-b border-slate-100">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-xs text-slate-600">Average Value Comparison</span>
-
-          </div>
-          
+        <!-- Average Value Comparison Chart -->          
           <div class="chart-container">
             <!-- All-time average bar -->
             <div class="bar-label flex justify-between items-center mb-1">
-              <span class="text-xs text-slate-500">All-time</span>
+              <span class="text-xs text-slate-500">All-time average</span>
               <span class="text-xs font-medium text-slate-700">
                 {averageValue === "N/A" ? "N/A" : formatMoney(parseFloat(averageValue))}
               </span>
             </div>
-            <div class="bar-bg h-3 bg-slate-100 rounded-full mb-3">
-              <div class="bar-fill h-3 bg-emerald-200 rounded-full" style="width: {allTimeBarWidth}%"></div>
+            <div class="bar-bg h-3 bg-slate-100 rounded-sm mb-3">
+              <div class="bar-fill h-3 bg-emerald-200 rounded-sm" style="width: {allTimeBarWidth}%"></div>
             </div>
             
             <!-- Selected year average bar -->
             <div class="bar-label flex justify-between items-center mb-1">
-              <span class="text-xs text-slate-500">{year}</span>
+              <span class="text-xs text-slate-500">{year} average</span>
               <span class="text-xs font-medium text-slate-700">
                 {averageValueInYear === "N/A" ? "N/A" : formatMoney(parseFloat(averageValueInYear))}
               </span>
             </div>
-            <div class="bar-bg h-3 bg-emerald-200 rounded-full">
-              <div class="bar-fill h-3 bg-emerald-500 rounded-full" style="width: {yearBarWidth}%"></div>
+            <div class="bar-bg h-3 bg-emerald-200 rounded-sm">
+              <div class="bar-fill h-3 bg-emerald-500 rounded-sm" style="width: {yearBarWidth}%"></div>
             </div>
-          </div>
         </div>
         
-        <!-- Total Value Comparison Chart -->
-        <div class="flex flex-col py-3 border-b border-slate-100">
-          <div class="flex-row justify-between mb-2">
-            <span class="text-xs text-slate-600">Total Value Comparison</span>
-      
-          </div>
-          
-          <div class="chart-container flex flex-col w-full place-items-start">
-            <!-- Labels -->
-            <div class="flex flex-col justify-evenly gap-1 items-center mb-1">
-              <div class="flex items-center w-full place-items">
-                <span class="inline-block ring-1 ring-emerald-800 w-2 h-2 rounded-full bg-emerald-200 mr-1"></span>
-                <span class="text-xs text-slate-500">All-time</span>
-                <span class="text-xs font-medium text-slate-700 ml-2">
-                  {formatMoney(totalValueAllTime)}
-                </span>
-              </div>
-              <div class="flex items-center">
-                <span class="inline-block w-2 h-2 rounded-full ring-1 ring-emerald-800  bg-emerald-500 mr-1"></span>
-                <span class="text-xs text-slate-500">{year}</span>
-                <span class="text-xs font-medium text-slate-700 ml-2">
-                  {formatMoney(totalValueInYear)}
-                </span>
-              </div>
-            </div>
-            
-            <!-- Overlaid bars -->
-            <div class="relative w-full h-5 mt-2">
-              <!-- All-time bar (background) -->
-              <div class="absolute top-0 left-0 w-full h-5 bg-slate-100 rounded-full">
-                <div class="h-full bg-emerald-100 rounded-full" style="width: 100%"></div>
-              </div>
-              
-              <!-- Selected year bar (overlay) -->
-              <div class="absolute top-0 left-0 h-5 bg-emerald-500 rounded-full opacity-80" 
-                   style="width: {totalValuePercentage}%"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     
-    <!-- Companies section -->
-    <div class="grid grid-cols-2 gap-3 mb-4">
-      <div class="bg-white rounded-md shadow-sm p-3">
-        <h4 class="text-xs font-medium text-slate-600 mb-2">Buyers, {year}</h4>
-        <div class="flex flex-col items-left">
-          <p class="text-2xl font-bold text-slate-700">{buyersInYear.size}</p>
-          <p class="text-xs text-slate-500">companies</p>
-        </div>
-      </div>
-      
-      <div class="bg-white rounded-md shadow-sm p-3">
-        <h4 class="text-xs font-medium text-slate-600 mb-2">Sellers, {year}</h4>
-        <div class="flex flex-col items-left">
-          <p class="text-2xl font-bold text-slate-700">{sellersInYear.size}</p>
-          <p class="text-xs text-slate-500">companies</p>
-        </div>
-      </div>
-    </div>
+
   </div>
   
-    <p class="text-xs text-slate-500 mt-4 text-left">
-      Select transactions in the chord diagram to see details
-    </p>
 
   
   <style>
@@ -256,6 +241,11 @@
     
     .transaction-circle:hover {
       transform: scale(1.5);
+    }
+
+    .metric-item {
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 1rem;
     }
     
     .metric-item:last-child {
