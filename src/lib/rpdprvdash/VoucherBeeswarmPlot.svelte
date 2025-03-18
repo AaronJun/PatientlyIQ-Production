@@ -31,7 +31,7 @@
     isUndisclosed: false
   };
   
-  const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+  const margin = { top: 10, right: 10, bottom: 20, left: 10 };
   let width: number;
   let height: number;
 
@@ -72,7 +72,11 @@
     if (highlightedTransaction) {
       highlightTransaction(highlightedTransaction);
     } else if (selectedYear) {
-      highlightYear(selectedYear);
+      if (selectedYear === "All") {
+        resetHighlight();
+      } else {
+        highlightYear(selectedYear);
+      }
     } else {
       resetHighlight();
     }
@@ -92,6 +96,11 @@
   }
 
   function highlightYear(year: string) {
+    if (year === "All") {
+      resetHighlight();
+      return;
+    }
+    
     circles
       .style("opacity", d => 
         d["Purchase Year"] === year ? 1 : 0.2
@@ -107,7 +116,7 @@
   function resetHighlight() {
     if (!circles) return;
     circles
-      .style("opacity", 0.8)
+      .style("opacity", 1)
       .attr("r", 5)
       .style("filter", "none");
   }
@@ -209,28 +218,29 @@
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Create scales
-    const y = d3.scaleLinear()
+    const x = d3.scaleLinear()
       .domain([0, d3.max(prices)])
-      .range([height, 0])
+      .range([0, width])
       .nice();
 
-    const x = d3.scaleLinear()
+    const y = d3.scaleLinear()
       .domain([-1, 1])
-      .range([0, width]);
+      .range([height, 0]);
 
-    // Add y-axis with proper formatting
-    const yAxis = d3.axisLeft(y)
+    // Add x-axis with proper formatting
+    const xAxis = d3.axisBottom(x)
       .tickFormat(d => `$${d}M`)
       .ticks(5);
 
     g.append("g")
-      .attr("class", "y-axis")
-      .call(yAxis);
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(xAxis);
 
     // Create simulation
     const simulation = d3.forceSimulation(purchasedVouchers)
-      .force("y", d3.forceY(d => y(getPrice(d))).strength(1))
-      .force("x", d3.forceX(width/2).strength(0.2))
+      .force("x", d3.forceX(d => x(getPrice(d))).strength(1))
+      .force("y", d3.forceY(height/2).strength(0.2))
       .force("collide", d3.forceCollide(6))
       .alphaDecay(0.1)
       .alpha(0.5)
@@ -358,15 +368,15 @@
     min-height: 100%;
   }
 
-  :global(.y-axis path) {
+  :global(.x-axis path) {
     stroke: #e2e8f0;
   }
 
-  :global(.y-axis line) {
+  :global(.x-axis line) {
     stroke: #e2e8f0;
   }
 
-  :global(.y-axis text) {
+  :global(.x-axis text) {
     fill: #4a5568;
     font-size: 10px;
   }

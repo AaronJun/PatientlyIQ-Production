@@ -13,6 +13,9 @@
 </script>
 
 <div class="area-metrics mb-8">
+  <h3 class="text-base font-semibold text-slate-800 mb-3">
+    {metrics.areaName}
+  </h3>
   <div class="progress-container mb-4">
     <div class="h-2 bg-slate-200 rounded-sm w-full relative">
       <div class="absolute inset-0 h-full rounded-sm progress-bar" 

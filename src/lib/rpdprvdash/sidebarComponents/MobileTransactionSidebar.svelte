@@ -44,14 +44,12 @@
   </div>
   
   <!-- Content area -->
-  <div class="content p-4 overflow-y-auto" style="max-height: calc(70vh - 3.5rem)">
-    <div class="space-y-4">
+  <div class="content overflow-y-auto bg-slate-50">
+    <div>
       <!-- Slot for additional content like search -->
       <slot></slot>
-      
       <div class="flex flex-col gap-4">
-        <div class="bg-white rounded-lg shadow-sm p-4 mt-2 h-[35vh]">
-          <h5 class="text-xs font-medium text-slate-600 mb-2">Voucher Distribution</h5>
+        <div class="rounded-lg shadow-sm p-4 mt-2 h-[14.25vh]">
           <VoucherBeeswarmPlot 
             data={data}
             {highlightedTransaction}
@@ -73,19 +71,16 @@
 </div>
 
 <style>
-  .mobile-sidebar {
-    max-height: 80vh;
-    z-index: 1000;
-  }
-  
   /* Tablet-specific styles */
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     .mobile-sidebar {
-      max-height: 90vh;
+      max-height: 70vh;
+      z-index: 1200;
     }
     
     .content {
-      max-height: calc(85vh - 3.5rem) !important;
+      max-height: 70vh;
+      overflow-y: scroll;
     }
   }
   

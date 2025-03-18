@@ -4,6 +4,8 @@
   import * as d3 from 'd3';
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
+  import { formatCompanyName } from './utils/data-processing-utils';
+  import { getTherapeuticAreaFill, getTherapeuticAreaStroke } from './utils/colorDefinitions';
 
   export let data: any[] = [];
   export let stockData: any[] = [];
@@ -47,87 +49,35 @@
     minAngleDiff: Math.PI / 32
   };
 
-  function formatCompanyName(companyName: string): string {
-  // If no company name, return empty string
-  if (!companyName) return '';
-  
-    // List of words/phrases to remove - sort longer phrases first
-    const phrasesToRemove = [
-    'Life Sciences',
-    'Life Science',
-    'Pharmaceuticals',
-    'Biotechnology',
-    'Therapeutics',
-    'Biometrics',
-    'Partners',
-    'Science',
-    'Pharma',
-    'Biotech',
-    'Genetic',
-    'Bio',
-    'Biosciences'
-  ];
-    
-  let formattedName = companyName;
-  
-  // Replace each phrase individually to handle multi-word phrases better
-  phrasesToRemove.forEach(phrase => {
-    const pattern = new RegExp(`\\b${phrase}\\b`, 'gi');
-    formattedName = formattedName.replace(pattern, '');
-  });
-  
-  // Clean up extra spaces, commas and other punctuation
-  formattedName = formattedName.replace(/\s+/g, ' ').trim();
-  formattedName = formattedName.replace(/,\s*$/, '').replace(/^\s*,/, '');
-  formattedName = formattedName.replace(/,\s*,/g, ',');
-  
-  // Fix cases where we removed all words or only punctuation remains
-  if (!formattedName.trim() || formattedName.trim().match(/^[,.\s-]+$/)) {
-    return companyName; // Return original if nothing meaningful remains
-  }
-  
-  // Fix cases with trailing/leading commas or just punctuation
-  formattedName = formattedName.replace(/^\s*[,.-]\s*/, '').replace(/\s*[,.-]\s*$/, '');
-  
-  // Fix inconsistencies with Inc, Inc., Corporation, etc.
-  formattedName = formattedName.replace(/\s*,\s*Inc\.?$/i, '');
-  formattedName = formattedName.replace(/\s*,\s*LLC\.?$/i, '');
-  formattedName = formattedName.replace(/\s*,\s*Ltd\.?$/i, '');
-  formattedName = formattedName.replace(/\s*,\s*Corporation\.?$/i, '');
-  
-  return formattedName;
-}
-
-
-  const therapeuticAreaColorScale = d3.scaleOrdinal()
-    .domain([
-      'Neurology', 'Neuromuscular', 'Oncology', 'Metabolic', 'Ophthalmology',
-      'Cardiovascular', 'Pulmonology', 'Hematology',
-      'Endocrinology', 'Genetic', 'Immunology',
-      'Gastroenterology', 'Hepatology', 'Dermatology',
-      'Neonatology', 'Urology'
-    ])
-    .range([
-      '#FF6B6B', '#FF1515', '#4ECDC4', '#45B7D1', '#96CEB4',
-      '#FFEEAD', '#D4A5A5', '#9DE0AD',
-      '#FF9F1C', '#2EC4B6', '#E71D36',
-      '#FDFFB6', '#CBE896', '#FFA07A',
-      '#98D8C8', '#B8B8D1'
-    ]);
+  // Create a color scale function using getTherapeuticAreaFill
+  const therapeuticAreaColorScale = (area: string): string => {
+    return getTherapeuticAreaFill(area);
+  };
 
   // Update visualizations when the selected year changes
   $: if (selectedYear && transactions) {
     yearFilteredTransactions = transactions.filter(t => t["Purchase Year"] === selectedYear);
     highlightTransactionsForYear();
+  } else if (selectedYear === "" && transactions) {
+    resetAllHighlights();
   }
   
   // Watch selectedYear with an explicit statement to trigger the highlight
-  $: selectedYear, selectedYear && transactions && highlightTransactionsForYear();
+  $: if (selectedYear && transactions) {
+    highlightTransactionsForYear();
+  } else if (selectedYear === "" && transactions) {
+    resetAllHighlights();
+  }
 
   $: if (highlightedTransaction && ribbons) {
     highlightRibbon(highlightedTransaction);
-  } else if (ribbons && !selectedYear) {
-    resetHighlight();
+  } else if (ribbons && !highlightedTransaction) {
+    // Only reset if we're not filtering by year
+    if (!selectedYear) {
+      resetAllHighlights();
+    } else {
+      highlightTransactionsForYear();
+    }
   }
 
   function handleNodeClick(event: MouseEvent, d: any) {
@@ -173,14 +123,19 @@
       therapeuticArea: primaryArea,
       id: `${companyTransactions.length} transactions`
     };
-    tooltipBorderColor = therapeuticAreaColorScale(primaryArea) as string;
+    tooltipBorderColor = therapeuticAreaColorScale(primaryArea);
 
     // Highlight all ribbons involving this company
     ribbons
       .style("opacity", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
-        return (sourceCompany === company || targetCompany === company) ? 1 : 0.2;
+        return (sourceCompany === company || targetCompany === company) ? 1 : 0.1;
+      })
+      .style("filter", (d: any) => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        return (sourceCompany === company || targetCompany === company) ? "saturate(1)" : "saturate(0.2)";
       })
       .attr("stroke-width", (d: any) => {
         const sourceCompany = companies[d.source.index];
@@ -190,11 +145,23 @@
 
     // Highlight nodes for this company as well
     d3.selectAll("circle.voucher-node")
-      .style("opacity", function(this: SVGCircleElement, d: any) {
-        return (d.Company === company || d.Purchaser === company) ? 1 : 0.2;
+      .style("opacity", (d: any) => {
+        return (d.Company === company || d.Purchaser === company) ? 1 : 0.1;
       })
-      .attr("r", function(this: SVGCircleElement, d: any) {
+      .style("filter", (d: any) => {
+        return (d.Company === company || d.Purchaser === company) ? "saturate(1)" : "saturate(0.2)";
+      })
+      .attr("r", (d: any) => {
         return (d.Company === company || d.Purchaser === company) ? 12 : 8;
+      });
+
+    // Highlight company labels
+    d3.selectAll(".label-group text")
+      .style("font-weight", (d: any, i: number) => {
+        return companies[i] === company ? 800 : 400;
+      })
+      .style("opacity", (d: any, i: number) => {
+        return companies[i] === company ? 1 : 0.5;
       });
 
     const rect = svg.getBoundingClientRect();
@@ -218,7 +185,12 @@
       .style("opacity", (d: any) => {
         const sourceCompany = companies[d.source.index];
         const targetCompany = companies[d.target.index];
-        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 1 : 0.2;
+        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? 1 : 0.1;
+      })
+      .style("filter", (d: any) => {
+        const sourceCompany = companies[d.source.index];
+        const targetCompany = companies[d.target.index];
+        return (sourceCompany === transaction.seller && targetCompany === transaction.buyer) ? "saturate(1)" : "saturate(0.2)";
       })
       .attr("stroke-width", (d: any) => {
         const sourceCompany = companies[d.source.index];
@@ -228,11 +200,23 @@
 
     // Also highlight relevant nodes
     d3.selectAll("circle.voucher-node")
-      .style("opacity", function(this: SVGCircleElement, d: any) {
-        return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.2;
+      .style("opacity", (d: any) => {
+        return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 1 : 0.1;
       })
-      .attr("r", function(this: SVGCircleElement, d: any) {
+      .style("filter", (d: any) => {
+        return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? "saturate(1)" : "saturate(0.2)";
+      })
+      .attr("r", (d: any) => {
         return (d.Company === transaction.seller && d.Purchaser === transaction.buyer) ? 12 : 8;
+      });
+
+    // Highlight company labels
+    d3.selectAll(".label-group text")
+      .style("font-weight", (d: any, i: number) => {
+        return (companies[i] === transaction.seller || companies[i] === transaction.buyer) ? 800 : 400;
+      })
+      .style("opacity", (d: any, i: number) => {
+        return (companies[i] === transaction.seller || companies[i] === transaction.buyer) ? 1 : 0.5;
       });
   }
 
@@ -248,7 +232,7 @@
     
     // If no transactions for this year, don't highlight anything special
     if (relevantYearTransactions.length === 0) {
-      resetHighlight();
+      resetAllHighlights();
       return;
     }
     
@@ -275,18 +259,18 @@
       
     // Highlight relevant nodes
     d3.selectAll("circle.voucher-node")
-      .style("opacity", function(this: SVGCircleElement, d: any) {
+      .style("opacity", (d: any) => {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key) ? 1 : 0.15;
       })
-      .attr("r", function(this: SVGCircleElement, d: any) {
+      .attr("r", (d: any) => {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key) ? 12 : 8;
       });
       
     // Add a pulsating effect to the highlighted nodes
     d3.selectAll("circle.voucher-node")
-      .filter(function(this: SVGCircleElement, d: any) {
+      .filter((d: any) => {
         const key = `${d.Company}-${d.Purchaser}`;
         return relevantTransactions.has(key);
       })
@@ -314,17 +298,6 @@
       });
   }
 
-  function resetHighlight() {
-    if (!ribbons) return;
-    ribbons
-      .style("opacity", 0.6)
-      .attr("stroke-width", 0.5);
-
-    d3.selectAll("circle.voucher-node")
-      .style("opacity", 0.9)
-      .attr("r", 8);
-  }
-
   function getLabelPosition(angle: number) {
     const labelRadius = labelConfig.radius + 20;
     const x = Math.cos(angle - Math.PI / 2) * labelRadius;
@@ -350,19 +323,6 @@
     );
   }
   
-  // Get therapeutic area color for a transaction
-  function getTransactionColor(source: number, target: number) {
-    const transaction = getTransaction(source, target);
-    if (transaction) {
-      return therapeuticAreaColorScale(transaction.TherapeuticArea1);
-    }
-    return "#cccccc"; // Default gray if no transaction found
-  }
-
-  function hideTooltip() {
-    tooltipVisible = false;
-  }
-
   async function createVisualization() {
     // Filter only purchased vouchers with known purchasers
     transactions = data.filter(d => d.Purchased === "Y" && d.Purchaser && d.Purchaser !== "NA");
@@ -424,23 +384,22 @@
       .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
     // Add ribbons first
-    ribbons = svgElem.append("g")
+    const ribbonsSelection = svgElem.append("g")
       .selectAll<SVGPathElement, any>("path")
       .data(chords)
       .join("path")
       .attr("d", d3.ribbon().radius(innerRadius) as any)
-      .style("fill", function(this: SVGPathElement, d: any): string {
+      .style("fill", (d: any): string => {
         // Color based on the therapeutic area of the actual transaction
         const transaction = getTransaction(d.source.index, d.target.index);
-        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) as string : "#cccccc";
+        return transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
       })
       .style("mix-blend-mode", "multiply")
       .style("opacity", 0.6)
-      .attr("stroke", function(this: SVGPathElement, d: any): string {
+      .attr("stroke", (d: any): string => {
         // Darker stroke of the same therapeutic area color
         const transaction = getTransaction(d.source.index, d.target.index);
-        const color = transaction ? therapeuticAreaColorScale(transaction.TherapeuticArea1) : "#cccccc";
-        return d3.color(color as string)?.darker(0.5)?.toString() || '#999999';
+        return transaction ? getTherapeuticAreaStroke(transaction.TherapeuticArea1) : "#999999";
       })
       .attr("stroke-width", 0.5)
       .attr("stroke-dasharray", (d: any) => {
@@ -468,7 +427,46 @@
             therapeuticArea: transaction.Candidate,
             id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
           };
-          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1) as string;
+          tooltipBorderColor = therapeuticAreaColorScale(transaction.TherapeuticArea1);
+
+          // Highlight the ribbon and related nodes
+          ribbonsSelection
+            .style("opacity", (rd: any) => {
+              const sourceCompany = companies[rd.source.index];
+              const targetCompany = companies[rd.target.index];
+              return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? 1 : 0.1;
+            })
+            .style("filter", (rd: any) => {
+              const sourceCompany = companies[rd.source.index];
+              const targetCompany = companies[rd.target.index];
+              return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? "saturate(1)" : "saturate(0.2)";
+            })
+            .attr("stroke-width", (rd: any) => {
+              const sourceCompany = companies[rd.source.index];
+              const targetCompany = companies[rd.target.index];
+              return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? 2 : 0.25;
+            });
+
+          // Highlight related nodes
+          d3.selectAll("circle.voucher-node")
+            .style("opacity", (nd: any) => {
+              return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? 1 : 0.1;
+            })
+            .style("filter", (nd: any) => {
+              return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? "saturate(1)" : "saturate(0.2)";
+            })
+            .attr("r", (nd: any) => {
+              return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? 12 : 8;
+            });
+
+            // Highlight company labels
+            d3.selectAll(".label-group text")
+              .style("font-weight", (d: any, i: number) => {
+                return (companies[i] === transaction.Company || companies[i] === transaction.Purchaser) ? 800 : 400;
+              })
+              .style("opacity", (d: any, i: number) => {
+                return (companies[i] === transaction.Company || companies[i] === transaction.Purchaser) ? 1 : 0.5;
+              });
 
           const rect = svg.getBoundingClientRect();
           tooltipX = event.clientX - rect.left;
@@ -479,7 +477,17 @@
       .on("mouseleave", () => {
         dispatch('transactionLeave');
         tooltipVisible = false;
+        
+        // Reset highlight if we're not filtering by year
+        if (!selectedYear) {
+          resetAllHighlights();
+        } else {
+          highlightTransactionsForYear();
+        }
       });
+
+    // Set the ribbons variable with type assertion
+    ribbons = ribbonsSelection as any;
 
     // Create groups for labels and arcs
     const group = svgElem.append("g")
@@ -489,11 +497,11 @@
 
     // Add background arcs 
     group.append("path")
-      .attr("fill", function(this: SVGPathElement, d: any): string {
+      .attr("fill", (d: any): string => {
         // Get company's primary therapeutic area color
         const company = companies[d.index];
         const companyInfo = companyData.get(company);
-        return therapeuticAreaColorScale(companyInfo.therapeuticArea) as string;
+        return therapeuticAreaColorScale(companyInfo.therapeuticArea);
       })
       .attr("d", d3.arc()
         .innerRadius(innerRadius)
@@ -502,7 +510,7 @@
       .attr("opacity", 0.2);
 
     // Add voucher nodes
-    group.each(function(this: SVGGElement, d: any, i: number) {
+    group.each((d: any, i: number) => {
       const company = companies[i];
       const companyTrans = companyData.get(company)?.transactions || [];
       
@@ -520,8 +528,8 @@
           .datum(transaction)
           .attr("r", nodeRadius)
           .attr("transform", `translate(${x},${y})`)
-          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1) as string)
-          .attr("stroke", "#565656")
+          .attr("fill", therapeuticAreaColorScale(transaction.TherapeuticArea1))
+          .attr("stroke", getTherapeuticAreaStroke(transaction.TherapeuticArea1))
           .attr("stroke-width", 1.5)
           .attr("stroke-dasharray", isUndisclosed(transaction["Sale Price (USD Millions)"]) ? "2,2" : null)
           .attr("cursor", "pointer")
@@ -539,12 +547,51 @@
 
              // Update tooltip with transaction information
              tooltipContent = {
-            sponsor: `${transaction.Company} → ${transaction.Purchaser}`,
-            drugName: `${priceDisplay}`,
-            therapeuticArea: transaction.Candidate,
-            id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
-          };
-            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1) as string;
+              sponsor: `${transaction.Company} → ${transaction.Purchaser}`,
+              drugName: `${priceDisplay}`,
+              therapeuticArea: transaction.Candidate,
+              id: `${transaction["Purchase Month"]}-${transaction["Purchase Date"]}-${transaction["Purchase Year"]}`
+            };
+            tooltipBorderColor = therapeuticAreaColorScale(d.TherapeuticArea1);
+
+            // Highlight the ribbon for this node's transaction
+            ribbons
+              .style("opacity", (rd: any) => {
+                const sourceCompany = companies[rd.source.index];
+                const targetCompany = companies[rd.target.index];
+                return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? 1 : 0.1;
+              })
+              .style("filter", (rd: any) => {
+                const sourceCompany = companies[rd.source.index];
+                const targetCompany = companies[rd.target.index];
+                return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? "saturate(1)" : "saturate(0.2)";
+              })
+              .attr("stroke-width", (rd: any) => {
+                const sourceCompany = companies[rd.source.index];
+                const targetCompany = companies[rd.target.index];
+                return (sourceCompany === transaction.Company && targetCompany === transaction.Purchaser) ? 2 : 0.25;
+              });
+
+            // Highlight related nodes
+            d3.selectAll("circle.voucher-node")
+              .style("opacity", (nd: any) => {
+                return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? 1 : 0.1;
+              })
+              .style("filter", (nd: any) => {
+                return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? "saturate(1)" : "saturate(0.2)";
+              })
+              .attr("r", (nd: any) => {
+                return (nd.Company === transaction.Company && nd.Purchaser === transaction.Purchaser) ? 12 : 8;
+              });
+
+            // Highlight company labels
+            d3.selectAll(".label-group text")
+              .style("font-weight", (d: any, i: number) => {
+                return (companies[i] === transaction.Company || companies[i] === transaction.Purchaser) ? 800 : 400;
+              })
+              .style("opacity", (d: any, i: number) => {
+                return (companies[i] === transaction.Company || companies[i] === transaction.Purchaser) ? 1 : 0.5;
+              });
 
             const rect = svg.getBoundingClientRect();
             tooltipX = event.clientX - rect.left;
@@ -554,13 +601,20 @@
           .on("mouseleave", () => {
             dispatch('transactionLeave');
             tooltipVisible = false;
+            
+            // Reset highlight if we're not filtering by year
+            if (!selectedYear) {
+              resetAllHighlights();
+            } else {
+              highlightTransactionsForYear();
+            }
           })
           .on("click", handleNodeClick);
       });
     });
 
     // Add company labels
-    group.each(function(this: SVGGElement, d: any, i: number) {
+    group.each((d: any, i: number) => {
       const company = companies[i];
       const angle = (d.startAngle + d.endAngle) / 2;
       const { x: labelX, y: labelY, rotate } = getLabelPosition(angle);
@@ -574,15 +628,15 @@
         .attr("y", labelY)
         .attr("transform", `rotate(${rotate}, ${labelX}, ${labelY})`)
         .attr("text-anchor", "middle")
-        .style("font-size", "10.725px")
+        .style("font-size", "9.25px")
         .style("fill", "#4a5568")
-        .text(company)
+        .text(formatCompanyName(company))
         .on("mouseenter", (event) => handleCompanyHover(event, company))
         .on("mouseleave", () => {
           tooltipVisible = false;
           // Only reset highlight if we're not filtering by year
           if (!selectedYear) {
-            resetHighlight();
+            resetAllHighlights();
           } else {
             highlightTransactionsForYear();
           }
@@ -596,16 +650,39 @@
     }
   }
 
+  // New function to completely reset all highlights
+  function resetAllHighlights() {
+    if (!ribbons) return;
+    
+    // Reset ribbons
+    ribbons
+      .style("opacity", 1)
+      .style("filter", "saturate(1)")
+      .attr("stroke-width", 0.5);
+
+    // Reset nodes
+    d3.selectAll("circle.voucher-node")
+      .style("opacity", 0.9)
+      .style("filter", "saturate(1)")
+      .attr("r", 8)
+      .attr("stroke-width", 1.5)
+      .attr("stroke", "#565656");
+      
+    // Reset labels
+    d3.selectAll(".label-group text")
+      .style("font-weight", 400)
+      .style("opacity", 1);
+  }
+
   onMount(() => {
     createVisualization();
+    
+    return () => {
+      // Reset everything when component is destroyed
+      resetAllHighlights();
+    };
   });
-  
-  // Re-render visualization when selectedYear changes
-  afterUpdate(() => {
-    if (selectedYear) {
-      highlightTransactionsForYear();
-    }
-  });
+
 </script>
 
 <div class="chord-container relative">

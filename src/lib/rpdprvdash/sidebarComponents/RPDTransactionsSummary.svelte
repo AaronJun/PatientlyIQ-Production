@@ -8,7 +8,7 @@
     
     // Filter to transactions
     $: transactions = data.filter(d => d.Purchased === "Y" && d["Purchase Year"]);
-    $: transactionsInYear = transactions.filter(d => d["Purchase Year"] === year);
+    $: transactionsInYear = year === "All" ? transactions : transactions.filter(d => d["Purchase Year"] === year);
   
     // Computed transaction statistics
     $: totalTransactions = transactions.length;
@@ -38,8 +38,8 @@
     $: allSellers = new Set(transactions.map(d => d.Company));
     $: allBuyers = new Set(transactions.map(d => d.Purchaser));
     
-    $: sellersInYear = new Set(transactionsInYear.map(d => d.Company));
-    $: buyersInYear = new Set(transactionsInYear.map(d => d.Purchaser));
+    $: sellersInYear = year === "All" ? allSellers : new Set(transactionsInYear.map(d => d.Company));
+    $: buyersInYear = year === "All" ? allBuyers : new Set(transactionsInYear.map(d => d.Purchaser));
     
     // Generate transaction circles data
     $: transactionCircles = Array(Math.min(totalTransactions, 100)).fill(0).map((_, i) => {
@@ -161,7 +161,7 @@
         
         <!-- Total Value Comparison Chart -->
         <div class="flex flex-col py-3 border-b border-slate-100">
-          <div class="flex-row justify-between items-center mb-2">
+          <div class="flex-row justify-between mb-2">
             <span class="text-xs text-slate-600">Total Value Comparison</span>
       
           </div>

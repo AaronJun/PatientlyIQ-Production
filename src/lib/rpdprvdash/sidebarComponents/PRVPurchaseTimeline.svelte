@@ -3,7 +3,6 @@
     import { onMount, createEventDispatcher } from 'svelte';
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from '../utils/colorDefinitions';
-    import * as Dialog from "$lib/components/ui/dialog";
     import { ChevronDown } from 'carbon-icons-svelte';
     
     export let data: any[] = [];
@@ -544,10 +543,10 @@
             });
     }
 
-    // Add radiusScale function
+    // Update the radiusScale function to handle mobile responsiveness
     function radiusScale(value: number): number {
-        const minRadius = 8;
-        const maxRadius = 22;
+        const minRadius = isMobile ? 2 : 8;
+        const maxRadius = isMobile ? 12 : 22;
         const maxValue = Math.max(...yearData.map(d => d.totalValue));
         return minRadius + (maxRadius - minRadius) * (value / maxValue);
     }
@@ -571,92 +570,142 @@
 </script>
 
 {#if isMobile || isTablet}
-    <!-- Dropdown menu for mobile and tablet -->
-    <div class="dropdown-container mx-4 justify-end ring-1 ring-emerald-500 z-50 bg-white rounded-sm relative h-full w-fit" style="min-height: 20px;">
-        <button 
-            class="dropdown-toggle flex items-center justify-between px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none"
-            on:click={toggleDropdown}
-        >
-            <div class="flex items-center gap-2">
-                {#if selectedYear === "All"}
-                    <div class="w-5 h-5 rounded-full" style="background: linear-gradient(135deg, #667EEA, #764BA2, #FF6B6B, #38B2AC, #68D391)"></div>
-                    <span>All Transaction Years</span>
-                {:else if selectedYear && yearData.length > 0}
-                    {#each yearData.filter(entry => entry.year === selectedYear) as yearEntry}
-                        <div class="w-5 h-5 rounded-full" style="background: {yearGradients[yearEntry.year] || 'gray'}"></div>
-                        <span>{yearEntry.year}</span>
+    <!-- Timeline for mobile/tablet - using same circle layout as desktop but with adjusted sizes -->
+    <div class="backdrop-blur-sm" bind:this={container}>
+        <!-- SVG definitions for gradients -->
+        <svg width="0" height="0" aria-hidden="true">
+            <defs>
+                <!-- Gradients for each year -->
+                {#each yearData as yearEntry}
+                    <linearGradient id="gradient-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        {#each yearEntry.areas as area, i}
+                            <stop 
+                                offset="{i * (100 / yearEntry.areas.length)}%" 
+                                stop-color={getTherapeuticAreaColor(area.area).fill}
+                            />
+                            <stop 
+                                offset="{(i + 1) * (100 / yearEntry.areas.length)}%" 
+                                stop-color={getTherapeuticAreaColor(area.area).fill}
+                            />
+                        {/each}
+                    </linearGradient>
+                {/each}
+                
+                <!-- Special gradient for "All Years" -->
+                <linearGradient id="gradient-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
+                    {#each Array.from(new Set(yearData.flatMap(y => y.areas.map(a => a.area)))) as area, i}
+                        <stop 
+                            offset="{i * (100 / yearData.length)}%" 
+                            stop-color={getTherapeuticAreaColor(area).fill}
+                        />
                     {/each}
-                {:else}
-                    <div class="w-5 h-5 rounded-full"></div>
-                    <span>Select Transaction Year</span>
-                {/if}
-            </div>
-            <ChevronDown 
-                size={16} 
-                class="transform transition-transform duration-200 {isDropdownOpen ? 'rotate-180' : ''}"
-            />
-        </button>
+                </linearGradient>
+                
+                <!-- Glow filter -->
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+        </svg>
 
-        {#if isDropdownOpen}
-            <div 
-                class="dropdown-menu absolute left-0 right-0 z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-slate-200 max-h-[60vh] overflow-y-auto"
-                bind:this={dropdownRef}
-                style="position: absolute; top: 100%; width: 100%; z-index: 9999;"
-            >
-                <div class="py-1">
-                    <!-- All Years option -->
+        <div class="timeline-grid">
+            {#each yearData as yearEntry}
+                <div class="year-item">
                     <button 
-                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-[9.25px] text-slate-700 hover:bg-slate-100 {selectedYear === 'All' ? 'bg-slate-100 font-medium' : ''}"
-                        on:click={() => handleYearSelect('All')}
+                        class="circle-container"
+                        class:selected={yearEntry.year === selectedYear}
+                        on:click={() => handleYearSelect(yearEntry.year)}
+                        on:mouseenter={() => handleYearHover(yearEntry)}
+                        on:mouseleave={() => handleYearLeave(yearEntry)}
+                        on:keydown={(e) => e.key === 'Enter' && handleYearSelect(yearEntry.year)}
+                        aria-label={`Select year ${yearEntry.year}`}
+                        type="button"
                     >
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <defs>
-                                <linearGradient id="dropdown-all-years" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#667EEA" />
-                                    <stop offset="25%" stop-color="#764BA2" />
-                                    <stop offset="50%" stop-color="#FF6B6B" />
-                                    <stop offset="75%" stop-color="#38B2AC" />
-                                    <stop offset="100%" stop-color="#68D391" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="10" cy="10" r="8" fill="url(#dropdown-all-years)" stroke="#37587e" stroke-width="1" />
-                        </svg>
-                        All Transaction Years
-                    </button>
-                    
-                    <!-- Year options -->
-                    {#each yearData as yearEntry}
-                        <button 
-                            class="flex items-center gap-2 w-full text-left text-sm text-slate-700 hover:bg-slate-100 {selectedYear === yearEntry.year ? 'bg-slate-50 font-medium' : ''}"
-                            on:click={() => handleYearSelect(yearEntry.year)}
+                        <!-- Highlight circle -->
+                        <div 
+                            class="highlight-circle"
+                            style="
+                                width: {(radiusScale(yearEntry.totalValue) + 4) * 2}px;
+                                height: {(radiusScale(yearEntry.totalValue) + 4) * 2}px;
+                                opacity: {yearEntry.year === selectedYear ? 0.5 : 0};
+                            "
+                        ></div>
+                        <!-- Main circle with SVG gradient -->
+                        <svg 
+                            class="main-circle-svg"
+                            width={radiusScale(yearEntry.totalValue) * 2}
+                            height={radiusScale(yearEntry.totalValue) * 2}
+                            style="filter: {yearEntry.year === selectedYear ? 'url(#glow)' : 'none'};"
                         >
-                            <svg width="20" height="20" viewBox="0 0 20 20">
-                                <defs>
-                                    <linearGradient id="dropdown-{yearEntry.year}" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        {#each yearEntry.areas as area, i}
-                                            {#if i === 0}
-                                                <stop offset="0%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            {/if}
-                                            <stop offset="{i * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                            <stop offset="{(i + 1) * (100 / yearEntry.areas.length)}%" stop-color={getTherapeuticAreaColor(area.area).fill} />
-                                        {/each}
-                                    </linearGradient>
-                                </defs>
-                                <circle 
-                                    cx="10" 
-                                    cy="10" 
-                                    r="{Math.max(4, Math.min(8, yearEntry.count / 5))}" 
-                                    fill="url(#dropdown-{yearEntry.year})" 
-                                    stroke="#37587e" 
-                                    stroke-width="1" 
-                                />
-                            </svg>
-                            {yearEntry.year} ({yearEntry.count} transaction{yearEntry.count !== 1 ? 's' : ''})
-                        </button>
-                    {/each}
+                            <circle 
+                                cx={radiusScale(yearEntry.totalValue)}
+                                cy={radiusScale(yearEntry.totalValue)}
+                                r={radiusScale(yearEntry.totalValue) - 1.5}
+                                fill="url(#gradient-{yearEntry.year})"
+                                stroke="#565656"
+                                stroke-width="1.5"
+                            />
+                        </svg>
+                    </button>
+                    <div 
+                        class="year-label"
+                        class:selected={yearEntry.year === selectedYear}
+                    >
+                        {yearEntry.year}
+                    </div>
+                </div>
+            {/each}
+
+            <!-- "All Years" item -->
+            <div class="year-item all-years">
+                <button 
+                    class="circle-container"
+                    class:selected={"All" === selectedYear}
+                    on:click={() => handleYearSelect("All")}
+                    on:mouseenter={() => handleYearHover({ year: "All" })}
+                    on:mouseleave={() => handleYearLeave({ year: "All" })}
+                    on:keydown={(e) => e.key === 'Enter' && handleYearSelect("All")}
+                    aria-label="Select all years"
+                    type="button"
+                >
+                    <!-- Highlight circle -->
+                    <div 
+                        class="highlight-circle"
+                        style="
+                            width: {isMobile ? '40px' : '50px'};
+                            height: {isMobile ? '40px' : '50px'};
+                            opacity: {"All" === selectedYear ? 0.5 : 0};
+                        "
+                    ></div>
+                    <!-- Main circle with SVG gradient -->
+                    <svg 
+                        class="main-circle-svg"
+                        width={isMobile ? "36" : "44"}
+                        height={isMobile ? "36" : "44"}
+                        style="filter: {"All" === selectedYear ? 'url(#glow)' : 'none'};"
+                    >
+                        <circle 
+                            cx={isMobile ? "18" : "22"}
+                            cy={isMobile ? "18" : "22"}
+                            r={isMobile ? "16.5" : "20.5"}
+                            fill="url(#gradient-all-years)"
+                            stroke="#565656"
+                            stroke-width="1.5"
+                        />
+                    </svg>
+                </button>
+                <div 
+                    class="year-label"
+                    class:selected={"All" === selectedYear}
+                >
+                    All
                 </div>
             </div>
-        {/if}
+        </div>
     </div>
 {:else}
     <!-- Timeline for desktop -->
@@ -901,15 +950,21 @@
 
     @media (max-width: 768px) {
         .timeline-grid {
-            gap: 0.5rem;
+            gap: 0.25rem;
         }
 
         .year-label {
-            font-size: 8px;
+            font-size: 7.25px;
+            opacity: .725; /* Always show labels on mobile */
+        }
+
+        .year-label.selected {
+            font-size: 10.25px;
+            opacity: 1;
         }
         
         .timeline-container {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             height: auto; /* Don't compress on mobile */
         }
 
@@ -918,11 +973,23 @@
         }
 
         .circle-container {
-            transform: scale(1); /* Don't scale down on mobile */
+            transform: scale(0.825); /* Slightly smaller scale on mobile, but not as small as desktop default */
         }
 
         .timeline-container:hover .year-item {
             transform: none; /* No hover scaling on mobile */
+        }
+        
+        .all-years {
+            margin-left: 0.5rem; /* Reduced margin on mobile */
+        }
+        
+        .highlight-circle {
+            border-width: 3px; /* Thinner border on mobile */
+        }
+        
+        .main-circle-svg circle {
+            stroke-width: 1px; /* Thinner stroke on mobile */
         }
     }
 
