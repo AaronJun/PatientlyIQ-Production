@@ -1,6 +1,7 @@
 <!-- RPDPRVAnalytics.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
+    import OverviewIntroduction from './OverviewIntroduction.svelte';   
     import ProgramSankey from './TimelineSankeyFlow.svelte';
     import PRVAwardCount from './PRVAwardCount.svelte';
     import PRVValueTimeline from './PRVValueTimeline.svelte';
@@ -9,6 +10,7 @@
     import UnsoldVouchersTable from './UnsoldVouchersTable.svelte';
     import { Report, Money, ChartParallel, CicsTransactionServerZos, Catalog } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
+    import { createEventDispatcher } from 'svelte';
     
     interface DataEntry {
         Company: string;
@@ -27,6 +29,8 @@
     export let isAllYearView: boolean = true;
     export let onEntrySelect = (entry: DataEntry) => {};
     
+    const dispatch = createEventDispatcher();
+
     // Statistics
     let totalEntries = 0;
     let totalPRVs = 0;
@@ -55,6 +59,10 @@
     function handleEntrySelect(entry: DataEntry) {
       // Pass the selected entry to the parent component
       onEntrySelect(entry);
+    }
+    
+    function handleNavigateToSponsor() {
+      dispatch('navigateToSponsor');
     }
     
     function calculateStats() {
@@ -152,7 +160,8 @@
     });
 </script>
   
-<div class="program-analytics">
+<div class="program-analytics pl-4 pr-2 pt-2 md:px-8 md:pt-8">
+  <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
   <!-- Section 1: Program Overview Stats -->
   <section class="mb-6">
     <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 

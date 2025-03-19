@@ -30,7 +30,7 @@
   import InfiniteCanvasWrapper from '$lib/rpdprvdash/InfiniteCanvasWrapper.svelte';
 
   // New PRV Analytics Components
-  import RPDPRVAnalytics from '$lib/rpdprvdash/AllView/SankeyWrapper.svelte';
+  import RPDPRVAnalytics from '$lib/rpdprvdash/Overview/OverviewWrapper.svelte';
 
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
@@ -102,7 +102,7 @@
   }
 
   // State variables
-  let activeTab = 'By Sponsor';
+  let activeTab = 'Program Overview';
   let selectedTransactionYear = "All"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: any | null = null;
@@ -976,13 +976,11 @@
         <!-- Program Overview (Analytics) Tab Layout -->
         {:else if activeTab === 'Program Overview'}
           <div class="w-full">
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h2 class="text-xl font-semibold text-slate-800 mb-4">RPDD + PRV Program Analytics</h2>
-              <p class="text-slate-600 mb-6">Comprehensive analysis of the Rare Pediatric Disease Priority Review Voucher program performance and impact.</p>
               
               <RPDPRVAnalytics 
                 data={rpddData} 
                 isAllYearView={selectedYear === "All"}
+                on:navigateToSponsor={() => setActiveTab('By Sponsor')}
                 onEntrySelect={(entry) => handleShowDrugDetail({
                   Company: entry.Company,
                   drugName: entry.Candidate,
@@ -998,7 +996,6 @@
                 })}
               />
             </div>
-          </div>
         {/if}
       </div>
     </div>

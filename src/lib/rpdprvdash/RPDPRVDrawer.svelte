@@ -108,8 +108,10 @@
         if (stage !== "TBD" && stage !== "N/A") {
             overlayData = {
                 isOpen: true,
-                title: `Development Stage: ${stage}`,
-                data: entries.filter(entry => entry["Current Development Stage"] === stage),
+                title: `Development Stage: ${stage} (${year})`,
+                data: entries.filter(entry => 
+                    entry["Current Development Stage"] === stage
+                ),
                 type: 'stage',
                 color
             };
@@ -121,7 +123,9 @@
             overlayData = {
                 isOpen: true,
                 title: `Voucher status: Awarded in ${voucherAwardDate}`,
-                data: entries.filter(entry => entry["PRV Issue Year"] === voucherAwardDate),
+                data: entries.filter(entry => 
+                    entry["PRV Issue Year"] === voucherAwardDate
+                ),
                 type: 'stage',
                 color
             };
@@ -133,7 +137,9 @@
             overlayData = {
                 isOpen: true,
                 title: `Therapeutic Area: ${area}`,
-                data: entries.filter(entry => entry.TherapeuticArea1 === area),
+                data: entries.filter(entry => 
+                    entry.TherapeuticArea1 === area
+                ),
                 type: 'therapeuticArea',
                 color
             };
@@ -145,7 +151,9 @@
             overlayData = {
                 isOpen: true,
                 title: `Indication: ${indication}`,
-                data: entries.filter(entry => entry.Indication === indication),
+                data: entries.filter(entry => 
+                    entry.Indication === indication
+                ),
                 type: 'indication',
                 color
             };
@@ -157,7 +165,9 @@
             overlayData = {
                 isOpen: true,
                 title: `Treatment Class: ${treatmentClass}`,
-                data: entries.filter(entry => entry.Class1 === treatmentClass),
+                data: entries.filter(entry => 
+                    entry.Class1 === treatmentClass
+                ),
                 type: 'treatmentClass',
                 color
             };
@@ -169,7 +179,9 @@
             overlayData = {
                 isOpen: true,
                 title: `Mechanism of Action: ${moa}`,
-                data: entries.filter(entry => entry.MOA === moa),
+                data: entries.filter(entry => 
+                    entry.MOA === moa
+                ),
                 type: 'moa',
                 color
             };
@@ -253,183 +265,177 @@
             {/if}
 
             <!-- Timeline Information Section -->
-            <section class="main-section mb-8">
-                <h3 class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
+            <section class="main-section mb-8" aria-labelledby="timeline-section-title">
+                <h3 id="timeline-section-title" class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
                     Timeline Information
                 </h3>
-                <table class="w-full align-baseline">
-                    <tbody class="min-w-full">
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Current Stage</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {currentStage}
-                                </p>
-                                {#if currentStage !== "TBD" && currentStage !== "N/A"}
-                                <button 
-                                    class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                    on:click={() => showStageView(currentStage)}
-                                    aria-label="View all drugs in this stage"
-                                >
-                                    All <ArrowUpRight size={16} />
-                                </button>
-                            {/if}
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">RPDD Award Date</p>
-                            </div>
-                            <div class="flex justify-items-stretch w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {rpddAwardDate || 'Not Available'}
-                                </p>
-                            </div>
-                    </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline text-left uppercase">Voucher Award Date</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                        {voucherAwardDate || 'Not yet awarded'}
-                                    </p>
-                           
-                                {#if voucherAwardDate !== "" && voucherAwardDate !== "Not yet applicable"}
-                                <button 
-                                    class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                    on:click={() => showVoucherView(voucherAwardDate)}
-                                    aria-label="View all drugs with vouchers awarded in this year"
-                                >
-                                    All <ArrowUpRight size={16} />
-                                </button>
-                            {/if}
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Voucher Transaction Date</p>
-                            </div>
-                            <div class="flex justify-items-stretch w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
-                                    {voucherTransactionDate || 'N/A'}
-                                </p>
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="w-full align-baseline">
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Current Stage</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {currentStage}
+                            </span>
+                            {#if currentStage !== "TBD" && currentStage !== "N/A"}
+                            <button 
+                                class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                on:click={() => showStageView(currentStage)}
+                                aria-label="View all drugs in this stage for {year}"
+                            >
+                                All <ArrowUpRight size={16} />
+                            </button>
+                        {/if}
+                        </div>
+                    </div>
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">RPDD Award Date</span>
+                        </div>
+                        <div class="flex justify-items-stretch w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {rpddAwardDate || 'Not Available'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline text-left uppercase">Voucher Award Date</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                    {voucherAwardDate || 'Not yet awarded'}
+                                </span>
+                       
+                            {#if voucherAwardDate !== "" && voucherAwardDate !== "Not yet applicable"}
+                            <button 
+                                class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                on:click={() => showVoucherView(voucherAwardDate)}
+                                aria-label="View all drugs with vouchers awarded in {voucherAwardDate} for {year}"
+                            >
+                                All <ArrowUpRight size={16} />
+                            </button>
+                        {/if}
+                        </div>
+                    </div>
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Voucher Transaction Date</span>
+                        </div>
+                        <div class="flex justify-items-stretch w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base overflow-hidden tracking-wide">
+                                {voucherTransactionDate || 'N/A'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Disease Information Section -->
-            <section class="main-section mb-8">
-                <h3 class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
+            <section class="main-section mb-8" aria-labelledby="disease-section-title">
+                <h3 id="disease-section-title" class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
                     Disease Information
                 </h3>
-                <table class="w-full align-baseline">
-                    <tbody class="min-w-full">
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Therapeutic Area</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {therapeuticArea}
-                                </p>
-                                {#if therapeuticArea !== "TBD" && therapeuticArea !== "N/A"}
-                                    <button 
-                                        class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                        on:click={() => showTherapeuticAreaView(therapeuticArea)}
-                                        aria-label="View all drugs in this therapeutic area"
-                                    >
-                                        All <ArrowUpRight size={16} />
-                                    </button>
-                                {/if}
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Indication</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {indication}
-                                </p>
-                                {#if indication !== "TBD" && indication !== "N/A"}
-                                    <button 
-                                        class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                        on:click={() => showIndicationView(indication)}
-                                        aria-label="View all drugs with this indication"
-                                    >
-                                        All <ArrowUpRight size={16} />
-                                    </button>
-                                {/if}
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="w-full align-baseline">
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Therapeutic Area</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {therapeuticArea}
+                            </span>
+                            {#if therapeuticArea !== "TBD" && therapeuticArea !== "N/A"}
+                                <button 
+                                    class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                    on:click={() => showTherapeuticAreaView(therapeuticArea)}
+                                    aria-label="View all drugs in {therapeuticArea} for {year}"
+                                >
+                                    All <ArrowUpRight size={16} />
+                                </button>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Indication</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {indication}
+                            </span>
+                            {#if indication !== "TBD" && indication !== "N/A"}
+                                <button 
+                                    class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                    on:click={() => showIndicationView(indication)}
+                                    aria-label="View all drugs with indication {indication} for {year}"
+                                >
+                                    All <ArrowUpRight size={16} />
+                                </button>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Treatment Information Section -->
-            <section class="main-section mb-8">
-                <h3 class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
+            <section class="main-section mb-8" aria-labelledby="treatment-section-title">
+                <h3 id="treatment-section-title" class="section-title text-lg font-base text-slate-800 mt-6 mb-4">
                     Treatment Information
                 </h3>
-                <table class="w-full align-baseline">
-                    <tbody class="min-w-full">
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Treatment Class</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {treatmentClass}
-                                </p>
-                                {#if treatmentClass !== "TBD" && treatmentClass !== "N/A"}
-                                    <button 
-                                        class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                        on:click={() => showTreatmentClassView(treatmentClass)}
-                                        aria-label="View all drugs in this treatment class"
-                                    >
-                                        All <ArrowUpRight size={16} />
-                                    </button>
-                                {/if}
-                            </div>
-                        </tr>
-                        <tr class="flex w-full align-baseline">
-                            <div class="flex align-baseline w-5/12 gap-2">                    
-                                <p class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Mechanism of Action</p>
-                            </div>
-                            <div class="flex justify-between w-8/12 gap-2">                    
-                                <p class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
-                                    {mechanismOfAction}
-                                </p>
-                                {#if mechanismOfAction !== "TBD" && mechanismOfAction !== "N/A"}
-                                    <button 
-                                        class="flex align-top gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
-                                        on:click={() => showMOAView(mechanismOfAction)}
-                                        aria-label="View all drugs with this mechanism of action"
-                                    >
-                                        All <ArrowUpRight size={16} />
-                                    </button>
-                                {/if}
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="w-full align-baseline">
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Treatment Class</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {treatmentClass}
+                            </span>
+                            {#if treatmentClass !== "TBD" && treatmentClass !== "N/A"}
+                                <button 
+                                    class="flex gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                    on:click={() => showTreatmentClassView(treatmentClass)}
+                                    aria-label="View all drugs in treatment class {treatmentClass} for {year}"
+                                >
+                                    All <ArrowUpRight size={16} />
+                                </button>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="info-row flex w-full align-baseline">
+                        <div class="flex align-baseline w-5/12 gap-2">                    
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Mechanism of Action</span>
+                        </div>
+                        <div class="flex justify-between w-8/12 gap-2">                    
+                            <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
+                                {mechanismOfAction}
+                            </span>
+                            {#if mechanismOfAction !== "TBD" && mechanismOfAction !== "N/A"}
+                                <button 
+                                    class="flex align-top gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
+                                    on:click={() => showMOAView(mechanismOfAction)}
+                                    aria-label="View all drugs with mechanism of action {mechanismOfAction} for {year}"
+                                >
+                                    All <ArrowUpRight size={16} />
+                                </button>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Related RPDDs Section -->
-            <section>
-                <h3 class="text-lg font-base text-slate-800 mt-6 mb-4" 
+            <section aria-labelledby="related-section-title">
+                <h3 id="related-section-title" class="text-lg font-base text-slate-800 mt-6 mb-4" 
                     in:fly={{duration: 500, x: 420 }}>
                     Related RPDDs in {therapeuticArea}
                 </h3>
                 
                 <Toolbar size="sm">
                     <ToolbarContent>
-                        <ToolbarSearch bind:value={searchTerm} />
+                        <ToolbarSearch bind:value={searchTerm} placeholder="Search related RPDDs" aria-label="Search related RPDDs" />
                     </ToolbarContent>
                 </Toolbar>
 
@@ -447,6 +453,7 @@
                     company: entry.Company
                 })), searchTerm)}
                 sortable
+                description="List of related RPDDs in this therapeutic area"
             >
                 <svelte:fragment slot="cell" let:row let:cell>
                     {#if cell.key === 'drugName'}
@@ -510,7 +517,7 @@
         border-bottom: .525px dotted #666666;
     }
 
-    tr {
+    .info-row {
         display: flex;
         flex-direction: row;
         border-bottom: .5px dotted #e2e8f0;
