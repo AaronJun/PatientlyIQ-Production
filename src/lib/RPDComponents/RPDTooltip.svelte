@@ -25,7 +25,7 @@
 <div
   class="tooltip"
   style="--border-color: {borderColor};"
-  transition:fade={{ duration: 1000 }}
+  transition:fade={{ duration: 100 }}
 >
     <div class="tooltip-content">
       <div class="flex gap-4 items-baseline">

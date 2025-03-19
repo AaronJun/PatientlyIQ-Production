@@ -126,6 +126,9 @@
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             }
             
+            // Dim other star nodes
+            dimOtherDrugNodes();
+            
             // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
             setTimeout(() => {
                 highlightDrugConnections(drugId);
@@ -159,6 +162,9 @@
                     .attr("stroke", strokeColor);
             }
             
+            // Reset other stars to normal appearance
+            restoreAllDrugNodes();
+            
             // Reset connection highlights
             resetConnectionHighlights();
             
@@ -191,6 +197,9 @@
                     star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
                 }
+                
+                // Dim other star nodes
+                dimOtherDrugNodes();
                 
                 // Highlight the connection line for this drug - with a slight delay to ensure our changes take precedence
                 setTimeout(() => {
@@ -227,6 +236,9 @@
                         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth)
                         .attr("stroke", strokeColor);
                 }
+                
+                // Reset other stars to normal appearance
+                restoreAllDrugNodes();
                 
                 // Reset connection highlights
                 resetConnectionHighlights();
@@ -374,6 +386,9 @@
                 star.attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`)
                     .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
             }
+            
+            // Dim other star nodes
+            dimOtherDrugNodes();
         } else {
             // Use transitions only if animations are enabled
             if (sizeConfig.useAnimations) {
@@ -390,7 +405,88 @@
                     .attr("stroke", finalStrokeColor)
                     .attr("opacity", initialOpacity); // Restore original opacity
             }
+            
+            // Restore all drug nodes to normal
+            restoreAllDrugNodes();
         }
+    }
+
+    /**
+     * Dims all drug nodes except the current one
+     */
+    function dimOtherDrugNodes() {
+        // Select all drug nodes first to get their IDs
+        const drugNodeGroups = d3.selectAll(".drug-node");
+        const drugIdToNodeMap = new Map();
+        
+        // Build a map of drug node IDs to their path elements
+        drugNodeGroups.each(function(this: any) {
+            const group = d3.select(this);
+            const id = group.attr("id");
+            const pathElements = group.selectAll("path");
+            
+            if (id && pathElements.size() > 0) {
+                drugIdToNodeMap.set(id, pathElements);
+            }
+        });
+        
+        // Now dim all paths except those in the current drug node
+        drugIdToNodeMap.forEach((pathNodes, id) => {
+            // Skip current drug node
+            if (id === drugId) return;
+            
+            pathNodes.each(function(this: any) {
+                const node = d3.select(this);
+                
+                // Save original fill if not already saved
+                if (!node.attr("data-original-fill")) {
+                    node.attr("data-original-fill", node.attr("fill"));
+                }
+                
+                // Desaturate and dim other nodes
+                const duration = sizeConfig.useAnimations ? sizeConfig.transitionDuration / 2 : 0;
+                
+                node.transition()
+                    .duration(duration)
+                    .attr("opacity", 0.3)
+                    .attr("fill", function() {
+                        // Get current fill color and desaturate it
+                        const originalColor = d3.rgb(node.attr("data-original-fill") || node.attr("fill"));
+                        // Convert to grayscale, but keep some of the original color
+                        const desaturatedColor = d3.rgb(
+                            originalColor.r * 0.7 + originalColor.g * 0.2 + originalColor.b * 0.1,
+                            originalColor.r * 0.1 + originalColor.g * 0.7 + originalColor.b * 0.2,
+                            originalColor.r * 0.1 + originalColor.g * 0.2 + originalColor.b * 0.7
+                        );
+                        return desaturatedColor.toString();
+                    });
+            });
+        });
+    }
+    
+    /**
+     * Restores all drug nodes to their original appearance
+     */
+    function restoreAllDrugNodes() {
+        // Select all drug-node paths that have been dimmed (have data-original-fill attribute)
+        d3.selectAll(".drug-node path[data-original-fill]")
+            .each(function(this: any) {
+                const node = d3.select(this);
+                
+                // Get the initial opacity from the data attribute
+                const initialOpacity = node.attr("data-initial-opacity") || "1";
+                
+                // Get original fill color
+                const originalFill = node.attr("data-original-fill");
+                
+                // Apply transition
+                const duration = sizeConfig.useAnimations ? sizeConfig.transitionDuration / 2 : 0;
+                
+                node.transition()
+                    .duration(duration)
+                    .attr("opacity", initialOpacity)
+                    .attr("fill", originalFill);
+            });
     }
 </script>
 

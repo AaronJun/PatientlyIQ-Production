@@ -59,6 +59,7 @@
       pointer-events: none;
       font-family: 'IBM Plex Sans', sans-serif;
       transform: translate(0, 0);
+      transition: all 0.1s ease;
   }
 
   .tooltip-header {
@@ -110,14 +111,5 @@
       color: #4a5568;
       font-weight: 600;
       text-align: right;
-  }
-
-  @keyframes fade-in {
-      from {
-          opacity: 0;
-      }
-      to {
-          opacity: 1;
-      }
   }
 </style>

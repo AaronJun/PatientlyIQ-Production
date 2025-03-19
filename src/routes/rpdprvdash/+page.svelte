@@ -654,7 +654,7 @@
                   </div>
 
                   <!-- Legend stays at bottom -->
-                  <div class="flex-none mt-6 pt-4 border-t border-slate-200">
+                  <div class="legend-container flex-none mt-6 pb-4">
                     <RPDRadialLegend 
                       items={processedData.map(item => ({
                         ...item,
@@ -811,7 +811,7 @@
                   </div>
 
                   <!-- Legend stays at bottom -->
-                  <div class="flex-none mt-6 pt-4 border-t border-slate-200">
+                  <div class="legend-container flex-none mt-6 pb-4">
                     <RPDRadialLegend 
                       items={processedData.map(item => ({
                         ...item,
@@ -1056,6 +1056,10 @@
 <style>
 .header {
   background-color: #e0e0e0;
+}
+
+.legend-container {
+  border-top: .5px solid #549E7D;
 }
 
 .timeline-container {

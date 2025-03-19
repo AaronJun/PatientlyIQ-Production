@@ -101,6 +101,18 @@ let previousSvgSize = 0;
 // Initialize data structures for area-based visualization
 const maxLabelWidth = 85; // Maximum width for area labels
 
+// Add these type definitions at the top of the file, after the imports
+interface LabelData {
+    area: string;
+    x: number;
+    y: number;
+    angle: number;
+    isRightSide: boolean;
+    isCloserPosition: boolean;
+}
+
+type QuadtreeNode<T> = d3.QuadtreeInternalNode<T> | d3.QuadtreeLeaf<T>;
+
 // Watch for therapeutic area hover changes and update highlighting
 $: if (hoveredTherapeuticArea && mainGroup && contentGroup) {
     highlightTherapeuticArea(hoveredTherapeuticArea);
@@ -248,18 +260,15 @@ function calculateAreaAngles(areas: any[]) {
  * Calculate optimal label placement for areas to avoid overlaps
  */
 function calculateOptimalLabelPlacement(areas: any[], areaAngles: Map<string, any>) {
-    const labels: any[] = [];
+    const labels: LabelData[] = [];
     const labelHeight = labelConfig.textHeight;
     const minDistanceBetweenLabels = labelHeight * 2.5;
     
-    // Use quadtree for efficient collision detection if d3 is available
-    let quadtree;
-    if (d3 && d3.quadtree) {
-        quadtree = d3.quadtree()
-            .x(d => d.x)
-            .y(d => d.y)
-            .extent([[-labelConfig.maxRadius, -labelConfig.maxRadius], [labelConfig.maxRadius, labelConfig.maxRadius]]);
-    }
+    // Use quadtree for efficient collision detection
+    const quadtree = d3.quadtree<LabelData>()
+        .x(d => d.x)
+        .y(d => d.y)
+        .extent([[-labelConfig.maxRadius, -labelConfig.maxRadius], [labelConfig.maxRadius, labelConfig.maxRadius]]);
 
     areas.forEach((area, index) => {
         const angle = areaAngles.get(area.area);
@@ -281,37 +290,27 @@ function calculateOptimalLabelPlacement(areas: any[], areaAngles: Map<string, an
             const x = currentRadius * Math.cos(centerAngle);
             const y = currentRadius * Math.sin(centerAngle);
             
-            // Check for overlaps using quadtree if available (more efficient)
-            if (quadtree) {
-                overlap = false;
-                quadtree.visit((node, x1, y1, x2, y2) => {
-                    if (node.data) {
-                        const dx = x - node.data.x;
-                        const dy = y - node.data.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < minDistanceBetweenLabels) {
-                            overlap = true;
-                            return true; // Stop traversing
-                        }
-                    }
-                    // Continue traversing if node's bounding box could contain points within minDistance
-                    return x1 > x + minDistanceBetweenLabels || 
-                            x2 < x - minDistanceBetweenLabels || 
-                            y1 > y + minDistanceBetweenLabels || 
-                            y2 < y - minDistanceBetweenLabels;
-                });
-            } else {
-                // Fallback to linear search if quadtree isn't available
-                overlap = labels.some(label => {
-                    const dx = x - label.x;
-                    const dy = y - label.y;
+            // Check for overlaps using quadtree
+            overlap = false;
+            quadtree.visit((node: QuadtreeNode<LabelData>, x1: number, y1: number, x2: number, y2: number) => {
+                if ('data' in node && node.data) {
+                    const dx = x - node.data.x;
+                    const dy = y - node.data.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    return distance < minDistanceBetweenLabels;
-                });
-            }
+                    if (distance < minDistanceBetweenLabels) {
+                        overlap = true;
+                        return true; // Stop traversing
+                    }
+                }
+                // Continue traversing if node's bounding box could contain points within minDistance
+                return x1 > x + minDistanceBetweenLabels || 
+                        x2 < x - minDistanceBetweenLabels || 
+                        y1 > y + minDistanceBetweenLabels || 
+                        y2 < y - minDistanceBetweenLabels;
+            });
             
             if (!overlap) {
-                const labelData = {
+                const labelData: LabelData = {
                     area: area.area,
                     x,
                     y,
@@ -321,12 +320,7 @@ function calculateOptimalLabelPlacement(areas: any[], areaAngles: Map<string, an
                 };
                 
                 labels.push(labelData);
-                
-                // Add to quadtree if available
-                if (quadtree) {
-                    quadtree.add(labelData);
-                }
-                
+                quadtree.add(labelData);
                 break;
             }
             
@@ -339,7 +333,7 @@ function calculateOptimalLabelPlacement(areas: any[], areaAngles: Map<string, an
             const x = labelConfig.maxRadius * Math.cos(centerAngle);
             const y = labelConfig.maxRadius * Math.sin(centerAngle);
             
-            const labelData = {
+            const labelData: LabelData = {
                 area: area.area,
                 x,
                 y,
@@ -349,11 +343,7 @@ function calculateOptimalLabelPlacement(areas: any[], areaAngles: Map<string, an
             };
             
             labels.push(labelData);
-            
-            // Add to quadtree if available
-            if (quadtree) {
-                quadtree.add(labelData);
-            }
+            quadtree.add(labelData);
         }
     });
 
@@ -841,6 +831,66 @@ function handleDrugKeydown(event: KeyboardEvent, drug: any, areaName: string, dr
     }
 }
 
+/**
+ * Dims all drug nodes except the specified one
+ */
+function dimOtherDrugNodes(drugId: string) {
+    contentGroup.selectAll(".drug-node")
+        .each(function() {
+            const drugNode = d3.select(this);
+            const currentDrugId = drugNode.attr("id");
+            
+            // Skip the current drug node
+            if (currentDrugId === drugId) return;
+            
+            const star = drugNode.select("path");
+            if (!star.empty()) {
+                // Save original fill if not already saved
+                if (!star.attr("data-original-fill")) {
+                    star.attr("data-original-fill", star.attr("fill"));
+                }
+                
+                // Desaturate and dim other nodes
+                star.transition()
+                    .duration(300)
+                    .attr("opacity", 0.3)
+                    .attr("fill", function() {
+                        // Get current fill color and desaturate it
+                        const originalColor = d3.rgb(star.attr("data-original-fill") || star.attr("fill"));
+                        // Convert to grayscale, but keep some of the original color
+                        const desaturatedColor = d3.rgb(
+                            originalColor.r * 0.7 + originalColor.g * 0.2 + originalColor.b * 0.1,
+                            originalColor.r * 0.1 + originalColor.g * 0.7 + originalColor.b * 0.2,
+                            originalColor.r * 0.1 + originalColor.g * 0.2 + originalColor.b * 0.7
+                        );
+                        return desaturatedColor.toString();
+                    });
+            }
+        });
+}
+
+/**
+ * Restores all drug nodes to their original appearance
+ */
+function restoreAllDrugNodes() {
+    contentGroup.selectAll(".drug-node path")
+        .each(function() {
+            const star = d3.select(this);
+            const originalFill = star.attr("data-original-fill");
+            const initialOpacity = star.attr("data-initial-opacity") || "1";
+            
+            if (originalFill) {
+                star.transition()
+                    .duration(300)
+                    .attr("opacity", initialOpacity)
+                    .attr("fill", originalFill);
+            }
+        });
+}
+
+/**
+ * Update the drug node event handlers
+ */
 function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, drugId: string) {
     // Highlight this drug node visually and in keyboard navigation
     const star = drugGroup.select("path");
@@ -858,6 +908,9 @@ function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<a
         .attr("stroke", highlightColor)
         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
     
+    // Dim other drug nodes
+    dimOtherDrugNodes(drugId);
+    
     // Highlight related connections
     highlightDrugConnections(drugId);
     
@@ -872,7 +925,7 @@ function handleDrugFocus(event: FocusEvent, drug: any, drugGroup: d3.Selection<a
 }
 
 function handleDrugBlur(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance
+    // Reset drug node appearance
     const star = drugGroup.select("path");
     
     // Get the initial opacity from the data attribute
@@ -887,6 +940,9 @@ function handleDrugBlur(drug: any, drugGroup: d3.Selection<any, unknown, null, u
         .attr("transform", "scale(1)")
         .attr("stroke", strokeColor)
         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth);
+    
+    // Restore all drug nodes
+    restoreAllDrugNodes();
     
     // Reset connections
     resetConnectionHighlights();
@@ -912,6 +968,9 @@ function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Select
         .attr("stroke", highlightColor)
         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth * 1.5);
     
+    // Dim other drug nodes
+    dimOtherDrugNodes(drugId);
+    
     // Highlight connections
     highlightDrugConnections(drugId);
     
@@ -920,7 +979,7 @@ function handleDrugMouseEnter(event: MouseEvent, drug: any, drugGroup: d3.Select
 }
 
 function handleDrugMouseLeave(drug: any, drugGroup: d3.Selection<any, unknown, null, undefined>, strokeColor: string, filterUrl: string) {
-    // Reset drug appearance
+    // Reset drug node appearance
     const star = drugGroup.select("path");
     
     // Get the initial opacity from the data attribute
@@ -935,6 +994,9 @@ function handleDrugMouseLeave(drug: any, drugGroup: d3.Selection<any, unknown, n
         .attr("transform", "scale(1)")
         .attr("stroke", strokeColor)
         .attr("stroke-width", sizeConfig.drugNodeStrokeWidth);
+    
+    // Restore all drug nodes
+    restoreAllDrugNodes();
     
     // Reset connections
     resetConnectionHighlights();
@@ -970,10 +1032,13 @@ function handleAreaKeydown(event: KeyboardEvent, area: any, labelElement: Elemen
                     drugRef.element.setAttribute("focusable", "true");
                 });
                 
-                // Focus first drug if selected
-                if (areaRef.isSelected && areaRef.drugNodes.length > 0) {
+                // Focus first drug if selected and drugNodes array exists and is not empty
+                if (areaRef.isSelected && areaRef.drugNodes && areaRef.drugNodes.length > 0) {
                     setTimeout(() => {
-                        (areaRef.drugNodes[0].element as HTMLElement).focus();
+                        const firstDrugNode = areaRef.drugNodes?.[0];
+                        if (firstDrugNode) {
+                            (firstDrugNode.element as HTMLElement).focus();
+                        }
                     }, 50);
                 }
             }
@@ -985,7 +1050,7 @@ function handleAreaKeydown(event: KeyboardEvent, area: any, labelElement: Elemen
     } else if (event.key === "Tab" && !event.shiftKey) {
         // Tab to first drug node if selected
         const areaRef = focusableElements.find(item => item.element === labelElement);
-        if (areaRef && areaRef.isSelected && areaRef.drugNodes && areaRef.drugNodes.length > 0) {
+        if (areaRef?.isSelected && areaRef.drugNodes && areaRef.drugNodes.length > 0) {
             event.preventDefault();
             (areaRef.drugNodes[0].element as HTMLElement).focus();
         }
@@ -1437,29 +1502,49 @@ function highlightTherapeuticArea(area: string) {
             const areaName = nodeGroup.attr("data-area");
             
             if (areaName && areaName.toLowerCase() === area.toLowerCase()) {
+                // Bring this area's group to front
+                nodeGroup.raise();
+                
                 // Highlight this area
                 nodeGroup.selectAll(".area-node, .area-star")
                     .classed("highlighted-area", true)
                     .transition()
                     .duration(300)
-                    .attr("transform", "scale(1.2)");
+                    .attr("transform", "scale(1.2)")
+                    .style("opacity", 1);
                     
                 // Make label stand out
                 nodeGroup.selectAll(".area-label")
                     .classed("highlighted-label", true)
                     .transition()
                     .duration(300)
-                    .style("font-weight", "bold");
+                    .style("font-weight", "bold")
+                    .style("opacity", 1);
                     
-                // Highlight connected drug nodes
+                // Highlight connected drug nodes and bring them to front
                 nodeGroup.selectAll(".drug-node")
                     .classed("highlighted-node", true)
-                    .transition()
-                    .duration(300)
-                    .attr("r", (d: any) => (d.radius || 4) * 1.2);
+                    .each(function() {
+                        const drugNode = d3.select(this);
+                        drugNode.raise();
+                        
+                        // Get the star path within the drug node
+                        const star = drugNode.select("path");
+                        if (!star.empty()) {
+                            // Save original fill if not already saved
+                            if (!star.attr("data-original-fill")) {
+                                star.attr("data-original-fill", star.attr("fill"));
+                            }
+                            
+                            star.transition()
+                                .duration(300)
+                                .attr("opacity", 1)
+                                .attr("transform", `scale(${sizeConfig.highlightedNodeRadius * 1.2 / sizeConfig.drugNodeRadius})`);
+                        }
+                    });
             } else {
                 // Dim other areas
-                nodeGroup.selectAll(".area-node, .area-star, .drug-node")
+                nodeGroup.selectAll(".area-node, .area-star")
                     .classed("dimmed-node", true)
                     .transition()
                     .duration(300)
@@ -1470,6 +1555,55 @@ function highlightTherapeuticArea(area: string) {
                     .transition()
                     .duration(300)
                     .style("opacity", 0.5);
+                    
+                // Dim and desaturate drug nodes in other areas
+                nodeGroup.selectAll(".drug-node")
+                    .each(function() {
+                        const drugNode = d3.select(this);
+                        const star = drugNode.select("path");
+                        
+                        if (!star.empty()) {
+                            // Save original fill if not already saved
+                            if (!star.attr("data-original-fill")) {
+                                star.attr("data-original-fill", star.attr("fill"));
+                            }
+                            
+                            star.transition()
+                                .duration(300)
+                                .attr("opacity", 0.3)
+                                .attr("fill", function() {
+                                    // Get current fill color and desaturate it
+                                    const originalColor = d3.rgb(star.attr("data-original-fill") || star.attr("fill"));
+                                    // Convert to grayscale, but keep some of the original color
+                                    const desaturatedColor = d3.rgb(
+                                        originalColor.r * 0.7 + originalColor.g * 0.2 + originalColor.b * 0.1,
+                                        originalColor.r * 0.1 + originalColor.g * 0.7 + originalColor.b * 0.2,
+                                        originalColor.r * 0.1 + originalColor.g * 0.2 + originalColor.b * 0.7
+                                    );
+                                    return desaturatedColor.toString();
+                                });
+                        }
+                    });
+            }
+        });
+        
+    // Also highlight the connection lines for the highlighted area
+    contentGroup.selectAll(".drug-path, .main-connection")
+        .each(function() {
+            const connection = d3.select(this);
+            const connectionArea = connection.attr("data-area");
+            
+            if (connectionArea && connectionArea.toLowerCase() === area.toLowerCase()) {
+                connection.raise()
+                    .transition()
+                    .duration(300)
+                    .attr("stroke", highlightColor)
+                    .attr("stroke-width", highlightWidth)
+                    .attr("stroke-opacity", 1);
+            } else {
+                connection.transition()
+                    .duration(300)
+                    .attr("stroke-opacity", 0.3);
             }
         });
 }
@@ -1485,23 +1619,37 @@ function resetTherapeuticAreaHighlight() {
         .classed("highlighted-area", false)
         .transition()
         .duration(300)
-        .attr("transform", null);
+        .attr("transform", null)
+        .style("opacity", null);
         
     // Reset all highlighted labels
     contentGroup.selectAll(".highlighted-label")
         .classed("highlighted-label", false)
         .transition()
         .duration(300)
-        .style("font-weight", null);
+        .style("font-weight", null)
+        .style("opacity", null);
         
     // Reset all highlighted nodes
     contentGroup.selectAll(".highlighted-node")
         .classed("highlighted-node", false)
-        .transition()
-        .duration(300)
-        .attr("r", function() {
-            // Reset to original radius or default
-            return d3.select(this).attr("data-original-radius") || 4;
+        .each(function() {
+            const drugNode = d3.select(this);
+            const star = drugNode.select("path");
+            
+            if (!star.empty()) {
+                const originalFill = star.attr("data-original-fill");
+                const initialOpacity = star.attr("data-initial-opacity") || "1";
+                
+                star.transition()
+                    .duration(300)
+                    .attr("transform", "scale(1)")
+                    .attr("opacity", initialOpacity);
+                    
+                if (originalFill) {
+                    star.attr("fill", originalFill);
+                }
+            }
         });
         
     // Reset all dimmed elements
@@ -1511,6 +1659,14 @@ function resetTherapeuticAreaHighlight() {
         .transition()
         .duration(300)
         .style("opacity", null);
+        
+    // Reset all connection lines
+    contentGroup.selectAll(".drug-path, .main-connection")
+        .transition()
+        .duration(300)
+        .attr("stroke", "#37587e")
+        .attr("stroke-width", sizeConfig.connectionStrokeWidth)
+        .attr("stroke-opacity", sizeConfig.connectionOpacity);
 }
 
 // Lifecycle hooks

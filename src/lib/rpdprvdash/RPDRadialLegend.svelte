@@ -9,6 +9,7 @@
         areaHover: { area: string };
         areaLeave: void;
         areaClick: { area: string };
+        toggleCollapse: { isCollapsed: boolean };
     }>();
     
     interface LegendItem {
@@ -35,6 +36,9 @@
     // Currently hovered area from parent component
     export let hoveredArea: string = "";
     
+    // Add a collapsed state prop with default as false (expanded)
+    export let isCollapsed: boolean = false;
+    
     // colorScale is now optional since we'll use the imported color function by default
     export let colorScale: (area: string) => string = (area) => getTherapeuticAreaColor(area).fill;
     
@@ -58,6 +62,12 @@
     // Handle clicking on a legend item
     function handleAreaClick(area: string) {
         dispatch('areaClick', { area });
+    }
+
+    // Toggle the collapsed state
+    function toggleCollapse() {
+        isCollapsed = !isCollapsed;
+        dispatch('toggleCollapse', { isCollapsed });
     }
 
     // Watch container size and update columns
@@ -128,34 +138,56 @@
     }
 </script>
 
-<div 
-    class="legend-container grid flex-wrap align-middle justify-left w-ful gap-x-4" 
-    style="grid-template-columns: repeat({columns}, minmax(0, 1fr));"
-    bind:this={legendContainer}
->
-    <h3 class="text-xs font-semibold text-slate-800 capitalize mb-4" style="grid-column: span {columns};">
-        Therapeutic Areas {selectedYear && showYearCounts ? `(${selectedYear})` : ''}
-    </h3>
-    {#each displayItems as d}
-        <div 
-            class="legend-row flex flex-row justify-start align-middle legend-item transition-all duration-200"
-            class:highlighted={hoveredArea && hoveredArea === d.area}
-            class:dimmed={hoveredArea && hoveredArea !== d.area}
-            on:mouseenter={() => handleAreaHover(d.area)}
-            on:mouseleave={handleAreaLeave}
-            on:focus={() => handleAreaHover(d.area)}
-            on:blur={handleAreaLeave}
-            on:click={() => handleAreaClick(d.area)}
-            tabindex="0"
+<div class="legend-wrapper">
+    <div 
+        class="legend-header border-t border-t-slate-900 pt-2 flex justify-between items-center cursor-pointer"
+        on:click={toggleCollapse}
+        tabindex="0"
+        role="button"
+        aria-expanded={!isCollapsed}
+        aria-controls="legend-content"
+    >
+        <h3 class="text-xs font-semibold text-slate-800 capitalize">
+            Therapeutic Areas {selectedYear && showYearCounts ? `(${selectedYear})` : ''}
+        </h3>
+        <button 
+            class="collapse-toggle text-xs text-slate-600 transition-transform duration-300"
+            class:rotate-180={isCollapsed}
+            aria-label={isCollapsed ? "Expand legend" : "Collapse legend"}
         >
-            <div class="legend-star w-4 h-4">
-                {@html getStarSVG(d.area)}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <div 
+        id="legend-content"
+        class="legend-container grid flex-wrap align-middle justify-left w-full gap-x-4 overflow-hidden transition-all duration-300 ease-in-out"
+        style="grid-template-columns: repeat({columns}, minmax(0, 1fr)); max-height: {isCollapsed ? '0' : '1000px'}; opacity: {isCollapsed ? '0' : '1'}; margin-top: {isCollapsed ? '0' : '0.75rem'};"
+        bind:this={legendContainer}
+    >
+        {#each displayItems as d}
+            <div 
+                class="legend-row flex flex-row justify-start align-middle legend-item transition-all duration-200"
+                class:highlighted={hoveredArea && hoveredArea === d.area}
+                class:dimmed={hoveredArea && hoveredArea !== d.area}
+                on:mouseenter={() => handleAreaHover(d.area)}
+                on:mouseleave={handleAreaLeave}
+                on:focus={() => handleAreaHover(d.area)}
+                on:blur={handleAreaLeave}
+                on:click|stopPropagation={() => handleAreaClick(d.area)}
+                tabindex="0"
+            >
+                <div class="legend-star w-4 h-4">
+                    {@html getStarSVG(d.area)}
+                </div>
+                <span class="text-xs text-slate-700 font-sans font-base">
+                    {d.area}{showYearCounts && d.yearCount !== undefined ? ` | ${d.yearCount}` : d.count > 0 ? ` | ${d.count}` : ''}
+                </span>
             </div>
-            <span class="text-xs text-slate-700 font-sans font-base">
-                {d.area}{showYearCounts && d.yearCount !== undefined ? ` | ${d.yearCount}` : d.count > 0 ? ` | ${d.count}` : ''}
-            </span>
-        </div>
-    {/each}
+        {/each}
+    </div>
 </div>
 
 <style>
@@ -182,9 +214,9 @@
         min-width: 14px;
     }
    
-    .legend-container {
-        border-top: .325px solid #161616;
-        padding-top: .5625rem;
+    .legend-header {
+        border-top-color: #161616;
+        border-top-width: .325px;
     }
     
     .highlighted {
@@ -195,5 +227,17 @@
     
     .dimmed {
         opacity: 0.45;
+    }
+
+    .collapse-toggle {
+        transition: transform 0.3s ease;
+    }
+
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+
+    .legend-wrapper {
+        position: relative;
     }
 </style>
