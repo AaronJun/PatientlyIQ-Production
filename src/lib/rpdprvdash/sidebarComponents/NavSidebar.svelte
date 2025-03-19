@@ -127,7 +127,7 @@
         <!-- Icon -->
         <span class="text-center w-4 h-4 flex-shrink-0">
           <DashboardReference size={16} />
-        </span>
+      </span>
         
         <!-- Text label - only shown when expanded or hovered -->
         {#if !isCollapsed || isHovered}

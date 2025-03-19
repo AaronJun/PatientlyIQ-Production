@@ -4,7 +4,6 @@
     import * as d3 from 'd3';
     import { getTherapeuticAreaColor } from './utils/colorDefinitions';
     import * as Dialog from "$lib/components/ui/dialog";
-    import { ChevronDown } from 'carbon-icons-svelte';
     
     export let data: any[] = [];
     export let onYearSelect: (year: string) => void;
@@ -600,7 +599,7 @@
             </defs>
         </svg>
 
-        <div class="timeline-grid">
+        <div class="timeline-grid px-4">
             {#each yearData as yearEntry}
                 <div class="year-item">
                     <button 
@@ -725,11 +724,12 @@
 <style>
     .timeline-container {
         position: relative;
+        height: 4rem;
         overflow: hidden;
     }
 
     .timeline-container:hover {
-        height: 100px; /* Expanded height on hover */
+        height: 4rem; /* Expanded height on hover */
     }
 
     .timeline-grid {
@@ -737,6 +737,7 @@
         grid-auto-flow: column;
         grid-auto-columns: 1fr;
         align-items: center;
+        height: 4rem;
         position: relative;
         transition: all 0.3s ease;
     }

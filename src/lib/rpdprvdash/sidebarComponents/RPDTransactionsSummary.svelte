@@ -90,9 +90,9 @@
   <div class="summary-view"> 
     
         <!-- Companies section -->
-    <div class="grid grid-cols-2 gap-3 mb-4">
+    <div class="grid grid-cols-2 gap-2 mb-4">
            <!-- Gauge visualization using layerchart Arc -->
-           <div class="relative w-full h-36 flex pr-8 items-center justify-center">
+           <div class="relative w-full max-w-54 h-36 flex pr-8 items-center justify-center">
             <Chart>
               <Svg center>
                 <!-- Background circle (full gauge) -->
@@ -165,7 +165,7 @@
       </div>
     </div>
     
-      <div class="bg-white rounded-md shadow-sm p-3">
+      <div class="shadow-sm p-3">
           <p class="text-2xl font-bold text-slate-700">{buyersInYear.size}</p>
         <h4 class="text-xs font-medium text-slate-600 mb-2">Buyers, {year}</h4>
       </div>
@@ -176,7 +176,7 @@
       </div>
     </div>
     <!-- Metrics list section -->
-    <div class="bg-white rounded-md shadow-sm mb-4">
+    <div class="shadow-sm mb-4">
       <div class="space-y-2">
         <!-- Average Value Comparison Chart -->          
           <div class="chart-container">
@@ -228,8 +228,8 @@
     }
     
     .transaction-circle {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background-color: #cbd5e1; /* slate-300 */
       transition: transform 0.2s ease;

@@ -374,8 +374,8 @@
   /* Updated navigation controls styles for vertical layout on top left */
   .navigation-controls {
     position: absolute;
-    top: 52px;
-    left: 16px;
+    top: 10vh;
+    left: 2vw;
     display: flex;
     flex-direction: column;
     border: 1px solid #549E7D;

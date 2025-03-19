@@ -553,8 +553,8 @@
         </div>
         {#if activeTab === 'By Sponsor'}
         <div class="flex flex-row flex-grow relative">
-          <div class="w-full h-full items-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container sticky justify-center place-items-start z-50 px-4 py-2 bg-slate-100 transition-all duration-300">
+          <div class="w-full h-full items-center md:min-h-[70vh] lg:min-h-[80vh] relative">
+            <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
             <RPDPRVHorizontalTimeline 
               data={rpddData}
               selectedYear={selectedYear}
@@ -712,7 +712,7 @@
         {:else if activeTab === 'By Therapeutic Area'}
         <div class="flex flex-row flex-grow relative">
           <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container sticky justify-center place-items-start z-50 px-4 py-2 bg-slate-100/80 transition-all duration-300">
+            <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
             <RPDPRVHorizontalTimeline 
               data={rpddData}
               selectedYear={selectedYear}
