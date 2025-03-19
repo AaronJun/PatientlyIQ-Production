@@ -13,7 +13,7 @@
     import RPDTransactionSummaryView from '../sidebarComponents/RPDTransactionsSummary.svelte';
     import MobileTransactionSidebar from '../sidebarComponents/MobileTransactionSidebar.svelte';
     import RpdprvSearch from '../RPDPRVSearch.svelte';
-    
+    import { Separator } from 'bits-ui';
     interface DataEntry {
         Company: string;
         Purchased?: string;
@@ -239,7 +239,7 @@
                         </svg>
                     </button>
 
-                    <div class="{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
+                    <div class="{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col h-full max-h-[calc(100vh-10rem)]">
                         <!-- Transaction content -->
                         <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
                             <p class="text-xs text-slate-500 mt-4 text-left">
@@ -399,9 +399,13 @@
         </div>
     {/if}
     
-    <footer class="text-slate-500 text-xs mt-6 pb-4">
-        <p>Priority Review Voucher Transaction Analysis</p>
-        <p class="mt-1">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
+
+    <Separator.Root
+        class="bg-slate-500 mt-10 mb-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    />
+    <footer class="flex flex-row justify-between gap-2">
+        <p class="text-2xs font-mono">Priority Review Voucher Transaction Analysis</p>
+        <p class="text-2xs font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
     </footer>
 </div>
 

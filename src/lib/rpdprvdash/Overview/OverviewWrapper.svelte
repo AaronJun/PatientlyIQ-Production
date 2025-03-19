@@ -2,7 +2,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import OverviewIntroduction from './OverviewIntroduction.svelte';   
-    import ProgramSankey from './TimelineSankeyFlow.svelte';
+    import { Separator } from 'bits-ui';
     import { Report, ChartParallel } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { createEventDispatcher } from 'svelte';
@@ -294,37 +294,7 @@
     {/if}
   </section>
   
-  <!-- Section 2: PRV Program Flow (Sankey Diagram) -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
-         on:click={() => toggleSection('sankey')}>
-      <div class="flex items-center gap-2">
-        <ChartParallel size={20} class="text-blue-500" />
-        <h2 class="text-lg font-semibold text-slate-700">Program Flow Visualization</h2>
-      </div>
-      <div class="text-slate-400">
-        {expandedSections.sankey ? '−' : '+'}
-      </div>
-    </div>
-    
-    {#if expandedSections.sankey}
-      <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
-        <div class="flex justify-center">
-          <ProgramSankey 
-            {data} 
-            width={1000} 
-            height={500} 
-            onEntrySelect={handleEntrySelect} 
-          />
-        </div>
-      </div>
-    {/if}
-  </section>
-  
-  <footer class="text-slate-500 text-xs mt-6 pb-4">
-    <p>Rare Pediatric Disease Priority Review Voucher (PRV) Program Analysis</p>
-    <p class="mt-1">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
-  </footer>
+
 </div>
 
 <style>

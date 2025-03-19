@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { Separator } from 'bits-ui';
 
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   
@@ -931,6 +932,14 @@
       </div>
     </div>
   </main>
+<footer class="grid grid-cols-2 w-full justify-between items-center mb-8 mx-24 gap-2">
+<Separator.Root
+class="bg-[#ff4a4a]/20 mt-8 mb-2 col-span-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+/>
+<p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Copyright 2025 Patiently Studio</p>
+<p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
+<a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500 col-span-1 font-mono">Contact us</a>
+</footer>
 </div>
 
 {#if isHowToReadOpen}
@@ -980,6 +989,8 @@
     onShowDrugDetail={handleShowDrugDetail}
   />
 {/if}
+  
+
 
 <style>
 .header {
