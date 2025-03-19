@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Building, Network_4, HealthCross, ArrowsHorizontal, ChartBubble, Information, DashboardReference } from 'carbon-icons-svelte';
+    import { Separator } from 'bits-ui';
     import { fade, slide } from 'svelte/transition';
     import { createEventDispatcher } from 'svelte';
   
@@ -15,10 +16,10 @@
     
     // Define tabs with their icons
     const tabs = [
+      { id: 'Program Overview', icon: ChartBubble, tooltip: 'Program analytics overview' },
       { id: 'By Sponsor', icon: Building, tooltip: 'View by sponsor companies' },
       { id: 'By Therapeutic Area', icon: HealthCross, tooltip: 'View by therapeutic areas' },
       { id: 'By Transactions', icon: ArrowsHorizontal, tooltip: 'View PRV transactions' },
-      { id: 'Program Overview', icon: ChartBubble, tooltip: 'Program analytics overview' },
     ];
     
     // Handle tab selection
@@ -43,6 +44,7 @@
     }
   </script>
   
+  
   <div 
     class="vertical-sidebar-container fixed left-0 top-0 z-50 h-full bg-slate-700 shadow-xl transition-all duration-300 ease-in-out"
     class:w-10={isCollapsed && !isHovered}
@@ -57,7 +59,9 @@
     <!-- Navigation items -->
     <nav class="flex flex-col gap-1 pt-20">
 
-
+      <Separator.Root
+        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />
       {#each tabs as tab}
         <button
           class="flex items-center align-middle gap-3 py-3 px-2 transition-all duration-200 text-left relative"
@@ -91,8 +95,9 @@
         </button>
       {/each}
       
-      <!-- Divider -->
-      <div class="divider" />
+      <Separator.Root
+        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />
       
       <!-- How to Navigate button -->
       

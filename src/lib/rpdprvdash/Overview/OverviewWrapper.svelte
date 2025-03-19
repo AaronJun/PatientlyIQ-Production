@@ -23,6 +23,7 @@
         "Current Development Stage"?: string;
         "Purchase Year"?: string;
         Purchaser?: string;
+        MarketCap?: string;
     }
     
     export let data: DataEntry[] = [];
@@ -41,6 +42,25 @@
     let topArea = { name: '', count: 0 };
     let topIndication = { name: '', count: 0 };
     let yearlyPRVs: { year: string, count: number }[] = [];
+    
+    // MarketCap statistics
+    let companiesByMarketCap: { 
+      small: number;
+      mid: number;
+      large: number;
+      mega: number;
+      private: number;
+      na: number;
+      unknown: number;
+    } = {
+      small: 0,
+      mid: 0,
+      large: 0,
+      mega: 0,
+      private: 0,
+      na: 0,
+      unknown: 0
+    };
     
     // Track the state of each collapsible section
     let expandedSections: Record<string, boolean> = {
@@ -137,6 +157,52 @@
           .sort((a, b) => b[1] - a[1])[0];
         topIndication = { name: topEntry[0], count: topEntry[1] };
       }
+      
+      // Calculate companies by market cap
+      calculateCompaniesByMarketCap();
+    }
+    
+    function calculateCompaniesByMarketCap() {
+      // Get unique companies
+      const uniqueCompanies = new Map<string, string>();
+      
+      // For each company, store its market cap
+      data.forEach(entry => {
+        if (entry.Company && !uniqueCompanies.has(entry.Company)) {
+          uniqueCompanies.set(entry.Company, entry.MarketCap || "");
+        }
+      });
+      
+      // Reset counts
+      companiesByMarketCap = {
+        small: 0,
+        mid: 0,
+        large: 0,
+        mega: 0,
+        private: 0,
+        na: 0,
+        unknown: 0
+      };
+      
+      // Count companies by market cap
+      uniqueCompanies.forEach((marketCap, company) => {
+        const cap = marketCap.toLowerCase();
+        if (cap === "small" || cap === "smal") {
+          companiesByMarketCap.small++;
+        } else if (cap === "mid") {
+          companiesByMarketCap.mid++;
+        } else if (cap === "large") {
+          companiesByMarketCap.large++;
+        } else if (cap === "mega") {
+          companiesByMarketCap.mega++;
+        } else if (cap === "private" || cap === "pvt") {
+          companiesByMarketCap.private++;
+        } else if (cap === "#n/a" || cap.includes("n/a")) {
+          companiesByMarketCap.na++;
+        } else {
+          companiesByMarketCap.unknown++;
+        }
+      });
     }
     
     $: if (data) {
@@ -179,7 +245,7 @@
       <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div class="stat-card bg-gradient-to-br from-blue-50 to-slate-50 p-4  border border-blue-100">
-            <h3 class="text-sm font-medium text-slate-500">Total Drug Candidates</h3>
+            <h3 class="text-sm font-medium text-slate-500">RPD Designations Granted</h3>
             <p class="text-2xl font-bold text-slate-800">{totalEntries}</p>
           </div>
           
@@ -198,6 +264,47 @@
             <p class="text-2xl font-bold text-amber-700">${Math.round(avgSalePrice).toLocaleString() || 0}M</p>
           </div>
         </div>
+        
+        <!-- Market Cap Distribution Cards -->
+        <h3 class="text-base font-semibold text-slate-700 mb-3 mt-4">Companies by Market Cap</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="stat-card bg-gradient-to-br from-indigo-50 to-slate-50 p-3 border border-indigo-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Small Cap</h3>
+            <p class="text-xl font-bold text-indigo-700">{companiesByMarketCap.small}</p>
+          </div>
+          
+          <div class="stat-card bg-gradient-to-br from-teal-50 to-slate-50 p-3 border border-teal-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Mid Cap</h3>
+            <p class="text-xl font-bold text-teal-700">{companiesByMarketCap.mid}</p>
+          </div>
+          
+          <div class="stat-card bg-gradient-to-br from-cyan-50 to-slate-50 p-3 border border-cyan-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Large Cap</h3>
+            <p class="text-xl font-bold text-cyan-700">{companiesByMarketCap.large}</p>
+          </div>
+          
+          <div class="stat-card bg-gradient-to-br from-emerald-50 to-slate-50 p-3 border border-emerald-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Mega Cap</h3>
+            <p class="text-xl font-bold text-emerald-700">{companiesByMarketCap.mega}</p>
+          </div>
+        </div>
+        
+        <!-- <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="stat-card bg-gradient-to-br from-violet-50 to-slate-50 p-3 border border-violet-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Private Companies</h3>
+            <p class="text-xl font-bold text-violet-700">{companiesByMarketCap.private}</p>
+          </div>
+          
+          <div class="stat-card bg-gradient-to-br from-amber-50 to-slate-50 p-3 border border-amber-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">N/A</h3>
+            <p class="text-xl font-bold text-amber-700">{companiesByMarketCap.na}</p>
+          </div>
+          
+        <div class="stat-card bg-gradient-to-br from-gray-50 to-slate-50 p-3 border border-gray-100 text-center">
+            <h3 class="text-xs font-medium text-slate-500">Empty/Unknown</h3>
+            <p class="text-xl font-bold text-gray-700">{companiesByMarketCap.unknown}</p>
+          </div> --> 
+        <!-- </div> -->
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white p-4  border border-slate-200">
