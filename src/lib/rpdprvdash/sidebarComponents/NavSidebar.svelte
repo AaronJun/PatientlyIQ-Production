@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Building, Network_4, HealthCross, ArrowsHorizontal, ChartBubble, Information, DashboardReference } from 'carbon-icons-svelte';
     import { Separator } from 'bits-ui';
+    import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
     import { fade, slide } from 'svelte/transition';
     import { createEventDispatcher } from 'svelte';
   
@@ -15,8 +16,8 @@
     const dispatch = createEventDispatcher();
     
     // Define tabs with their icons
+    const overviewTab = { id: 'Program Overview', icon: ChartBubble, tooltip: 'Program analytics overview' };
     const tabs = [
-      { id: 'Program Overview', icon: ChartBubble, tooltip: 'Program analytics overview' },
       { id: 'By Sponsor', icon: Building, tooltip: 'View by sponsor companies' },
       { id: 'By Therapeutic Area', icon: HealthCross, tooltip: 'View by therapeutic areas' },
       { id: 'By Transactions', icon: ArrowsHorizontal, tooltip: 'View PRV transactions' },
@@ -58,6 +59,50 @@
 
     <!-- Navigation items -->
     <nav class="flex flex-col gap-1 pt-20">
+
+        <div class="flex flex-row items-center gap-2 mb-8 overflow-hidden">
+          <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8" style="filter: saturate(0.9)" />
+          {#if !isCollapsed || isHovered}
+            <h1 
+              class="text-slate-200 text-xs font-medium"
+              transition:fade={{ duration: 200, delay: 100 }}
+            >
+              RPD PRV Constellation
+            </h1>
+          {/if}
+        </div>
+
+        <!-- Overview Tab -->
+        <button
+          class="flex items-center align-middle gap-3 py-3 px-2 transition-all duration-200 text-left relative"
+          class:bg-slate-700={activeTab === overviewTab.id}
+          class:text-emerald-400={activeTab === overviewTab.id}
+          class:hover:bg-emerald-300={activeTab !== overviewTab.id}
+          class:text-slate-300={activeTab !== overviewTab.id}
+          class:hover:text-slate-800={activeTab !== overviewTab.id}
+          on:click={() => handleTabSelect(overviewTab.id)}
+          title={isCollapsed && !isHovered ? overviewTab.tooltip : ''}
+        >
+          <!-- Icon -->
+          <span class="text-center w-4 h-4 flex-shrink-0">
+            <svelte:component this={overviewTab.icon} size={16} />
+          </span>
+          
+          <!-- Text label - only shown when expanded or hovered -->
+          {#if !isCollapsed || isHovered}
+            <span 
+              class="whitespace-nowrap text-xs font-medium"
+              transition:slide={{ duration: 200 }}
+            >
+              {overviewTab.id}
+            </span>
+          {/if}
+          
+          <!-- Active indicator -->
+          {#if activeTab === overviewTab.id}
+            <span class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-r-sm"></span>
+          {/if}
+        </button>
 
       <Separator.Root
         class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
@@ -140,7 +185,7 @@
             class="whitespace-nowrap text-xs font-medium"
             transition:slide={{ duration: 200 }}
           >
-            Dashboard
+            Tracked Drugs Dashboard
           </span>
         {/if}
       </button>

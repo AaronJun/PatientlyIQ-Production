@@ -208,7 +208,7 @@
     aria-labelledby="drawer-title"
 >
     <div 
-        class="drawer relative w-[62.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] cursor-default"
+        class="drawer relative w-[94.275vw] lg:w-[62.25vw] xl:w-[47.25vw] h-full bg-white shadow-lg z-[1000] overflow-y-auto border-l-[10px] cursor-default"
         on:click={handleDrawerClick}
         style="border-color: {color}"
     >

@@ -26,6 +26,9 @@ const config: Config = {
             '2xl': '1536px',
         },
         extend: {
+            fontSize: {
+                '2xs': ['0.625rem', { lineHeight: '0.75rem' }],  // 10px with 12px line height
+            },
             colors: {
                 border: 'hsl(var(--border) / <alpha-value>)',
                 input: 'hsl(var(--input) / <alpha-value>)',
@@ -66,12 +69,9 @@ const config: Config = {
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)',
                 none: '0',
-                'sm': '0.125rem',
                 DEFAULT: '0.25rem',
-                'md': '0.375rem',
-                'lg': '0.5rem',
-                'full': '9999px',
-                'large': '12px',
+                full: '9999px',
+                large: '12px',
             },
             borderWidth: {
                 DEFAULT: '1px',

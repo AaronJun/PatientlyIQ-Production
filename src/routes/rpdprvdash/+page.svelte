@@ -32,6 +32,9 @@
   // New PRV Analytics Components
   import RPDPRVAnalytics from '$lib/rpdprvdash/Overview/OverviewWrapper.svelte';
 
+  // New TransactionsWrapper component
+  import TransactionsWrapper from '$lib/rpdprvdash/tabViews/TransactionsWrapper.svelte';
+
   // Import data sources
   import rpddData from '$lib/data/rpdprvdash/mergeddata.json';
   import rpdCompanyValues from '$lib/data/rpdprvdash/rpdCompanyValues.json';
@@ -866,7 +869,7 @@
 
         <!-- By Transactions Tab Layout -->
         {:else if activeTab === 'By Transactions'}
-          <div class="flex flex-col h-[calc(100vh-4rem)] relative">
+          <div class="flex flex-col h-full relative">
             <!-- Timeline section -->
             <div class="timeline-container sticky justify-center place-items-start z-20 px-4 py-2 bg-slate-100 transition-all duration-300">
               <PRVPurchaseTimeline 
@@ -877,99 +880,27 @@
               />
             </div>
 
-            <!-- Main content area -->
-            <div class="flex flex-1 h-full">
-              <!-- Chord diagram section -->
-              <div class="flex-1 relative {!isMobileView ? (isRightSidebarCollapsed ? 'pr-16' : 'pr-[30%]') : ''} transition-all duration-300 ease-in-out" >
-                <SellerBuyerChord 
-                  data={rpddData}
-                  stockData={rpdCompanyValues}
-                  selectedYear={selectedTransactionYear}
-                  {highlightedTransaction}
-                  onShowDrugDetail={handleShowDrugDetail}
-                  on:transactionHover={(event) => highlightedTransaction = event.detail}
-                  on:transactionLeave={() => highlightedTransaction = null}
-                />
-              </div>
-              
-              <!-- Desktop sidebar - only show on non-mobile and non-tablet -->
-              {#if !isMobileView}
-                <div class="absolute right-2 top-24 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} transition-all duration-300">
-                  <button
-                    class="rounded-btn absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                    on:click={toggleRightSidebar}
-                    title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                  >
-                    <svg
-                      class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-
-                  <div class= "{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
-               
-                    <!-- Transaction content -->
-                    <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
-
-                    <p class="text-xs text-slate-500 mt-4 text-left">
-                      Select transactions in the chord diagram to see details
-                    </p>
-                      <div class="rounded-lg shadow-sm p-4">
-                        <div class="h-[10vh]">
-                          <VoucherBeeswarmPlot 
-                            data={rpddData}
-                            {highlightedTransaction}
-                            selectedYear={selectedTransactionYear}
-                            onPointClick={handleShowDrugDetail}
-                            on:transactionHover={(event) => highlightedTransaction = event.detail}
-                            on:transactionLeave={() => highlightedTransaction = null}
-                          />
-                        </div>
-                      </div>
-                      <div class="pt-8">
-                        <RPDTransactionSummaryView 
-                          data={rpddData}
-                          year={selectedTransactionYear}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {/if}
-              
-              <!-- Mobile/Tablet bottom sidebar -->
-              {#if isMobileView}
-                <MobileTransactionSidebar
-                  data={rpddData}
-                  selectedYear={selectedTransactionYear}
-                  {highlightedTransaction}
-                  onPointClick={handleShowDrugDetail}
-                  isExpanded={isMobileSidebarExpanded}
-                  on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-                  on:transactionHover={(event) => highlightedTransaction = event.detail}
-                  on:transactionLeave={() => highlightedTransaction = null}
-                >
-                  {#if isMobileSidebarExpanded}
-                    <div class="mb-4 px-4 pt-4">
-                      <RpdprvSearch
-                        data={rpddData}
-                        onShowDrugDetail={handleShowDrugDetail}
-                        onShowCompanyDetail={handleShowCompanyDetail}
-                      />
-                    </div>
-                  {/if}
-                </MobileTransactionSidebar>
-              {/if}
+            <!-- Main content area with new TransactionsWrapper -->
+            <div class="flex flex-1 h-full overflow-y-auto">
+              <TransactionsWrapper 
+                data={rpddData} 
+                stockData={rpdCompanyValues}
+                isAllYearView={selectedTransactionYear === "All"}
+                selectedTransactionYear={selectedTransactionYear}
+                onEntrySelect={(entry) => handleShowDrugDetail({
+                  Company: entry.Company,
+                  drugName: entry.Candidate,
+                  therapeuticArea: entry.TherapeuticArea1,
+                  year: entry["RPDD Year"],
+                  color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
+                  entries: [entry],
+                  currentStage: entry["Current Development Stage"],
+                  rpddAwardDate: entry["RPDD Date"],
+                  voucherAwardDate: entry["PRV Date"],
+                  indication: entry.Indication
+                })}
+                on:yearSelect={(e) => handleTransactionYearSelect(e.detail)}
+              />
             </div>
           </div>
           
