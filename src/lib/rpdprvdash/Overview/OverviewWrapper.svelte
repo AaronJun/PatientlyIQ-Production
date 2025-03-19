@@ -2,23 +2,28 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import OverviewIntroduction from './OverviewIntroduction.svelte';   
-    import { Separator } from 'bits-ui';
+    import ProgramSankey from './TimelineSankeyFlow.svelte';
     import { Report, ChartParallel } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { createEventDispatcher } from 'svelte';
+    import TherapeuticAreaWaffleChart from './TherapeuticAreaWaffleChart.svelte';
     
     interface DataEntry {
         Company: string;
+        Candidate: string;
+        TherapeuticArea1: string;
+        Indication: string;
+        "Current Development Stage": string;
+        "PRV Year": string;
+        "Purchase Year": string;
         Purchased?: string;
-        "Sale Price (USD Millions)"?: string;
-        "PRV Year"?: string;
-        TherapeuticArea1?: string;
-        Indication?: string;
-        Candidate?: string;
-        "Current Development Stage"?: string;
-        "Purchase Year"?: string;
-        Purchaser?: string;
+        Purchaser: string;
+        "Sale Price (USD Millions)": string;
         MarketCap?: string;
+        effectiveStage?: string;
+        "RPDD Year"?: string;
+        "RPDD Date"?: string;
+        "PRV Date"?: string;
     }
     
     export let data: DataEntry[] = [];
@@ -60,7 +65,8 @@
     // Track the state of each collapsible section
     let expandedSections: Record<string, boolean> = {
       overview: true,
-      sankey: true
+      sankey: true,
+      distribution: true
     };
     
     function toggleSection(section: keyof typeof expandedSections) {
@@ -75,6 +81,15 @@
     
     function handleNavigateToSponsor() {
       dispatch('navigateToSponsor');
+    }
+    
+    function handleAreaClick(area: string) {
+      // Filter to show only entries for this therapeutic area
+      const areaEntries = data.filter(d => d.TherapeuticArea1 === area);
+      if (areaEntries.length > 0) {
+        // Select the first entry from this area
+        onEntrySelect(areaEntries[0]);
+      }
     }
     
     function calculateStats() {
@@ -294,7 +309,84 @@
     {/if}
   </section>
   
-
+  <!-- Section 2: Therapeutic Area Distribution Waffle Chart -->
+  <section class="mb-6">
+    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+         on:click={() => toggleSection('distribution')}>
+      <div class="flex items-center gap-2">
+        <Report size={20} class="text-purple-500" />
+        <h2 class="text-lg font-semibold text-slate-700">Therapeutic Area Distribution</h2>
+      </div>
+      <div class="text-slate-400">
+        {expandedSections.distribution ? '−' : '+'}
+      </div>
+    </div>
+    
+    {#if expandedSections.distribution}
+      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+        <p class="text-sm text-slate-600 mb-4">
+          This chart shows the distribution of drug candidates across therapeutic areas. Each square represents a single drug candidate,
+          with different color shades indicating different indications within the same therapeutic area.
+          Hover over any square to see the specific indication, and click to view details about that therapeutic area.
+        </p>
+        
+        <div class="waffle-chart-container flex justify-center">
+          <TherapeuticAreaWaffleChart 
+            {data} 
+            width={800} 
+            height={400}
+            maxCols={16}
+            cellSize={16}
+            cellPadding={3}
+            onAreaClick={handleAreaClick}
+          />
+        </div>
+        
+        <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
+          <p class="font-medium mb-1">How to read this chart:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Each colored square represents one drug candidate</li>
+            <li>Squares are grouped by therapeutic area (see legend below)</li>
+            <li>Different color shades within the same area represent different indications</li>
+            <li>Hover over any square to see detailed information</li>
+            <li>Click on any square to explore that therapeutic area</li>
+          </ul>
+        </div>
+      </div>
+    {/if}
+  </section>
+  
+  <!-- Section 3: PRV Program Flow (Sankey Diagram) -->
+  <section class="mb-6">
+    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+         on:click={() => toggleSection('sankey')}>
+      <div class="flex items-center gap-2">
+        <ChartParallel size={20} class="text-blue-500" />
+        <h2 class="text-lg font-semibold text-slate-700">Program Flow Visualization</h2>
+      </div>
+      <div class="text-slate-400">
+        {expandedSections.sankey ? '−' : '+'}
+      </div>
+    </div>
+    
+    {#if expandedSections.sankey}
+      <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+        <div class="flex justify-center">
+          <ProgramSankey 
+            {data} 
+            width={1000} 
+            height={500} 
+            onEntrySelect={handleEntrySelect} 
+          />
+        </div>
+      </div>
+    {/if}
+  </section>
+  
+  <footer class="text-slate-500 text-xs mt-6 pb-4">
+    <p>Rare Pediatric Disease Priority Review Voucher (PRV) Program Analysis</p>
+    <p class="mt-1">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
+  </footer>
 </div>
 
 <style>
@@ -318,5 +410,9 @@
   .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .waffle-chart-container {
+    overflow: hidden;
   }
 </style>

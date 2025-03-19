@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Separator } from 'bits-ui';
+  import { fade, fly, slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
 
   import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
   
@@ -107,6 +109,8 @@
 
   // State variables
   let activeTab = 'Program Overview';
+  let previousTab = activeTab; // Track previous tab for animations
+  let animationDirection = 1; // For determining animation direction
   let selectedTransactionYear = "All"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
   let selectedData: any | null = null;
@@ -315,7 +319,17 @@
   }
 
   function setActiveTab(tab: string) {
+    if (tab === activeTab) return;
+    
+    // Determine animation direction based on tab order
+    const tabOrder = ['Program Overview', 'By Sponsor', 'By Therapeutic Area', 'By Transactions'];
+    const currentIndex = tabOrder.indexOf(activeTab);
+    const newIndex = tabOrder.indexOf(tab);
+    
+    animationDirection = newIndex > currentIndex ? 1 : -1;
+    previousTab = activeTab;
     activeTab = tab;
+    
     // Reset views when changing tabs
     resetSidebarView();
     // Also reset the hovered area
@@ -543,7 +557,7 @@
 
     <div class="tab-content w-full h-full min-h-[80vh] flex relative">
       <!-- Main content area taking full width -->
-      <div class="{activeTab === 'Program Overview' ? 'w-full' : 'w-full'} relative min-h-[80vh]">
+      <div class="w-full relative min-h-[80vh]">
         <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 z-50 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
           <VerticalSidebar 
             {activeTab} 
@@ -555,16 +569,22 @@
           />
           
         </div>
+        
+        <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
-        <div class="flex flex-row flex-grow relative">
-          <div class="w-full h-full items-center md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
-            <RPDPRVHorizontalTimeline 
-              data={rpddData}
-              selectedYear={selectedYear}
-              onYearSelect={handleYearSelect}
-            />
-         </div>
+          <div 
+            in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
+            out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            class="sponsor-tab-content flex flex-row flex-grow relative"
+          >
+            <div class="w-full h-full items-center md:min-h-[70vh] lg:min-h-[80vh] relative">
+              <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
+                <RPDPRVHorizontalTimeline 
+                  data={rpddData}
+                  selectedYear={selectedYear}
+                  onYearSelect={handleYearSelect}
+                />
+              </div>
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RpdprvCompanyTree 
@@ -607,7 +627,6 @@
               </InfiniteCanvasWrapper>
             </div>
 
-       
             <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
             {#if !isMobileView }
               <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
@@ -712,17 +731,21 @@
             {/if}
           </div>
 
-        <!-- By Therapeutic Area Tab Layout -->  
+        <!-- By Therapeutic Area Tab with animations -->
         {:else if activeTab === 'By Therapeutic Area'}
-        <div class="flex flex-row flex-grow relative">
-          <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
-            <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
-            <RPDPRVHorizontalTimeline 
-              data={rpddData}
-              selectedYear={selectedYear}
-              onYearSelect={handleYearSelect}
-            />
-         </div>
+          <div 
+            in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
+            out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            class="therapeutic-area-tab-content flex flex-row flex-grow relative"
+          >
+            <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
+              <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
+                <RPDPRVHorizontalTimeline 
+                  data={rpddData}
+                  selectedYear={selectedYear}
+                  onYearSelect={handleYearSelect}
+                />
+              </div>
               <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
                 {#if mainGroup}
                   <RPDDRadialYear 
@@ -868,9 +891,13 @@
             {/if}
           </div>
 
-        <!-- By Transactions Tab Layout -->
+        <!-- By Transactions Tab with animations -->
         {:else if activeTab === 'By Transactions'}
-          <div class="flex flex-col h-full relative">
+          <div 
+            in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
+            out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            class="transactions-tab-content flex flex-col h-full relative"
+          >
             <!-- Timeline section -->
             <div class="timeline-container sticky justify-center place-items-start z-20 px-4 py-2 bg-slate-100 transition-all duration-300">
               <PRVPurchaseTimeline 
@@ -905,29 +932,32 @@
             </div>
           </div>
           
-        <!-- Program Overview (Analytics) Tab Layout -->
+        <!-- Program Overview (Analytics) Tab with animations -->
         {:else if activeTab === 'Program Overview'}
-          <div class="w-full">
-              
-              <RPDPRVAnalytics 
-                data={rpddData} 
-                isAllYearView={selectedYear === "All"}
-                on:navigateToSponsor={() => setActiveTab('By Sponsor')}
-                onEntrySelect={(entry) => handleShowDrugDetail({
-                  Company: entry.Company,
-                  drugName: entry.Candidate,
-                  therapeuticArea: entry.TherapeuticArea1,
-                  year: entry["RPDD Year"],
-                  color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
-                  entries: [entry],
-                  // Add other properties needed for your drug detail drawer
-                  currentStage: entry["Current Development Stage"],
-                  rpddAwardDate: entry["RPDD Date"],
-                  voucherAwardDate: entry["PRV Date"],
-                  indication: entry.Indication
-                })}
-              />
-            </div>
+          <div 
+            in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
+            out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            class="overview-tab-content w-full"
+          >
+            <RPDPRVAnalytics 
+              data={rpddData} 
+              isAllYearView={selectedYear === "All"}
+              on:navigateToSponsor={() => setActiveTab('By Sponsor')}
+              onEntrySelect={(entry) => handleShowDrugDetail({
+                Company: entry.Company,
+                drugName: entry.Candidate,
+                therapeuticArea: entry.TherapeuticArea1,
+                year: entry["RPDD Year"],
+                color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
+                entries: [entry],
+                // Add other properties needed for your drug detail drawer
+                currentStage: entry["Current Development Stage"],
+                rpddAwardDate: entry["RPDD Date"],
+                voucherAwardDate: entry["PRV Date"],
+                indication: entry.Indication
+              })}
+            />
+          </div>
         {/if}
       </div>
     </div>
@@ -1148,5 +1178,18 @@ class="bg-[#ff4a4a]/20 mt-8 mb-2 col-span-2 shrink-0 data-[orientation=horizonta
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
+  }
+
+  /* Base styles for smooth animations */
+  .sponsor-tab-content,
+  .therapeutic-area-tab-content,
+  .transactions-tab-content,
+  .overview-tab-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
   }
 </style>
