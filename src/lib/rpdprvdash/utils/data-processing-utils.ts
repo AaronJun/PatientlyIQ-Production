@@ -455,7 +455,7 @@ export function getSizeConfig(isAllYearView: boolean) {
         labelFontWeight: isAllYearView ? "500" : "500", // Made fonts slightly bolder
         companyNodeWidth: isAllYearView ? 5.25 : 7.025, // Increased from 3.125 to 5.25
         companyNodeHeight: isAllYearView ? 6.25 : 7.725, // Increased from 4.25 to 6.25
-        drugNodeRadius: isAllYearView ? 6.25 : 9.125, // Increased from 4.7125 to 6.25
+        drugNodeRadius: isAllYearView ? 6.25 : 8.4125, // Increased from 4.7125 to 6.25
         drugNodeStrokeWidth: isAllYearView ? 1.25 : 1.5125, // Increased from 0.925 to 1.25
         connectionStrokeWidth: isAllYearView ? 0.5 : 0.7625, // Increased from 0.125 to 0.5
         connectionOpacity: isAllYearView ? 0.5 : 0.25, // Increased from 0.4025 to 0.5

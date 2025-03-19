@@ -4,6 +4,7 @@
     import CompanyMetricsList from './CompanyMetricsList.svelte';
     import RPDSummaryView from './RPDSummaryView.svelte';
     import { getTherapeuticAreaStroke } from '../utils/colorDefinitions';
+    import RadialLegend from '../RPDRadialLegend.svelte';
     import { ChevronUp } from 'carbon-icons-svelte';
     
     export let currentView: string | null = null;
@@ -113,6 +114,9 @@
           </div>
         {/if}
       </div>
+    </div>
+    <div class="legend-container flex-none mt-6 pb-4">
+      <RadialLegend />
     </div>
   </div>
 </div>
