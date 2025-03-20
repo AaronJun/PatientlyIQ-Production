@@ -24,14 +24,22 @@
         [key: string]: any;
     }
     
+    // Enhanced types to match d3-sankey requirements
     interface SankeyNode {
         name: string;
+        index?: number;
+        x0?: number;
+        y0?: number;
+        x1?: number;
+        y1?: number;
+        value?: number;
     }
     
     interface SankeyLink {
-        source: number;
-        target: number;
+        source: number | SankeyNode;
+        target: number | SankeyNode;
         value: number;
+        width?: number;
     }
     
     export let data: DataEntry[] = [];
@@ -134,8 +142,8 @@
                 .attr("viewBox", `0 0 ${width} ${height}`)
                 .attr("preserveAspectRatio", "xMidYMid meet");
             
-            // Color scale for nodes
-            const colorScale = d3.scaleOrdinal()
+            // Color scale for nodes - ensuring returns a string
+            const colorScale = d3.scaleOrdinal<string>()
                 .domain(["source", "middle", "end"])
                 .range(["#4f46e5", "#0d9488", "#0891b2"]);
             
@@ -150,24 +158,24 @@
                 .append("path")
                 .attr("d", sankeyLinkHorizontal())
                 .attr("stroke-width", d => Math.max(1, d.width || 0))
-                .attr("stroke", (d, i) => {
-                    const sourceIdx = typeof d.source === "object" ? 
-                        sankeyData.nodes.indexOf(d.source) : +d.source;
-                    return d3.color(colorScale(nodeCategories[sourceIdx]))?.brighter(0.5).toString() || "#ccc";
+                .attr("stroke", (d) => {
+                    const sourceNode = typeof d.source === "object" ? d.source : sankeyData.nodes[+d.source];
+                    const sourceIdx = sankeyData.nodes.indexOf(sourceNode);
+                    const sourceCategory = nodeCategories[sourceIdx] || "end";
+                    const colorValue = colorScale(sourceCategory);
+                    return d3.color(colorValue)?.brighter(0.5).toString() || "#ccc";
                 })
                 .attr("fill", "none")
                 .attr("stroke-opacity", 0.5)
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("stroke-opacity", 0.8);
                     
-                    const sourceName = typeof d.source === "object" ? d.source.name : 
-                        sankeyData.nodes[+d.source].name;
-                    const targetName = typeof d.target === "object" ? d.target.name : 
-                        sankeyData.nodes[+d.target].name;
+                    const sourceNode = typeof d.source === "object" ? d.source : sankeyData.nodes[+d.source];
+                    const targetNode = typeof d.target === "object" ? d.target : sankeyData.nodes[+d.target];
                     
                     tooltipContent = { 
-                        title: `${sourceName} → ${targetName}`,
-                        value: d.value || 0
+                        title: `${sourceNode.name} → ${targetNode.name}`,
+                        value: d.value 
                     };
                     tooltipPosition = { x: event.pageX, y: event.pageY };
                     tooltipVisible = true;
@@ -190,9 +198,15 @@
                 .attr("y", d => d.y0 || 0)
                 .attr("height", d => (d.y1 || 0) - (d.y0 || 0))
                 .attr("width", d => (d.x1 || 0) - (d.x0 || 0))
-                .attr("fill", (d, i) => colorScale(nodeCategories[i]))
-                .attr("stroke", (d, i) => 
-                    d3.color(colorScale(nodeCategories[i]))?.darker().toString() || "#000")
+                .attr("fill", (d, i) => {
+                    const category = nodeCategories[i] || "end";
+                    return colorScale(category);
+                })
+                .attr("stroke", (d, i) => {
+                    const category = nodeCategories[i] || "end";
+                    const colorValue = colorScale(category);
+                    return d3.color(colorValue)?.darker().toString() || "#000";
+                })
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("stroke-width", 2);
                     

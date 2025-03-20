@@ -42,7 +42,7 @@
                 onCompanySelect
             },
             actionButtonText: 'View Transactions',
-            actionButtonDestination: 'transactions'
+            actionButtonDestination: 'By Transactions'
         },
         {
             title: 'Therapeutic Area Distribution',
@@ -53,12 +53,13 @@
                 onAreaSelect
             },
             actionButtonText: 'View Therapeutic Areas',
-            actionButtonDestination: 'therapeuticAreas'
+            actionButtonDestination: 'By Therapeutic Area'
         }
     ];
     
     function handleCardOpen(event: CustomEvent) {
-        console.log('Card opened:', event.detail);
+        // Forward the open event to the parent component
+        dispatch('chartOpen', event.detail);
     }
     
     function handleButtonAction(event: CustomEvent) {
@@ -85,7 +86,6 @@
                     actionButtonText={card.actionButtonText}
                     actionButtonDestination={card.actionButtonDestination}
                     on:open={handleCardOpen}
-                    on:action={handleButtonAction}
                 />
             </div>
         </CardCarousel>
@@ -94,38 +94,52 @@
 
 <style>
     .chart-carousel-section {
-        margin: 2rem 0;
+        margin: 3rem 0;
+        padding: 1rem 0;
     }
     
     .section-title {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         font-weight: 600;
         color: #111827;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
     }
     
     .section-description {
         color: #6b7280;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         max-width: 800px;
+        font-size: 1.05rem;
+        line-height: 1.5;
     }
     
     .carousel-wrapper {
         width: 100%;
+        min-height: 50vh; /* Increased height for better stacked card display */
+        position: relative;
+        margin-bottom: 2rem;
+        padding: 1rem; /* Added padding for better spacing */
     }
     
     .card {
         height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease;
+        will-change: transform; /* Performance optimization for transforms */
     }
     
     /* Media queries for responsive behavior */
     @media (max-width: 768px) {
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
         }
         
         .section-description {
-            font-size: 0.9rem;
+            font-size: 1rem;
+        }
+        
+        .carousel-wrapper {
+            min-height: 50vh; /* Adjust for smaller screens */
         }
     }
 </style> 

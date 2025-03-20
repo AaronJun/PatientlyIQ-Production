@@ -40,6 +40,27 @@
     // Add width variable for responsive components
     let width = typeof window !== 'undefined' ? window.innerWidth : 1024;
     
+    // Define the type for modal content
+    interface ModalContent {
+        title: string;
+        description: string;
+        chartComponent: any;
+        chartProps: any;
+        actionButtonText: string;
+        actionButtonDestination: string;
+    }
+    
+    // Modal state
+    let isModalOpen = false;
+    let modalContent: ModalContent = {
+        title: '',
+        description: '',
+        chartComponent: null as any,
+        chartProps: {},
+        actionButtonText: '',
+        actionButtonDestination: ''
+    };
+    
     // Statistics
     let totalEntries = 0;
     let totalPRVs = 0;
@@ -85,6 +106,27 @@
     function handleEntrySelect(entry: DataEntry) {
       // Pass the selected entry to the parent component
       onEntrySelect(entry);
+    }
+    
+    function handleChartOpen(event: CustomEvent) {
+        // Get the detail information from the event
+        modalContent = event.detail;
+        isModalOpen = true;
+    }
+    
+    function closeModal() {
+        isModalOpen = false;
+    }
+    
+    function handleModalAction() {
+        // Navigate to the appropriate tab
+        if (modalContent.actionButtonDestination) {
+            console.log("Modal action clicked - navigating to tab:", modalContent.actionButtonDestination);
+            // Use direct dispatch with tab value
+            dispatch('navigateToTab', { tab: modalContent.actionButtonDestination });
+            // Close the modal after navigation
+            closeModal();
+        }
     }
     
     function handleNavigateToSponsor() {
@@ -249,6 +291,7 @@
     function handleNavigateToTab(event: CustomEvent) {
       const { tab } = event.detail;
       console.log("Navigating to tab:", tab);
+      // Forward the tab navigation to the parent
       dispatch('navigateToTab', { tab });
     }
     
@@ -277,12 +320,12 @@
 <div class="program-analytics pl-4 pr-2 pt-2 md:px-8 md:pt-8 h-full overflow-y-auto">
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
-
   <section class="chart-insights-section">
     <ChartCarouselSection 
       data={data} 
       onCompanySelect={handleCompanySelect} 
       onAreaSelect={handleAreaSelect}
+      on:chartOpen={handleChartOpen}
       on:navigateToTab={handleNavigateToTab}
     />
   </section>
@@ -346,18 +389,6 @@
       </div>
     {/if}
   </section>
-
-  <!-- Section 2: Program Overview -->
-  <section class="overview-section chart-insights-section">
-    <ChartCarouselSection 
-      data={data} 
-      onCompanySelect={handleCompanySelect} 
-      onAreaSelect={handleAreaSelect}
-      on:navigateToTab={handleNavigateToTab}
-    />
-  </section>
-
-  
 
   <!-- Add new section for Program Flow Sankey after Program Overview section but before chart carousel -->
   <section class="mb-6">
@@ -499,6 +530,43 @@
  
 </div>
 
+<!-- Chart Detail Modal -->
+{#if isModalOpen}
+<div class="modal-overlay" on:click={closeModal}>
+  <div class="modal-container" on:click|stopPropagation>
+    <div class="modal-header">
+      <h2>{modalContent.title}</h2>
+      <button class="close-button" on:click={closeModal}>×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-description">{modalContent.description}</p>
+      
+      {#if modalContent.chartComponent}
+        <div class="modal-chart">
+          <svelte:component 
+            this={modalContent.chartComponent} 
+            {...modalContent.chartProps} 
+            width={Math.min(width - 80, 900)} 
+            height={400} 
+          />
+        </div>
+      {/if}
+    </div>
+    <div class="modal-footer">
+      {#if modalContent.actionButtonText}
+        <button class="action-button" on:click={handleModalAction}>
+          {modalContent.actionButtonText}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="M12 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      {/if}
+    </div>
+  </div>
+</div>
+{/if}
+
 <style>
   .program-analytics {
     display: flex;
@@ -535,5 +603,128 @@
     padding: 1.5rem;
     background-color: #f9fafb;
     border-radius: 8px;
+  }
+  
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+  }
+  
+  .modal-container {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-button:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .modal-description {
+    margin-bottom: 1.5rem;
+    color: #4b5563;
+    line-height: 1.5;
+  }
+  
+  .modal-chart {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    min-height: 400px;
+  }
+  
+  .modal-footer {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: #4338ca;
+  }
+  
+  @media (max-width: 768px) {
+    .modal-container {
+      width: 95%;
+      max-height: 95vh;
+    }
+    
+    .modal-header, .modal-body, .modal-footer {
+      padding: 1rem;
+    }
+    
+    .modal-chart {
+      min-height: 300px;
+    }
   }
 </style>

@@ -6,7 +6,7 @@
     export let cards: any[] = [];
     
     let carouselEl: HTMLElement;
-    let cardWidth = 320;
+    let cardWidth = 380; // Increased from 320
     let currentPage = 0;
     let totalPages = 0;
     let isDragging = false;
@@ -18,6 +18,9 @@
     $: currentPage = Math.min(currentPage, totalPages - 1);
     $: currentPage = Math.max(currentPage, 0);
     
+    // Generate random skew angles for cards between -20 and 15 degrees
+    const cardRotations = cards.map(() => Math.floor(Math.random() * 35) - 20);
+    
     function goToPage(pageNum: number) {
         if (pageNum >= 0 && pageNum < totalPages) {
             currentPage = pageNum;
@@ -26,7 +29,8 @@
     }
     
     function scrollToPage() {
-        const scrollPos = currentPage * (cardWidth + 20); // Card width + margin
+        // Increased overlap for more stacking effect
+        const scrollPos = currentPage * (cardWidth - 150); // More overlap (150px instead of 60px)
         if (carouselEl) {
             carouselEl.scrollTo({
                 left: scrollPos,
@@ -60,12 +64,28 @@
             const currentX = e.touches[0].clientX;
             const diff = currentX - startX;
             currentTranslate = prevTranslate + diff;
+            
+            // Add a visual drag effect
+            if (carouselEl) {
+                // Calculate a drag offset but limit it to prevent excessive movement
+                const maxDrag = 50;
+                const dragOffset = Math.max(Math.min(diff / 3, maxDrag), -maxDrag);
+                carouselEl.style.transform = `translateX(${dragOffset}px)`;
+            }
+            
+            // Prevent default to block page scrolling while swiping
+            e.preventDefault();
         }
     }
     
     function handleTouchEnd() {
         isDragging = false;
-        const threshold = cardWidth / 3;
+        // Reset any visual transformation
+        if (carouselEl) {
+            carouselEl.style.transform = '';
+        }
+        
+        const threshold = cardWidth / 4; // Make it easier to swipe
         const movedBy = currentTranslate - prevTranslate;
         
         if (movedBy < -threshold && currentPage < totalPages - 1) {
@@ -91,6 +111,13 @@
             const currentX = e.clientX;
             const diff = currentX - startX;
             currentTranslate = prevTranslate + diff;
+            
+            // Add a visual drag effect
+            if (carouselEl) {
+                const maxDrag = 50;
+                const dragOffset = Math.max(Math.min(diff / 3, maxDrag), -maxDrag);
+                carouselEl.style.transform = `translateX(${dragOffset}px)`;
+            }
         }
     }
     
@@ -98,7 +125,13 @@
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
         isDragging = false;
-        const threshold = cardWidth / 3;
+        
+        // Reset any visual transformation
+        if (carouselEl) {
+            carouselEl.style.transform = '';
+        }
+        
+        const threshold = cardWidth / 4; // Make it easier to swipe
         const movedBy = currentTranslate - prevTranslate;
         
         if (movedBy < -threshold && currentPage < totalPages - 1) {
@@ -112,14 +145,15 @@
     
     function handleScroll() {
         if (carouselEl) {
+            // Adjust scroll position calculation for increased overlap
             const scrollPos = carouselEl.scrollLeft;
-            currentPage = Math.round(scrollPos / (cardWidth + 20));
+            currentPage = Math.round(scrollPos / (cardWidth - 150));
         }
     }
     
     onMount(() => {
         if (carouselEl) {
-            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 320;
+            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 380;
             carouselEl.addEventListener('scroll', handleScroll);
         }
         
@@ -137,7 +171,7 @@
     
     afterUpdate(() => {
         if (carouselEl) {
-            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 320;
+            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 380;
         }
     });
 </script>
@@ -155,6 +189,7 @@
             <div 
                 class="card-container"
                 in:fly={{ x: 20, duration: 300, delay: i * 100 }}
+                style="transform: rotate({cardRotations[i]}deg); z-index: {totalPages - i};"
             >
                 <slot {card} index={i}></slot>
             </div>
@@ -200,7 +235,7 @@
     .carousel-container {
         position: relative;
         width: 100%;
-        height: 30vh;
+        height: 40vh; /* Increased height for larger cards */
         padding: 1rem 0;
     }
     
@@ -208,10 +243,11 @@
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        gap: 20px;
-        padding: 1rem;
+        gap: -150px; /* Increased negative gap for more stack-like overlap */
+        padding: 2rem;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        perspective: 1000px; /* For 3D effect */
     }
     
     .carousel::-webkit-scrollbar {
@@ -220,9 +256,21 @@
     
     .card-container {
         flex: 0 0 auto;
-        width: 320px;
-        height: 30vh;
-        scroll-snap-align: start;
+        width: 380px; /* Increased width */
+        height: 40vh; /* Increased height */
+        scroll-snap-align: center;
+        transition: transform 0.3s ease-out;
+        transform-origin: center center;
+        margin: 0;
+        padding: 10px;
+        position: relative; /* Required for z-index to work */
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15); /* Enhanced shadow for stacked look */
+    }
+    
+    /* Hover effect to bring card forward */
+    .card-container:hover {
+        transform: translateY(-15px) scale(1.05) !important;
+        z-index: 100 !important;
     }
     
     .controls {
@@ -278,7 +326,7 @@
     
     @media (max-width: 768px) {
         .card-container {
-            width: 280px;
+            width: 340px;
         }
     }
 </style> 

@@ -319,12 +319,19 @@
   }
 
   function setActiveTab(tab: string) {
-    if (tab === activeTab) return;
+    console.log("setActiveTab called with:", tab);
+    if (tab === activeTab) {
+      console.log("Tab already active, skipping:", tab);
+      return;
+    }
     
     // Determine animation direction based on tab order
     const tabOrder = ['Program Overview', 'By Sponsor', 'By Therapeutic Area', 'By Transactions'];
     const currentIndex = tabOrder.indexOf(activeTab);
     const newIndex = tabOrder.indexOf(tab);
+    
+    console.log("Tab navigation: changing from", activeTab, "to", tab);
+    console.log("Tab indices:", currentIndex, "->", newIndex);
     
     animationDirection = newIndex > currentIndex ? 1 : -1;
     previousTab = activeTab;
@@ -944,7 +951,10 @@
               data={rpddData} 
               isAllYearView={selectedYear === "All"}
               on:navigateToSponsor={() => setActiveTab('By Sponsor')}
-              on:navigateToTab={(e) => setActiveTab(e.detail.tab)}
+              on:navigateToTab={(e) => {
+                console.log("navigateToTab event received with:", e.detail);
+                setActiveTab(e.detail.tab);
+              }}
               onEntrySelect={(entry) => handleShowDrugDetail({
                 Company: entry.Company,
                 drugName: entry.Candidate,
