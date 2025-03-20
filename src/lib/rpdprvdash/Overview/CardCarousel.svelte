@@ -7,7 +7,7 @@
     export let cards: any[] = [];
     
     let carouselEl: HTMLElement;
-    let cardWidth = 380; // Increased from 320
+    let cardWidth = 300; 
     let currentPage = 0;
     let totalPages = 0;
     let isDragging = false;
@@ -162,7 +162,7 @@
     
     onMount(() => {
         if (carouselEl) {
-            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 380;
+            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 300;
             carouselEl.addEventListener('scroll', handleScroll);
         }
         
@@ -181,7 +181,7 @@
 
 <div class="carousel-container">
     <div 
-        class="carousel"
+        class="carousel flex flex-row overflow-x-auto"
         bind:this={carouselEl}
         on:touchstart={handleTouchStart}
         on:touchmove={handleTouchMove}
@@ -238,11 +238,6 @@
 
 <style>
     .carousel {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-        overflow-x: auto;
-        height: 100%;
-        width: 100%;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -ms-overflow-style: none;

@@ -64,19 +64,19 @@
     
 </script>
 
-    <div class="section-intro flex flex-col items-start justify-evenly gap-8 py-8">
-        <h3 class="text-left text-muted-foreground font-base text-xs lg:text-sm w-full md:w-8/12 lg:w-5/12">Key Insights</h3>
-        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 lg:pr-4">      
-            <h2 class="text-balance text-left text-slate-600 font-medium text-3xl md:text-4xl w-full md:w-8/12 lg:w-5/12">
-                Insights <span class="italic">from</span> the Data
+
+<div class="section-intro w-full flex flex-col md:flex-row justify-evenly md:justify-center lg:justify-center content-end gap-8 md:gap-24 lg:gap-32 px-8 py-8">
+    <h2 class="text-slate-600 w-full md:w-1/2 lg:w-2/5 text-balance text-left font-light text-3xl/8 lg:text-4xl md:justify-end mb-2">
+        A constellation <span class="highlight-italics italic font-serif">of</span> new companies
             </h2>
-            <p class="text-left text-slate-800 font-base text-sm md:text-base w-full md:w-8/12 lg:w-5/12">
+            <div class="flex-container justify-end w-full md:w-2/3 lg:w-3/5 max-w-prose"> 
+            <p class="text-slate-800 text-left font-base text-sm md:text-base">  
                 We've compiled a list of key insights from the data to help you understand the RPD PRV landscape. For those interested in a deeper dive, we've also included a list of resources to help you learn more.
             </p>  
         </div>
     </div>
 
-    <div class="carousel-wrapper">
+    <div class="carousel-wrapper px-8 overflow-x-auto md:px-12">
         <CardCarousel cards={cardData}>
             <div class="card" slot="default" let:card>
                 <ChartCard 
@@ -103,9 +103,10 @@
     .card {
         height: 100%;
     }
+
     
     /* Media queries for responsive behavior */
         .carousel-wrapper {
-            min-height: 50vh; /* Adjust for smaller screens */
+            animation: fadeIn 0.5s ease-in-out;
         }
 </style> 
