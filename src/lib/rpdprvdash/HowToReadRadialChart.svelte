@@ -374,7 +374,7 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
       onClose();
     }
   }
@@ -386,10 +386,14 @@
   <div 
     class="fixed inset-0 bg-black/50 z-[1000] flex justify-end"
     on:click={handleBackdropClick}
+    on:keydown={handleKeydown}
+    tabindex="0"
+    role="button"
+    aria-label="Close dialog"
     transition:fade={{duration: 200}}
   >
     <div 
-      class="fixed inset-y-0 right-0 w-[82.25vw] bg-white shadow-lg z-50 overflow-y-auto"
+      class="fixed inset-y-0 right-0 w-[92.25vw] md:w-[72.25vw] bg-white shadow-lg z-50 overflow-y-auto"
       transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
     >
       <div class="p-6">

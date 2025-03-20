@@ -18,10 +18,10 @@ function navigateToLearnMore() {
     <h3 class="text-left text-muted-foreground font-base text-xs lg:text-sm"> Constellations of Hope for Rare Pediatric Disease Research</h3> 
 </header>
 
-<div class="section-intro flex flex-row justify-between content-end gap-8 py-8">
+<div class="section-intro flex flex-col md:flex-row justify-between content-end gap-8 md:gap-12 px-8 md:px-12 py-8">
     
-    <h1 class="text-slate-600 text-balance text-left font-medium text-4xl w-full md:w-1/3 md:justify-end lg:text-5xl mb-2">
-        A Catalyst <span class="italic">for</span> 
+    <h1 class="text-slate-600 text-balance text-left font-light text-4xl w-full md:w-1/3 md:justify-end lg:text-5xl mb-2">
+        A Catalyst <span class="italic font-serif">for</span> 
         Rare Pediatric Disease Research</h1>
 
 

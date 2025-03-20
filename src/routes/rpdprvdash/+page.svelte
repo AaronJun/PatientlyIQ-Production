@@ -555,7 +555,7 @@
 
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
-  <div class="overflow-y-auto overflow-x-hidden z-10">
+  <div class="overflow-y-auto overflow-x-hidden z-20">
     <VerticalSidebar 
       {activeTab} 
       isCollapsed={isSidebarCollapsed}
@@ -765,7 +765,7 @@
             class="transactions-tab-content flex flex-col h-full relative"
           >
             <!-- Timeline section -->
-            <div class="timeline-container sticky justify-center place-items-start z-20 px-4 py-2 bg-slate-100 transition-all duration-300">
+            <div class="timeline-container sticky justify-center place-items-start z-10 px-4 py-2 bg-slate-100 transition-all duration-300">
               <PRVPurchaseTimeline 
                 data={rpddData}
                 selectedYear={selectedTransactionYear}

@@ -2,7 +2,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import OverviewIntroduction from './OverviewIntroduction.svelte';   
-    import ProgramSankey from './TimelineSankeyFlow.svelte';
     import { Report, ChartParallel, Money, ArrowRight } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { createEventDispatcher } from 'svelte';
@@ -100,12 +99,6 @@
     
     function toggleSection(section: keyof typeof expandedSections) {
       expandedSections[section] = !expandedSections[section];
-    }
-    
-    // Handle the selection of an entry from the Sankey diagram
-    function handleEntrySelect(entry: DataEntry) {
-      // Pass the selected entry to the parent component
-      onEntrySelect(entry);
     }
     
     function handleChartOpen(event: CustomEvent) {
@@ -317,6 +310,7 @@
     });
 </script>
 
+<div class="overview-wrapper w-full">  
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
   <section class="chart-insights-section">
@@ -563,6 +557,7 @@
   </div>
 </div>
 {/if}
+</div>
 
 <style>
   .section-content {
