@@ -68,13 +68,15 @@
     }
 </script>
 
-<section class="chart-carousel-section">
-    <h2 class="section-title">Key Insights</h2>
-    <p class="section-description">
-        Explore key distribution patterns across market capitalization and therapeutic areas.
-        Tap on any card to view detailed information and interact with the full visualization.
-    </p>
-    
+<section class="chart-carousel-section md:flex md:flex-row ,md:gap-12 gap-4">
+    <div class="flex-1">
+        <h2 class="section-title">Key Insights</h2>
+        <p class="section-description md:w-10/12">
+            Explore key distribution patterns across market capitalization and therapeutic areas.
+            Tap on any card to view detailed information and interact with the full visualization.
+        </p>
+    </div>
+    <div class="flex-1">
     <div class="carousel-wrapper">
         <CardCarousel cards={cardData}>
             <div class="card" slot="default" let:card>
