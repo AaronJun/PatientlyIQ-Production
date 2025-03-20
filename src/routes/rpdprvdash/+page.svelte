@@ -10,23 +10,16 @@
   import PRVPurchaseTimeline from '$lib/rpdprvdash/sidebarComponents/PRVPurchaseTimeline.svelte';
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
-  import RpdprvCompanyTree from '$lib/rpdprvdash/RadialComponents/RPDPRVCompanyTree.svelte';
-  import SellerBuyerChord from '$lib/rpdprvdash/TransactionChord.svelte';
+  import SponsorWrapper from '$lib/rpdprvdash/tabViews/SponsorWrapper.svelte';  
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import { getTherapeuticAreaColor } from '$lib/rpdprvdash/utils/colorDefinitions';
   
-  import SponsorSidebar from '$lib/rpdprvdash/sidebarComponents/SponsorSidebar.svelte';
   import TherapeuticAreaSidebar from '$lib/rpdprvdash/sidebarComponents/TherapeuticAreaSidebar.svelte';
   import HowToReadRadialChart from '$lib/rpdprvdash/HowToReadRadialChart.svelte';
   
   // Import mobile sidebar components
-  import MobileSponsorSidebar from '$lib/rpdprvdash/sidebarComponents/MobileSponsorSidebar.svelte';
   import MobileTherapeuticAreaSidebar from '$lib/rpdprvdash/sidebarComponents/MobileTherapeuticAreaSidebar.svelte';
-  import MobileTransactionSidebar from '$lib/rpdprvdash/sidebarComponents/MobileTransactionSidebar.svelte';
-  
-  import RPDTransactionSummaryView from '$lib/rpdprvdash/sidebarComponents/RPDTransactionsSummary.svelte';
-  import VoucherBeeswarmPlot from '$lib/rpdprvdash/VoucherBeeswarmPlot.svelte';
-  
+
   import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
@@ -359,8 +352,11 @@
     // Check if click was on an interactive element
     const isInteractiveElement = (event.target as Element).closest('.interactive-element, button, a, input, select, .drug-node, .area-node, .tooltip');
     
-    // Skip if click was on an interactive element or sidebar
-    if (isInteractiveElement || (event.target as Element).closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
+    // Ignore clicks inside infinite canvas areas to prevent interference with dragging
+    const isCanvasClick = (event.target as Element).closest('svg, .infinite-canvas-container, .sponsor-infinite-canvas, g, path, circle, rect');
+    
+    // Skip if click was on an interactive element, canvas or sidebar
+    if (isInteractiveElement || isCanvasClick || (event.target as Element).closest('.sidebar') || isDrawerOpen || isDashboardOpen) {
       return;
     }
     
@@ -579,173 +575,22 @@
         
         <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
-          <div 
-            in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
-            out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="sponsor-tab-content flex flex-row flex-grow relative h-full"
-          >
-            <div class="w-full h-full items-center relative">
-              <div class="timeline-container fixed justify-center place-items-start w-full z-0 bg-slate-100 transition-all duration-300">
-                <RPDPRVHorizontalTimeline 
-                  data={rpddData}
-                  selectedYear={selectedYear}
-                  onYearSelect={handleYearSelect}
-                />
-              </div>
-              <InfiniteCanvasWrapper 
-                bind:this={infiniteCanvas} 
-                let:mainGroup 
-                let:showTooltip 
-                let:hideTooltip
-                on:howToNavigate={handleHowToNavigate}
-                isCollapsed={isSidebarCollapsed} 
-                className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
-                {#if mainGroup}
-                  <RpdprvCompanyTree 
-                    data={filteredData}
-                    isAllYearView={selectedYear === "All"}
-                    onCompanyHover={handleCompanyHover}
-                    onStageHover={handleStageHover}
-                    onLeave={handleLeave}
-                    onShowDrugDetail={handleShowDrugDetail}
-                    onShowCompanyDetail={handleShowCompanyDetail}
-                    {mainGroup}
-                    {showTooltip}
-                    {hideTooltip}
-                    selectedYear={selectedYear}
-                    hoveredTherapeuticArea={hoveredTherapeuticArea}
-                    allYearsData={selectedYear === "All" ? rpddData : undefined}
-                  />
-                {:else}
-                  <!-- Loading spinner -->
-                  <g transform="translate(460, 460)">
-                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
-                    <path 
-                      d="M40 0 A40 40 0 0 1 40 0" 
-                      fill="none" 
-                      stroke="#3b82f6" 
-                      stroke-width="8" 
-                      stroke-linecap="round"
-                    >
-                      <animateTransform 
-                        attributeName="transform" 
-                        type="rotate" 
-                        from="0" 
-                        to="360" 
-                        dur="1s" 
-                        repeatCount="indefinite"
-                      />
-                    </path>
-                  </g>
-                {/if}
-              </InfiniteCanvasWrapper>
-            </div>
+          <SponsorWrapper
+            data={rpddData}
+            filteredData={filteredData}
+            selectedYear={selectedYear}
+            isSidebarCollapsed={isSidebarCollapsed}
+            isMobileView={isMobileView}
+            onShowDrugDetail={handleShowDrugDetail}
+            onShowCompanyDetail={handleShowCompanyDetail}
 
-            <!-- Desktop right sidebar - only show on non-mobile -->
-            {#if !isMobileView }
-              <div class="absolute right-6 top-25h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-                
-                <button
-                  class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={toggleRightSidebar}
-                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                >
-                  <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+            onShowTherapeuticAreaDetail={handleShowTherapeuticAreaDetail}
+            onYearSelect={handleYearSelect}
+            onHowToNavigate={handleHowToNavigate}
+          />
+
           
-                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg px-4 pt-6 flex flex-col">
-                  <!-- Search component in desktop sidebar -->
-                  <div class="mb-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-                  
-                  <!-- Scrollable content area -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    <!-- Use the updated sidebar component -->
-                    <SponsorSidebar
-                      {currentView}
-                      {currentEntries}
-                      {currentCompanyMetrics}
-                      colorMap={colorMap}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      fullYearData={filteredData}
-                      selectedYear={selectedYear}
-                    />
-                  </div>
-
-                  <!-- Legend stays at bottom -->
-                  <div class="legend-container flex-none mt-6 pb-4">
-                    <RPDRadialLegend 
-                      items={processedData.map(item => ({
-                        ...item,
-                        yearCount: selectedYear === "All" ? 
-                          item.count : 
-                          filteredData.filter(d => d.TherapeuticArea1 === item.area).length
-                      }))}
-                      selectedYear={selectedYear}
-                      showYearCounts={selectedYear !== "All"}
-                      hoveredArea={hoveredTherapeuticArea}
-                      on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
-                      on:areaLeave={() => hoveredTherapeuticArea = ""}
-                      on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
-                      {colorScale}
-                    />
-                  </div>
-                </div>
-              </div>
-            {/if}
-            
-            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
-            {#if isMobileView}
-            
-              <MobileSponsorSidebar
-                {currentView}
-                {currentEntries}
-                {currentCompanyMetrics}
-                colorMap={colorMap}
-                onShowDrugDetail={handleShowDrugDetail}
-                fullYearData={filteredData}
-                selectedYear={selectedYear}
-                isExpanded={isMobileSidebarExpanded}
-                on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-              >
-              <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                <!-- Add search component to mobile sponsor sidebar -->
-                {#if isMobileSidebarExpanded}
-                  <div class="mb-4 px-4 pt-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-                {/if}
-              </MobileSponsorSidebar>
-            {/if}
-          </div>
-
-        <!-- By Therapeutic Area Tab with animations -->
+          
         {:else if activeTab === 'By Therapeutic Area'}
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}

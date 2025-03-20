@@ -419,13 +419,16 @@ async function createVisualization() {
     
     // Add click handler to SVG background to clear selections
     contentGroup.on("click", (event) => {
-        // Check if click was directly on the SVG background
+        // Only handle clicks directly on the content group (background)
         if (event.target === contentGroup.node()) {
+            console.log("Background click - clearing selections");
             activeArea = null;
             activeStage = null;
-            resetConnectionHighlights();
+            resetAreaHighlights();
             hideTooltip();
             onLeave();
+            
+            // Don't stop propagation - allow event to bubble up to the SVG for drag operations
         }
     });
     

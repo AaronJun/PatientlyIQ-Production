@@ -37,15 +37,27 @@
   let container: HTMLDivElement;
   let initialized = false;
 
+  // Add tracking for drag state
+  let isDragging = false;
+
   // Initialize zoom behavior with proper typing
   const zoom = d3.zoom<SVGSVGElement, unknown>()
   .scaleExtent([0.5, 2.5]) // Increased minimum scale to 0.5 to limit zoom out
+  .on('start', () => {
+    isDragging = true;
+    if (svg) svg.style.cursor = 'grabbing';
+  })
   .on('zoom', (event) => {
     transform = event.transform;
     if (mainGroup) {
       mainGroup.attr('transform', event.transform.toString());
     }
+  })
+  .on('end', () => {
+    isDragging = false;
+    if (svg) svg.style.cursor = 'grab';
   });
+
   // Navigation control functions
   function zoomIn() {
     if (svg) {
@@ -129,8 +141,10 @@
       mainGroup = svgSelection.append('g');
       console.log("mainGroup created:", mainGroup);
       
-      // Apply zoom behavior
-      svgSelection.call(zoom);
+      // Apply zoom behavior - simplify to avoid event conflicts
+      svgSelection
+        .style('touch-action', 'none') // Prevent default touch actions 
+        .call(zoom);
         
       // Center the view initially
       const initialTransform = d3.zoomIdentity
@@ -318,7 +332,7 @@
     height="100%"
     viewBox="0 0 {width} {height}" 
     preserveAspectRatio="xMidYMid meet"
-    style="display: block; touch-action: none;"
+    style="display: block; touch-action: none; cursor: grab;"
     role="img"
     aria-label="Visualization canvas"
   >
@@ -341,7 +355,7 @@
   
   <!-- Controls for mobile -->
   <div 
-    class="controls absolute z-10 top-24 left-8"
+    class="controls absolute z-0 top-24 left-8"
     on:mouseenter={() => isHovered = true}
     on:mouseleave={() => isHovered = false}
     role="toolbar"
@@ -385,9 +399,18 @@
 </div>
   
 <style>
+  
   :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
+  }
+
+  :global(.infinite-canvas-container svg) {
+    cursor: grab;
+  }
+
+  :global(.infinite-canvas-container svg:active) {
+    cursor: grabbing;
   }
 
   :global(.nav-button) {
@@ -403,4 +426,5 @@
       right: 20px;
     }
   }
+
 </style>

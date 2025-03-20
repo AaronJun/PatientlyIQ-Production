@@ -111,6 +111,7 @@
             .attr("x", -width/2)
             .attr("y", -height/2)
             .attr("fill", "transparent")
+            .attr("pointer-events", "none")
             .attr("class", "background-rect");
 
         // Center the visualization in the mainGroup
@@ -246,6 +247,8 @@
                 connectionLinesComponent.resetConnectionHighlights();
                 hideTooltip(); // Ensure tooltip is hidden when clicking on background
                 onLeave();
+                
+                // Don't stop propagation - allow event to bubble up to the SVG for drag operations
             }
         });
         
