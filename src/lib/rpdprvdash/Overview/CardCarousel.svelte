@@ -2,7 +2,8 @@
 <script lang="ts">
     import { onMount, afterUpdate } from 'svelte';
     import { fly } from 'svelte/transition';
-    
+    import { ArrowLeft, ArrowRight } from 'carbon-icons-svelte';
+
     export let cards: any[] = [];
     
     let carouselEl: HTMLElement;
@@ -13,13 +14,11 @@
     let startX = 0;
     let currentTranslate = 0;
     let prevTranslate = 0;
+    let isProgrammaticScroll = false; // Flag to indicate programmatic scrolling
     
     $: totalPages = Math.ceil(cards.length);
     $: currentPage = Math.min(currentPage, totalPages - 1);
     $: currentPage = Math.max(currentPage, 0);
-    
-    // Generate random skew angles for cards between -20 and 15 degrees
-    const cardRotations = cards.map(() => Math.floor(Math.random() * 35) - 20);
     
     function goToPage(pageNum: number) {
         if (pageNum >= 0 && pageNum < totalPages) {
@@ -29,6 +28,9 @@
     }
     
     function scrollToPage() {
+        // Set flag to indicate programmatic scrolling
+        isProgrammaticScroll = true;
+        
         // Increased overlap for more stacking effect
         const scrollPos = currentPage * (cardWidth - 150); // More overlap (150px instead of 60px)
         if (carouselEl) {
@@ -36,6 +38,13 @@
                 left: scrollPos,
                 behavior: 'smooth'
             });
+            
+            // Reset the flag after the scroll animation is likely to be complete
+            setTimeout(() => {
+                isProgrammaticScroll = false;
+            }, 500);
+        } else {
+            isProgrammaticScroll = false;
         }
     }
     
@@ -85,7 +94,7 @@
             carouselEl.style.transform = '';
         }
         
-        const threshold = cardWidth / 4; // Make it easier to swipe
+        const threshold = cardWidth / 8; // Make it easier to swipe
         const movedBy = currentTranslate - prevTranslate;
         
         if (movedBy < -threshold && currentPage < totalPages - 1) {
@@ -144,8 +153,8 @@
     }
     
     function handleScroll() {
-        if (carouselEl) {
-            // Adjust scroll position calculation for increased overlap
+        if (carouselEl && !isProgrammaticScroll) {
+            // Only update currentPage if the scroll was initiated by user, not by our code
             const scrollPos = carouselEl.scrollLeft;
             currentPage = Math.round(scrollPos / (cardWidth - 150));
         }
@@ -168,12 +177,6 @@
             document.removeEventListener('mouseup', handleMouseUp);
         };
     });
-    
-    afterUpdate(() => {
-        if (carouselEl) {
-            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 380;
-        }
-    });
 </script>
 
 <div class="carousel-container">
@@ -184,12 +187,17 @@
         on:touchmove={handleTouchMove}
         on:touchend={handleTouchEnd}
         on:mousedown={handleMouseDown}
+        role="listbox"
+        tabindex="0"
+        aria-label="Card carousel"
+        aria-roledescription="carousel"
     >
         {#each cards as card, i}
             <div 
                 class="card-container"
-                in:fly={{ x: 20, duration: 300, delay: i * 100 }}
-                style="transform: rotate({cardRotations[i]}deg); z-index: {totalPages - i};"
+                in:fly={{ x: 100, duration: 300, delay: i * 100 }}
+                role="option"
+                aria-selected={currentPage === i}
             >
                 <slot {card} index={i}></slot>
             </div>
@@ -203,9 +211,7 @@
             disabled={currentPage === 0}
             aria-label="Previous card"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+            <ArrowLeft class="w-4 h-4" />
         </button>
         
         <div class="dots">
@@ -224,30 +230,18 @@
             disabled={currentPage === totalPages - 1}
             aria-label="Next card"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            <ArrowRight class="w-4 h-4" />
         </button>
     </div>
 </div>
 
 <style>
-    .carousel-container {
-        position: relative;
-        width: 100%;
-        height: 40vh; /* Increased height for larger cards */
-        padding: 1rem 0;
-    }
-    
     .carousel {
         display: flex;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        gap: -150px; /* Increased negative gap for more stack-like overlap */
-        padding: 2rem;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        perspective: 1000px; /* For 3D effect */
     }
     
     .carousel::-webkit-scrollbar {
@@ -255,21 +249,12 @@
     }
     
     .card-container {
-        flex: 0 0 auto;
-        width: 380px; /* Increased width */
-        height: 40vh; /* Increased height */
-        scroll-snap-align: center;
         transition: transform 0.3s ease-out;
-        transform-origin: center center;
-        margin: 0;
-        padding: 10px;
-        position: relative; /* Required for z-index to work */
-        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15); /* Enhanced shadow for stacked look */
     }
     
     /* Hover effect to bring card forward */
     .card-container:hover {
-        transform: translateY(-15px) scale(1.05) !important;
+        transform: translateY(-10px) !important;
         z-index: 100 !important;
     }
     
@@ -281,29 +266,6 @@
         gap: 1rem;
     }
     
-    .nav-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #f3f4f6;
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        cursor: pointer;
-        color: #374151;
-        transition: background-color 0.2s, opacity 0.2s;
-    }
-    
-    .nav-button:hover:not(:disabled) {
-        background: #e5e7eb;
-    }
-    
-    .nav-button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-    
     .dots {
         display: flex;
         gap: 6px;
@@ -313,20 +275,17 @@
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #d1d5db;
+        background-color: #6FF117;
+        filter: saturate(0.125);
         border: none;
         cursor: pointer;
-        transition: background-color 0.2s, transform 0.2s;
+        transition: background-color 0.2s, filter 0.2s, ease-in-out;
     }
     
     .dot.active {
-        background-color: #6366f1;
-        transform: scale(1.25);
-    }
-    
-    @media (max-width: 768px) {
-        .card-container {
-            width: 340px;
-        }
+        background-color: #6EE999;
+        outline: 1px solid #6EE7B7;
+        filter: saturate(1.25);
+        outline-offset: 2px;
     }
 </style> 

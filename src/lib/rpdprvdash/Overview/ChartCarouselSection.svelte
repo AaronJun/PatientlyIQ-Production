@@ -95,31 +95,17 @@
        
     .carousel-wrapper {
         width: 100%;
-        min-height: 50vh; /* Increased height for better stacked card display */
         position: relative;
         margin-bottom: 2rem;
-        padding: 1rem; /* Added padding for better spacing */
+        padding: rem; /* Added padding for better spacing */
     }
     
     .card {
         height: 100%;
-        transform-style: preserve-3d;
-        transition: transform 0.3s ease;
-        will-change: transform; /* Performance optimization for transforms */
     }
     
     /* Media queries for responsive behavior */
-    @media (max-width: 768px) {
-        .section-title {
-            font-size: 1.5rem;
-        }
-        
-        .section-description {
-            font-size: 1rem;
-        }
-        
         .carousel-wrapper {
             min-height: 50vh; /* Adjust for smaller screens */
         }
-    }
 </style> 

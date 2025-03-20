@@ -308,6 +308,8 @@
   bind:this={container} 
   class="infinite-canvas-container {className}" 
   style="width: 100%; height: 100%; position: relative; overflow: hidden;"
+  role="application"
+  aria-label="Interactive visualization canvas"
 >
   <!-- SVG canvas for visualization -->
   <svg 
@@ -317,6 +319,8 @@
     viewBox="0 0 {width} {height}" 
     preserveAspectRatio="xMidYMid meet"
     style="display: block; touch-action: none;"
+    role="img"
+    aria-label="Visualization canvas"
   >
     <slot {mainGroup} {showTooltip} {hideTooltip} />
   </svg>
@@ -325,6 +329,8 @@
   <div 
     class="tooltip-container" 
     style="position: absolute; left: {tooltipX}px; top: {tooltipY}px; pointer-events: none; z-index: 1000;"
+    role="tooltip"
+    aria-live="polite"
   >
     <RPDTooltip 
       visible={tooltipVisible} 
@@ -338,28 +344,31 @@
     class="controls absolute z-10 top-24 left-8"
     on:mouseenter={() => isHovered = true}
     on:mouseleave={() => isHovered = false}
+    role="toolbar"
+    tabindex="0"
+    aria-label="Canvas controls"
   >
-    <div class="main-controls flex flex-col gap-3">
+    <div class="main-controls flex flex-col gap-3" role="group" aria-label="Zoom controls">
     <button 
-      class="zoom-in bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={zoomIn}
       aria-label="Zoom In"
     >
-    <ZoomIn class="w-5 h-5 text-slate-600"/>
+    <ZoomIn class="w-5 h-5 text-slate-600" aria-hidden="true"/>
     </button>
     <button 
-      class="zoom-out bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={zoomOut}
       aria-label="Zoom Out"
     >
-    <ZoomOut class="w-5 h-5 text-slate-600"/>
+    <ZoomOut class="w-5 h-5 text-slate-600" aria-hidden="true"/>
     </button>
     <button 
-      class="reset-view bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={resetView}
       aria-label="Reset View"
     >
-      <ZoomReset class="w-5 h-5 text-slate-600"/>
+      <ZoomReset class="w-5 h-5 text-slate-600" aria-hidden="true"/>
     </button>
     </div>
     <div class="help-button-container mt-12">
@@ -367,9 +376,9 @@
       class="help-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={handleHowToNavigateClick}
       title={isCollapsed && !isHovered ? "How to Navigate" : ''}
-      aria-label="Help"
+      aria-label="Help with navigation"
     >
-      <Help class="w-5 h-5 text-slate-600"/>
+      <Help class="w-5 h-5 text-slate-600" aria-hidden="true"/>
     </button>
     </div>
   </div>
@@ -379,6 +388,12 @@
   :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
+  }
+
+  :global(.nav-button) {
+    @apply bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300;
+    transition: background-color 0.2s, opacity 0.2s;
+    cursor: pointer;
   }
     
   /* Ensure the canvas fills parent container */
