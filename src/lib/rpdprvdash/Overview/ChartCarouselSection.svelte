@@ -62,16 +62,12 @@
         dispatch('chartOpen', event.detail);
     }
     
-    function handleButtonAction(event: CustomEvent) {
-        const { destination } = event.detail;
-        dispatch('navigateToTab', { tab: destination });
-    }
 </script>
 
-<section class="chart-carousel-section md:flex md:flex-row ,md:gap-12 gap-4">
-    <div class="flex-1">
-        <h2 class="section-title">Key Insights</h2>
-        <p class="section-description md:w-10/12">
+<section class="chart-carousel-section flex flex-col lg:flex-row lg:gap-12 gap-4">
+    <div class="flex flex-col gap-4">
+        <h2 class="section-title text-slate-700 text-3xl font-semibold">Key Insights</h2>
+        <p class="section-description text-slate-600 text-sm">
             Explore key distribution patterns across market capitalization and therapeutic areas.
             Tap on any card to view detailed information and interact with the full visualization.
         </p>
@@ -95,26 +91,8 @@
 </section>
 
 <style>
-    .chart-carousel-section {
-        margin: 3rem 0;
-        padding: 1rem 0;
-    }
     
-    .section-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-        color: #111827;
-        margin-bottom: 0.75rem;
-    }
-    
-    .section-description {
-        color: #6b7280;
-        margin-bottom: 2rem;
-        max-width: 800px;
-        font-size: 1.05rem;
-        line-height: 1.5;
-    }
-    
+       
     .carousel-wrapper {
         width: 100%;
         min-height: 50vh; /* Increased height for better stacked card display */

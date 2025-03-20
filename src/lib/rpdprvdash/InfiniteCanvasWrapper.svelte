@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick, createEventDispatcher } from 'svelte';
+  import { ZoomIn, ZoomOut, ZoomReset, Help } from 'carbon-icons-svelte';
   import * as d3 from 'd3';
   import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
 
@@ -9,6 +10,9 @@
   
   // Export className to accept custom CSS classes
   export let className = '';
+  export let isCollapsed: boolean = false;
+  let isHovered: boolean = false;
+
   
   // Tooltip state
   let tooltipVisible = false;
@@ -294,6 +298,10 @@
     updateDimensions();
     initializeCanvas();
   }
+  // Handle how to navigate button click
+  function handleHowToNavigateClick() {
+      dispatch('howToNavigate');
+    }   
 </script>
 
 <div 
@@ -326,53 +334,53 @@
   </div>
   
   <!-- Controls for mobile -->
-  <div class="controls absolute bottom-8 right-8 flex space-x-2">
+  <div 
+    class="controls absolute z-10 top-24 left-8"
+    on:mouseenter={() => isHovered = true}
+    on:mouseleave={() => isHovered = false}
+  >
+    <div class="main-controls flex flex-col gap-3">
     <button 
-      class="zoom-in bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      class="zoom-in bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={zoomIn}
       aria-label="Zoom In"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        <line x1="11" y1="8" x2="11" y2="14"></line>
-        <line x1="8" y1="11" x2="14" y2="11"></line>
-      </svg>
+    <ZoomIn class="w-5 h-5 text-slate-600"/>
     </button>
     <button 
-      class="zoom-out bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      class="zoom-out bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={zoomOut}
       aria-label="Zoom Out"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        <line x1="8" y1="11" x2="14" y2="11"></line>
-      </svg>
+    <ZoomOut class="w-5 h-5 text-slate-600"/>
     </button>
     <button 
-      class="reset-view bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      class="reset-view bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={resetView}
       aria-label="Reset View"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
+      <ZoomReset class="w-5 h-5 text-slate-600"/>
     </button>
+    </div>
+    <div class="help-button-container mt-12">
+    <button 
+      class="help-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      on:click={handleHowToNavigateClick}
+      title={isCollapsed && !isHovered ? "How to Navigate" : ''}
+      aria-label="Help"
+    >
+      <Help class="w-5 h-5 text-slate-600"/>
+    </button>
+    </div>
   </div>
 </div>
-
+  
 <style>
   :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
   }
-  
-  .controls {
-    z-index: 10;
-  }
-  
+    
   /* Ensure the canvas fills parent container */
   @media (max-width: 768px) {
     .controls {

@@ -424,14 +424,6 @@
             </div>
         {/if}
     </div>
-
-    <Separator.Root
-        class="bg-slate-500 mt-10 mb-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    />
-    <footer class="flex flex-row justify-between gap-2 py-2">
-        <p class="text-2xs font-mono">Priority Review Voucher Transaction Analysis</p>
-        <p class="text-2xs font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
-    </footer>
 </div>
 
 <style>

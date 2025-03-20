@@ -560,7 +560,7 @@
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pb-8 relative transition-all duration-300 h-[calc(100vh-60px)] overflow-hidden pl-8">
+  <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden pl-8">
 
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
@@ -591,8 +591,14 @@
                   onYearSelect={handleYearSelect}
                 />
               </div>
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip 
-                class="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
+              <InfiniteCanvasWrapper 
+                bind:this={infiniteCanvas} 
+                let:mainGroup 
+                let:showTooltip 
+                let:hideTooltip
+                on:howToNavigate={handleHowToNavigate}
+                isCollapsed={isSidebarCollapsed} 
+                className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
                 {#if mainGroup}
                   <RpdprvCompanyTree 
                     data={filteredData}
@@ -753,8 +759,14 @@
                   onYearSelect={handleYearSelect}
                 />
               </div>
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip 
-                class="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
+              <InfiniteCanvasWrapper 
+                bind:this={infiniteCanvas} 
+                let:mainGroup 
+                let:showTooltip 
+                let:hideTooltip
+                on:howToNavigate={handleHowToNavigate}
+                isCollapsed={isSidebarCollapsed} 
+                className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
                 {#if mainGroup}
                   <RPDDRadialYear 
                     data={filteredData}
@@ -974,16 +986,21 @@
     </div>
   </main>
   
-  <footer class="grid grid-cols-2 w-full justify-between items-center py-4 px-24 h-fit">
-    <Separator.Root
-      class="bg-[#ff4a4a]/20 mb-2 col-span-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-    />
-    <p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Copyright 2025 Patiently Studio</p>
-    <p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
-    <a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500 col-span-1 font-mono">Contact us</a>
-  </footer>
 </div>
 
+<Separator.Root
+    class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+/>
+<footer class="flex flex-row justify-between w-full self-stretch pl-12 pr-2 gap-2 md:pl-12 md:pr-6 py-4">
+  <div class="flex flex-col"> 
+    <p class="text-2xs text-[#ff4a4a] font-mono">Copyright 2025 Patiently Studio</p>
+
+    <a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500  font-mono">Contact us</a>
+  </div>
+  <div class="flex flex-col w-32 md:w-auto place-items-end justify-end text-right">
+  <p class="text-2xs text-slate-500 font-mono">Data updated through <span class="text-[#ff4a4a]">{new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</span></p>
+  </div>
+</footer> 
 {#if isHowToReadOpen}
   <HowToReadRadialChart
     isOpen={isHowToReadOpen}

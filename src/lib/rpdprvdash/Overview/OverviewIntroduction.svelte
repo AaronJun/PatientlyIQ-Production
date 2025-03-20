@@ -14,11 +14,11 @@ function navigateToLearnMore() {
 }
 </script>
 
-<div class="overview-card flex bg-slate-50 flex-col items-start justify-evenly gap-8 pl-8 pr-4 py-2 md:px-8 md:py-4 lg:pl-16 lg:pr-8 lg:py-8">
+<div class="overview-card flex flex-col items-start justify-evenly gap-8 py-8 lg:py-8">
 
-    <h3 class="text-left text-muted-foreground font-base text-xs py-2"> Constellations of Hope for Rare Pediatric Disease Research</h3>
-    <div class="flex flex-col lg:flex-row gap-4 lg:gap-12 lg:pr-12">       
-    <h1 class="text-slate-600 text-left font-medium text-4xl lg:text-5xl mb-2">
+    <h3 class="text-left text-muted-foreground font-base text-xs"> Constellations of Hope for Rare Pediatric Disease Research</h3>
+    <div class="flex flex-col lg:flex-row gap-4 lg:gap-12 lg:pr-4">       
+    <h1 class="text-slate-600 text-balance text-left font-medium text-4xl lg:text-4xl mb-2">
         A Catalyst <span class="italic">for</span> 
         Rare Pediatric Disease Research</h1>
 

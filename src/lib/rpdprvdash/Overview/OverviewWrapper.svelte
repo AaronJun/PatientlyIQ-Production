@@ -317,7 +317,7 @@
     });
 </script>
   
-<div class="program-analytics pl-4 pr-2 pt-2 md:px-8 md:pt-8 h-full overflow-y-auto">
+<div class="program-analytics bg-slate-50 flex-col items-start justify-evenly gap-8 pl-8 pr-4 py-2 md:px-8 md:py-4 lg:pl-16 lg:pr-8 lg:py-8">
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
   <section class="chart-insights-section">
@@ -568,11 +568,6 @@
 {/if}
 
 <style>
-  .program-analytics {
-    display: flex;
-    flex-direction: column;
-  }
-  
   .section-content {
     overflow: hidden;
   }
@@ -598,12 +593,6 @@
     overflow: hidden;
   }
   
-  .chart-insights-section {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: #f9fafb;
-    border-radius: 8px;
-  }
   
   /* Modal styles */
   .modal-overlay {

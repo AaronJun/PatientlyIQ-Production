@@ -389,7 +389,7 @@
     transition:fade={{duration: 200}}
   >
     <div 
-      class="fixed inset-y-0 right-0 w-[65vw] bg-white shadow-lg z-50 overflow-y-auto"
+      class="fixed inset-y-0 right-0 w-[82.25vw] bg-white shadow-lg z-50 overflow-y-auto"
       transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
     >
       <div class="p-6">
