@@ -11,6 +11,7 @@
   import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
   
   import SponsorWrapper from '$lib/rpdprvdash/tabViews/SponsorWrapper.svelte';  
+  import TherapeuticAreaWrapper from '$lib/rpdprvdash/tabViews/TherapeuticAreaWrapper.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
   import { getTherapeuticAreaColor } from '$lib/rpdprvdash/utils/colorDefinitions';
   
@@ -595,166 +596,20 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="therapeutic-area-tab-content flex flex-row flex-grow relative h-full"
           >
-            <div class="w-full h-full relative">
-              <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
-                <RPDPRVHorizontalTimeline 
-                  data={rpddData}
-                  selectedYear={selectedYear}
-                  onYearSelect={handleYearSelect}
-                />
-              </div>
-              <InfiniteCanvasWrapper 
-                bind:this={infiniteCanvas} 
-                let:mainGroup 
-                let:showTooltip 
-                let:hideTooltip
-                on:howToNavigate={handleHowToNavigate}
-                isCollapsed={isSidebarCollapsed} 
-                className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
-                {#if mainGroup}
-                  <RPDDRadialYear 
-                    data={filteredData}
-                    isAllYearView={selectedYear === "All"}
-                    onCompanyHover={handleCompanyHover}
-                    onStageHover={handleStageHover}
-                    onLeave={handleLeave}
-                    onShowDrugDetail={handleShowDrugDetail}
-                    onShowCompanyDetail={handleShowCompanyDetail}
-                    onShowTherapeuticAreaDetail={handleShowTherapeuticAreaDetail}
-                    {mainGroup}
-                    {showTooltip}
-                    {hideTooltip}
-                    selectedYear={selectedYear}
-                    hoveredTherapeuticArea={hoveredTherapeuticArea}
-                    allYearsData={selectedYear === "All" ? rpddData : undefined}
-                  />
-                {:else}
-                  <!-- Loading spinner -->
-                  <g transform="translate(460, 460)">
-                    <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
-                    <path 
-                      d="M40 0 A40 40 0 0 1 40 0" 
-                      fill="none" 
-                      stroke="#3b82f6" 
-                      stroke-width="8" 
-                      stroke-linecap="round"
-                    >
-                      <animateTransform 
-                        attributeName="transform" 
-                        type="rotate" 
-                        from="0" 
-                        to="360" 
-                        dur="1s" 
-                        repeatCount="indefinite"
-                      />
-                    </path>
-                  </g>
-                {/if}
-              </InfiniteCanvasWrapper>
-            </div>
-
-            <!-- Desktop right information sidebar - only show on non-mobile -->
-            {#if !isMobileView}
-            <div class="absolute right-6 top-25h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-
-                <button
-                  class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-                  on:click={toggleRightSidebar}
-                  title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                >
-                  <svg
-                    class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-                <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
-                  <!-- Search component in therapeutic area sidebar -->
-                  <div class="mb-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-            
-                  <!-- Scrollable content area -->
-                  <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-                    <!-- Use the updated therapeutic area sidebar component -->
-                    <TherapeuticAreaSidebar
-                      {currentEntries}
-                      {currentArea}
-                      {areaMetrics}
-                      colorMap={colorMap}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      fullYearData={filteredData}
-                      selectedYear={selectedYear}
-                    />
-                  </div>
-
-                  <!-- Legend stays at bottom -->
-                  <div class="legend-container flex-none mt-6 pb-4">
-                    <RPDRadialLegend 
-                      items={processedData.map(item => ({
-                        ...item,
-                        yearCount: selectedYear === "All" ? 
-                          item.count : 
-                          filteredData.filter(d => d.TherapeuticArea1 === item.area).length
-                      }))}
-                      selectedYear={selectedYear}
-                      showYearCounts={selectedYear !== "All"}
-                      hoveredArea={hoveredTherapeuticArea}
-                      on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
-                      on:areaLeave={() => hoveredTherapeuticArea = ""}
-                      on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
-                      {colorScale}
-                    />
-                  </div>
-                </div>
-              </div>
-            {/if}
-            
-            <!-- Mobile/Tablet bottom sidebar - show on both mobile and tablet -->
-            {#if isMobileView}
-              <MobileTherapeuticAreaSidebar
-                {currentEntries}
-                {currentArea}
-                {areaMetrics}
-                colorMap={colorMap}
-                onShowDrugDetail={handleShowDrugDetail}
-                fullYearData={filteredData}
-                selectedYear={selectedYear}
-                isExpanded={isMobileSidebarExpanded}
-                on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-              >
-              <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                <!-- Add search component to mobile therapeutic area sidebar -->
-                {#if isMobileSidebarExpanded}
-                  <div class="mb-4 px-4 pt-4">
-                    <RpdprvSearch
-                      data={rpddData}
-                      onShowDrugDetail={handleShowDrugDetail}
-                      onShowCompanyDetail={handleShowCompanyDetail}
-                    />
-                  </div>
-                {/if}
-              </MobileTherapeuticAreaSidebar>
-            {/if}
+            <TherapeuticAreaWrapper
+              data={rpddData}
+              filteredData={filteredData}
+              selectedYear={selectedYear}
+              isSidebarCollapsed={isSidebarCollapsed}
+              isMobileView={isMobileView}
+              isTabletView={isTabletView}
+              onShowDrugDetail={handleShowDrugDetail}
+              onShowCompanyDetail={handleShowCompanyDetail}
+              onShowTherapeuticAreaDetail={handleShowTherapeuticAreaDetail}
+              onYearSelect={handleYearSelect}
+              onHowToNavigate={handleHowToNavigate}
+            />
           </div>
 
         <!-- By Transactions Tab with animations -->
