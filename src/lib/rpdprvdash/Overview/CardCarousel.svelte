@@ -192,19 +192,20 @@
         aria-label="Card carousel"
         aria-roledescription="carousel"
     >
-        {#each cards as card, i}
-            <div 
-                class="card-container"
-                in:fly={{ x: 100, duration: 300, delay: i * 100 }}
-                role="option"
-                aria-selected={currentPage === i}
+    {#each cards as card, i}
+
+        <div 
+            class="card-container"
+            in:fly={{ x: 100, duration: 300, delay: i * 100 }}
+            role="option"
+            aria-selected={currentPage === i}
             >
-                <slot {card} index={i}></slot>
+            <slot {card} index={i}></slot>
             </div>
-        {/each}
-    </div>
+    {/each}
+</div>
     
-    <div class="controls">
+    <div class="carousel-controls">
         <button 
             class="nav-button prev"
             on:click={prevCard}
@@ -237,8 +238,11 @@
 
 <style>
     .carousel {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
         overflow-x: auto;
+        height: 100%;
+        width: 100%;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -258,7 +262,7 @@
         z-index: 100 !important;
     }
     
-    .controls {
+    .carousel-controls {
         display: flex;
         justify-content: center;
         align-items: center;

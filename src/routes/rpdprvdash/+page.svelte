@@ -559,22 +559,23 @@
 
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
+  <div class="overflow-y-auto overflow-x-hidden z-10">
+    <VerticalSidebar 
+      {activeTab} 
+      isCollapsed={isSidebarCollapsed}
+      on:tabSelect={handleTabSelect}
+      on:toggleCollapse={handleSidebarToggle}
+      on:howToNavigate={handleHowToNavigate}
+      on:dashboard={handleDashboard}
+    />
+  </div>
+
   <!-- Main content area with proper spacing -->
   <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden pl-8">
 
     <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
       <div class="w-full relative h-full overflow-hidden">
-        <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 z-50 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-          <VerticalSidebar 
-            {activeTab} 
-            isCollapsed={isSidebarCollapsed}
-            on:tabSelect={handleTabSelect}
-            on:toggleCollapse={handleSidebarToggle}
-            on:howToNavigate={handleHowToNavigate}
-            on:dashboard={handleDashboard}
-          />
-        </div>
         
         <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
@@ -584,7 +585,7 @@
             class="sponsor-tab-content flex flex-row flex-grow relative h-full"
           >
             <div class="w-full h-full items-center relative">
-              <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
+              <div class="timeline-container fixed justify-center place-items-start w-full z-0 bg-slate-100 transition-all duration-300">
                 <RPDPRVHorizontalTimeline 
                   data={rpddData}
                   selectedYear={selectedYear}
@@ -1062,6 +1063,7 @@
 
 .timeline-container {
   border-bottom: .5px solid #549E7D;
+  z-index: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
   

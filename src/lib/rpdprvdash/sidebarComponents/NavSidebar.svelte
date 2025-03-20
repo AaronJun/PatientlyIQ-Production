@@ -28,12 +28,6 @@
       dispatch('tabSelect', tab);
     }
     
-    // Toggle sidebar collapsed state
-    function toggleSidebar() {
-      isCollapsed = !isCollapsed;
-      dispatch('toggleCollapse', isCollapsed);
-    }
-    
     // Handle how to navigate button click
     function handleHowToNavigateClick() {
       dispatch('howToNavigate');
@@ -47,7 +41,7 @@
   
   
   <div 
-    class="vertical-sidebar-container fixed left-0 top-0 z-50 h-full bg-slate-700 shadow-xl transition-all duration-300 ease-in-out"
+    class="vertical-sidebar-container fixed left-0 top-0 z-10 h-full bg-slate-700 shadow-xl transition-all duration-300 ease-in-out"
     class:w-10={isCollapsed && !isHovered}
     class:w-52={!isCollapsed || isHovered}
     on:mouseenter={() => isHovered = true}
@@ -58,17 +52,18 @@
   
 
     <!-- Navigation items -->
-    <nav class="flex flex-col gap-1 pt-20">
+    <nav class="flex flex-col gap-1 pt-24">
 
-        <div class="flex flex-row items-center gap-2 mb-8 overflow-hidden">
-          <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8" style="filter: saturate(0.9)" />
+        <div class="flex flex-row items-center juys gap-2 mb-8">
+          <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8 align-middle justify-center" style="filter: saturate(0.625)" />
           {#if !isCollapsed || isHovered}
-            <h1 
-              class="text-slate-200 text-xs font-medium"
-              transition:fade={{ duration: 200, delay: 100 }}
-            >
-              RPD PRV Constellation
-            </h1>
+          <span 
+            class="whitespace-nowrap text-[#ff4a4a] text-xs font-medium"
+            style="filter: saturate(0.725)"
+            transition:slide={{ duration: 400 }}
+          >
+            RPD PRV Data Constellation
+          </span>
           {/if}
         </div>
 
@@ -144,28 +139,6 @@
         class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
       />
       
-      <!-- How to Navigate button -->
-      
-      <button
-        class="flex items-center align-middle gap-3 py-3 px-3 transition-all duration-200 text-left relative text-slate-300 hover:bg-emerald-300 hover:text-slate-800"
-        on:click={handleHowToNavigateClick}
-        title={isCollapsed && !isHovered ? "How to Navigate" : ''}
-      >
-        <!-- Icon -->
-        <span class="text-center w-4 h-4 flex-shrink-0">
-          <Information size={16} />
-        </span>
-        
-        <!-- Text label - only shown when expanded or hovered -->
-        {#if !isCollapsed || isHovered}
-          <span 
-            class="whitespace-nowrap text-xs font-medium"
-            transition:slide={{ duration: 200 }}
-          >
-            How to Navigate
-          </span>
-        {/if}
-      </button>
 
     <nav class="flex flex-col gap-1">
       <!-- Dashboard button -->

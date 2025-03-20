@@ -1,7 +1,7 @@
 <!-- ChartCard.svelte -->
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { ArrowRight } from 'carbon-icons-svelte';
+    import { ArrowUpRight } from 'carbon-icons-svelte';
     
     export let title: string = '';
     export let description: string = '';
@@ -26,7 +26,7 @@
     }
 </script>
 
-<div class="card" 
+<div class="card group" 
      role="button" 
      tabindex="0" 
      on:click={handleCardClick} 
@@ -48,9 +48,9 @@
         <p id="card-desc-{title.replace(/\s+/g, '-')}" class="text-left text-sm text-slate-600 font-normal">
             {description}
         </p>
-        <div class="view-details flex flex-row gap-2 items-center text-sm font-medium text-emerald-600 hover:text-orange-500">
-            <span>View Details</span>
-            <ArrowRight class="w-4 h-4" />
+        <div class="view-details flex flex-row gap-2 items-center text-sm font-medium text-emerald-600 group-hover:text-orange-500">
+            <span>Click to view details</span>
+            <ArrowUpRight class="w-4 h-4" />
         </div>
     </div>
 </div>
@@ -64,11 +64,20 @@
         width: 360px;
         border: 1px solid rgba(229, 231, 235, 0.8); /* Subtle border for card edge definition */
     }
-    
+
     :global(.card:hover) {
         filter: brightness(1.05);
         transition: filter 0.3s ease;
     }
+
+    :global(.card:focus) {
+        outline: 2px solid #6EE999;
+        outline-offset: 2px;
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+        transform: translateY(-10px);
+    }
+    
     
     .card-content {
         display: flex;
@@ -101,6 +110,7 @@
     .preview-chart {
         width: 100%;
         height: 100%;
+        overflow: hidden;
     }
     
     .card:hover .preview-chart {

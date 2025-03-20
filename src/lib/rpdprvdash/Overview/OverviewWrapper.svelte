@@ -310,14 +310,13 @@
       };
       
       window.addEventListener('resize', handleResize);
-        
+
       return () => {
         window.removeEventListener('resize', handleResize);
       };
     });
 </script>
-  
-<div class="program-analytics bg-slate-50 flex-col items-start justify-evenly gap-8 pl-8 pr-4 py-2 md:px-8 md:py-4 lg:pl-16 lg:pr-8 lg:py-8">
+
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
   <section class="chart-insights-section">
@@ -527,8 +526,6 @@
     {/if}
   </section>
 
- 
-</div>
 
 <!-- Chart Detail Modal -->
 {#if isModalOpen}

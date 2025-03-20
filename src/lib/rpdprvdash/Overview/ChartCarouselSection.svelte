@@ -64,15 +64,18 @@
     
 </script>
 
-<section class="chart-carousel-section flex flex-col lg:flex-row lg:gap-12 gap-4">
-    <div class="flex flex-col gap-4">
-        <h2 class="section-title text-slate-700 text-3xl font-semibold">Key Insights</h2>
-        <p class="section-description text-slate-600 text-sm">
-            Explore key distribution patterns across market capitalization and therapeutic areas.
-            Tap on any card to view detailed information and interact with the full visualization.
-        </p>
+    <div class="section-intro flex flex-col items-start justify-evenly gap-8 py-8">
+        <h3 class="text-left text-muted-foreground font-base text-xs lg:text-sm w-full md:w-8/12 lg:w-5/12">Key Insights</h3>
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 lg:pr-4">      
+            <h2 class="text-balance text-left text-slate-600 font-medium text-3xl md:text-4xl w-full md:w-8/12 lg:w-5/12">
+                Insights <span class="italic">from</span> the Data
+            </h2>
+            <p class="text-left text-slate-800 font-base text-sm md:text-base w-full md:w-8/12 lg:w-5/12">
+                We've compiled a list of key insights from the data to help you understand the RPD PRV landscape. For those interested in a deeper dive, we've also included a list of resources to help you learn more.
+            </p>  
+        </div>
     </div>
-    <div class="flex-1">
+
     <div class="carousel-wrapper">
         <CardCarousel cards={cardData}>
             <div class="card" slot="default" let:card>
@@ -88,11 +91,8 @@
             </div>
         </CardCarousel>
     </div>
-</section>
 
 <style>
-    
-       
     .carousel-wrapper {
         width: 100%;
         position: relative;
