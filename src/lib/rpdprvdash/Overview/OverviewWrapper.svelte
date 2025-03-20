@@ -380,11 +380,11 @@
           the relative number of drug candidates.
         </p>
         
-        <div class="sankey-container flex justify-center">
+        <div class="sankey-container flex justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4">
           <ProgramFlowSankey 
             {data}
             width={width < 768 ? 380 : 750}
-            height={300}
+            height={280}
           />
         </div>
         

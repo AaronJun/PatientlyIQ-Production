@@ -3,6 +3,7 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
+    import { hasPRVAward } from '../utils/data-processing-utils';
     
     interface DataEntry {
         Company: string;
@@ -23,6 +24,16 @@
         [key: string]: any;
     }
     
+    interface SankeyNode {
+        name: string;
+    }
+    
+    interface SankeyLink {
+        source: number;
+        target: number;
+        value: number;
+    }
+    
     export let data: DataEntry[] = [];
     export let width = 700;
     export let height = 300;
@@ -33,182 +44,210 @@
     let tooltipContent = { title: '', value: 0 };
     let tooltipPosition = { x: 0, y: 0 };
     
-    function hasPRVAward(entry: DataEntry): boolean {
-        return !!entry["PRV Year"] || entry["PRV Status"] === "PRV Awarded" || !!entry["PRV Date"];
-    }
-    
     function isPRVSold(entry: DataEntry): boolean {
-        return entry.Purchased === "Y" || !!entry["Purchase Year"] || !!entry.Purchaser;
+        if (!entry) return false;
+        
+        // Check if Purchased is explicitly "Y"
+        const isPurchased = entry.Purchased === "Y";
+        
+        // Check if Purchase Year exists and is not empty
+        const hasPurchaseYear = typeof entry["Purchase Year"] === "string" && 
+                               entry["Purchase Year"].trim() !== "";
+        
+        // Check if Purchaser exists and is not empty
+        const hasPurchaser = typeof entry.Purchaser === "string" && 
+                            entry.Purchaser.trim() !== "";
+        
+        return isPurchased || hasPurchaseYear || hasPurchaser;
     }
     
-    function processData(entries: DataEntry[]) {
+    function processData() {
+        if (!data || data.length === 0) {
+            console.log("No data available for Sankey diagram");
+            return { nodes: [], links: [] };
+        }
+        
         // Count totals
-        const totalDesignations = entries.length;
-        const totalPRVsAwarded = entries.filter(hasPRVAward).length;
-        const totalPRVsSold = entries.filter(isPRVSold).length;
-        const unsolPRVs = totalPRVsAwarded - totalPRVsSold;
-        const nonPRVs = totalDesignations - totalPRVsAwarded;
+        const totalDesignations = data.length;
+        const totalPRVsAwarded = data.filter(hasPRVAward).length;
+        const totalPRVsSold = data.filter(entry => hasPRVAward(entry) && isPRVSold(entry)).length;
+        const unsoldPRVs = totalPRVsAwarded - totalPRVsSold;
+        const ongoingDevelopment = totalDesignations - totalPRVsAwarded;
+        
+        console.log(`Sankey counts: ${totalDesignations} designations, ${totalPRVsAwarded} PRVs, ${totalPRVsSold} sold, ${unsoldPRVs} unsold`);
         
         // Create nodes
-        const nodes = [
-            { id: "RPD Designations", name: "RPD Designations", category: "source" },
-            { id: "PRVs Awarded", name: "PRVs Awarded", category: "middle" },
-            { id: "Ongoing Development", name: "Ongoing Development", category: "end" },
-            { id: "PRVs Sold", name: "PRVs Sold", category: "end" },
-            { id: "Unsold PRVs", name: "Unsold PRVs", category: "end" }
+        const nodes: SankeyNode[] = [
+            { name: "RPD Designations" },
+            { name: "PRVs Awarded" },
+            { name: "Ongoing Development" },
+            { name: "PRVs Sold" },
+            { name: "Unsold PRVs" }
         ];
         
-        // Create links
-        const links = [
-            { source: "RPD Designations", target: "PRVs Awarded", value: totalPRVsAwarded },
-            { source: "RPD Designations", target: "Ongoing Development", value: nonPRVs },
-            { source: "PRVs Awarded", target: "PRVs Sold", value: totalPRVsSold },
-            { source: "PRVs Awarded", target: "Unsold PRVs", value: unsolPRVs }
+        // Create links (using indices for source/target)
+        const links: SankeyLink[] = [
+            // RPD Designations (0) -> PRVs Awarded (1)
+            { source: 0, target: 1, value: Math.max(1, totalPRVsAwarded) },
+            // RPD Designations (0) -> Ongoing Development (2)
+            { source: 0, target: 2, value: Math.max(1, ongoingDevelopment) },
+            // PRVs Awarded (1) -> PRVs Sold (3)
+            { source: 1, target: 3, value: Math.max(1, totalPRVsSold) },
+            // PRVs Awarded (1) -> Unsold PRVs (4)
+            { source: 1, target: 4, value: Math.max(1, unsoldPRVs) }
         ];
         
         return { nodes, links };
     }
     
     function renderSankey() {
-        if (!svg || !data || data.length === 0) return;
+        if (!svg) return;
         
-        // Process the data
-        const { nodes, links } = processData(data);
-        
-        // Clear previous content
-        d3.select(svg).selectAll('*').remove();
-        
-        // Set up the Sankey generator
-        const sankeyGenerator = sankey()
-            .nodeWidth(30)
-            .nodePadding(20)
-            .extent([[20, 10], [width - 20, height - 10]]);
-        
-        // Format the data for d3-sankey
-        const graph = sankeyGenerator({
-            nodes: nodes.map(d => Object.assign({}, d)),
-            links: links.map(d => Object.assign({}, d))
-        });
-        
-        // Color scale based on node category
-        const colorScale = d3.scaleOrdinal<string>()
-            .domain(["source", "middle", "end"])
-            .range(["#4f46e5", "#0d9488", "#0891b2"]);
-        
-        // Create the SVG container
-        const svgSelection = d3.select(svg)
-            .attr('width', width)
-            .attr('height', height)
-            .attr('viewBox', `0 0 ${width} ${height}`)
-            .attr('preserveAspectRatio', 'xMidYMid meet');
-        
-        // Add the links (flow paths)
-        const link = svgSelection.append('g')
-            .selectAll('path')
-            .data(graph.links)
-            .join('path')
-            .attr('d', sankeyLinkHorizontal())
-            .attr('fill', 'none')
-            .attr('stroke', d => {
-                const sourceNode = nodes.find(n => n.id === d.source.id);
-                return d3.color(colorScale(sourceNode?.category || "source"))?.brighter(0.5).toString() || '#ccc';
-            })
-            .attr('stroke-width', d => Math.max(1, d.width))
-            .attr('stroke-opacity', 0.5)
-            .on('mouseover', function(event, d) {
-                d3.select(this)
-                    .attr('stroke-opacity', 0.8);
-                
-                // Update tooltip
-                tooltipContent = { 
-                    title: `${d.source.name} → ${d.target.name}`,
-                    value: d.value
-                };
-                tooltipPosition = { x: event.pageX, y: event.pageY };
-                tooltipVisible = true;
-            })
-            .on('mousemove', function(event) {
-                tooltipPosition = { x: event.pageX, y: event.pageY };
-            })
-            .on('mouseout', function() {
-                d3.select(this)
-                    .attr('stroke-opacity', 0.5);
-                
-                tooltipVisible = false;
+        try {
+            // Clear existing content
+            d3.select(svg).selectAll("*").remove();
+            
+            // Process data for the Sankey diagram
+            const { nodes, links } = processData();
+            
+            if (nodes.length === 0 || links.length === 0) {
+                console.warn("No data available to render Sankey diagram");
+                return;
+            }
+            
+            // Set up the Sankey layout generator
+            const sankeyLayout = sankey()
+                .nodeWidth(30)
+                .nodePadding(20)
+                .extent([[20, 10], [width - 20, height - 10]]);
+            
+            // Apply the layout
+            const sankeyData = sankeyLayout({
+                nodes: nodes.map(d => Object.assign({}, d)),
+                links: links.map(d => Object.assign({}, d))
             });
-        
-        // Add the nodes (rectangles)
-        const node = svgSelection.append('g')
-            .selectAll('rect')
-            .data(graph.nodes)
-            .join('rect')
-            .attr('x', d => d.x0)
-            .attr('y', d => d.y0)
-            .attr('height', d => d.y1 - d.y0)
-            .attr('width', d => d.x1 - d.x0)
-            .attr('fill', d => colorScale(d.category))
-            .attr('stroke', d => d3.color(colorScale(d.category))?.darker().toString() || '#000')
-            .on('mouseover', function(event, d) {
-                // Highlight the node
-                d3.select(this)
-                    .attr('stroke-width', 2);
+            
+            // Create the SVG container
+            const svgSelection = d3.select(svg)
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            
+            // Color scale for nodes
+            const colorScale = d3.scaleOrdinal()
+                .domain(["source", "middle", "end"])
+                .range(["#4f46e5", "#0d9488", "#0891b2"]);
+            
+            // Node categories
+            const nodeCategories = ["source", "middle", "end", "end", "end"];
+            
+            // Draw the links
+            svgSelection.append("g")
+                .selectAll("path")
+                .data(sankeyData.links)
+                .enter()
+                .append("path")
+                .attr("d", sankeyLinkHorizontal())
+                .attr("stroke-width", d => Math.max(1, d.width || 0))
+                .attr("stroke", (d, i) => {
+                    const sourceIdx = typeof d.source === "object" ? 
+                        sankeyData.nodes.indexOf(d.source) : +d.source;
+                    return d3.color(colorScale(nodeCategories[sourceIdx]))?.brighter(0.5).toString() || "#ccc";
+                })
+                .attr("fill", "none")
+                .attr("stroke-opacity", 0.5)
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("stroke-opacity", 0.8);
+                    
+                    const sourceName = typeof d.source === "object" ? d.source.name : 
+                        sankeyData.nodes[+d.source].name;
+                    const targetName = typeof d.target === "object" ? d.target.name : 
+                        sankeyData.nodes[+d.target].name;
+                    
+                    tooltipContent = { 
+                        title: `${sourceName} → ${targetName}`,
+                        value: d.value || 0
+                    };
+                    tooltipPosition = { x: event.pageX, y: event.pageY };
+                    tooltipVisible = true;
+                })
+                .on("mousemove", function(event) {
+                    tooltipPosition = { x: event.pageX, y: event.pageY };
+                })
+                .on("mouseout", function() {
+                    d3.select(this).attr("stroke-opacity", 0.5);
+                    tooltipVisible = false;
+                });
+            
+            // Draw the nodes
+            svgSelection.append("g")
+                .selectAll("rect")
+                .data(sankeyData.nodes)
+                .enter()
+                .append("rect")
+                .attr("x", d => d.x0 || 0)
+                .attr("y", d => d.y0 || 0)
+                .attr("height", d => (d.y1 || 0) - (d.y0 || 0))
+                .attr("width", d => (d.x1 || 0) - (d.x0 || 0))
+                .attr("fill", (d, i) => colorScale(nodeCategories[i]))
+                .attr("stroke", (d, i) => 
+                    d3.color(colorScale(nodeCategories[i]))?.darker().toString() || "#000")
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("stroke-width", 2);
+                    
+                    tooltipContent = {
+                        title: d.name,
+                        value: d.value || 0
+                    };
+                    tooltipPosition = { x: event.pageX, y: event.pageY };
+                    tooltipVisible = true;
+                })
+                .on("mouseout", function() {
+                    d3.select(this).attr("stroke-width", 1);
+                    tooltipVisible = false;
+                });
+            
+            // Add node labels
+            svgSelection.append("g")
+                .selectAll("text")
+                .data(sankeyData.nodes)
+                .enter()
+                .append("text")
+                .attr("x", d => {
+                    const i = sankeyData.nodes.indexOf(d);
+                    if (i === 0) return (d.x0 || 0) - 6; // source
+                    if (i === 1) return ((d.x0 || 0) + (d.x1 || 0)) / 2; // middle
+                    return (d.x1 || 0) + 6; // end nodes
+                })
+                .attr("y", d => {
+                    const i = sankeyData.nodes.indexOf(d);
+                    if (i === 1) return (d.y0 || 0) - 10; // middle node (above)
+                    return ((d.y0 || 0) + (d.y1 || 0)) / 2; // other nodes (centered)
+                })
+                .attr("text-anchor", d => {
+                    const i = sankeyData.nodes.indexOf(d);
+                    if (i === 0) return "end"; // source
+                    if (i === 1) return "middle"; // middle
+                    return "start"; // end nodes
+                })
+                .attr("dy", "0.35em")
+                .attr("font-size", "12px")
+                .attr("fill", "#333")
+                .attr("font-weight", "bold")
+                .text(d => `${d.name} (${d.value || 0})`);
                 
-                // Highlight connected links
-                link.filter(l => l.source.id === d.id || l.target.id === d.id)
-                    .attr('stroke-opacity', 0.8)
-                    .attr('stroke-width', l => Math.max(2, l.width));
-                
-                // Update tooltip
-                tooltipContent = { 
-                    title: d.name,
-                    value: d.value
-                };
-                tooltipPosition = { x: event.pageX, y: event.pageY };
-                tooltipVisible = true;
-            })
-            .on('mousemove', function(event) {
-                tooltipPosition = { x: event.pageX, y: event.pageY };
-            })
-            .on('mouseout', function(event, d) {
-                // Reset node highlighting
-                d3.select(this)
-                    .attr('stroke-width', 1);
-                
-                // Reset link highlighting
-                link.filter(l => l.source.id === d.id || l.target.id === d.id)
-                    .attr('stroke-opacity', 0.5)
-                    .attr('stroke-width', l => Math.max(1, l.width));
-                
-                tooltipVisible = false;
-            });
-        
-        // Add node labels
-        svgSelection.append('g')
-            .selectAll('text')
-            .data(graph.nodes)
-            .join('text')
-            .attr('x', d => (d.category === 'source' ? d.x0 - 6 : (d.category === 'end' ? d.x1 + 6 : (d.x0 + d.x1) / 2)))
-            .attr('y', d => (d.y1 + d.y0) / 2)
-            .attr('dy', '0.35em')
-            .attr('text-anchor', d => d.category === 'source' ? 'end' : (d.category === 'end' ? 'start' : 'middle'))
-            .text(d => `${d.name} (${d.value})`)
-            .attr('font-size', '12px')
-            .attr('fill', '#333')
-            .attr('font-weight', 'bold')
-            .each(function(d) {
-                // For middle nodes, adjust the position for better readability
-                if (d.category === 'middle') {
-                    d3.select(this)
-                        .attr('y', d.y0 - 10)
-                        .attr('text-anchor', 'middle');
-                }
-            });
+        } catch (error) {
+            console.error("Error rendering Sankey diagram:", error);
+        }
     }
     
+    // Initialize on mount
     onMount(() => {
-        renderSankey();
+        if (data) {
+            renderSankey();
+        }
         
-        // Add resize event listener for responsiveness
         const handleResize = () => {
             renderSankey();
         };
@@ -220,6 +259,7 @@
         };
     });
     
+    // Reactively render when data or svg changes
     $: if (data && svg) {
         renderSankey();
     }
