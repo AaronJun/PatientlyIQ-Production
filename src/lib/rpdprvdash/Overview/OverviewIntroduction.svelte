@@ -8,6 +8,10 @@ const dispatch = createEventDispatcher();
 function navigateToSponsorTab() {
     dispatch('navigateToSponsor');
 }
+
+function navigateToLearnMore() {
+    scrollToSection('learn-more');
+}
 </script>
 
 <div class="overview-card flex bg-slate-50 flex-col items-start justify-evenly gap-8 pl-8 pr-4 py-2 md:px-8 md:py-4 lg:pl-16 lg:pr-8 lg:py-8">
@@ -30,7 +34,7 @@ function navigateToSponsorTab() {
                 <ArrowUpRight size={16} class="text-slate-50 text-center align-middle justify-center baseline hover:text-slate-50" />
         </Button.Root>
     
-        <Button.Root class="secondary-button rounded-full bg-slate-50 shadow-md text-slate-800 font-medium px-4 py-2 text-sm border-1 border-slate-800 hover:bg-slate-800 hover:text-slate-50">
+        <Button.Root class="secondary-button rounded-full bg-slate-50 shadow-md text-slate-800 font-medium px-4 py-2 text-sm border-1 border-slate-800 hover:bg-slate-800 hover:text-slate-50 on:click={navigateToLearnMore}">
                 Learn More
         </Button.Root>
     </div>

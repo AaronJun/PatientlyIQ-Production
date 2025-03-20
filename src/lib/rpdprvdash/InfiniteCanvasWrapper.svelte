@@ -7,6 +7,9 @@
   export let width = 1200;
   export let height = width;
   
+  // Export className to accept custom CSS classes
+  export let className = '';
+  
   // Tooltip state
   let tooltipVisible = false;
   let tooltipContent = {
@@ -293,15 +296,19 @@
   }
 </script>
 
-<div class="infinite-canvas-container" bind:this={container}>  
-  
-  <svg
-    bind:this={svg}
-    {width}
-    {height}
-    viewBox="0 0 {width} {height}"
+<div 
+  bind:this={container} 
+  class="infinite-canvas-container {className}" 
+  style="width: 100%; height: 100%; position: relative; overflow: hidden;"
+>
+  <!-- SVG canvas for visualization -->
+  <svg 
+    bind:this={svg} 
+    width="100%" 
+    height="100%"
+    viewBox="0 0 {width} {height}" 
     preserveAspectRatio="xMidYMid meet"
-    class="w-full h-full"
+    style="display: block; touch-action: none;"
   >
     <slot {mainGroup} {showTooltip} {hideTooltip} />
   </svg>
@@ -309,7 +316,7 @@
   <!-- Tooltip component -->
   <div 
     class="tooltip-container" 
-    style="left: {tooltipX}px; top: {tooltipY}px; pointer-events: none;"
+    style="position: absolute; left: {tooltipX}px; top: {tooltipY}px; pointer-events: none; z-index: 1000;"
   >
     <RPDTooltip 
       visible={tooltipVisible} 
@@ -318,96 +325,59 @@
     />
   </div>
   
-  <!-- Navigation controls moved to top left and arranged vertically -->
-  <div class="navigation-controls">
-    <button on:click={zoomIn} class="nav-button" title="Zoom In">
-      <svg viewBox="0 0 24 24" width="12" height="12">
-        <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+  <!-- Controls for mobile -->
+  <div class="controls absolute bottom-8 right-8 flex space-x-2">
+    <button 
+      class="zoom-in bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      on:click={zoomIn}
+      aria-label="Zoom In"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="11" y1="8" x2="11" y2="14"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
       </svg>
     </button>
-    <button on:click={zoomOut} class="nav-button" title="Zoom Out">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <path fill="currentColor" d="M19 13H5v-2h14v2z"/>
+    <button 
+      class="zoom-out bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      on:click={zoomOut}
+      aria-label="Zoom Out"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
       </svg>
     </button>
-    <button on:click={resetView} class="nav-button" title="Reset View">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+    <button 
+      class="reset-view bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md text-slate-700 hover:bg-slate-50"
+      on:click={resetView}
+      aria-label="Reset View"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
     </button>
   </div>
 </div>
 
 <style>
-  .infinite-canvas-container {
+  :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
-    min-height: 60vh; /* Add minimum height for small screens */
-    overflow: hidden;
-    background-color: #fafafa;
-    position: relative;
   }
-
+  
+  .controls {
+    z-index: 10;
+  }
+  
+  /* Ensure the canvas fills parent container */
   @media (max-width: 768px) {
-    .infinite-canvas-container {
-      min-height: 80vh; /* Increase min-height on mobile to ensure it displays properly */
-      height: 100vh; /* Set explicit height for mobile devices */
+    .controls {
+      bottom: 20px;
+      right: 20px;
     }
-  }
-
-  svg {
-    cursor: grab;
-    width: 100%;
-    height: 100%;
-    min-height: inherit; /* Inherit the minimum height from the container */
-  }
-
-  :global(svg:active) {
-    cursor: grabbing;
-  }
-
-  .tooltip-container {
-    position: fixed;
-    z-index: 1000;
-  }
-
-  /* Updated navigation controls styles for vertical layout on top left */
-  .navigation-controls {
-    position: absolute;
-    top: 10vh;
-    left: 2vw;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #549E7D;
-    gap: 8px;
-    background: white;
-    padding: 8px;
-    border-radius: 5.245px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-button {
-    width: 24px;
-    height: 24px;
-    border: none;
-    border-radius: 10px;
-    background: white;
-    padding: 2px;
-    color: #666;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-
-  .nav-button:hover {
-    background: #549E7D;
-    color: white;
-  }
-
-  .nav-button:active {
-    background: #e0e0e0;
-    transform: translateX(1px);
   }
 </style>

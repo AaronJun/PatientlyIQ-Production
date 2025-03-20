@@ -183,7 +183,7 @@
     }
 </script>
 
-<div class="transactions-wrapper pl-4 pr-2 pt-2 md:px-8 md:pt-8">
+<div class="transactions-wrapper pl-4 pr-2 pt-2 md:px-8 md:pt-8 h-full overflow-y-auto">
     <div class="intro-section mb-6">
         <h2 class="text-2xl font-bold text-slate-800 mb-2">PRV Transactions</h2>
         <p class="text-slate-600 mb-4">
@@ -214,16 +214,16 @@
         </div>
     </div>
 
-    <div class="transaction-content relative">
+    <div class="transaction-content relative h-[calc(100%-140px)]">
         <!-- Transaction Flow Tab (Chord Diagram and Sidebar) -->
         {#if activeTransactionTab === 'transaction-flow'}
             <div 
-                class="transaction-flow-tab relative"
+                class="transaction-flow-tab relative h-full"
                 in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
                 out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
             >
                 <!-- Chord diagram section with original sidebar layout -->
-                <div class="flex-1 relative {!isMobileView ? (isRightSidebarCollapsed ? 'pr-16' : 'pr-[30%]') : ''} transition-all duration-300 ease-in-out">
+                <div class="flex-1 relative h-full {!isMobileView ? (isRightSidebarCollapsed ? 'pr-16' : 'pr-[30%]') : ''} transition-all duration-300 ease-in-out">
                     <SellerBuyerChord 
                         data={data}
                         {stockData}
@@ -238,7 +238,7 @@
                 
                 <!-- Desktop sidebar - only show on non-mobile -->
                 {#if !isMobileView}
-                    <div class="absolute right-2 top-4 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} transition-all duration-300">
+                    <div class="absolute right-2 top-4 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-full transition-all duration-300">
                         <button
                             class="rounded-btn absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                             on:click={toggleRightSidebar}
@@ -319,7 +319,7 @@
         <!-- Transaction Analytics Tab (Value Trends, Top Performers, Unsold Vouchers) -->
         {:else if activeTransactionTab === 'transaction-analytics'}
             <div 
-                class="transaction-analytics-tab"
+                class="transaction-analytics-tab h-full overflow-y-auto"
                 in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
                 out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
             >
@@ -428,13 +428,19 @@
     <Separator.Root
         class="bg-slate-500 mt-10 mb-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     />
-    <footer class="flex flex-row justify-between gap-2">
+    <footer class="flex flex-row justify-between gap-2 py-2">
         <p class="text-2xs font-mono">Priority Review Voucher Transaction Analysis</p>
         <p class="text-2xs font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
     </footer>
 </div>
 
 <style>
+    .transactions-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
     .section-content {
         max-height: 2000px;
         overflow: hidden;

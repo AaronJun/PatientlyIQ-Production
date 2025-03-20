@@ -551,13 +551,13 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
-<div class="flex flex-col bg-slate-50 min-h-screen">
+<div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 pb-8 relative transition-all duration-300 min-h-[80vh] pl-8">
+  <main class="flex-1 pb-8 relative transition-all duration-300 h-[calc(100vh-60px)] overflow-hidden pl-8">
 
-    <div class="tab-content w-full h-full min-h-[80vh] flex relative">
+    <div class="tab-content w-full h-full flex relative">
       <!-- Main content area taking full width -->
-      <div class="w-full relative min-h-[80vh]">
+      <div class="w-full relative h-full overflow-hidden">
         <div class="overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 z-50 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
           <VerticalSidebar 
             {activeTab} 
@@ -567,7 +567,6 @@
             on:howToNavigate={handleHowToNavigate}
             on:dashboard={handleDashboard}
           />
-          
         </div>
         
         <!-- By Sponsor Tab with animations -->
@@ -575,9 +574,9 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="sponsor-tab-content flex flex-row flex-grow relative"
+            class="sponsor-tab-content flex flex-row flex-grow relative h-full"
           >
-            <div class="w-full h-full items-center md:min-h-[70vh] lg:min-h-[80vh] relative">
+            <div class="w-full h-full items-center relative">
               <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
                 <RPDPRVHorizontalTimeline 
                   data={rpddData}
@@ -585,7 +584,8 @@
                   onYearSelect={handleYearSelect}
                 />
               </div>
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip 
+                class="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
                 {#if mainGroup}
                   <RpdprvCompanyTree 
                     data={filteredData}
@@ -627,9 +627,9 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Desktop right sidebar - only show on non-mobile and non-tablet -->
+            <!-- Desktop right sidebar - only show on non-mobile -->
             {#if !isMobileView }
-              <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
+              <div class="absolute right-6 top-25h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
                 
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -736,9 +736,9 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="therapeutic-area-tab-content flex flex-row flex-grow relative"
+            class="therapeutic-area-tab-content flex flex-row flex-grow relative h-full"
           >
-            <div class="w-full h-full min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh] relative">
+            <div class="w-full h-full relative">
               <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
                 <RPDPRVHorizontalTimeline 
                   data={rpddData}
@@ -746,7 +746,8 @@
                   onYearSelect={handleYearSelect}
                 />
               </div>
-              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip>
+              <InfiniteCanvasWrapper bind:this={infiniteCanvas} let:mainGroup let:showTooltip let:hideTooltip 
+                class="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
                 {#if mainGroup}
                   <RPDDRadialYear 
                     data={filteredData}
@@ -765,7 +766,7 @@
                     allYearsData={selectedYear === "All" ? rpddData : undefined}
                   />
                 {:else}
-                  <!-- Loading state with spinner -->
+                  <!-- Loading spinner -->
                   <g transform="translate(460, 460)">
                     <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
                     <path 
@@ -789,9 +790,9 @@
               </InfiniteCanvasWrapper>
             </div>
 
-            <!-- Desktop right information sidebar - only show on non-mobile and non-tablet -->
+            <!-- Desktop right information sidebar - only show on non-mobile -->
             {#if !isMobileView}
-            <div class="absolute right-6 top-25 h-[80vh] mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
+            <div class="absolute right-6 top-25h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
 
                 <button
                   class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
@@ -909,7 +910,7 @@
             </div>
 
             <!-- Main content area with new TransactionsWrapper -->
-            <div class="flex flex-1 h-full overflow-y-auto">
+            <div class="flex flex-1 h-[calc(100vh-150px)] overflow-hidden">
               <TransactionsWrapper 
                 data={rpddData} 
                 stockData={rpdCompanyValues}
@@ -937,12 +938,13 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="overview-tab-content w-full"
+            class="overview-tab-content w-full h-full overflow-y-auto"
           >
             <RPDPRVAnalytics 
               data={rpddData} 
               isAllYearView={selectedYear === "All"}
               on:navigateToSponsor={() => setActiveTab('By Sponsor')}
+              on:navigateToTab={(e) => setActiveTab(e.detail.tab)}
               onEntrySelect={(entry) => handleShowDrugDetail({
                 Company: entry.Company,
                 drugName: entry.Candidate,
@@ -950,7 +952,6 @@
                 year: entry["RPDD Year"],
                 color: getTherapeuticAreaColor(entry.TherapeuticArea1).stroke,
                 entries: [entry],
-                // Add other properties needed for your drug detail drawer
                 currentStage: entry["Current Development Stage"],
                 rpddAwardDate: entry["RPDD Date"],
                 voucherAwardDate: entry["PRV Date"],
@@ -962,14 +963,15 @@
       </div>
     </div>
   </main>
-<footer class="grid grid-cols-2 w-full justify-between items-center mb-8 mx-24 gap-2">
-<Separator.Root
-class="bg-[#ff4a4a]/20 mt-8 mb-2 col-span-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
-/>
-<p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Copyright 2025 Patiently Studio</p>
-<p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
-<a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500 col-span-1 font-mono">Contact us</a>
-</footer>
+  
+  <footer class="grid grid-cols-2 w-full justify-between items-center py-4 px-24 h-fit">
+    <Separator.Root
+      class="bg-[#ff4a4a]/20 mb-2 col-span-2 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    />
+    <p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Copyright 2025 Patiently Studio</p>
+    <p class="text-2xs text-[#ff4a4a] col-span-1 font-mono">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</p>
+    <a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500 col-span-1 font-mono">Contact us</a>
+  </footer>
 </div>
 
 {#if isHowToReadOpen}
@@ -1065,24 +1067,21 @@ class="bg-[#ff4a4a]/20 mt-8 mb-2 col-span-2 shrink-0 data-[orientation=horizonta
   @media (max-width: 768px) {
     /* Mobile specific styles */
     .infinite-canvas-container, :global(.infinite-canvas-container) {
-      min-height: 70vh !important;
-      height: 100vh !important;
+      height: calc(100vh - 200px) !important;
     }
   }
   
   @media (min-width: 769px) and (max-width: 1200px) {
     /* Tablet specific styles */
     .infinite-canvas-container, :global(.infinite-canvas-container) {
-      min-height: 75vh !important;
-      height: 100vh !important;
+      height: calc(100vh - 160px) !important;
     }
   }
   
   @media (min-width: 1201px) {
     /* Desktop specific styles */
     .infinite-canvas-container, :global(.infinite-canvas-container) {
-      min-height: 80vh !important;
-      height: 100vh !important;
+      height: calc(100vh - 150px) !important;
     }
   }
   
@@ -1190,6 +1189,10 @@ class="bg-[#ff4a4a]/20 mt-8 mb-2 col-span-2 shrink-0 data-[orientation=horizonta
     left: 0;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
+  }
+
+  /* Additional styles for full height containers */
+  :global(.infinite-canvas-container) {
+    height: 100% !important;
   }
 </style>

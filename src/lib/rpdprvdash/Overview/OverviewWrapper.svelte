@@ -3,10 +3,13 @@
     import { onMount } from 'svelte';
     import OverviewIntroduction from './OverviewIntroduction.svelte';   
     import ProgramSankey from './TimelineSankeyFlow.svelte';
-    import { Report, ChartParallel } from 'carbon-icons-svelte';
+    import { Report, ChartParallel, Money, ArrowRight } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { createEventDispatcher } from 'svelte';
     import TherapeuticAreaWaffleChart from './TherapeuticAreaWaffleChart.svelte';
+    import MarketCapWaffleChart from './MarketCapWaffleChart.svelte';
+    import ChartCarouselSection from './ChartCarouselSection.svelte';
+    import ProgramFlowSankey from './ProgramFlowSankey.svelte';
     
     interface DataEntry {
         Company: string;
@@ -28,10 +31,15 @@
     
     export let data: DataEntry[] = [];
     export let isAllYearView: boolean = true;
-    export let onEntrySelect = (entry: DataEntry) => {};
+    export let selectedCompany: string = "";
+    export let selectedEntry: DataEntry | null = null;
+    export let onEntrySelect: (entry: DataEntry) => void = () => {};
     
     const dispatch = createEventDispatcher();
-
+    
+    // Add width variable for responsive components
+    let width = typeof window !== 'undefined' ? window.innerWidth : 1024;
+    
     // Statistics
     let totalEntries = 0;
     let totalPRVs = 0;
@@ -51,22 +59,22 @@
       mega: number;
       private: number;
       na: number;
-      unknown: number;
     } = {
       small: 0,
       mid: 0,
       large: 0,
       mega: 0,
       private: 0,
-      na: 0,
-      unknown: 0
+      na: 0
     };
     
     // Track the state of each collapsible section
     let expandedSections: Record<string, boolean> = {
       overview: true,
       sankey: true,
-      distribution: true
+      distribution: true,
+      marketCap: true,
+      programFlow: true
     };
     
     function toggleSection(section: keyof typeof expandedSections) {
@@ -89,6 +97,35 @@
       if (areaEntries.length > 0) {
         // Select the first entry from this area
         onEntrySelect(areaEntries[0]);
+      }
+    }
+    
+    function handleCompanySelect(company: string) {
+      // Find the first entry for the selected company
+      const entry = data.find(d => d.Company === company);
+      if (entry) {
+        selectedCompany = company;
+        
+        // Update the selected entry
+        selectedEntry = entry;
+        
+        // Call the parent's onEntrySelect if provided
+        onEntrySelect(entry);
+      }
+    }
+    
+    function handleAreaSelect(area: string) {
+      // Find the first entry for the selected therapeutic area
+      const entry = data.find(d => d.TherapeuticArea1 === area);
+      if (entry) {
+        // Select first company in that area
+        selectedCompany = entry.Company;
+        
+        // Update the selected entry
+        selectedEntry = entry;
+        
+        // Call the parent's onEntrySelect if provided
+        onEntrySelect(entry);
       }
     }
     
@@ -187,8 +224,7 @@
         large: 0,
         mega: 0,
         private: 0,
-        na: 0,
-        unknown: 0
+        na: 0
       };
       
       // Count companies by market cap
@@ -206,10 +242,14 @@
           companiesByMarketCap.private++;
         } else if (cap === "#n/a" || cap.includes("n/a")) {
           companiesByMarketCap.na++;
-        } else {
-          companiesByMarketCap.unknown++;
         }
       });
+    }
+    
+    function handleNavigateToTab(event: CustomEvent) {
+      const { tab } = event.detail;
+      console.log("Navigating to tab:", tab);
+      dispatch('navigateToTab', { tab });
     }
     
     $: if (data) {
@@ -220,23 +260,45 @@
       if (data) {
         calculateStats();
       }
+      
+      // Add resize listener to update width
+      const handleResize = () => {
+        width = window.innerWidth;
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
     });
 </script>
   
-<div class="program-analytics pl-4 pr-2 pt-2 md:px-8 md:pt-8">
+<div class="program-analytics pl-4 pr-2 pt-2 md:px-8 md:pt-8 h-full overflow-y-auto">
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
-  <!-- Section 1: Program Overview Stats -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
-         on:click={() => toggleSection('overview')}>
-      <div class="flex items-center gap-2">
-        <Report size={20} class="text-orange-500" />
-        <h2 class="text-lg font-semibold text-slate-700">Program Overview</h2>
+
+
+  <section class="chart-insights-section">
+    <ChartCarouselSection 
+      data={data} 
+      onCompanySelect={handleCompanySelect} 
+      onAreaSelect={handleAreaSelect}
+      on:navigateToTab={handleNavigateToTab}
+    />
+  </section>
+  
+    <!-- Section 1: Program Overview Stats -->
+    <section class="mb-6">
+      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
+           on:click={() => toggleSection('overview')}>
+        <div class="flex items-center gap-2">
+          <Report size={20} class="text-orange-500" />
+          <h2 class="text-lg font-semibold text-slate-700">Program Overview</h2>
+        </div>
+        <div class="text-slate-400">
+          {expandedSections.overview ? '−' : '+'}
+        </div>
       </div>
-      <div class="text-slate-400">
-        {expandedSections.overview ? '−' : '+'}
-      </div>
-    </div>
     
     {#if expandedSections.overview}
       <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
@@ -262,30 +324,6 @@
           </div>
         </div>
         
-        <!-- Market Cap Distribution Cards -->
-        <h3 class="text-base font-semibold text-slate-700 mb-3 mt-4">Companies by Market Cap</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-          <div class="stat-card bg-gradient-to-br from-indigo-50 to-slate-50 p-3 border border-indigo-100 text-center">
-            <h3 class="text-xs font-medium text-slate-500">Small Cap</h3>
-            <p class="text-xl font-bold text-indigo-700">{companiesByMarketCap.small}</p>
-          </div>
-          
-          <div class="stat-card bg-gradient-to-br from-teal-50 to-slate-50 p-3 border border-teal-100 text-center">
-            <h3 class="text-xs font-medium text-slate-500">Mid Cap</h3>
-            <p class="text-xl font-bold text-teal-700">{companiesByMarketCap.mid}</p>
-          </div>
-          
-          <div class="stat-card bg-gradient-to-br from-cyan-50 to-slate-50 p-3 border border-cyan-100 text-center">
-            <h3 class="text-xs font-medium text-slate-500">Large Cap</h3>
-            <p class="text-xl font-bold text-cyan-700">{companiesByMarketCap.large}</p>
-          </div>
-          
-          <div class="stat-card bg-gradient-to-br from-emerald-50 to-slate-50 p-3 border border-emerald-100 text-center">
-            <h3 class="text-xs font-medium text-slate-500">Mega Cap</h3>
-            <p class="text-xl font-bold text-emerald-700">{companiesByMarketCap.mega}</p>
-          </div>
-        </div>
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white p-4  border border-slate-200">
             <h3 class="text-sm font-medium text-slate-500">Top Company</h3>
@@ -308,8 +346,110 @@
       </div>
     {/if}
   </section>
+
+  <!-- Section 2: Program Overview -->
+  <section class="overview-section chart-insights-section">
+    <ChartCarouselSection 
+      data={data} 
+      onCompanySelect={handleCompanySelect} 
+      onAreaSelect={handleAreaSelect}
+      on:navigateToTab={handleNavigateToTab}
+    />
+  </section>
+
   
-  <!-- Section 2: Therapeutic Area Distribution Waffle Chart -->
+
+  <!-- Add new section for Program Flow Sankey after Program Overview section but before chart carousel -->
+  <section class="mb-6">
+    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+         on:click={() => toggleSection('programFlow')}>
+      <div class="flex items-center gap-2">
+        <ArrowRight size={20} class="text-cyan-600" />
+        <h2 class="text-lg font-semibold text-slate-700">Program Flow</h2>
+      </div>
+      <div class="text-slate-400">
+        {expandedSections.programFlow ? '−' : '+'}
+      </div>
+    </div>
+    
+    {#if expandedSections.programFlow}
+      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+        <p class="text-sm text-slate-600 mb-4">
+          This Sankey diagram visualizes the flow of drug candidates through the Rare Pediatric Disease (RPD) program,
+          from initial designations to Priority Review Voucher (PRV) awards and sales. The width of each flow represents
+          the relative number of drug candidates.
+        </p>
+        
+        <div class="sankey-container flex justify-center">
+          <ProgramFlowSankey 
+            {data}
+            width={width < 768 ? 380 : 750}
+            height={300}
+          />
+        </div>
+        
+        <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
+          <p class="font-medium mb-1">How to read this chart:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>The width of each flow represents the number of drug candidates</li>
+            <li>RPD Designations branch into PRVs Awarded and Ongoing Development</li>
+            <li>PRVs Awarded split into PRVs Sold and Unsold PRVs</li>
+            <li>Hover over any section to see the exact count</li>
+          </ul>
+        </div>
+      </div>
+    {/if}
+  </section>
+
+  <!-- Section 3: Market Cap Distribution -->
+  <section class="mb-6">
+    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200"
+         on:click={() => toggleSection('marketCap')}>
+      <div class="flex items-center gap-2">
+        <Money size={20} class="text-indigo-500" />
+        <h2 class="text-lg font-semibold text-slate-700">Company Market Cap Distribution</h2>
+      </div>
+      <div class="text-slate-400">
+        {expandedSections.marketCap ? '−' : '+'}
+      </div>
+    </div>
+    
+    {#if expandedSections.marketCap}
+      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+        <p class="text-sm text-slate-600 mb-4">
+          This chart shows the distribution of companies by market capitalization category.
+          Each square represents one company, with different shades of the same color indicating different companies within the same market cap category.
+          Hover over any square to see company details, and click to view more information about that company.
+        </p>
+        
+        <div class="waffle-chart-container flex justify-center">
+          <MarketCapWaffleChart 
+            {data}
+            width={900}
+            height={300}
+            maxCols={18}
+            cellSize={18}
+            cellPadding={4}
+            legendPosition="right"
+            onCompanySelect={handleCompanySelect}
+          />
+        </div>
+        
+        <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
+          <p class="font-medium mb-1">How to read this chart:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Each colored square represents one company</li>
+            <li>Color indicates market capitalization category</li>
+            <li>Different shades within the same color represent different companies</li>
+            <li>Hover over any square to see company details</li>
+            <li>Click on any square to explore that company's drug candidates</li>
+          </ul>
+        </div>
+      </div>
+    {/if}
+  </section>
+  
+  <!-- Section 4: Therapeutic Area Distribution Waffle Chart -->
   <section class="mb-6">
     <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
          on:click={() => toggleSection('distribution')}>
@@ -355,43 +495,17 @@
       </div>
     {/if}
   </section>
-  
-  <!-- Section 3: PRV Program Flow (Sankey Diagram) -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
-         on:click={() => toggleSection('sankey')}>
-      <div class="flex items-center gap-2">
-        <ChartParallel size={20} class="text-blue-500" />
-        <h2 class="text-lg font-semibold text-slate-700">Program Flow Visualization</h2>
-      </div>
-      <div class="text-slate-400">
-        {expandedSections.sankey ? '−' : '+'}
-      </div>
-    </div>
-    
-    {#if expandedSections.sankey}
-      <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
-        <div class="flex justify-center">
-          <ProgramSankey 
-            {data} 
-            width={1000} 
-            height={500} 
-            onEntrySelect={handleEntrySelect} 
-          />
-        </div>
-      </div>
-    {/if}
-  </section>
-  
-  <footer class="text-slate-500 text-xs mt-6 pb-4">
-    <p>Rare Pediatric Disease Priority Review Voucher (PRV) Program Analysis</p>
-    <p class="mt-1">Data updated through {new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}</p>
-  </footer>
+
+ 
 </div>
 
 <style>
+  .program-analytics {
+    display: flex;
+    flex-direction: column;
+  }
+  
   .section-content {
-    max-height: 2000px;
     overflow: hidden;
   }
   
@@ -414,5 +528,12 @@
   
   .waffle-chart-container {
     overflow: hidden;
+  }
+  
+  .chart-insights-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
   }
 </style>
