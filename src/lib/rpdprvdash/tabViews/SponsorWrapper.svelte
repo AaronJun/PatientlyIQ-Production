@@ -368,7 +368,7 @@
      on:touchcancel={handleCanvasInteractionEnd}>
      
   <div class="w-full h-full items-center relative">
-    <div class="timeline-container fixed justify-center place-items-start w-full z-20 bg-slate-100 transition-all duration-300">
+    <div class="timeline-container fixed justify-center place-items-start w-full bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
         data={data}
         selectedYear={selectedYear}
@@ -377,7 +377,7 @@
     </div>
     
     {#if isMobileView}
-      <div class="mobile-hint fixed z-10 top-20 left-1/2 transform -translate-x-1/2 text-emerald-800 px-4 py-2 rounded-full ring-1 ring-emerald-400 ring-offset-2 shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
+      <div class="mobile-hint fixed z-10 top-20 left-1/2 transform -translate-x-1/2 text-slate-800 px-4 py-2 rounded-full ring-1 ring-emerald-300 ring-offset-2 text-xs font-medium" transition:fade={{ duration: 300 }}>
         Use two fingers to zoom & pan the chart
       </div>
     {/if}
@@ -430,15 +430,15 @@
   </div>
 
     <div 
-      class="sidebar-area fixed top-16 bottom-0 right-0 z-10 flex flex-col transition-all duration-300 cubic-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+      class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 cubic-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
       class:w-96={!isRightSidebarCollapsed}
       class:w-7={isRightSidebarCollapsed}
       transition:slide={{ duration: 300, axis: 'x' }}
     >
-      <div class="sidebar-controls-area absolute top-32 -left-12 z-40 flex flex-col gap-4">
+      <div class="sidebar-controls-area absolute top-8 -left-4 md:-left-12 md:top-32 z-40 flex flex-col gap-4">
         <!-- Toggle button -->
     <button 
-      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="toggle-control mb-6 bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
           on:click={toggleRightSidebar}
           aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
@@ -460,7 +460,7 @@
       <div class="flex flex-col h-full w-full overflow-hidden">
         <!-- Search component -->
         {#if !isRightSidebarCollapsed}
-          <div class="px-3 flex-none z-10">
+          <div class="pl-8 md:pl-2 pr-4 flex-none z-10">
             <RpdprvSearch
               data={data}
               onShowDrugDetail={onShowDrugDetail}
@@ -512,9 +512,10 @@
 
   .timeline-container {
     border-bottom: .5px solid #549E7D;
-    z-index: 0;
+    z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
+
   
   /* Fix for continuous scrolling - keeping minimal styles that don't affect panning */
   :global(.sponsor-infinite-canvas svg) {
@@ -582,7 +583,6 @@
     white-space: nowrap;
     z-index: 100;
     pointer-events: none;
-    border: 1px solid #10b981;
   }
   
   @keyframes fade-out {

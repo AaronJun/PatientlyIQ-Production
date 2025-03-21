@@ -568,7 +568,7 @@
   </div>
 
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden pl-8">
+  <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden">
 
     <div class="tab-content w-full h-full z-0 flex relative">
       <!-- Main content area taking full width -->

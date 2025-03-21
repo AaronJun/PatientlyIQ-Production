@@ -41,40 +41,30 @@
   
   
   <div 
-    class="vertical-sidebar-container fixed left-0 top-0 z-40 h-full bg-slate-700 shadow-xl transition-all duration-300 ease-in-out"
-    class:w-10={isCollapsed && !isHovered}
-    class:w-52={!isCollapsed || isHovered}
-    on:mouseenter={() => isHovered = true}
-    on:mouseleave={() => isHovered = false}
+    class="horizontal-sidebar-container max-h-fit fixed left-0 bottom-0 md:top-0 w-full z-40 
+           flex flex-row items-center justify-between md:justify-between 
+           bg-slate-900 shadow-xl 
+           px-4 md:px-8 pb-2 md:py-3
+           transition-all duration-300 ease-in-out"
+    class:bg-slate-800={isHovered}
     role="navigation"
     aria-label="Main navigation sidebar"
   >
   
+  <!-- Logo container -->
+    <div class="flex items-center h-0 w-0 md:h-8 md:w-8">
+      <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8" style="filter: saturate(0.625)" />
+    </div>
 
     <!-- Navigation items -->
-    <nav class="flex flex-col gap-1 pt-24">
-
-        <div class="flex flex-row items-center juys gap-2 mb-8">
-          <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8 align-middle justify-center" style="filter: saturate(0.625)" />
-          {#if !isCollapsed || isHovered}
-          <span 
-            class="whitespace-nowrap text-[#ff4a4a] text-xs font-medium"
-            style="filter: saturate(0.725)"
-            transition:slide={{ duration: 400 }}
-          >
-            RPD PRV Data Constellation
-          </span>
-          {/if}
-        </div>
+    <nav class="flex flex-row items-center gap-2">
 
         <!-- Overview Tab -->
         <button
-          class="flex items-center align-middle gap-3 py-3 px-2 transition-all duration-200 text-left relative"
-          class:bg-slate-700={activeTab === overviewTab.id}
+          class="flex flex-col lg:flex-row items-center align-middle gap-1 pt-1 px-2 transition-all duration-200 text-center relative"
           class:text-emerald-400={activeTab === overviewTab.id}
-          class:hover:bg-emerald-300={activeTab !== overviewTab.id}
-          class:text-slate-300={activeTab !== overviewTab.id}
-          class:hover:text-slate-800={activeTab !== overviewTab.id}
+          class:text-slate-500={activeTab !== overviewTab.id}
+          class:hover:text-emerald-100={activeTab !== overviewTab.id}
           on:click={() => handleTabSelect(overviewTab.id)}
           title={isCollapsed && !isHovered ? overviewTab.tooltip : ''}
         >
@@ -84,32 +74,27 @@
           </span>
           
           <!-- Text label - only shown when expanded or hovered -->
-          {#if !isCollapsed || isHovered}
             <span 
-              class="whitespace-nowrap text-xs font-medium"
-              transition:slide={{ duration: 200 }}
+              class="w-10 md:w-fit text-[8.725px] md:text-sm md:font-normal leading-none tracking-wide font-medium text-center"
+              transition:fade={{ duration: 200 }}
             >
               {overviewTab.id}
             </span>
-          {/if}
           
           <!-- Active indicator -->
           {#if activeTab === overviewTab.id}
-            <span class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-r-sm"></span>
+            <span class="bg-emerald-500"></span>
           {/if}
         </button>
 
       <Separator.Root
-        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:w-[1px]"
       />
       {#each tabs as tab}
-        <button
-          class="flex items-center align-middle gap-3 py-3 px-2 transition-all duration-200 text-left relative"
-          class:bg-slate-700={activeTab === tab.id}
-          class:text-emerald-400={activeTab === tab.id}
-          class:hover:bg-emerald-300={activeTab !== tab.id}
-          class:text-slate-300={activeTab !== tab.id}
-          class:hover:text-slate-800={activeTab !== tab.id}
+      <button
+     class="flex flex-col lg:flex-row items-center align-middle gap-1 pt-2 px-2 transition-all duration-200 text-[8.725px] md:text-sm md:font-normal leading-none text-center relative text-slate-500"
+     class:text-emerald-300={activeTab == tab.id}
+          class:hover:text-slate-200={activeTab !== tab.id}
           on:click={() => handleTabSelect(tab.id)}
           title={isCollapsed && !isHovered ? tab.tooltip : ''}
         >
@@ -119,33 +104,29 @@
           </span>
           
           <!-- Text label - only shown when expanded or hovered -->
-          {#if !isCollapsed || isHovered}
             <span 
-              class="whitespace-nowrap text-xs font-medium"
+              class="w-16 text-center md:w-fit text-[8.725px] md:text-sm md:font-normal tracking-wide font-medium"
               transition:slide={{ duration: 200 }}
             >
               {tab.id}
             </span>
-          {/if}
           
-          <!-- Active indicator -->
-          {#if activeTab === tab.id}
-            <span class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-r-sm"></span>
-          {/if}
         </button>
       {/each}
       
       <Separator.Root
-        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:w-[1px]"
       />
       
-
-    <nav class="flex flex-col gap-1">
+    <nav class="flex flex-row gap-1">
       <!-- Dashboard button -->
       <button
-    class="flex items-center align-middle gap-3 py-3 px-3 transition-all duration-200 text-left relative text-slate-300 hover:bg-emerald-300 hover:text-slate-800"  
+     class="flex flex-col lg:flex-row items-center align-middle gap-1 pt-2 px-2 transition-all duration-200 text-[8.725px] md:text-sm md:font-normal leading-none text-center relative text-slate-500"
         on:click={handleDashboardClick}
-        title={isCollapsed && !isHovered ? "Dashboard" : ''}
+        class:bg-slate-700={activeTab === 'Dashboard'}
+        class:text-emerald-400={activeTab === 'Dashboard'}
+        class:text-slate-500={activeTab !== 'Dashboard'}
+        class:hover:text-slate-100={activeTab !== 'Dashboard'}
       >
         <!-- Icon -->
         <span class="text-center w-4 h-4 flex-shrink-0">
@@ -153,27 +134,21 @@
       </span>
         
         <!-- Text label - only shown when expanded or hovered -->
-        {#if !isCollapsed || isHovered}
           <span 
-            class="whitespace-nowrap text-xs font-medium"
+            class=" text-[8.725px] md:text-sm md:font-normal tracking-wide font-medium"
             transition:slide={{ duration: 200 }}
           >
-            Tracked Drugs Dashboard
+            Dashboard
           </span>
-        {/if}
       </button>
       </nav>
     </nav>
   </div>
   
   <style>
-    .vertical-sidebar-container {
+    .horizontal-sidebar-container {
       z-index: 99;
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .divider {
-      border-top: .5425px solid #e2e8f0;
-      margin: 0.5rem 0;
+      transition: all 0.3s ease-in-out;
     }
   </style>
