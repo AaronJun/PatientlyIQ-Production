@@ -121,10 +121,11 @@
         .attr('fill', '#EBE9E3');
       
       // Add background rect with dotted pattern
+      const useSolidBackground = isTouchDevice || window.innerWidth < 768; // Determine if mobile
       svgSelection.insert('rect', ':first-child')
         .attr('width', '100%')
         .attr('height', '100%')
-        .attr('fill', 'url(#dotGrid)')
+        .attr('fill', useSolidBackground ? '#f9fafb' : 'url(#dotGrid)')
         .attr('opacity', 1);  // Increased opacity since dots are subtle
       
       // Create main group
