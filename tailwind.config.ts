@@ -86,7 +86,8 @@ const config: Config = {
             fontFamily: {
                 sans: ['"IBM Plex Sans"', ...fontFamily.sans],
                 mono: ['"IBM Plex Mono"', ...fontFamily.mono],
-                serif: ['"IBM Plex Serif"', ...fontFamily.serif]
+                serif: ['"IBM Plex Serif"', ...fontFamily.serif],
+                'sans-condensed': ['"IBM Plex Sans Condensed"', ...fontFamily.sans]
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',

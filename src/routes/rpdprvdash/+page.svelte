@@ -499,8 +499,8 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="tab-content flex flex-row flex-grow relative h-full"
-          >
+            class="tab-content  w-full h-full z-0 flex relative">
+          
             <TherapeuticAreaWrapper
               data={rpddData}
               filteredData={filteredData}
@@ -523,7 +523,7 @@
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
             class="transactions-tab-content flex flex-col h-full relative"
           >
-            <div class="flex flex-1 h-full">
+            <div class="flex h-full">
               <TransactionsWrapper 
                 data={rpddData} 
                 stockData={rpdCompanyValues}

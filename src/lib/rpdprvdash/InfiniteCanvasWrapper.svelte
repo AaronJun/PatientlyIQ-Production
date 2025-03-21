@@ -2,6 +2,7 @@
   import { onMount, tick, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
   import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
+  import { fixMobileTouchSupport } from './utils/svg-utils';
 
   // Use default values instead of window properties for SSR compatibility
   export let width = 1200;
@@ -198,6 +199,11 @@
                   navigator.maxTouchPoints > 0 ||
                   (navigator as any).msMaxTouchPoints > 0;
     
+    console.log("InfiniteCanvasWrapper mounted, isTouchDevice:", isTouchDevice);
+    
+    // Apply mobile touch fixes to SVG and container
+    fixMobileTouchSupport(svg, container);
+    
     // Initialize the canvas
     initializeCanvas();
     
@@ -207,9 +213,6 @@
       container.addEventListener('touchmove', handleTouchMove, { passive: false });
       container.addEventListener('touchend', handleTouchEnd, { passive: false });
       container.addEventListener('wheel', handleWheel, { passive: false });
-      
-      // Apply touch-action: none to prevent browser gestures
-      container.style.touchAction = 'none';
     }
     
     // Add resize observer
@@ -375,7 +378,8 @@
     height="100%"
     viewBox="0 0 {width} {height}" 
     preserveAspectRatio="xMidYMid meet"
-    style="display: block; touch-action: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;"
+    style="display: block; touch-action: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; pointer-events: all;"
+    data-touch-device={isTouchDevice}
   >
     <slot {mainGroup} {showTooltip} {hideTooltip} />
   </svg>

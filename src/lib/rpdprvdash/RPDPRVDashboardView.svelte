@@ -53,9 +53,8 @@
     transition:fly={{duration: 525}}
 >
     <div 
-        class="drawer relative w-[62.25vw] h-full bg-slate-50 shadow-lg z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
+        class="drawer relative w-[87.25vw] md:w-[52.25vw] h-full bg-white/90 backdrop-blur-md z-[1000] overflow-y-auto border-l-[10px] pl-2 pr-2 py-1 cursor-default"
         on:click={handleDrawerClick}
-        style="border-color: #37587e"
     >
         <div class="drawer-content">
             <button 

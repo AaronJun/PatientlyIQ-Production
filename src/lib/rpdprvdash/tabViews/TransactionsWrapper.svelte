@@ -7,7 +7,7 @@
     import CompanyLeaderboard from '../Overview/CompanyLeaderboard.svelte';
     import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import UnsoldVouchersTable from '../Overview/UnsoldVouchersTable.svelte';
-    import { Money, CicsTransactionServerZos, Catalog, ChartParallel } from 'carbon-icons-svelte';
+    import { Money, CicsTransactionServerZos, Catalog, ChartParallel, ChevronRight } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import SellerBuyerChord from '../TransactionChord.svelte';
     import VoucherBeeswarmPlot from '../VoucherBeeswarmPlot.svelte';
@@ -186,28 +186,26 @@
 
 <div class="transactions-wrapper h-full overflow-y-auto">
     <TransactionsIntroduction />
-
         <!-- Transaction Tab Navigation -->
-        <div class="transaction-tabs flex mb-6 border-b border-slate-200">
+        <div class="transaction-tabs flex flex-row gap-2 justify-center w-full md:w-fit md:ml-8 md:mb-8 md:justify-start">
             <button 
-                class="tab-button px-4 py-2 mr-2 {activeTransactionTab === 'transaction-flow' ? 'bg-slate-100 border-b-2 border-emerald-500 font-medium' : 'hover:bg-slate-50'}"
+                class="tab-button flex flex-row px-4 py-2 rounded-full hover:bg-[#FF4A4A]/80 hover:text-slate-100/80 {activeTransactionTab === 'transaction-flow' ? 'bg-[#FF4A4A] font-medium text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"
                 on:click={() => setActiveTransactionTab('transaction-flow')}
-            >
-                <div class="flex items-center">
-                    <ChartParallel size={16} class="mr-2 text-emerald-500" />
-                    <span>Transaction Flow</span>
-                </div>
+            >   
+                    <CicsTransactionServerZos class="mr-2 w-4 h-4" />
+                    <span class="text-xs font-medium">Transaction Network</span>   
             </button>
             <button 
-                class="tab-button px-4 py-2 mr-2 {activeTransactionTab === 'transaction-analytics' ? 'bg-slate-100 border-b-2 border-green-500 font-medium' : 'hover:bg-slate-50'}"
+                class="tab-button px-4 py-2 rounded-full hover:bg-[#FF4A4A]/80 hover:text-slate-100/80 {activeTransactionTab === 'transaction-analytics' ? 'bg-[#FF4A4A] font-medium text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
                 on:click={() => setActiveTransactionTab('transaction-analytics')}
             >
                 <div class="flex items-center">
-                    <Money size={16} class="mr-2 text-green-500" />
-                    <span>Transaction Analytics</span>
+                    <Money class="mr-2 w-4 h-4" />
+                    <span class="text-xs font-medium">Transaction Analytics</span>
                 </div>
             </button>
-        </div>
+            </div>
+            
     <div class="transaction-content relative h-[calc(100%-140px)]">
         <!-- Transaction Flow Tab (Chord Diagram and Sidebar) -->
         {#if activeTransactionTab === 'transaction-flow'}
@@ -232,26 +230,13 @@
                 
                 <!-- Desktop sidebar - only show on non-mobile -->
                 {#if !isMobileView}
-                    <div class="absolute right-2 top-4 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-[calc(74vh-2rem)] transition-all duration-300">
+                    <div class="absolute right-2 top-24 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-[calc(74vh-2rem)] transition-all duration-300">
                         <button
-                            class="rounded-btn absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                            class="nav-button absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                             on:click={toggleRightSidebar}
                             title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                         >
-                            <svg
-                                class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M9 5l7 7-7 7"
-                                />
-                            </svg>
+                        <ChevronRight class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}" />
                         </button>
 
                         <div class="{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col h-full max-h-[calc(100vh-10rem)]">

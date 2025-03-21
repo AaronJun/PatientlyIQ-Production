@@ -124,4 +124,75 @@ export function createSplitColorStarSVG(
             <path d="${starPath}" fill="${fillRight}" stroke="${border}" stroke-width="0.5" clip-path="url(#rightHalf-${uuid})" />
         </svg>
     `;
+}
+
+/**
+ * Fixes touch support for SVG elements on mobile devices
+ * @param svgElement The SVG element to fix
+ * @param containerElement Optional container element to also fix
+ */
+export function fixMobileTouchSupport(
+    svgElement: SVGSVGElement | null, 
+    containerElement: HTMLElement | null = null
+): void {
+    if (!svgElement) {
+        console.error("SVG element is null, cannot fix mobile touch support");
+        return;
+    }
+    
+    const isMobile = window.innerWidth < 768 || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0 ||
+                     (navigator as any).msMaxTouchPoints > 0;
+                     
+    console.log("Fixing mobile touch support, isMobile:", isMobile);
+    
+    // Set SVG attributes for touch support
+    svgElement.style.touchAction = 'none';
+    svgElement.style.pointerEvents = 'all';
+    (svgElement.style as any).webkitTouchCallout = 'none';
+    (svgElement.style as any).webkitTapHighlightColor = 'transparent';
+    svgElement.style.width = '100%';
+    svgElement.style.height = '100%';
+    
+    // Add transform to force hardware acceleration & prevent rendering issues
+    svgElement.style.transform = 'translateZ(0)';
+    (svgElement.style as any).backfaceVisibility = 'hidden';
+    
+    // Add touch-specific attributes
+    svgElement.setAttribute('touch-action', 'none');
+    svgElement.setAttribute('data-touch-device', String(isMobile));
+    
+    // If we also have a container element, fix it too
+    if (containerElement) {
+        containerElement.style.touchAction = 'none';
+        containerElement.style.pointerEvents = 'auto';
+        (containerElement.style as any).webkitTouchCallout = 'none';
+        (containerElement.style as any).webkitTapHighlightColor = 'transparent';
+        containerElement.style.position = 'relative';
+        containerElement.style.width = '100%';
+        containerElement.style.height = '100%';
+        containerElement.style.maxHeight = '100%';
+        containerElement.style.overflow = 'hidden';
+        
+        // Force hardware acceleration
+        containerElement.style.transform = 'translateZ(0)';
+        (containerElement.style as any).backfaceVisibility = 'hidden';
+        
+        // For Safari
+        if (typeof window !== 'undefined' && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+            containerElement.style.willChange = 'transform';
+            svgElement.style.willChange = 'transform';
+            
+            // Add specific Safari bottom fixes to prevent white space
+            const parentElement = containerElement.parentElement;
+            if (parentElement) {
+                parentElement.style.overflow = 'hidden';
+                // Force repaint to avoid Safari rendering issues
+                setTimeout(() => {
+                    parentElement.style.transform = 'translateZ(0)';
+                }, 0);
+            }
+        }
+    }
 } 

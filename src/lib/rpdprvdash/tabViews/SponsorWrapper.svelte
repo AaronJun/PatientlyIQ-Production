@@ -39,12 +39,9 @@
   export let onYearSelect: (year: string) => void = () => {};
   export let onHowToNavigate: () => void = () => {};
   
-  // Event dispatcher
-  const dispatch = createEventDispatcher();
-  
   // State variables
   let isRightSidebarCollapsed = false;
-  let isMobileSidebarExpanded = false;
+
   let infiniteCanvas: { resetView: () => void; zoomIn?: () => void; zoomOut?: () => void; };
   let hoveredTherapeuticArea = "";
   let currentEntries: any[] = [];
@@ -258,23 +255,45 @@
   });
   
   onMount(() => {
+    console.log("SponsorWrapper mounted, checking mobile view");
+    
     // Check if we're in mobile view
     const checkMobileView = () => {
+      const wasMobile = isMobileView;
       isMobileView = window.innerWidth < 768; // 768px is the md breakpoint in Tailwind
+      
+      // Log mobile status changes
+      if (wasMobile !== isMobileView) {
+        console.log("Mobile view status changed:", isMobileView);
+      }
     };
     
     // Initial check
     checkMobileView();
+    
+    // Log initial canvas state
+    console.log("Initial infiniteCanvas ref:", infiniteCanvas);
     
     // Add resize listener
     window.addEventListener('resize', checkMobileView);
     
     // Initialize any necessary setup
     if (isMobileView) {
+      console.log("Setting up touch event handlers for mobile");
       // Add event listeners for canvas interaction on mobile
       document.addEventListener('touchstart', handleTouchInteraction, { passive: false });
       document.addEventListener('touchend', handleTouchEnd, { passive: false });
     }
+    
+    // Try to reset the canvas view after a short delay for mobile
+    setTimeout(() => {
+      if (infiniteCanvas && infiniteCanvas.resetView) {
+        console.log("Calling resetView on infiniteCanvas after delay");
+        infiniteCanvas.resetView();
+      } else {
+        console.warn("infiniteCanvas or resetView method not available after delay");
+      }
+    }, 500);
 
     return () => {
       window.removeEventListener('resize', checkMobileView);
@@ -296,6 +315,16 @@
       }
     };
   });
+  
+  // Add a watcher to handle canvas reset when infiniteCanvas changes
+  $: if (infiniteCanvas && infiniteCanvas.resetView) {
+    console.log("InfiniteCanvas reference updated, scheduling reset");
+    // Reset canvas view after a slight delay to ensure it's fully initialized
+    setTimeout(() => {
+      console.log("Resetting infiniteCanvas view");
+      infiniteCanvas.resetView();
+    }, 200);
+  }
 
   // Handle touch interaction detection
   function handleTouchInteraction(event: TouchEvent) {
@@ -631,7 +660,7 @@
   /* Add responsive sizing for canvas containers */
   @media (max-width: 768px) {
     /* Mobile specific styles */
-    :global(.sponsor-wrapper .infinite-canvas-container) {
+    :global(.sponsor-infinite-canvas) {
       height: calc(100vh - 200px) !important;
       touch-action: none !important;
       -webkit-overflow-scrolling: none !important;
@@ -642,6 +671,7 @@
       width: 100% !important;
       height: 100% !important;
       touch-action: none !important;
+      pointer-events: all !important;
     }
     
     /* Prevent parent scrolling on mobile when interacting with canvas */

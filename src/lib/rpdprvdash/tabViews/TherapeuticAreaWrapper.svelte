@@ -10,7 +10,6 @@
   import RpdprvSearch from '../RPDPRVSearch.svelte';
   import RPDRadialLegend from '../RPDRadialLegend.svelte';
   import TherapeuticAreaSidebar from '../sidebarComponents/TherapeuticAreaSidebar.svelte';
-  import MobileTherapeuticAreaSidebar from '../sidebarComponents/MobileTherapeuticAreaSidebar.svelte';
   import InfiniteCanvasWrapper from '../InfiniteCanvasWrapper.svelte';
   import CanvasNavControls from '../sidebarComponents/CanvasNavControls.svelte';
   
@@ -46,7 +45,7 @@
   
   // State variables
   let isRightSidebarCollapsed = false;
-  let isMobileSidebarExpanded = false;
+
   let infiniteCanvas: { resetView: () => void; zoomIn: () => void; zoomOut: () => void; };
   let hoveredTherapeuticArea = "";
   let currentEntries: any[] = [];
@@ -231,14 +230,23 @@
   function handleCanvasInteractionStart() {
     if (isMobileView) {
       isCanvasActive = true;
+      // Save the current scroll position
+      const scrollY = window.scrollY;
       document.body.classList.add('canvas-active');
+      // Add a style to adjust for the scroll position
+      document.body.style.top = `-${scrollY}px`;
     }
   }
 
   function handleCanvasInteractionEnd() {
     if (isMobileView) {
       isCanvasActive = false;
+      // Retrieve the scroll position
+      const scrollY = parseInt(document.body.style.top || '0', 10) * -1;
       document.body.classList.remove('canvas-active');
+      document.body.style.top = '';
+      // Restore scroll position
+      window.scrollTo(0, scrollY);
     }
   }
 
@@ -248,12 +256,45 @@
                    navigator.maxTouchPoints > 0 ||
                    (navigator as any).msMaxTouchPoints > 0;
                    
+    console.log("TherapeuticAreaWrapper mounted, isTouchDevice:", isTouchDevice);
+                   
     // Initialize any necessary setup
     if (isMobileView) {
       // Add event listeners for canvas interaction on mobile
       document.addEventListener('touchstart', handleTouchInteraction, { passive: false });
       document.addEventListener('touchend', handleTouchEnd, { passive: false });
     }
+    
+    // Handle orientation changes specifically for the canvas
+    const handleOrientationChange = () => {
+      console.log("Orientation change detected, resetting view");
+      // Wait for the DOM to update after orientation change
+      setTimeout(() => {
+        if (infiniteCanvas && infiniteCanvas.resetView) {
+          infiniteCanvas.resetView();
+        }
+        
+        // Force redraw of SVG elements
+        const svgElement = document.querySelector('.therapeutic-area-canvas svg') as SVGElement;
+        if (svgElement) {
+          // Trigger a repaint by temporarily changing a style property
+          svgElement.style.opacity = '0.99';
+          setTimeout(() => {
+            svgElement.style.opacity = '1';
+          }, 50);
+        }
+      }, 300);
+    };
+    
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+    
+    // Reset view after initial load to ensure proper rendering
+    setTimeout(() => {
+      if (infiniteCanvas && infiniteCanvas.resetView) {
+        infiniteCanvas.resetView();
+      }
+    }, 500);
 
     return () => {
       // Clean up event listeners
@@ -267,6 +308,9 @@
       if (autoCollapseTimeout) {
         clearTimeout(autoCollapseTimeout);
       }
+      
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleOrientationChange);
     };
   });
 
@@ -331,7 +375,7 @@
   }
 </script>
 
-<div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full"
+<div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full h-[calc(100vh-150px)]"
      on:touchstart={handleCanvasInteractionStart}
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
@@ -352,53 +396,55 @@
       </div>
     {/if}
     
-    <InfiniteCanvasWrapper 
-      bind:this={infiniteCanvas} 
-      let:mainGroup 
-      let:showTooltip 
-      let:hideTooltip
-      on:howToNavigate={onHowToNavigate}
-      isCollapsed={isSidebarCollapsed} 
-      className="therapeutic-area-canvas w-full h-[calc(100vh-150px)] mt-16 overflow-hidden"
-      >
-      {#if mainGroup}
-        <RPDDRadialYear 
-          data={filteredData}
-          isAllYearView={selectedYear === "All"}
-          onCompanyHover={handleCompanyHover}
-          onStageHover={handleStageHover}
-          onLeave={handleLeave}
-          onShowDrugDetail={onShowDrugDetail}
-          onShowCompanyDetail={onShowCompanyDetail}
-          onShowTherapeuticAreaDetail={onShowTherapeuticAreaDetail}
-          {mainGroup}
-          {showTooltip}
-          {hideTooltip}
-          hoveredTherapeuticArea={hoveredTherapeuticArea}
-        />
-      {:else}
-        <!-- Loading spinner -->
-        <g transform="translate(460, 460)">
-          <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
-          <path 
-            d="M40 0 A40 40 0 0 1 40 0" 
-            fill="none" 
-            stroke="#3b82f6" 
-            stroke-width="8" 
-            stroke-linecap="round"
-          >
-            <animateTransform 
-              attributeName="transform" 
-              type="rotate" 
-              from="0" 
-              to="360" 
-              dur="1s" 
-              repeatCount="indefinite"
-            />
-          </path>
-        </g>
-      {/if}
-    </InfiniteCanvasWrapper>
+    <div class="infinite-canvas-container-wrapper w-full mt-16" class:mobile-view={isMobileView}>
+      <InfiniteCanvasWrapper 
+        bind:this={infiniteCanvas} 
+        let:mainGroup 
+        let:showTooltip 
+        let:hideTooltip
+        on:howToNavigate={onHowToNavigate}
+        isCollapsed={isSidebarCollapsed} 
+        className="therapeutic-area-canvas w-full overflow-hidden"
+        >
+        {#if mainGroup}
+          <RPDDRadialYear 
+            data={filteredData}
+            isAllYearView={selectedYear === "All"}
+            onCompanyHover={handleCompanyHover}
+            onStageHover={handleStageHover}
+            onLeave={handleLeave}
+            onShowDrugDetail={onShowDrugDetail}
+            onShowCompanyDetail={onShowCompanyDetail}
+            onShowTherapeuticAreaDetail={onShowTherapeuticAreaDetail}
+            {mainGroup}
+            {showTooltip}
+            {hideTooltip}
+            hoveredTherapeuticArea={hoveredTherapeuticArea}
+          />
+        {:else}
+          <!-- Loading spinner -->
+          <g transform="translate(460, 460)">
+            <circle r="40" fill="none" stroke="#e2e8f0" stroke-width="8"></circle>
+            <path 
+              d="M40 0 A40 40 0 0 1 40 0" 
+              fill="none" 
+              stroke="#3b82f6" 
+              stroke-width="8" 
+              stroke-linecap="round"
+            >
+              <animateTransform 
+                attributeName="transform" 
+                type="rotate" 
+                from="0" 
+                to="360" 
+                dur="1s" 
+                repeatCount="indefinite"
+              />
+            </path>
+          </g>
+        {/if}
+      </InfiniteCanvasWrapper>
+    </div>
   </div>
 
   <div 
@@ -524,9 +570,12 @@
   @media (max-width: 768px) {
     /* Mobile specific styles */
     :global(.therapeutic-area-wrapper .infinite-canvas-container) {
-      height: calc(100vh - 200px) !important;
+      height: 100% !important;
+      max-height: 100% !important;
       touch-action: none !important;
       -webkit-overflow-scrolling: none !important;
+      position: relative;
+      z-index: 1;
     }
     
     /* Ensure the SVG fills the entire container on mobile */
@@ -534,14 +583,38 @@
       width: 100% !important;
       height: 100% !important;
       touch-action: none !important;
+      pointer-events: all !important;
+      transform: translateZ(0); /* Force hardware acceleration */
     }
     
+    /* Therapeutic Area wrapper container */
+    .therapeutic-area-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100% !important;
+      min-height: calc(100vh - 100px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ensure no white space at the bottom */
+    .infinite-canvas-container-wrapper.mobile-view {
+      height: calc(100vh - 170px);
+      padding-bottom: 20px;
+      overflow: hidden;
+    }
+
     /* Prevent parent scrolling on mobile when interacting with canvas */
     :global(body.canvas-active) {
       overflow: hidden !important;
       position: fixed;
       width: 100%;
       height: 100%;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: transparent;
     }
   }
   
@@ -613,5 +686,20 @@
       user-select: none;
       touch-action: none !important;
     }
+  }
+
+  .infinite-canvas-container-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: calc(100vh - 150px);
+    overflow: hidden;
+  }
+
+  .infinite-canvas-container-wrapper.mobile-view {
+    height: calc(100vh - 170px);
+    padding-bottom: 20px;
+    z-index: 1;
   }
 </style> 
