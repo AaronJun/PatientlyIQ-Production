@@ -51,6 +51,7 @@
   let currentCompanyMetrics: any | null = null;
   let currentArea: string | null = null;
   let areaMetrics: any | null = null;
+  let isCanvasActive = false; // Track if user is interacting with canvas
   
   // Add a change detection mechanism
   let previousFilteredDataLength = 0;
@@ -250,7 +251,13 @@
     // Add resize listener
     window.addEventListener('resize', checkMobileView);
     
-    // Clean up on component destruction
+    // Initialize any necessary setup
+    if (isMobileView) {
+      // Add event listeners for canvas interaction on mobile
+      document.addEventListener('touchstart', handleTouchInteraction, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
+
     return () => {
       window.removeEventListener('resize', checkMobileView);
       
@@ -259,8 +266,51 @@
         clearInterval(transformCheckInterval);
         transformCheckInterval = null;
       }
+      // Clean up event listeners
+      if (isMobileView) {
+        document.removeEventListener('touchstart', handleTouchInteraction);
+        document.removeEventListener('touchend', handleTouchEnd);
+      }
+      // Remove body class if component is destroyed while active
+      document.body.classList.remove('canvas-active');
     };
   });
+
+  // Handle touch interaction detection
+  function handleTouchInteraction(event: TouchEvent) {
+    // Only capture events inside our canvas
+    const path = event.composedPath();
+    const isCanvasTouch = path.some(el => {
+      const element = el as HTMLElement;
+      return element.classList && 
+        (element.classList.contains('sponsor-infinite-canvas') || 
+         element.classList.contains('infinite-canvas-container'));
+    });
+
+    if (isCanvasTouch) {
+      handleCanvasInteractionStart();
+    }
+  }
+
+  function handleTouchEnd(event: TouchEvent) {
+    // Always end interaction on touch end
+    handleCanvasInteractionEnd();
+  }
+
+  // Add functions to handle canvas interaction for mobile devices
+  function handleCanvasInteractionStart() {
+    if (isMobileView) {
+      isCanvasActive = true;
+      document.body.classList.add('canvas-active');
+    }
+  }
+
+  function handleCanvasInteractionEnd() {
+    if (isMobileView) {
+      isCanvasActive = false;
+      document.body.classList.remove('canvas-active');
+    }
+  }
 </script>
 
 <svelte:head>
@@ -287,7 +337,10 @@
   </script>
 </svelte:head>
 
-<div class="sponsor-tab-content flex flex-row flex-grow relative h-full">
+<div class="sponsor-tab-content flex flex-row flex-grow relative h-full"
+     on:touchstart={handleCanvasInteractionStart}
+     on:touchend={handleCanvasInteractionEnd}
+     on:touchcancel={handleCanvasInteractionEnd}>
   <div class="w-full h-full items-center relative">
     <div class="timeline-container fixed justify-center place-items-start w-full z-0 bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
@@ -296,6 +349,13 @@
         onYearSelect={onYearSelect}
       />
     </div>
+    
+    {#if isMobileView}
+      <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
+        Use two fingers to zoom & pan the chart
+      </div>
+    {/if}
+    
     <InfiniteCanvasWrapper 
       bind:this={infiniteCanvas} 
       let:mainGroup 
@@ -514,5 +574,65 @@
   :global(.scrollbar-thin) {
     scrollbar-width: thin;
     scrollbar-color: #94a3b8 #e5e7eb;
+  }
+
+  /* Mobile hint message styling */
+  .mobile-hint {
+    animation: fade-out 5s ease-in-out forwards;
+    backdrop-filter: blur(4px);
+    max-width: 90%;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    border: 1px solid #10b981;
+  }
+  
+  @keyframes fade-out {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+  
+  /* Add responsive sizing for canvas containers */
+  @media (max-width: 768px) {
+    /* Mobile specific styles */
+    :global(.sponsor-wrapper .infinite-canvas-container) {
+      height: calc(100vh - 200px) !important;
+      touch-action: none !important;
+      -webkit-overflow-scrolling: none !important;
+    }
+    
+    /* Ensure the SVG fills the entire container on mobile */
+    :global(.sponsor-infinite-canvas svg) {
+      width: 100% !important;
+      height: 100% !important;
+      touch-action: none !important;
+    }
+    
+    /* Prevent parent scrolling on mobile when interacting with canvas */
+    :global(body.canvas-active) {
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1200px) {
+    /* Tablet specific styles */
+    :global(.sponsor-wrapper .infinite-canvas-container) {
+      height: calc(100vh - 160px) !important;
+      touch-action: none;
+    }
+  }
+  
+  /* Safari-specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices and Safari */
+    :global(.sponsor-infinite-canvas) {
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: none !important;
+    }
   }
 </style> 
