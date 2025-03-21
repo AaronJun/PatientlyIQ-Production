@@ -4,6 +4,7 @@
   import * as d3 from 'd3';
   import RpdCompanyDetailDrawer from './RPDCompanyDetailDrawer.svelte';
   import RPDTooltip from './RPDTooltip.svelte';
+  import PRVPurchaseTimeline from './sidebarComponents/PRVPurchaseTimeline.svelte';
   import { formatCompanyName } from './utils/data-processing-utils';
   import { getTherapeuticAreaFill, getTherapeuticAreaStroke } from './utils/colorDefinitions';
 
@@ -696,6 +697,15 @@
       .style("opacity", 1);
   }
 
+  function handleYearSelect(year: string) {
+    selectedYear = year;
+    if (year === "All") {
+      resetAllHighlights();
+    } else {
+      highlightTransactionsForYear();
+    }
+  }
+
   onMount(() => {
     createVisualization();
     
@@ -707,17 +717,15 @@
 
 </script>
 
-<div class="chord-container relative">
-  <div class="flex justify-end items-center">
-    {#if selectedYear}
-    <div class="text-xs font-medium text-slate-800 flex items-left">
-      <span>Showing transactions for</span>
-      <span class="ml-1 text-red-500 font-semibold">{selectedYear}</span>
-    </div>
-    {/if}
-  </div>
-
-  <div>
+<div class="flex flex-col w-full gap-4">
+  <PRVPurchaseTimeline 
+    {data}
+    selectedYear={selectedYear}
+    onYearSelect={handleYearSelect}
+    transactionYearSelected={handleYearSelect}
+  />
+  
+  <div class="chord-container relative">
     <svg
       bind:this={svg}
       {width}
@@ -726,15 +734,15 @@
       class="w-full h-auto"
     />
   </div>
-
-  <RPDTooltip
-    visible={tooltipVisible}
-    content={tooltipContent}
-    borderColor={tooltipBorderColor}
-    x={tooltipX}
-    y={tooltipY}
-  />
 </div>
+
+<RPDTooltip
+  visible={tooltipVisible}
+  content={tooltipContent}
+  borderColor={tooltipBorderColor}
+  x={tooltipX}
+  y={tooltipY}
+/>
 
 {#if isCompanyDrawerOpen}
   <RpdCompanyDetailDrawer

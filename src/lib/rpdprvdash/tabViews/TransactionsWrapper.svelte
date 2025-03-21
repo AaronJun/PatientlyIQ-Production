@@ -5,6 +5,7 @@
     import PRVAwardCount from '../Overview/PRVAwardCount.svelte';
     import TherapeuticAreaDistribution from '../Overview/TherapeuticAreaDistribution.svelte';
     import CompanyLeaderboard from '../Overview/CompanyLeaderboard.svelte';
+    import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import UnsoldVouchersTable from '../Overview/UnsoldVouchersTable.svelte';
     import { Money, CicsTransactionServerZos, Catalog, ChartParallel } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
@@ -183,22 +184,17 @@
     }
 </script>
 
-<div class="transactions-wrapper pl-4 pr-2 pt-2 md:px-8 md:pt-8 h-full overflow-y-auto">
-    <div class="intro-section mb-6">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">PRV Transactions</h2>
-        <p class="text-slate-600 mb-4">
-            Explore the transaction history, value trends, and market activity of Priority Review Vouchers.
-            This view focuses on the monetary aspects and market dynamics of the PRV program.
-        </p>
-        
+<div class="transactions-wrapper h-full overflow-y-auto">
+    <TransactionsIntroduction />
+
         <!-- Transaction Tab Navigation -->
         <div class="transaction-tabs flex mb-6 border-b border-slate-200">
             <button 
-                class="tab-button px-4 py-2 mr-2 {activeTransactionTab === 'transaction-flow' ? 'bg-slate-100 border-b-2 border-blue-500 font-medium' : 'hover:bg-slate-50'}"
+                class="tab-button px-4 py-2 mr-2 {activeTransactionTab === 'transaction-flow' ? 'bg-slate-100 border-b-2 border-emerald-500 font-medium' : 'hover:bg-slate-50'}"
                 on:click={() => setActiveTransactionTab('transaction-flow')}
             >
                 <div class="flex items-center">
-                    <ChartParallel size={16} class="mr-2 text-blue-500" />
+                    <ChartParallel size={16} class="mr-2 text-emerald-500" />
                     <span>Transaction Flow</span>
                 </div>
             </button>
@@ -212,8 +208,6 @@
                 </div>
             </button>
         </div>
-    </div>
-
     <div class="transaction-content relative h-[calc(100%-140px)]">
         <!-- Transaction Flow Tab (Chord Diagram and Sidebar) -->
         {#if activeTransactionTab === 'transaction-flow'}
@@ -238,7 +232,7 @@
                 
                 <!-- Desktop sidebar - only show on non-mobile -->
                 {#if !isMobileView}
-                    <div class="absolute right-2 top-4 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-full transition-all duration-300">
+                    <div class="absolute right-2 top-4 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-[calc(74vh-2rem)] transition-all duration-300">
                         <button
                             class="rounded-btn absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
                             on:click={toggleRightSidebar}
@@ -354,9 +348,9 @@
                                 </div>
                                 
                                 <!-- Total PRV Value -->
-                                <div class="p-4 border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50">
+                                <div class="p-4 border border-slate-200 bg-gradient-to-br from-emerald-50 to-slate-50">
                                     <h3 class="text-base font-semibold text-slate-700 mb-2">Total PRV Sales Value</h3>
-                                    <p class="text-5xl font-bold text-blue-600 text-center my-4">${totalValue.toLocaleString()}M</p>
+                                    <p class="text-5xl font-bold text-emerald-600 text-center my-4">${totalValue.toLocaleString()}M</p>
                                     <p class="text-sm text-slate-500 text-center">Cumulative value of sold PRVs to date</p>
                                 </div>
                                 

@@ -14,12 +14,12 @@ function navigateToLearnMore() {
 }
 </script>
 
-<header class="flex flex-row justify-between items-center h-64 bg-slate-900">
-s
+<header class="flex flex-row w-full justify-between items-center h-64 bg-slate-900">
+
 </header>
 
 <div class="section-intro w-full flex flex-col md:flex-row justify-evenly md:justify-center place-content-end gap-12 md:gap-24 lg:gap-32 px-8 py-8">
-    <h1 class="text-slate-600 w-full md:w-1/2 lg:w-2/5 text-balance text-left font-light text-4xl lg:text-5xl md:justify-end mb-2">
+    <h1 class="text-slate-600 w-full md:w-1/2 lg:w-/5 text-balance text-left font-light text-4xl lg:text-5xl md:justify-end mb-2">
         A Catalyst <span class="italic font-serif">for</span> 
         Rare Pediatric Disease Research</h1>
 

@@ -101,14 +101,38 @@
       expandedSections[section] = !expandedSections[section];
     }
     
+    let previousActiveElement: HTMLElement | null = null;
+    let modalCloseButton: HTMLButtonElement;
+    
     function handleChartOpen(event: CustomEvent) {
+        // Store the currently focused element
+        previousActiveElement = document.activeElement as HTMLElement;
+        
         // Get the detail information from the event
         modalContent = event.detail;
         isModalOpen = true;
+        
+        // Focus the close button when modal opens
+        setTimeout(() => {
+            if (modalCloseButton) {
+                modalCloseButton.focus();
+            }
+        }, 0);
     }
     
     function closeModal() {
         isModalOpen = false;
+        
+        // Return focus to the previously focused element
+        if (previousActiveElement) {
+            previousActiveElement.focus();
+        }
+    }
+    
+    function handleModalKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
     }
     
     function handleModalAction() {
@@ -324,39 +348,71 @@
   </section>
   
     <!-- Section 1: Program Overview Stats -->
-    <section class="mb-6">
-      <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3  border border-slate-200" 
-           on:click={() => toggleSection('overview')}>
+    <section class="mb-6" aria-labelledby="program-overview-header">
+      <div 
+        class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+        on:click={() => toggleSection('overview')}
+        on:keydown={(e) => e.key === 'Enter' && toggleSection('overview')}
+        role="button"
+        tabindex="0"
+        aria-expanded={expandedSections.overview}
+        aria-controls="program-overview-content"
+      >
         <div class="flex items-center gap-2">
-          <Report size={20} class="text-orange-500" />
-          <h2 class="text-lg font-semibold text-slate-700">Program Overview</h2>
+          <Report size={20} class="text-orange-500" aria-hidden="true" />
+          <h2 id="program-overview-header" class="text-lg font-semibold text-slate-700">Program Overview</h2>
         </div>
-        <div class="text-slate-400">
+        <div class="text-slate-400" aria-hidden="true">
           {expandedSections.overview ? '−' : '+'}
         </div>
       </div>
     
     {#if expandedSections.overview}
-      <div class="section-content bg-white p-4  shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+      <div 
+        id="program-overview-content"
+        class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+        role="region"
+        aria-labelledby="program-overview-header"
+      >
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div class="stat-card bg-gradient-to-br from-blue-50 to-slate-50 p-4  border border-blue-100">
-            <h3 class="text-2xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
-            <p class="text-2xl font-bold text-slate-800">{totalEntries}</p>
+          <div 
+            class="stat-card bg-gradient-to-br from-blue-50 to-slate-50 p-4 border border-blue-100"
+            role="region"
+            aria-labelledby="rpd-designations-label"
+          >
+            <h3 id="rpd-designations-label" class="text-2xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
+            <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: {totalEntries}">{totalEntries}</p>
           </div>
           
-          <div class="stat-card bg-gradient-to-br from-green-50 to-slate-50 p-4  border border-green-100">
-            <h3 class="text-sm font-medium text-slate-500">PRVs Awarded</h3>
-            <p class="text-2xl font-bold text-green-700">{totalPRVs}</p>
+          <div 
+            class="stat-card bg-gradient-to-br from-green-50 to-slate-50 p-4 border border-green-100"
+            role="region"
+            aria-labelledby="prvs-awarded-label"
+          >
+            <h3 id="prvs-awarded-label" class="text-sm font-medium text-slate-500">PRVs Awarded</h3>
+            <p class="text-2xl font-bold text-green-700" aria-label="Total PRVs Awarded: {totalPRVs}">{totalPRVs}</p>
           </div>
           
-          <div class="stat-card bg-gradient-to-br from-purple-50 to-slate-50 p-4  border border-purple-100">
-            <h3 class="text-sm font-medium text-slate-500">PRVs Sold</h3>
-            <p class="text-2xl font-bold text-purple-700">{totalSold} <span class="text-sm text-slate-500">({Math.round(totalSold/totalPRVs*100) || 0}%)</span></p>
+          <div 
+            class="stat-card bg-gradient-to-br from-purple-50 to-slate-50 p-4 border border-purple-100"
+            role="region"
+            aria-labelledby="prvs-sold-label"
+          >
+            <h3 id="prvs-sold-label" class="text-sm font-medium text-slate-500">PRVs Sold</h3>
+            <p class="text-2xl font-bold text-purple-700" aria-label="PRVs Sold: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
+              {totalSold} <span class="text-sm text-slate-500">({Math.round(totalSold/totalPRVs*100) || 0}%)</span>
+            </p>
           </div>
           
-          <div class="stat-card bg-gradient-to-br from-amber-50 to-slate-50 p-4  border border-amber-100">
-            <h3 class="text-sm font-medium text-slate-500">Avg Sale Price</h3>
-            <p class="text-2xl font-bold text-amber-700">${Math.round(avgSalePrice).toLocaleString() || 0}M</p>
+          <div 
+            class="stat-card bg-gradient-to-br from-amber-50 to-slate-50 p-4 border border-amber-100"
+            role="region"
+            aria-labelledby="avg-sale-price-label"
+          >
+            <h3 id="avg-sale-price-label" class="text-sm font-medium text-slate-500">Avg Sale Price</h3>
+            <p class="text-2xl font-bold text-amber-700" aria-label="Average Sale Price: ${Math.round(avgSalePrice).toLocaleString()} Million">
+              ${Math.round(avgSalePrice).toLocaleString() || 0}M
+            </p>
           </div>
         </div>
         
@@ -383,28 +439,44 @@
     {/if}
   </section>
 
-  <!-- Add new section for Program Flow Sankey after Program Overview section but before chart carousel -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
-         on:click={() => toggleSection('programFlow')}>
+  <!-- Program Flow Section -->
+  <section class="mb-6" aria-labelledby="program-flow-header">
+    <div 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+      on:click={() => toggleSection('programFlow')}
+      on:keydown={(e) => e.key === 'Enter' && toggleSection('programFlow')}
+      role="button"
+      tabindex="0"
+      aria-expanded={expandedSections.programFlow}
+      aria-controls="program-flow-content"
+    >
       <div class="flex items-center gap-2">
-        <ArrowRight size={20} class="text-cyan-600" />
-        <h2 class="text-lg font-semibold text-slate-700">Program Flow</h2>
+        <ArrowRight size={20} class="text-cyan-600" aria-hidden="true" />
+        <h2 id="program-flow-header" class="text-lg font-semibold text-slate-700">Program Flow</h2>
       </div>
-      <div class="text-slate-400">
+      <div class="text-slate-400" aria-hidden="true">
         {expandedSections.programFlow ? '−' : '+'}
       </div>
     </div>
     
     {#if expandedSections.programFlow}
-      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+      <div 
+        id="program-flow-content"
+        class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+        role="region"
+        aria-labelledby="program-flow-header"
+      >
         <p class="text-sm text-slate-600 mb-4">
           This Sankey diagram visualizes the flow of drug candidates through the Rare Pediatric Disease (RPD) program,
           from initial designations to Priority Review Voucher (PRV) awards and sales. The width of each flow represents
           the relative number of drug candidates.
         </p>
         
-        <div class="sankey-container flex justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4">
+        <div 
+          class="sankey-container flex justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4"
+          role="img"
+          aria-label="Program Flow Sankey Diagram"
+        >
           <ProgramFlowSankey 
             {data}
             width={width < 768 ? 380 : 750}
@@ -425,28 +497,44 @@
     {/if}
   </section>
 
-  <!-- Section 3: Market Cap Distribution -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200"
-         on:click={() => toggleSection('marketCap')}>
+  <!-- Market Cap Distribution Section -->
+  <section class="mb-6" aria-labelledby="market-cap-header">
+    <div 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200"
+      on:click={() => toggleSection('marketCap')}
+      on:keydown={(e) => e.key === 'Enter' && toggleSection('marketCap')}
+      role="button"
+      tabindex="0"
+      aria-expanded={expandedSections.marketCap}
+      aria-controls="market-cap-content"
+    >
       <div class="flex items-center gap-2">
-        <Money size={20} class="text-indigo-500" />
-        <h2 class="text-lg font-semibold text-slate-700">Company Market Cap Distribution</h2>
+        <Money size={20} class="text-indigo-500" aria-hidden="true" />
+        <h2 id="market-cap-header" class="text-lg font-semibold text-slate-700">Company Market Cap Distribution</h2>
       </div>
-      <div class="text-slate-400">
+      <div class="text-slate-400" aria-hidden="true">
         {expandedSections.marketCap ? '−' : '+'}
       </div>
     </div>
     
     {#if expandedSections.marketCap}
-      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+      <div 
+        id="market-cap-content"
+        class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+        role="region"
+        aria-labelledby="market-cap-header"
+      >
         <p class="text-sm text-slate-600 mb-4">
           This chart shows the distribution of companies by market capitalization category.
           Each square represents one company, with different shades of the same color indicating different companies within the same market cap category.
           Hover over any square to see company details, and click to view more information about that company.
         </p>
         
-        <div class="waffle-chart-container flex justify-center">
+        <div 
+          class="waffle-chart-container flex justify-center"
+          role="img"
+          aria-label="Market Cap Distribution Waffle Chart"
+        >
           <MarketCapWaffleChart 
             {data}
             width={900}
@@ -473,28 +561,44 @@
     {/if}
   </section>
   
-  <!-- Section 4: Therapeutic Area Distribution Waffle Chart -->
-  <section class="mb-6">
-    <div class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
-         on:click={() => toggleSection('distribution')}>
+  <!-- Therapeutic Area Distribution Section -->
+  <section class="mb-6" aria-labelledby="therapeutic-area-header">
+    <div 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+      on:click={() => toggleSection('distribution')}
+      on:keydown={(e) => e.key === 'Enter' && toggleSection('distribution')}
+      role="button"
+      tabindex="0"
+      aria-expanded={expandedSections.distribution}
+      aria-controls="therapeutic-area-content"
+    >
       <div class="flex items-center gap-2">
-        <Report size={20} class="text-purple-500" />
-        <h2 class="text-lg font-semibold text-slate-700">Therapeutic Area Distribution</h2>
+        <Report size={20} class="text-purple-500" aria-hidden="true" />
+        <h2 id="therapeutic-area-header" class="text-lg font-semibold text-slate-700">Therapeutic Area Distribution</h2>
       </div>
-      <div class="text-slate-400">
+      <div class="text-slate-400" aria-hidden="true">
         {expandedSections.distribution ? '−' : '+'}
       </div>
     </div>
     
     {#if expandedSections.distribution}
-      <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
+      <div 
+        id="therapeutic-area-content"
+        class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+        role="region"
+        aria-labelledby="therapeutic-area-header"
+      >
         <p class="text-sm text-slate-600 mb-4">
           This chart shows the distribution of drug candidates across therapeutic areas. Each square represents a single drug candidate,
           with different color shades indicating different indications within the same therapeutic area.
           Hover over any square to see the specific indication, and click to view details about that therapeutic area.
         </p>
         
-        <div class="waffle-chart-container flex justify-center">
+        <div 
+          class="waffle-chart-container flex justify-center"
+          role="img"
+          aria-label="Therapeutic Area Distribution Waffle Chart"
+        >
           <TherapeuticAreaWaffleChart 
             {data} 
             width={800} 
@@ -523,17 +627,34 @@
 
 <!-- Chart Detail Modal -->
 {#if isModalOpen}
-<div class="modal-overlay" on:click={closeModal}>
-  <div class="modal-container" on:click|stopPropagation>
+<div 
+  class="modal-overlay" 
+  on:click={closeModal}
+  on:keydown={handleModalKeydown}
+  role="dialog"
+  aria-labelledby="modal-title"
+  aria-describedby="modal-description"
+  aria-modal="true"
+>
+  <div 
+    class="modal-container" 
+    on:click|stopPropagation
+    role="document"
+  >
     <div class="modal-header">
-      <h2>{modalContent.title}</h2>
-      <button class="close-button" on:click={closeModal}>×</button>
+      <h2 id="modal-title">{modalContent.title}</h2>
+      <button 
+        class="close-button" 
+        on:click={closeModal}
+        bind:this={modalCloseButton}
+        aria-label="Close modal"
+      >×</button>
     </div>
     <div class="modal-body">
-      <p class="modal-description">{modalContent.description}</p>
+      <p id="modal-description" class="modal-description">{modalContent.description}</p>
       
       {#if modalContent.chartComponent}
-        <div class="modal-chart">
+        <div class="modal-chart" role="img" aria-label="{modalContent.title} visualization">
           <svelte:component 
             this={modalContent.chartComponent} 
             {...modalContent.chartProps} 
@@ -545,9 +666,24 @@
     </div>
     <div class="modal-footer">
       {#if modalContent.actionButtonText}
-        <button class="action-button" on:click={handleModalAction}>
+        <button 
+          class="action-button" 
+          on:click={handleModalAction}
+          aria-label="{modalContent.actionButtonText}"
+        >
           {modalContent.actionButtonText}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
             <path d="M5 12h14"></path>
             <path d="M12 5l7 7-7 7"></path>
           </svg>
@@ -574,6 +710,7 @@
   
   .stat-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
   }
   
   .stat-card:hover {
@@ -581,8 +718,18 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   
+  .stat-card:focus-within {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+  
   .waffle-chart-container {
     overflow: hidden;
+  }
+  
+  .waffle-chart-container:focus-within {
+    outline: 2px solid #4f46e5;
+    outline-offset: 4px;
   }
   
   
@@ -707,5 +854,31 @@
     .modal-chart {
       min-height: 300px;
     }
+  }
+  
+  /* Improve focus visibility */
+  .section-header:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+  
+  .close-button:focus-visible,
+  .action-button:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px white;
+  }
+  
+  /* Ensure sufficient color contrast */
+  .modal-description {
+    color: #1f2937; /* Darker gray for better contrast */
+  }
+  
+  .action-button {
+    background-color: #4338ca; /* Darker indigo for better contrast */
+  }
+  
+  .action-button:hover {
+    background-color: #3730a3;
   }
 </style>

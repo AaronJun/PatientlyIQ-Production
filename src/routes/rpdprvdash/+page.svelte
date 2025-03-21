@@ -4,12 +4,6 @@
   import { fade, fly, slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
 
-  import RpdprvSearch from '$lib/rpdprvdash/RPDPRVSearch.svelte';
-  
-  import RPDPRVHorizontalTimeline from '$lib/rpdprvdash/RPDPRVTimeline.svelte';
-  import PRVPurchaseTimeline from '$lib/rpdprvdash/sidebarComponents/PRVPurchaseTimeline.svelte';
-  import RPDRadialLegend from '$lib/rpdprvdash/RPDRadialLegend.svelte';
-  
   import SponsorWrapper from '$lib/rpdprvdash/tabViews/SponsorWrapper.svelte';  
   import TherapeuticAreaWrapper from '$lib/rpdprvdash/tabViews/TherapeuticAreaWrapper.svelte';
   import RPDDRadialYear from '$lib/rpdprvdash/RPDPRVTherapeuticAreaChart.svelte';
@@ -24,7 +18,6 @@
   import RpdCompanyDetailDrawer from '$lib/rpdprvdash/RPDCompanyDetailDrawer.svelte';
   import RPDPRVDrawer from '$lib/rpdprvdash/RPDPRVDrawer.svelte';
   import RPDPRVDashboardView from '$lib/rpdprvdash/RPDPRVDashboardView.svelte';
-  import InfiniteCanvasWrapper from '$lib/rpdprvdash/InfiniteCanvasWrapper.svelte';
 
   // New PRV Analytics Components
   import RPDPRVAnalytics from '$lib/rpdprvdash/Overview/OverviewWrapper.svelte';
@@ -40,8 +33,8 @@
   // Import the TherapeuticAreaDetailDrawer component
   import TherapeuticAreaDetailDrawer from '$lib/rpdprvdash/components/TherapeuticAreaDetailDrawer.svelte';
   
-  // Import the new VerticalSidebar component
-  import VerticalSidebar from '$lib/rpdprvdash/sidebarComponents/NavHeader.svelte';
+  // Import the new NavHeader component
+  import NavHeader from '$lib/rpdprvdash/sidebarComponents/NavHeader.svelte';
 
   // Interface definitions
   interface DrawerProps {
@@ -107,9 +100,9 @@
   let animationDirection = 1; // For determining animation direction
   let selectedTransactionYear = "All"; // Default transaction year
   let highlightedTransaction: { seller: string, buyer: string } | null = null;
-  let selectedData: any | null = null;
+
   let processedConstellationData: any[] = [];
-  let selectedColor: string = "";
+
   let currentArea: string | null = null;
   let currentView: string | null = null;
   let currentEntries: any[] = [];
@@ -124,7 +117,7 @@
   let isRightSidebarCollapsed = false; // Default to collapsed for right sidebar
   let isHowToReadOpen = false; // New state variable for How to Read modal
   let isDropdownOpen = false; // New state variable for dropdown menu
-  let isMobileSidebarExpanded = false; // New state variable for mobile sidebar expansion
+  
   let isMobileView = false; // Track if we're in mobile view
   let isTabletView = false; // Track if we're in tablet/iPad view
   
@@ -150,12 +143,6 @@
         return entry["PRV Year"] === selectedYear || entry["RPDD Year"] === selectedYear;
       });
   
-  // Filter transaction data based on selected transaction year (for transaction tab)
-  $: filteredTransactionData = selectedTransactionYear === "All"
-    ? rpddData.filter(entry => entry.Purchased === "Y") // Show all transactions when "All" is selected
-    : rpddData.filter(entry => 
-      entry.Purchased === "Y" && entry["Purchase Year"] === selectedTransactionYear
-    );
   
   // Define the therapeutic area color map
   const colorMap = {
@@ -227,89 +214,6 @@
   
   function handleDashboard() {
     isDashboardOpen = true;
-  }
-  
-  // Add a separate state for right sidebar
-  function toggleRightSidebar() {
-    isRightSidebarCollapsed = !isRightSidebarCollapsed;
-  }
-
-  // Update handleCompanyHover to also handle therapeutic area data
-  function handleCompanyHover(data: CompanyHoverData | any[]) {
-    if (Array.isArray(data)) {
-      // Old format - just array of entries
-      currentEntries = data;
-      currentView = 'Company View';
-      currentCompanyMetrics = null;
-      currentArea = null;
-      areaMetrics = null;
-      // Try to get therapeutic area from first entry
-      hoveredTherapeuticArea = data.length > 0 ? data[0].TherapeuticArea1 || "" : "";
-    } else if (data.entries && data.areaName) {
-      // New format with therapeutic area metrics
-      currentEntries = data.entries;
-      currentArea = data.areaName;
-      areaMetrics = {
-        totalDrugs: data.totalDrugs || data.entries.length,
-        uniqueCompanies: data.uniqueCompanies || new Set(data.entries.map((d: any) => d.Company)).size,
-        uniqueCandidates: data.uniqueCandidates || new Set(data.entries.map((d: any) => d.Candidate)).size
-      };
-      currentView = 'Area View';
-      currentCompanyMetrics = null;
-      hoveredTherapeuticArea = data.areaName;
-    } else if (data.entries) {
-      // Company format with additional metrics
-      currentEntries = data.entries;
-      currentCompanyMetrics = {
-        companyName: data.companyName || (data.entries.length > 0 ? data.entries[0].Company : 'Unknown'),
-        totalDrugs: data.totalDrugs || data.entries.length,
-        clinicalTrials: data.clinicalTrials || 0,
-        vouchersAwarded: data.vouchersAwarded || 0,
-        uniqueIndications: data.uniqueIndications || new Set(data.entries.map((d: any) => d.Indication)).size,
-        uniqueAreas: data.uniqueAreas || new Set(data.entries.map((d: any) => d.TherapeuticArea1)).size
-      };
-      currentView = 'Company View';
-      currentArea = null;
-      areaMetrics = null;
-      // Try to get most common therapeutic area from entries
-      const areaCounter: Record<string, number> = {};
-      data.entries.forEach((entry: any) => {
-        if (entry.TherapeuticArea1) {
-          areaCounter[entry.TherapeuticArea1] = (areaCounter[entry.TherapeuticArea1] || 0) + 1;
-        }
-      });
-      // Find the most common area
-      hoveredTherapeuticArea = Object.entries(areaCounter)
-        .sort((a, b) => b[1] - a[1])
-        .map(([area]) => area)[0] || "";
-    }
-  }
-
-  function handleStageHover(entries: any[]) {
-    currentEntries = entries;
-    currentView = 'Stage View';
-    // Reset company metrics when viewing stages
-    currentCompanyMetrics = null;
-    currentArea = null;
-    areaMetrics = null;
-    
-    // Extract and count therapeutic areas from entries
-    const areaCounter: Record<string, number> = {};
-    entries.forEach(entry => {
-      if (entry.TherapeuticArea1) {
-        areaCounter[entry.TherapeuticArea1] = (areaCounter[entry.TherapeuticArea1] || 0) + 1;
-      }
-    });
-    // Find the most common area
-    hoveredTherapeuticArea = Object.entries(areaCounter)
-      .sort((a, b) => b[1] - a[1])
-      .map(([area]) => area)[0] || "";
-  }
- 
-  function handleLeave() {
-    // Keep the current view if we want to persist data
-    // Reset hovered area when mouse leaves
-    hoveredTherapeuticArea = "";
   }
 
   function setActiveTab(tab: string) {
@@ -556,8 +460,8 @@
 
 <!-- Mark non-interactive areas with a data attribute -->
 <div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
-  <div class="overflow-y-auto overflow-x-hidden z-20">
-    <VerticalSidebar 
+  <div class="sticky overflow-y-auto overflow-x-hidden z-20">
+    <NavHeader 
       {activeTab} 
       isCollapsed={isSidebarCollapsed}
       on:tabSelect={handleTabSelect}
@@ -619,18 +523,7 @@
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
             class="transactions-tab-content flex flex-col h-full relative"
           >
-            <!-- Timeline section -->
-            <div class="timeline-container sticky justify-center place-items-start z-10 px-4 py-2 bg-slate-100 transition-all duration-300">
-              <PRVPurchaseTimeline 
-                data={rpddData}
-                selectedYear={selectedTransactionYear}
-                onYearSelect={handleTransactionYearSelect}
-                transactionYearSelected={handleTransactionYearSelect}
-              />
-            </div>
-
-            <!-- Main content area with new TransactionsWrapper -->
-            <div class="flex flex-1 h-[calc(100vh-150px)] overflow-hidden">
+            <div class="flex flex-1 h-full">
               <TransactionsWrapper 
                 data={rpddData} 
                 stockData={rpdCompanyValues}
@@ -913,7 +806,7 @@
   .therapeutic-area-tab-content,
   .transactions-tab-content,
   .overview-tab-content {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
