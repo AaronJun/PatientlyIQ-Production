@@ -4,17 +4,23 @@
     import AreaMetricsList from './AreaMetricsList.svelte';
     import RPDSummaryView from './RPDSummaryView.svelte';
     import { getTherapeuticAreaFill, getTherapeuticAreaStroke } from '../utils/colorDefinitions';
+    import { createEventDispatcher } from 'svelte';
     
-    export let currentEntries = [];
-    export let currentArea = null;
-    export let areaMetrics = null;
-    export let colorMap = {}; // Kept for backward compatibility
-    export let onShowDrugDetail = (details) => {};
-    export let fullYearData = []; // All data for the selected year
-    export let selectedYear = "";
+    export let currentEntries: any[] = [];
+    export let currentArea: string | null = null;
+    export let areaMetrics: any | null = null;
+    export let colorMap: Record<string, string> = {}; // Kept for backward compatibility
+    export let onShowDrugDetail = (details: any) => {};
+    export let fullYearData: any[] = []; // All data for the selected year
+    export let selectedYear: string = "";
+    export let isCollapsed: boolean = false;
+    export let isTouchDevice: boolean = false;
+    
+    // Create event dispatcher for canvas events
+    const dispatch = createEventDispatcher();
     
     // Handle drug card click
-    function handleDrugClick(entry) {
+    function handleDrugClick(entry: any) {
       onShowDrugDetail({
         drugName: entry.Candidate,
         year: entry["RPDD Year"],
@@ -62,7 +68,7 @@
           <DrugEntryCard 
             {entry}
             onClick={handleDrugClick}
-            {colorMap}
+            colorMap={null}
           />
         {/each}
       </div>

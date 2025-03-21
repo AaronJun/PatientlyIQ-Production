@@ -13,7 +13,7 @@
 </script>
 
 <div 
-  class="card-2 px-4 py-4 hover:bg-sky-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+  class="card-2 py-2 hover:bg-emerald-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
   on:click={() => onClick(entry)}
 >
   <div class="flex flex-col gap-2">
@@ -64,15 +64,11 @@
 </div>
 
 <style>
-  .card {
-    border-bottom: .725px dotted #535353;
-    padding: .5rem .25rem .75rem .325rem;
+  .card-2 {
     transition: all 0.2s ease-in-out;
   }
   
-  .card:hover {
-    transform: translateX(4px);
-    border-bottom: 1px solid #535353;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  .card-2:hover {
+    transform: translateX(2.25px);
   }
 </style>

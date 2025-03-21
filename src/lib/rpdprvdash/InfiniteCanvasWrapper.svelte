@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, tick, createEventDispatcher } from 'svelte';
   import * as d3 from 'd3';
-  import { Help, ZoomIn, ZoomOut, ZoomReset } from 'carbon-icons-svelte';
   import RPDTooltip from '$lib/RPDComponents/RPDTooltip.svelte';
 
   // Use default values instead of window properties for SSR compatibility
@@ -48,8 +47,8 @@
     }
   });
 
-  // Navigation control functions
-  function zoomIn() {
+  // Navigation control functions - exported for external use
+  export function zoomIn() {
     if (svg) {
       const svgSelection = d3.select<SVGSVGElement, unknown>(svg);
       svgSelection.transition()
@@ -58,7 +57,7 @@
     }
   }
 
-  function zoomOut() {
+  export function zoomOut() {
     if (svg) {
       const svgSelection = d3.select<SVGSVGElement, unknown>(svg);
       svgSelection.transition()
@@ -384,57 +383,13 @@
   <!-- Tooltip component -->
   <div 
     class="tooltip-container" 
-    style="position: absolute; left: {tooltipX}px; top: {tooltipY}px; pointer-events: none; z-index: 1000;"
+    style="position: absolute; left: {tooltipX}px; top: {tooltipY}px; pointer-events: none; z-index: 10;"
   >
     <RPDTooltip 
       visible={tooltipVisible} 
       content={tooltipContent} 
       borderColor={tooltipBorderColor} 
     />
-  </div>
-
-  
-  <div 
-    class="controls absolute z-0 {isTouchDevice ? 'mobile-controls' : 'top-24 left-8'}"
-    on:mouseenter={() => isHovered = true}
-    on:mouseleave={() => isHovered = false}
-    role="toolbar"
-    tabindex="0"
-    aria-label="Canvas controls"
-  >
-    <div class="main-controls flex flex-col gap-3" role="group" aria-label="Zoom controls">
-    <button 
-      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
-      on:click={zoomIn}
-      aria-label="Zoom In"
-    >
-    <ZoomIn class="w-5 h-5 text-slate-600" aria-hidden="true"/>
-    </button>
-    <button 
-      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
-      on:click={zoomOut}
-      aria-label="Zoom Out"
-    >
-    <ZoomOut class="w-5 h-5 text-slate-600" aria-hidden="true"/>
-    </button>
-    <button 
-      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
-      on:click={resetView}
-      aria-label="Reset View"
-    >
-      <ZoomReset class="w-5 h-5 text-slate-600" aria-hidden="true"/>
-    </button>
-    </div>
-    <div class="help-button-container mt-12">
-    <button 
-      class="help-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
-      on:click={handleHowToNavigateClick}
-      title={isCollapsed && !isHovered ? "How to Navigate" : ''}
-      aria-label="Help with navigation"
-    >
-      <Help class="w-5 h-5 text-slate-600" aria-hidden="true"/>
-    </button>
-    </div>
   </div>
 </div>
   
@@ -443,32 +398,19 @@
   :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
+    z-index: 0;
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
   }
   
-  .controls {
-    z-index: 10;
-  }
-  
   /* Ensure the canvas fills parent container and position controls for mobile */
   @media (max-width: 768px) {
-    .controls {
-      bottom: 20px;
-      right: 20px;
-    }
-    
     /* Mobile-specific styles */
     :global(.infinite-canvas-container svg) {
       touch-action: none !important;
     }
-    
-    .mobile-controls {
-      bottom: 24px;
-      right: 24px;
-      z-index: 30;
-    }
   }
 </style>
 
+      

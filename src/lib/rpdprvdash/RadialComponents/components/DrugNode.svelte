@@ -444,7 +444,7 @@
                 }
                 
                 // Desaturate and dim other nodes
-                const duration = sizeConfig.useAnimations ? sizeConfig.transitionDuration / 2 : 0;
+                const duration = sizxeConfig.useAnimations ? sizeConfig.transitionDuration / 2 : 0;
                 
                 node.transition()
                     .duration(duration)

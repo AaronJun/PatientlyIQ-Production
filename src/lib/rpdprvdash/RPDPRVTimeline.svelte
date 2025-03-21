@@ -558,7 +558,7 @@
 </script>
 
     <!-- Timeline for desktop - now using CSS Grid -->
-    <div class="backdrop-blur-sm" bind:this={container}>
+    <div class="backdrop-blur-sm bg-slate-100" bind:this={container}>
         <!-- SVG definitions for gradients -->
         <svg width="0" height="0" aria-hidden="true">
             <defs>
@@ -599,7 +599,7 @@
             </defs>
         </svg>
 
-        <div class="timeline-grid px-4">
+        <div class="timeline-grid bg-slate-100 px-4">
             {#each yearData as yearEntry}
                 <div class="year-item">
                     <button 
@@ -725,10 +725,11 @@
     .timeline-container {
         position: relative;
         height: 4rem;
-        overflow: hidden;
+        z-index: 10;                 
+        overflow: hidden;    
     }
 
-    .timeline-container:hover {
+    .timeline-container:hover { 
         height: 4rem; /* Expanded height on hover */
     }
 

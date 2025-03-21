@@ -3,6 +3,7 @@
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import { fade, fly, slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
+  import { ChevronRight, ChevronLeft } from 'carbon-icons-svelte';
   
   import RPDPRVHorizontalTimeline from '../RPDPRVTimeline.svelte';
   import RPDDRadialYear from '../RPDPRVTherapeuticAreaChart.svelte';
@@ -11,6 +12,7 @@
   import TherapeuticAreaSidebar from '../sidebarComponents/TherapeuticAreaSidebar.svelte';
   import MobileTherapeuticAreaSidebar from '../sidebarComponents/MobileTherapeuticAreaSidebar.svelte';
   import InfiniteCanvasWrapper from '../InfiniteCanvasWrapper.svelte';
+  import CanvasNavControls from '../sidebarComponents/CanvasNavControls.svelte';
   
   // Define interfaces
   interface CompanyHoverData {
@@ -45,7 +47,7 @@
   // State variables
   let isRightSidebarCollapsed = false;
   let isMobileSidebarExpanded = false;
-  let infiniteCanvas: { resetView: () => void };
+  let infiniteCanvas: { resetView: () => void; zoomIn: () => void; zoomOut: () => void; };
   let hoveredTherapeuticArea = "";
   let currentEntries: any[] = [];
   let currentView: string | null = null;
@@ -53,6 +55,7 @@
   let currentArea: string | null = null;
   let areaMetrics: any | null = null;
   let isCanvasActive = false; // Track if user is interacting with canvas
+  let isTouchDevice = false; // Track if we're on a touch device
   
   // Process data for the legend
   const processedData = Object.entries(
@@ -223,6 +226,11 @@
   }
 
   onMount(() => {
+    // Check if we're on a touch device
+    isTouchDevice = 'ontouchstart' in window || 
+                   navigator.maxTouchPoints > 0 ||
+                   (navigator as any).msMaxTouchPoints > 0;
+                   
     // Initialize any necessary setup
     if (isMobileView) {
       // Add event listeners for canvas interaction on mobile
@@ -261,14 +269,38 @@
     // Always end interaction on touch end
     handleCanvasInteractionEnd();
   }
+
+  // Handler functions for canvas navigation 
+  function handleZoomIn() {
+    if (infiniteCanvas && infiniteCanvas.zoomIn) {
+      infiniteCanvas.zoomIn();
+    }
+  }
+  
+  function handleZoomOut() {
+    if (infiniteCanvas && infiniteCanvas.zoomOut) {
+      infiniteCanvas.zoomOut();
+    }
+  }
+  
+  function handleResetView() {
+    if (infiniteCanvas && infiniteCanvas.resetView) {
+      infiniteCanvas.resetView();
+    }
+  }
+  
+  function handleHowToNavigate() {
+    onHowToNavigate();
+  }
 </script>
 
 <div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full"
      on:touchstart={handleCanvasInteractionStart}
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
-  <div class="w-full h-full relative">
-    <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
+
+  <div class="w-full h-full items-center relative">
+    <div class="timeline-container fixed justify-center place-items-start w-full z-20 bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
         data={data}
         {selectedYear}
@@ -277,7 +309,8 @@
     </div>
     
     {#if isMobileView}
-      <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
+    <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 text-emerald-800 px-4 py-2 rounded-full ring-1 ring-emerald-400 ring-offset-2 shadow-md text-xs font-medium" 
+    transition:fade={{ duration: 300 }}>
         Use two fingers to zoom & pan the chart
       </div>
     {/if}
@@ -289,7 +322,8 @@
       let:hideTooltip
       on:howToNavigate={onHowToNavigate}
       isCollapsed={isSidebarCollapsed} 
-      className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden therapeutic-area-canvas">
+      className="therapeutic-area-canvas w-full h-[calc(100vh-150px)] mt-16 overflow-hidden"
+      >
       {#if mainGroup}
         <RPDDRadialYear 
           data={filteredData}
@@ -304,7 +338,6 @@
           {showTooltip}
           {hideTooltip}
           hoveredTherapeuticArea={hoveredTherapeuticArea}
-          allYearsData={selectedYear === "All" ? data : undefined}
         />
       {:else}
         <!-- Loading spinner -->
@@ -333,71 +366,80 @@
 
   <!-- Desktop right information sidebar - only show on non-mobile -->
   {#if !isMobileView}
-  <div class="absolute right-6 top-25 h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-    <button
-      class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-      on:click={toggleRightSidebar}
-      title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+    <div 
+      class="sidebar-area fixed top-16 bottom-0 right-0 z-30 flex flex-col transition-all duration-300 ease-in-out pt-20 pb-4 shadow-md bg-slate-50/80 backdrop-blur-sm"
+      class:w-64={!isRightSidebarCollapsed}
+      class:w-7={isRightSidebarCollapsed}
+      transition:slide={{ duration: 300, axis: 'x' }}
     >
-      <svg
-        class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-    </button>
-    <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col">
-      <!-- Search component in therapeutic area sidebar -->
-      <div class="mb-4">
-        <RpdprvSearch
-          data={data}
-          onShowDrugDetail={onShowDrugDetail}
-          onShowCompanyDetail={onShowCompanyDetail}
+      <div class="sidebar-controls-area absolute top-32 -left-12 z-40 flex flex-col gap-4">
+        <!-- Toggle button -->
+        <button 
+          class="sidebar-toggle bg-slate-100 p-2 rounded-full shadow-md hover:bg-slate-200 transition-all ring-1 ring-slate-200"
+          on:click={toggleRightSidebar}
+          aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <svelte:component this={isRightSidebarCollapsed ? ChevronLeft : ChevronRight} size={16} class="text-slate-500"/>
+        </button>
+        
+        <!-- Canvas navigation controls -->
+        <CanvasNavControls 
+          orientation="vertical"
+          isCollapsed={isRightSidebarCollapsed}
+          isTouchDevice={isTouchDevice}
+          on:zoomIn={handleZoomIn}
+          on:zoomOut={handleZoomOut}
+          on:resetView={handleResetView}
+          on:howToNavigate={handleHowToNavigate}
         />
       </div>
-
-      <!-- Scrollable content area -->
-      <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-        <!-- Use the updated therapeutic area sidebar component -->
-        <TherapeuticAreaSidebar
-          {currentEntries}
-          currentArea={currentArea}
-          {areaMetrics}
-          {colorMap}
-          onShowDrugDetail={onShowDrugDetail}
-          fullYearData={filteredData}
-          {selectedYear}
-        />
-      </div>
-
-      <!-- Legend stays at bottom -->
-      <div class="legend-container flex-none mt-6 pb-4">
-        <RPDRadialLegend 
-          items={processedData.map(item => ({
-            ...item,
-            yearCount: selectedYear === "All" ? 
-              item.count : 
-              filteredData.filter(d => d.TherapeuticArea1 === item.area).length
-          }))}
-          selectedYear={selectedYear}
-          showYearCounts={selectedYear !== "All"}
-          hoveredArea={hoveredTherapeuticArea}
-          on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
-          on:areaLeave={() => hoveredTherapeuticArea = ""}
-          on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
-          {colorScale}
-        />
+      
+      <div class="flex flex-col h-full w-full overflow-hidden">
+        <!-- Search component -->
+        {#if !isRightSidebarCollapsed}
+          <div class="px-3 flex-none z-10">
+            <RpdprvSearch
+              data={data}
+              onShowDrugDetail={onShowDrugDetail}
+              onShowCompanyDetail={onShowCompanyDetail}
+            />
+          </div>
+          
+          <!-- Sidebar content -->
+          <div class="scrollbar-thin overflow-y-auto flex-grow mt-4 px-3">
+            <TherapeuticAreaSidebar 
+              {currentEntries} 
+              {currentArea}
+              {areaMetrics}
+              {colorMap}
+              {onShowDrugDetail}
+              fullYearData={filteredData}
+              selectedYear={selectedYear}
+              isCollapsed={isRightSidebarCollapsed}
+              isTouchDevice={isTouchDevice}
+            />
+          </div>
+          
+          <div class="legend-container flex-none mt-6 pb-4">
+            <RPDRadialLegend 
+              items={processedData.map(item => ({
+                ...item,
+                yearCount: selectedYear === "All" ? 
+                  item.count : 
+                  filteredData.filter(d => d.TherapeuticArea1 === item.area).length
+              }))}
+              selectedYear={selectedYear}
+              showYearCounts={selectedYear !== "All"}
+              hoveredArea={hoveredTherapeuticArea}
+              on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
+              on:areaLeave={() => hoveredTherapeuticArea = ""}
+              on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
+              {colorScale}
+            />
+          </div>
+        {/if}
       </div>
     </div>
-  </div>
   {/if}
   
   <!-- Mobile/Tablet bottom sidebar - show on mobile -->
@@ -429,8 +471,16 @@
 <style>
   .timeline-container {
     border-bottom: .5px solid #549E7D;
-    z-index: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Fix for continuous scrolling - keeping minimal styles that don't affect panning */
+  :global(.therapeutic-area-canvas svg) {
+    cursor: grab;
+  }
+  
+  :global(.therapeutic-area-canvas svg:active) {
+    cursor: grabbing;
   }
   
   .legend-container {
@@ -495,6 +545,12 @@
     /* Desktop specific styles */
     :global(.therapeutic-area-wrapper .infinite-canvas-container) {
       height: calc(100vh - 150px) !important;
+    }
+    
+    /* Ensure the sidebar has the right height */
+    .h-fit {
+      max-height: 64.25vh;
+      overflow-y: auto;
     }
   }
   

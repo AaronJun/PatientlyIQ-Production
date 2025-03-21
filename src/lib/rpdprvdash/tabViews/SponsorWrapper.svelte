@@ -3,6 +3,7 @@
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import { fade, fly, slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
+  import { ChevronRight, ChevronLeft } from 'carbon-icons-svelte';
   
   import RPDPRVHorizontalTimeline from '../RPDPRVTimeline.svelte';
   import RpdprvCompanyTree from '../RadialComponents/RPDPRVCompanyTree.svelte';
@@ -11,6 +12,7 @@
   import SponsorSidebar from '../sidebarComponents/SponsorSidebar.svelte';
   import MobileSponsorSidebar from '../sidebarComponents/MobileSponsorSidebar.svelte';
   import InfiniteCanvasWrapper from '../InfiniteCanvasWrapper.svelte';
+  import CanvasNavControls from '../sidebarComponents/CanvasNavControls.svelte';
   
   // Define interfaces
   interface CompanyHoverData {
@@ -44,7 +46,7 @@
   // State variables
   let isRightSidebarCollapsed = false;
   let isMobileSidebarExpanded = false;
-  let infiniteCanvas: { resetView: () => void };
+  let infiniteCanvas: { resetView: () => void; zoomIn?: () => void; zoomOut?: () => void; };
   let hoveredTherapeuticArea = "";
   let currentEntries: any[] = [];
   let currentView: string | null = null;
@@ -69,7 +71,7 @@
       }
       return acc;
     }, {} as Record<string, number>)
-  ).map(([area, count]) => ({ area, count }));
+  ).map(([area, count]) => ({ area, count: count as number }));
   
   // Define the therapeutic area color map
   const colorMap = {
@@ -311,6 +313,29 @@
       document.body.classList.remove('canvas-active');
     }
   }
+
+  // Handler functions for canvas navigation 
+  function handleZoomIn() {
+    if (infiniteCanvas && infiniteCanvas.zoomIn) {
+      infiniteCanvas.zoomIn();
+    }
+  }
+  
+  function handleZoomOut() {
+    if (infiniteCanvas && infiniteCanvas.zoomOut) {
+      infiniteCanvas.zoomOut();
+    }
+  }
+  
+  function handleResetView() {
+    if (infiniteCanvas && infiniteCanvas.resetView) {
+      infiniteCanvas.resetView();
+    }
+  }
+
+  function handleHowToNavigate() {
+    onHowToNavigate();
+  }
 </script>
 
 <svelte:head>
@@ -341,8 +366,9 @@
      on:touchstart={handleCanvasInteractionStart}
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
+     
   <div class="w-full h-full items-center relative">
-    <div class="timeline-container fixed justify-center place-items-start w-full z-0 bg-slate-100 transition-all duration-300">
+    <div class="timeline-container fixed justify-center place-items-start w-full z-20 bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
         data={data}
         selectedYear={selectedYear}
@@ -351,7 +377,7 @@
     </div>
     
     {#if isMobileView}
-      <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
+      <div class="mobile-hint fixed z-10 top-20 left-1/2 transform -translate-x-1/2 text-emerald-800 px-4 py-2 rounded-full ring-1 ring-emerald-400 ring-offset-2 shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
         Use two fingers to zoom & pan the chart
       </div>
     {/if}
@@ -377,8 +403,6 @@
           {mainGroup}
           {showTooltip}
           {hideTooltip}
-          hoveredTherapeuticArea={hoveredTherapeuticArea}
-          allYearsData={selectedYear === "All" ? data : undefined}
         />
       {:else}
         <!-- Loading spinner -->
@@ -405,102 +429,80 @@
     </InfiniteCanvasWrapper>
   </div>
 
-  <!-- Desktop right sidebar - only show on non-mobile -->
-  {#if !isMobileView}
-    <div class="absolute right-6 top-25h-full mt-24 {isRightSidebarCollapsed ? 'w-4' : 'w-96'} transition-all duration-300">
-      
-      <button
-        class="rounded-btn absolute -left-3 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
-        on:click={toggleRightSidebar}
-        title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-      >
-        <svg
-          class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+    <div 
+      class="sidebar-area fixed top-16 bottom-0 right-0 z-10 flex flex-col transition-all duration-300 cubic-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+      class:w-96={!isRightSidebarCollapsed}
+      class:w-7={isRightSidebarCollapsed}
+      transition:slide={{ duration: 300, axis: 'x' }}
+    >
+      <div class="sidebar-controls-area absolute top-32 -left-12 z-40 flex flex-col gap-4">
+        <!-- Toggle button -->
+    <button 
+      class="nav-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+          on:click={toggleRightSidebar}
+          aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </button>
-
-      <div class="h-full {isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/90 backdrop-blur-sm shadow-lg rounded-l-lg px-4 pt-6 flex flex-col">
-        <!-- Search component in desktop sidebar -->
-        <div class="mb-4">
-          <RpdprvSearch
-            data={data}
-            onShowDrugDetail={onShowDrugDetail}
-            onShowCompanyDetail={onShowCompanyDetail}
-          />
-        </div>
+          <svelte:component this={isRightSidebarCollapsed ? ChevronLeft : ChevronRight} class="w-4 h-4 `text-slate-500"/>
+        </button>
         
-        <!-- Scrollable content area -->
-        <div class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-slate-200 scrollbar-thumb-slate-400 hover:scrollbar-thumb-slate-500">
-          <!-- Use the updated sidebar component -->
-          <SponsorSidebar
-            currentView={currentView}
-            currentEntries={currentEntries}
-            currentCompanyMetrics={currentCompanyMetrics}
-            colorMap={colorMap}
-            onShowDrugDetail={onShowDrugDetail}
-            fullYearData={filteredData}
-            selectedYear={selectedYear}
-          />
-        </div>
-
-        <!-- Legend stays at bottom -->
-        <div class="legend-container flex-none mt-6 pb-4">
-          <RPDRadialLegend 
-            items={processedData.map(item => ({
-              ...item,
-              yearCount: selectedYear === "All" ? 
-                item.count : 
-                filteredData.filter(d => d.TherapeuticArea1 === item.area).length
-            }))}
-            selectedYear={selectedYear}
-            showYearCounts={selectedYear !== "All"}
-            hoveredArea={hoveredTherapeuticArea}
-            on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
-            on:areaLeave={() => hoveredTherapeuticArea = ""}
-            on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
-            {colorScale}
-          />
-        </div>
+        <!-- Canvas navigation controls -->
+        <CanvasNavControls 
+          orientation="vertical"
+          isCollapsed={isRightSidebarCollapsed}
+          isTouchDevice={isMobileView}
+          on:zoomIn={handleZoomIn}
+          on:zoomOut={handleZoomOut}
+          on:resetView={handleResetView}
+          on:howToNavigate={handleHowToNavigate}
+        />
+      </div>
+      
+      <div class="flex flex-col h-full w-full overflow-hidden">
+        <!-- Search component -->
+        {#if !isRightSidebarCollapsed}
+          <div class="px-3 flex-none z-10">
+            <RpdprvSearch
+              data={data}
+              onShowDrugDetail={onShowDrugDetail}
+              onShowCompanyDetail={onShowCompanyDetail}
+            />
+          </div>
+          
+          <!-- Sidebar content -->
+          <div class="scrollbar-thin overflow-y-auto flex-grow mt-4 px-3">
+            <SponsorSidebar 
+              {currentView} 
+              {currentEntries} 
+              {currentCompanyMetrics}
+              {colorMap}
+              {onShowDrugDetail}
+              fullYearData={filteredData}
+              selectedYear={selectedYear}
+              isCollapsed={isRightSidebarCollapsed}
+            />
+          </div>
+          
+          <div class="legend-container flex-none mt-6 pb-4">
+            <RPDRadialLegend 
+              items={processedData.map(item => ({
+                ...item,
+                yearCount: selectedYear === "All" ? 
+                  item.count : 
+                  filteredData.filter(d => d.TherapeuticArea1 === item.area).length
+              }))}
+              selectedYear={selectedYear}
+              showYearCounts={selectedYear !== "All"}
+              hoveredArea={hoveredTherapeuticArea}
+              on:areaHover={(e) => hoveredTherapeuticArea = e.detail.area}
+              on:areaLeave={() => hoveredTherapeuticArea = ""}
+              on:areaClick={(e) => handleLegendAreaClick(e.detail.area)}
+              {colorScale}
+            />
+          </div>
+        {/if}
       </div>
     </div>
-  {/if}
   
-  <!-- Mobile/Tablet bottom sidebar - show on mobile -->
-  {#if isMobileView}
-    <MobileSponsorSidebar
-      currentView={currentView}
-      currentEntries={currentEntries}
-      currentCompanyMetrics={currentCompanyMetrics}
-      colorMap={colorMap}
-      onShowDrugDetail={onShowDrugDetail}
-      fullYearData={filteredData}
-      selectedYear={selectedYear}
-      isExpanded={isMobileSidebarExpanded}
-      on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-    >
-      <!-- Add search component to mobile sponsor sidebar -->
-      {#if isMobileSidebarExpanded}
-        <div class="mb-4 px-4 pt-4">
-          <RpdprvSearch
-            data={data}
-            onShowDrugDetail={onShowDrugDetail}
-            onShowCompanyDetail={onShowCompanyDetail}
-          />
-        </div>
-      {/if}
-    </MobileSponsorSidebar>
-  {/if}
 </div>
 
 <style>
@@ -512,10 +514,6 @@
     border-bottom: .5px solid #549E7D;
     z-index: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .rounded-btn {
-    border: 1px solid #549E7D;
   }
   
   /* Fix for continuous scrolling - keeping minimal styles that don't affect panning */

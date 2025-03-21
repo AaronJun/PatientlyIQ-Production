@@ -113,7 +113,7 @@
             .attr("fill", "transparent")
             .attr("pointer-events", "none")
             .attr("class", "background-rect");
-
+ 
         // Center the visualization in the mainGroup
         contentGroup = mainGroup.append("g");
         

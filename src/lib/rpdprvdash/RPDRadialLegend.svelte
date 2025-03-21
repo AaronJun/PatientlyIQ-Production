@@ -2,6 +2,7 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
     import { getTherapeuticAreaColor, therapeuticAreaColors } from './utils/colorDefinitions';
+    import { ChevronDown } from 'carbon-icons-svelte';
     import { createSplitColorStarSVG } from './utils/svg-utils';
     
     // Set up event dispatcher
@@ -138,32 +139,30 @@
     }
 </script>
 
-<div class="legend-wrapper">
+<div class="legend-wrapper px-2">
     <div 
-        class="legend-header border-t border-t-slate-900 pt-2 flex justify-between items-center cursor-pointer"
+        class="legend-header bg-slate-50/20 backdrop-blur-sm pt-2 flex justify-between items-center cursor-pointer"
         on:click={toggleCollapse}
         tabindex="0"
         role="button"
         aria-expanded={!isCollapsed}
         aria-controls="legend-content"
     >
-        <h3 class="text-xs font-semibold text-slate-800 capitalize">
-            Therapeutic Areas {selectedYear && showYearCounts ? `(${selectedYear})` : ''}
+        <h3 class="text-2xs font-medium text-slate-600 capitalize">
+            Therapeutic Areas {selectedYear && showYearCounts ? `| ${selectedYear}` : ''}
         </h3>
         <button 
-            class="collapse-toggle text-xs text-slate-600 transition-transform duration-300"
+            class="collapse-toggle text-2xs text-slate-600 transition-transform duration-300"
             class:rotate-180={isCollapsed}
             aria-label={isCollapsed ? "Expand legend" : "Collapse legend"}
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            >
+            <ChevronDown class="w-4 h-4 bg-slate-500 text-white rounded-full p-1" />
         </button>
     </div>
 
     <div 
         id="legend-content"
-        class="legend-container grid flex-wrap align-middle justify-left w-full gap-x-4 overflow-hidden transition-all duration-300 ease-in-out"
+        class="legend-container grid flex-wrap align-middle justify-left w-full overflow-hidden transition-all duration-300 ease-in-out"
         style="grid-template-columns: repeat({columns}, minmax(0, 1fr)); max-height: {isCollapsed ? '0' : '1000px'}; opacity: {isCollapsed ? '0' : '1'}; margin-top: {isCollapsed ? '0' : '0.75rem'};"
         bind:this={legendContainer}
     >
@@ -179,10 +178,10 @@
                 on:click|stopPropagation={() => handleAreaClick(d.area)}
                 tabindex="0"
             >
-                <div class="legend-star w-4 h-4">
+                <div class="legend-star w-3 h-3">
                     {@html getStarSVG(d.area)}
                 </div>
-                <span class="text-xs text-slate-700 font-sans font-base">
+                <span class="text-2xs text-slate-500 font-sans font-base">
                     {d.area}{showYearCounts && d.yearCount !== undefined ? ` | ${d.yearCount}` : d.count > 0 ? ` | ${d.count}` : ''}
                 </span>
             </div>
@@ -192,7 +191,7 @@
 
 <style>
     .legend-row {
-        margin-bottom: 0.425rem;
+        margin-bottom: 0.325rem;
         padding-bottom: .25rem;
         cursor: pointer;
     }
@@ -200,7 +199,7 @@
     .legend-item {
         display: flex;
         align-items: center;
-        gap: 0.52725rem;
+        gap: 0.3725rem;
     }
 
     .legend-star {
@@ -209,9 +208,9 @@
         justify-content: center;
         position: relative;
         top: .25px; /* Slight adjustment for vertical alignment */
-        width: 14px;
-        height: 14px;
-        min-width: 14px;
+        width: 12px;
+        height: 12px;
+        min-width: 12px;
     }
    
     .legend-header {

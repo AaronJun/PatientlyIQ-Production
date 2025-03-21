@@ -570,10 +570,9 @@
   <!-- Main content area with proper spacing -->
   <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden pl-8">
 
-    <div class="tab-content w-full h-full flex relative">
+    <div class="tab-content w-full h-full z-0 flex relative">
       <!-- Main content area taking full width -->
       <div class="w-full relative h-full overflow-hidden">
-        
         <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
           <SponsorWrapper
@@ -596,6 +595,7 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            class="tab-content flex flex-row flex-grow relative h-full"
           >
             <TherapeuticAreaWrapper
               data={rpddData}
