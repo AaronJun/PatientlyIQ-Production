@@ -25,20 +25,20 @@
     const dispatch = createEventDispatcher();
 </script>
 
-<div class="mobile-sidebar fixed bottom-12 left-0 right-0 bg-slate-200 shadow-lg transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
+<div class="mobile-sidebar fixed bottom-12 left-0 right-0 bg-slate-100 border-t-2 border-slate-800 shadow-lg transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
   <!-- Handle to expand/collapse -->
   <div 
-    class="handle flex justify-center items-center h-14 cursor-pointer border-t border-x border-slate-200"
+    class="handle flex justify-center items-center h-14 cursor-pointer border-t-2 border-slate-800 bg-slate-100"
     on:click={() => isExpanded = !isExpanded}
   >
   
-    <div class="absolute right-4">
+    <div class="absolute right-4 bg-emerald-400 rounded-full p-1 ring-2 ring-emerald-400 ring-offset-2">
       <ChevronUp 
         size={20} 
         class="text-slate-500 transform transition-transform duration-300 {isExpanded ? 'rotate-180' : ''}"
       />
     </div>
-    <div class="absolute left-4 text-sm font-medium text-slate-700">
+    <div class="absolute left-4 text-sm font-base text-slate-600">
       {highlightedTransaction ? 'Transaction Details' : 'View Details'}
     
     </div>

@@ -189,31 +189,31 @@
         <!-- Transaction Tab Navigation -->
         <div class="transaction-tabs bg-slate-800 flex flex-row w-full justify-start text-left">
             <button 
-                class="tab-button border-l-8 border-slate-400 px-2 py-1 md:py-6 w-1/3 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-flow' ? 'w-4/5   bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"
+                class="tab-button border-l-6 border-slate-400 px-2 py-1 md:py-6 w-1/3 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-flow' ? 'w-4/5   bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"
                 on:click={() => setActiveTransactionTab('transaction-flow')}
             >   
 
-            <div class="flex flex-col md:flex-row items-start gap-1">
-                <CicsTransactionServerZos class="mr-2 md:mr-4 w-4 h-4" />
-                    <span class="text-2xs md:text-xs  font-semibold">Transaction Network</span>   
+            <div class="flex flex-row items-start align-middle gap-2">
+                <CicsTransactionServerZos class="md:mr-4 w-4 h-4 md:w-6 md:h-6" />
+                    <span class="text-2xs md:text-xs lg:text-sm align-middle font-semibold">Transaction Network</span>   
             </div>
             </button>
             <button 
-                class="tab-button border-l-8 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-analytics' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
+                class="tab-button border-l-6 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-analytics' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
                 on:click={() => setActiveTransactionTab('transaction-analytics')}
             >
-                <div class="flex flex-col md:flex-row items-start gap-1">
-                    <Money class="mr-2 w-4 h-4" />
-                    <span class="text-2xs md:text-xs  font-semibold">Transaction Analytics</span>
+                <div class="flex flex-row items-start align-middle gap-1">
+                    <Money class="mr-2 w-4 h-4 md:w-6 md:h-6" />
+                    <span class="text-2xs md:text-xs lg:text-sm font-semibold">Transaction Analytics</span>
                 </div>
             </button>
             <button 
-            class="tab-button border-l-8 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'case-studies' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
+            class="tab-button border-l-6 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'case-studies' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
             on:click={() => setActiveTransactionTab('case-studies')}
         >
-            <div class="flex flex-col md:flex-row items-start gap-1">
-                <TextLinkAnalysis class="mr-2 w-4 h-4" />
-                <span class="text-2xs md:text-xs  font-semibold">Case Studies</span>
+            <div class="flex flex-row items-start align-middle gap-1">
+                <TextLinkAnalysis class="mr-2 w-4 h-4 md:w-6 md:h-6" />
+                <span class="text-2xs md:text-xs lg:text-sm font-semibold">Case Studies</span>
             </div>
         </button>
             </div>

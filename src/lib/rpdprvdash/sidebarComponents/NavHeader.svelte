@@ -32,11 +32,6 @@
         dispatch('tabSelect', itemId);
       }
     }
-    
-    // Handle how to navigate button click
-    function handleHowToNavigateClick() {
-      dispatch('howToNavigate');
-    }
 </script>
 
 <div 
