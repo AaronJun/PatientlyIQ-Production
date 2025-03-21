@@ -170,7 +170,7 @@
         <h4 class="text-xs font-medium text-slate-600 mb-2">Buyers, {year}</h4>
       </div>
       
-      <div class="bg-white rounded-md shadow-sm p-3">
+      <div class="rounded-md shadow-sm p-3">
         <p class="text-2xl font-bold text-slate-700">{sellersInYear.size}</p>
         <h4 class="text-xs font-medium text-slate-600 mb-2">Sellers, {year}</h4>
       </div>

@@ -40,14 +40,14 @@
 </script>
 
 <div 
-  class="horizontal-sidebar-container flex flex-row max-h-fit fixed bg-slate-700 left-0 bottom-0 md:top-0 w-full z-40 
-         items-center justify-center md:justify-between shadow-xl md:px-8 pb-1 md:py-5
+  class="horizontal-sidebar-container flex flex-row min-h-fit h-12 md:h-16 fixed bg-slate-900 left-0 bottom-0 md:top-0 w-full z-40 
+         items-center justify-center md:justify-between shadow-xl md:px-8 pb-1 md:py-2
          transition-all duration-300 ease-in-out"
   role="navigation"
   aria-label="Main navigation sidebar"
 >
-  <div class="items-center h-full hidden md:block">
-    <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8" style="filter: saturate(0.625)" />
+  <div class="items-center h-full hidden md:block md:justify-center md:align-middle md:w-10 md:h-10">
+    <img src={PIQLogo} alt="PIQ Logo" class="w-10 h-10" style="filter: saturate(0.625)" />
   </div>
 
   <nav class="flex flex-row items-center md:justify-between justify-center">

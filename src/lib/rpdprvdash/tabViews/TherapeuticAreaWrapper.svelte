@@ -375,13 +375,13 @@
   }
 </script>
 
-<div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full h-[calc(100vh-150px)]"
+<div class="ta-tab-content flex flex-row flex-grow relative h-full"
      on:touchstart={handleCanvasInteractionStart}
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
 
   <div class="w-full h-full items-center relative">
-    <div class="timeline-container fixed justify-center place-items-start w-full z-20 bg-slate-100 transition-all duration-300">
+    <div class="timeline-container fixed w-full bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
         data={data}
         {selectedYear}
@@ -390,13 +390,12 @@
     </div>
     
     {#if isMobileView}
-    <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 text-emerald-800 px-4 py-2 rounded-full ring-1 ring-emerald-400 ring-offset-2 shadow-md text-xs font-medium" 
+    <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 text-emerald-800 px-4 py-2 rounded-full shadow-md text-xs font-medium" 
     transition:fade={{ duration: 300 }}>
         Use two fingers to zoom & pan the chart
       </div>
     {/if}
-    
-    <div class="infinite-canvas-container-wrapper w-full mt-16" class:mobile-view={isMobileView}>
+
       <InfiniteCanvasWrapper 
         bind:this={infiniteCanvas} 
         let:mainGroup 
@@ -404,7 +403,8 @@
         let:hideTooltip
         on:howToNavigate={onHowToNavigate}
         isCollapsed={isSidebarCollapsed} 
-        className="therapeutic-area-canvas w-full overflow-hidden"
+    
+      className="sponsor-infinite-canvas w-full h-[calc(100vh-150px)] mt-16 overflow-hidden"
         >
         {#if mainGroup}
           <RPDDRadialYear 
@@ -444,26 +444,27 @@
           </g>
         {/if}
       </InfiniteCanvasWrapper>
-    </div>
   </div>
 
   <div 
-  class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+  class="sidebar-area fixed top-24 md:top-36 h-[82.25vh] md:h-[75.25vh] bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm
+  "
   class:md:w-[38.25vw]={!isRightSidebarCollapsed}
   class:w-[87.25vw]={!isRightSidebarCollapsed && isMobileView}
   class:w-12={isRightSidebarCollapsed && !isMobileView}
   class:w-7={isRightSidebarCollapsed && isMobileView}
   transition:slide={{ duration: 300, axis: 'x' }}
 >
-      <div class="sidebar-controls-area absolute top-32 -left-12 z-40 flex flex-col gap-4">
+<div class="sidebar-controls-area absolute top-8 -left-4 md:-left-12 md:top-32 z-40 flex flex-col gap-4">
         <!-- Toggle button -->
         <button 
-        class="toggle-control mb-6 bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="toggle-control mb-6 bg-emerald-100 ring-2 ring-emerald-500 ring-offset-4 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300 hover:ring-offset-2"
             on:click={toggleRightSidebar}
             aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-          <svelte:component this={isRightSidebarCollapsed ? ChevronLeft : ChevronRight} size={16} class="text-slate-500"/>
+          <svelte:component this={isRightSidebarCollapsed ? ChevronLeft : ChevronRight} class="w-4 h-4 `text-slate-500"/>
         </button>
+        
         
         <!-- Canvas navigation controls -->
         <CanvasNavControls 

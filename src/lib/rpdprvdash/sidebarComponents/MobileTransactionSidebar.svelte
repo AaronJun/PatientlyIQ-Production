@@ -25,13 +25,13 @@
     const dispatch = createEventDispatcher();
 </script>
 
-<div class="mobile-sidebar fixed bottom-12 left-0 right-0 bg-slate-100 shadow-lg rounded-t-xl transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
+<div class="mobile-sidebar fixed bottom-12 left-0 right-0 bg-slate-200 shadow-lg transition-transform duration-300 transform {isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-3.5rem)]'}">
   <!-- Handle to expand/collapse -->
   <div 
-    class="handle flex justify-center items-center h-14 cursor-pointer bg-white rounded-t-xl border-t border-x border-slate-200"
+    class="handle flex justify-center items-center h-14 cursor-pointer border-t border-x border-slate-200"
     on:click={() => isExpanded = !isExpanded}
   >
-    <div class="w-16 h-1 bg-slate-300 rounded-full mb-2"></div>
+  
     <div class="absolute right-4">
       <ChevronUp 
         size={20} 
@@ -45,7 +45,7 @@
   </div>
   
   <!-- Content area -->
-  <div class="content overflow-y-auto bg-slate-50">
+  <div class="content overflow-y-auto">
     <div>
       <!-- Slot for additional content like search -->
       <slot></slot>
@@ -60,7 +60,7 @@
             on:transactionLeave={handleTransactionLeave}
           />
         </div>
-        <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="rounded-lg shadow-sm p-4">
           <RPDTransactionSummaryView 
             data={data}
             year={selectedYear}
@@ -78,7 +78,6 @@
       border-radius: 1rem;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
-      border-top: .425px solid #1f2937;
       max-height: 70vh;
       z-index: 1200;
     }

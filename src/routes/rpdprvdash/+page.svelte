@@ -459,24 +459,24 @@
 </script>
 
 <!-- Mark non-interactive areas with a data attribute -->
+<div class="sticky overflow-y-auto overflow-x-hidden md:h-16 z-20">
+  <NavHeader 
+    {activeTab} 
+    isCollapsed={isSidebarCollapsed}
+    on:tabSelect={handleTabSelect}
+    on:toggleCollapse={handleSidebarToggle}
+    on:howToNavigate={handleHowToNavigate}
+    on:dashboard={handleDashboard}
+  />
+</div>
 <div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
-  <div class="sticky overflow-y-auto overflow-x-hidden z-20">
-    <NavHeader 
-      {activeTab} 
-      isCollapsed={isSidebarCollapsed}
-      on:tabSelect={handleTabSelect}
-      on:toggleCollapse={handleSidebarToggle}
-      on:howToNavigate={handleHowToNavigate}
-      on:dashboard={handleDashboard}
-    />
-  </div>
 
   <!-- Main content area with proper spacing -->
   <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden">
 
     <div class="tab-content w-full h-full z-0 flex relative">
       <!-- Main content area taking full width -->
-      <div class="w-full relative h-full md:pt-16 overflow-hidden">
+      <div class="w-full relative h-full overflow-hidden">
         <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
           <SponsorWrapper
@@ -499,7 +499,7 @@
           <div 
             in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
             out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-            class="tab-content  w-full h-full z-0 flex relative">
+            class="tab-content w-full h-full z-0 flex relative">
           
             <TherapeuticAreaWrapper
               data={rpddData}

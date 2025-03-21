@@ -600,7 +600,7 @@
         </svg>
 
         <div class="flex flex-col md:flex-row place-items-center md:justify-center md:gap-8">
-                <div class="timeline-grid place-content-center justify-center w-full bg-slate-100 pb-2">
+                <div class="timeline-grid place-content-center justify-center w-full bg-slate-100">
                     {#each yearData as yearEntry}
                     <div class="year-item">
                     <button 

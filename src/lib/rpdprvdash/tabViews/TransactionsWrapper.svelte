@@ -7,7 +7,7 @@
     import CompanyLeaderboard from '../Overview/CompanyLeaderboard.svelte';
     import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import UnsoldVouchersTable from '../Overview/UnsoldVouchersTable.svelte';
-    import { Money, CicsTransactionServerZos, Catalog, ChartParallel, ChevronRight } from 'carbon-icons-svelte';
+    import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import SellerBuyerChord from '../TransactionChord.svelte';
     import VoucherBeeswarmPlot from '../VoucherBeeswarmPlot.svelte';
@@ -187,23 +187,35 @@
 <div class="transactions-wrapper h-full overflow-y-auto">
     <TransactionsIntroduction />
         <!-- Transaction Tab Navigation -->
-        <div class="transaction-tabs flex flex-row gap-2 justify-center w-full md:w-fit md:ml-8 md:mb-8 md:justify-start">
+        <div class="transaction-tabs bg-slate-800 flex flex-row w-full justify-start text-left">
             <button 
-                class="tab-button flex flex-row px-4 py-2 rounded-full hover:bg-[#FF4A4A]/80 hover:text-slate-100/80 {activeTransactionTab === 'transaction-flow' ? 'bg-[#FF4A4A] font-medium text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"
+                class="tab-button border-l-8 border-slate-400 px-2 py-1 md:py-6 w-1/3 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-flow' ? 'w-4/5   bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"
                 on:click={() => setActiveTransactionTab('transaction-flow')}
             >   
-                    <CicsTransactionServerZos class="mr-2 w-4 h-4" />
-                    <span class="text-xs font-medium">Transaction Network</span>   
+
+            <div class="flex flex-col md:flex-row items-start gap-1">
+                <CicsTransactionServerZos class="mr-2 md:mr-4 w-4 h-4" />
+                    <span class="text-2xs md:text-xs  font-semibold">Transaction Network</span>   
+            </div>
             </button>
             <button 
-                class="tab-button px-4 py-2 rounded-full hover:bg-[#FF4A4A]/80 hover:text-slate-100/80 {activeTransactionTab === 'transaction-analytics' ? 'bg-[#FF4A4A] font-medium text-slate-50  shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
+                class="tab-button border-l-8 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'transaction-analytics' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
                 on:click={() => setActiveTransactionTab('transaction-analytics')}
             >
-                <div class="flex items-center">
+                <div class="flex flex-col md:flex-row items-start gap-1">
                     <Money class="mr-2 w-4 h-4" />
-                    <span class="text-xs font-medium">Transaction Analytics</span>
+                    <span class="text-2xs md:text-xs  font-semibold">Transaction Analytics</span>
                 </div>
             </button>
+            <button 
+            class="tab-button border-l-8 border-slate-400 px-4 py-1 md:py-6 w-2/5 hover:bg-slate-300 hover:text-slate-500 {activeTransactionTab === 'case-studies' ? 'bg-slate-600 border-l-8 border-emerald-400 font-semibold text-slate-50 w-4/5 shadow-sm' : 'text-slate-400 bg-slate-200 shadow-sm'}"  
+            on:click={() => setActiveTransactionTab('case-studies')}
+        >
+            <div class="flex flex-col md:flex-row items-start gap-1">
+                <TextLinkAnalysis class="mr-2 w-4 h-4" />
+                <span class="text-2xs md:text-xs  font-semibold">Case Studies</span>
+            </div>
+        </button>
             </div>
             
     <div class="transaction-content relative h-[calc(100%-140px)]">
@@ -427,6 +439,7 @@
     
     .tab-button {
         transition: all 0.2s ease;
+        text-align: left;
     }
     
     .rounded-btn {
@@ -453,4 +466,4 @@
             height: calc(100vh - 200px);
         }
     }
-</style> 
+</style>        

@@ -9,7 +9,8 @@
   import RpdprvSearch from '../RPDPRVSearch.svelte';
   import RPDRadialLegend from '../RPDRadialLegend.svelte';
   import SponsorSidebar from '../sidebarComponents/SponsorSidebar.svelte';
-  import MobileSponsorSidebar from '../sidebarComponents/MobileSponsorSidebar.svelte';
+  import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte'; 
+  
   import InfiniteCanvasWrapper from '../InfiniteCanvasWrapper.svelte';
   import CanvasNavControls from '../sidebarComponents/CanvasNavControls.svelte';
   
@@ -431,8 +432,9 @@
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
      
+     
   <div class="w-full h-full items-center relative">
-    <div class="timeline-container fixed justify-center place-items-start w-full bg-slate-100 transition-all duration-300">
+    <div class="timeline-container fixed w-full bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
         data={data}
         selectedYear={selectedYear}
@@ -441,7 +443,7 @@
     </div>
     
     {#if isMobileView}
-      <div class="mobile-hint fixed z-10 top-20 left-1/2 transform -translate-x-1/2 text-slate-800 px-4 py-2 rounded-full ring-1 ring-emerald-300 ring-offset-2 text-xs font-medium" transition:fade={{ duration: 300 }}>
+      <div class="mobile-hint fixed z-10 top-20 left-1/2 transform -translate-x-1/2 text-slate-800 px-4 py-2 rounded-full text-xs font-medium" transition:fade={{ duration: 300 }}>
         Use two fingers to zoom & pan the chart
       </div>
     {/if}
@@ -494,7 +496,8 @@
   </div>
 
     <div 
-      class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+      class="sidebar-area fixed top-24 md:top-36 h-[82.25vh] md:h-[75.25vh] bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm
+      "
       class:md:w-[38.25vw]={!isRightSidebarCollapsed}
       class:w-[87.25vw]={!isRightSidebarCollapsed && isMobileView}
       class:w-12={isRightSidebarCollapsed && !isMobileView}
@@ -504,7 +507,7 @@
       <div class="sidebar-controls-area absolute top-8 -left-4 md:-left-12 md:top-32 z-40 flex flex-col gap-4">
         <!-- Toggle button -->
     <button 
-      class="toggle-control mb-6 bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+      class="toggle-control mb-6 bg-emerald-100 ring-2 ring-emerald-500 ring-offset-4 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300 hover:ring-offset-2"
           on:click={toggleRightSidebar}
           aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
@@ -577,7 +580,6 @@
   }
 
   .timeline-container {
-    border-bottom: .5px solid #549E7D;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
