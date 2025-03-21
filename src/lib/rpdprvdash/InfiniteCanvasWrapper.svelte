@@ -47,6 +47,7 @@
       mainGroup.attr('transform', event.transform.toString());
     }
   });
+
   // Navigation control functions
   function zoomIn() {
     if (svg) {
@@ -130,8 +131,12 @@
       mainGroup = svgSelection.append('g');
       console.log("mainGroup created:", mainGroup);
       
-      // Apply zoom behavior
-      svgSelection.call(zoom);
+      // Apply zoom behavior with touch event support
+      svgSelection
+        .call(zoom)
+        .on("touchstart", handleTouchStart, { passive: false })
+        .on("touchmove", handleTouchMove, { passive: false })
+        .on("touchend", handleTouchEnd, { passive: false });
         
       // Center the view initially
       const initialTransform = d3.zoomIdentity
@@ -150,6 +155,36 @@
     }
   }
 
+  // Touch event handlers to prevent default behavior and allow canvas interaction
+  function handleTouchStart(event: TouchEvent) {
+    // Mark as touch device when touch events are used
+    if (!isTouchDevice) {
+      isTouchDevice = true;
+    }
+    
+    // Prevent default scroll behavior on touch
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handleTouchMove(event: TouchEvent) {
+    // Prevent default scroll behavior on touch
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handleTouchEnd(event: TouchEvent) {
+    // Prevent default behavior that might interfere with pan/zoom
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // Allow wheel events for desktop zooming but prevent them from scrolling the page
+  function handleWheel(event: WheelEvent) {
+    // Prevent the default scrolling behavior
+    event.preventDefault();
+  }
+
   onMount(() => {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') return;
@@ -159,8 +194,24 @@
       return;
     }
     
+    // Check if we're on a touch device
+    isTouchDevice = 'ontouchstart' in window || 
+                  navigator.maxTouchPoints > 0 ||
+                  (navigator as any).msMaxTouchPoints > 0;
+    
     // Initialize the canvas
     initializeCanvas();
+    
+    // Add touch event handlers to the container
+    if (container) {
+      container.addEventListener('touchstart', handleTouchStart, { passive: false });
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd, { passive: false });
+      container.addEventListener('wheel', handleWheel, { passive: false });
+      
+      // Apply touch-action: none to prevent browser gestures
+      container.style.touchAction = 'none';
+    }
     
     // Add resize observer
     if (container && typeof ResizeObserver !== 'undefined') {
@@ -206,6 +257,14 @@
       
       return () => {
         resizeObserver.disconnect();
+        
+        // Remove event listeners when component is destroyed
+        if (container) {
+          container.removeEventListener('touchstart', handleTouchStart);
+          container.removeEventListener('touchmove', handleTouchMove);
+          container.removeEventListener('touchend', handleTouchEnd);
+          container.removeEventListener('wheel', handleWheel);
+        }
       };
     }
   });
@@ -308,7 +367,7 @@
 <div 
   bind:this={container} 
   class="infinite-canvas-container {className}" 
-  style="width: 100%; height: 100%; position: relative; overflow: hidden;"
+  style="width: 100%; height: 100%; position: relative; overflow: hidden; touch-action: none; -webkit-overflow-scrolling: none;"
 >
   <!-- SVG canvas for visualization -->
   <svg 
@@ -317,7 +376,7 @@
     height="100%"
     viewBox="0 0 {width} {height}" 
     preserveAspectRatio="xMidYMid meet"
-    style="display: block; touch-action: none;"
+    style="display: block; touch-action: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;"
   >
     <slot {mainGroup} {showTooltip} {hideTooltip} />
   </svg>
@@ -384,19 +443,32 @@
   :global(.infinite-canvas-container) {
     width: 100%;
     height: 100%;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   
   .controls {
     z-index: 10;
   }
   
-  /* Ensure the canvas fills parent container */
+  /* Ensure the canvas fills parent container and position controls for mobile */
   @media (max-width: 768px) {
     .controls {
       bottom: 20px;
       right: 20px;
     }
     
+    /* Mobile-specific styles */
+    :global(.infinite-canvas-container svg) {
+      touch-action: none !important;
+    }
+    
+    .mobile-controls {
+      bottom: 24px;
+      right: 24px;
+      z-index: 30;
+    }
   }
 </style>
 

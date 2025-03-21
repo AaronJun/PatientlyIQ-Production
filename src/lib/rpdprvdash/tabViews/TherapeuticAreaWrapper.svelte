@@ -52,6 +52,7 @@
   let currentCompanyMetrics: any | null = null;
   let currentArea: string | null = null;
   let areaMetrics: any | null = null;
+  let isCanvasActive = false; // Track if user is interacting with canvas
   
   // Process data for the legend
   const processedData = Object.entries(
@@ -61,7 +62,7 @@
       }
       return acc;
     }, {} as Record<string, number>)
-  ).map(([area, count]) => ({ area, count }));
+  ).map(([area, count]) => ({ area, count: count as number }));
   
   // Define the therapeutic area color map
   const colorMap = {
@@ -206,12 +207,66 @@
     onShowTherapeuticAreaDetail(areaDetail);
   }
   
+  // Add functions to handle canvas interaction for mobile devices
+  function handleCanvasInteractionStart() {
+    if (isMobileView) {
+      isCanvasActive = true;
+      document.body.classList.add('canvas-active');
+    }
+  }
+
+  function handleCanvasInteractionEnd() {
+    if (isMobileView) {
+      isCanvasActive = false;
+      document.body.classList.remove('canvas-active');
+    }
+  }
+
   onMount(() => {
     // Initialize any necessary setup
+    if (isMobileView) {
+      // Add event listeners for canvas interaction on mobile
+      document.addEventListener('touchstart', handleTouchInteraction, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
+
+    return () => {
+      // Clean up event listeners
+      if (isMobileView) {
+        document.removeEventListener('touchstart', handleTouchInteraction);
+        document.removeEventListener('touchend', handleTouchEnd);
+      }
+      // Remove body class if component is destroyed while active
+      document.body.classList.remove('canvas-active');
+    };
   });
+
+  // Handle touch interaction detection
+  function handleTouchInteraction(event: TouchEvent) {
+    // Only capture events inside our canvas
+    const path = event.composedPath();
+    const isCanvasTouch = path.some(el => {
+      const element = el as HTMLElement;
+      return element.classList && 
+        (element.classList.contains('therapeutic-area-canvas') || 
+         element.classList.contains('infinite-canvas-container'));
+    });
+
+    if (isCanvasTouch) {
+      handleCanvasInteractionStart();
+    }
+  }
+
+  function handleTouchEnd(event: TouchEvent) {
+    // Always end interaction on touch end
+    handleCanvasInteractionEnd();
+  }
 </script>
 
-<div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full">
+<div class="therapeutic-area-wrapper flex flex-row flex-grow relative h-full"
+     on:touchstart={handleCanvasInteractionStart}
+     on:touchend={handleCanvasInteractionEnd}
+     on:touchcancel={handleCanvasInteractionEnd}>
   <div class="w-full h-full relative">
     <div class="timeline-container fixed justify-center place-items-start w-full z-50 bg-slate-100 transition-all duration-300">
       <RPDPRVHorizontalTimeline 
@@ -220,6 +275,13 @@
         onYearSelect={onYearSelect}
       />
     </div>
+    
+    {#if isMobileView}
+      <div class="mobile-hint fixed z-50 top-20 left-1/2 transform -translate-x-1/2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full shadow-md text-xs font-medium" transition:fade={{ duration: 300 }}>
+        Use two fingers to zoom & pan the chart
+      </div>
+    {/if}
+    
     <InfiniteCanvasWrapper 
       bind:this={infiniteCanvas} 
       let:mainGroup 
@@ -227,7 +289,7 @@
       let:hideTooltip
       on:howToNavigate={onHowToNavigate}
       isCollapsed={isSidebarCollapsed} 
-      className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden">
+      className="w-full h-[calc(100vh-150px)] mt-16 overflow-hidden therapeutic-area-canvas">
       {#if mainGroup}
         <RPDDRadialYear 
           data={filteredData}
@@ -379,11 +441,45 @@
     border: 1px solid #549E7D;
   }
   
+  /* Mobile hint message styling */
+  .mobile-hint {
+    animation: fade-out 5s ease-in-out forwards;
+    backdrop-filter: blur(4px);
+    max-width: 90%;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    border: 1px solid #10b981;
+  }
+  
+  @keyframes fade-out {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+  
   /* Add responsive sizing for canvas containers */
   @media (max-width: 768px) {
     /* Mobile specific styles */
     :global(.therapeutic-area-wrapper .infinite-canvas-container) {
       height: calc(100vh - 200px) !important;
+      touch-action: none !important;
+      -webkit-overflow-scrolling: none !important;
+    }
+    
+    /* Ensure the SVG fills the entire container on mobile */
+    :global(.therapeutic-area-canvas svg) {
+      width: 100% !important;
+      height: 100% !important;
+      touch-action: none !important;
+    }
+    
+    /* Prevent parent scrolling on mobile when interacting with canvas */
+    :global(body.canvas-active) {
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+      height: 100%;
     }
   }
   
@@ -391,6 +487,7 @@
     /* Tablet specific styles */
     :global(.therapeutic-area-wrapper .infinite-canvas-container) {
       height: calc(100vh - 160px) !important;
+      touch-action: none;
     }
   }
   
@@ -441,6 +538,12 @@
       overflow-y: auto !important;
       overflow-x: auto !important;
       -webkit-overflow-scrolling: touch;
+    }
+    
+    :global(.therapeutic-area-canvas) {
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: none !important;
     }
   }
 </style> 
