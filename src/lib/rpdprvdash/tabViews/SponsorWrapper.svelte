@@ -2,7 +2,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import { fade, fly, slide } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
   import { ChevronRight, ChevronLeft } from 'carbon-icons-svelte';
   
   import RPDPRVHorizontalTimeline from '../RPDPRVTimeline.svelte';
@@ -430,9 +429,11 @@
   </div>
 
     <div 
-      class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 cubic-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
-      class:w-96={!isRightSidebarCollapsed}
-      class:w-7={isRightSidebarCollapsed}
+      class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+      class:md:w-[38.25vw]={!isRightSidebarCollapsed}
+      class:w-[87.25vw]={!isRightSidebarCollapsed && isMobileView}
+      class:w-12={isRightSidebarCollapsed && !isMobileView}
+      class:w-7={isRightSidebarCollapsed && isMobileView}
       transition:slide={{ duration: 300, axis: 'x' }}
     >
       <div class="sidebar-controls-area absolute top-8 -left-4 md:-left-12 md:top-32 z-40 flex flex-col gap-4">

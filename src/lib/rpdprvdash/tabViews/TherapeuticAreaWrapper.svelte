@@ -364,21 +364,21 @@
     </InfiniteCanvasWrapper>
   </div>
 
-  <!-- Desktop right information sidebar - only show on non-mobile -->
-  {#if !isMobileView}
-    <div 
-      class="sidebar-area fixed top-16 bottom-0 right-0 z-30 flex flex-col transition-all duration-300 ease-in-out pt-20 pb-4 shadow-md bg-slate-50/80 backdrop-blur-sm"
-      class:w-64={!isRightSidebarCollapsed}
-      class:w-7={isRightSidebarCollapsed}
-      transition:slide={{ duration: 300, axis: 'x' }}
-    >
+  <div 
+  class="sidebar-area fixed top-16 bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm"
+  class:md:w-[38.25vw]={!isRightSidebarCollapsed}
+  class:w-[87.25vw]={!isRightSidebarCollapsed && isMobileView}
+  class:w-12={isRightSidebarCollapsed && !isMobileView}
+  class:w-7={isRightSidebarCollapsed && isMobileView}
+  transition:slide={{ duration: 300, axis: 'x' }}
+>
       <div class="sidebar-controls-area absolute top-32 -left-12 z-40 flex flex-col gap-4">
         <!-- Toggle button -->
         <button 
-          class="sidebar-toggle bg-slate-100 p-2 rounded-full shadow-md hover:bg-slate-200 transition-all ring-1 ring-slate-200"
-          on:click={toggleRightSidebar}
-          aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
+        class="toggle-control mb-6 bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
+            on:click={toggleRightSidebar}
+            aria-label={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
           <svelte:component this={isRightSidebarCollapsed ? ChevronLeft : ChevronRight} size={16} class="text-slate-500"/>
         </button>
         
@@ -440,32 +440,7 @@
         {/if}
       </div>
     </div>
-  {/if}
-  
-  <!-- Mobile/Tablet bottom sidebar - show on mobile -->
-  {#if isMobileView}
-    <MobileTherapeuticAreaSidebar
-      {currentEntries}
-      currentArea={currentArea}
-      {areaMetrics}
-      {colorMap}
-      onShowDrugDetail={onShowDrugDetail}
-      fullYearData={filteredData}
-      {selectedYear}
-      isExpanded={isMobileSidebarExpanded}
-      on:click={() => isMobileSidebarExpanded = !isMobileSidebarExpanded}
-    >
-      {#if isMobileSidebarExpanded}
-        <div class="mb-4 px-4 pt-4">
-          <RpdprvSearch
-            data={data}
-            onShowDrugDetail={onShowDrugDetail}
-            onShowCompanyDetail={onShowCompanyDetail}
-          />
-        </div>
-      {/if}
-    </MobileTherapeuticAreaSidebar>
-  {/if}
+
 </div>
 
 <style>

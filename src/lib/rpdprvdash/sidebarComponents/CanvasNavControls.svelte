@@ -63,7 +63,7 @@
       <ZoomReset class="w-5 h-5 text-slate-600" aria-hidden="true"/>
     </button>
   </div>
-  <div class="{orientation === 'vertical' ? 'mt-6' : 'ml-6'}">
+  <div class="{orientation === 'vertical' ? 'mt-8' : 'ml-6'}">
     <button 
       class="help-button bg-slate-50 ring-2 ring-emerald-300 ring-offset-2 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-emerald-300"
       on:click={handleHowToNavigate}
@@ -84,7 +84,7 @@
   @media (max-width: 768px) {
     .nav-controls {
       position: fixed;
-      bottom: 24px;
+      bottom: 84px;
       right: 24px;
     }
   }

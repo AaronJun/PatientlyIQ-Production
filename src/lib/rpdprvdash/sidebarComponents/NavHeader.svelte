@@ -52,8 +52,8 @@
   >
   
   <!-- Logo container -->
-    <div class="flex items-center h-0 w-0 md:h-8 md:w-8">
-      <img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8" style="filter: saturate(0.625)" />
+    <div class="flex items-center align-middle h-0 w-0 md:h-8 md:w-8">
+      <img src={PIQLogo} alt="PIQ Logo" style="filter: saturate(0.625)" />
     </div>
 
     <!-- Navigation items -->
@@ -75,21 +75,17 @@
           
           <!-- Text label - only shown when expanded or hovered -->
             <span 
-              class="w-10 md:w-fit text-[8.725px] md:text-sm md:font-normal leading-none tracking-wide font-medium text-center"
+              class="w-10 md:w-fit text-[8.725px] md:text-sm md:font-normal leading-none tracking-wide font-medium"
               transition:fade={{ duration: 200 }}
             >
               {overviewTab.id}
             </span>
-          
-          <!-- Active indicator -->
-          {#if activeTab === overviewTab.id}
-            <span class="bg-emerald-500"></span>
-          {/if}
+         
         </button>
-
-      <Separator.Root
-        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:w-[1px]"
-      />
+        <Separator.Root
+        orientation="vertical"
+        class="bg-border my-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />  
       {#each tabs as tab}
       <button
      class="flex flex-col lg:flex-row items-center align-middle gap-1 pt-2 px-2 transition-all duration-200 text-[8.725px] md:text-sm md:font-normal leading-none text-center relative text-slate-500"
@@ -115,8 +111,9 @@
       {/each}
       
       <Separator.Root
-        class="bg-slate-500 mb-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:w-[1px]"
-      />
+      orientation="vertical"
+      class="bg-border my-4 shrink-0 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    />
       
     <nav class="flex flex-row gap-1">
       <!-- Dashboard button -->

@@ -41,7 +41,7 @@
   import TherapeuticAreaDetailDrawer from '$lib/rpdprvdash/components/TherapeuticAreaDetailDrawer.svelte';
   
   // Import the new VerticalSidebar component
-  import VerticalSidebar from '$lib/rpdprvdash/sidebarComponents/NavSidebar.svelte';
+  import VerticalSidebar from '$lib/rpdprvdash/sidebarComponents/NavHeader.svelte';
 
   // Interface definitions
   interface DrawerProps {
@@ -572,7 +572,7 @@
 
     <div class="tab-content w-full h-full z-0 flex relative">
       <!-- Main content area taking full width -->
-      <div class="w-full relative h-full overflow-hidden">
+      <div class="w-full relative h-full md:pt-16 overflow-hidden">
         <!-- By Sponsor Tab with animations -->
         {#if activeTab === 'By Sponsor'}
           <SponsorWrapper

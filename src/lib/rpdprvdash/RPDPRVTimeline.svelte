@@ -599,9 +599,10 @@
             </defs>
         </svg>
 
-        <div class="timeline-grid bg-slate-100 px-4">
-            {#each yearData as yearEntry}
-                <div class="year-item">
+        <div class="flex flex-col md:flex-row place-items-center md:justify-center md:gap-8">
+                <div class="timeline-grid place-content-center justify-center w-full bg-slate-100 pb-2">
+                    {#each yearData as yearEntry}
+                    <div class="year-item">
                     <button 
                         class="circle-container"
                         class:restricted={isYearRestricted(yearEntry.year)}
@@ -665,22 +666,22 @@
                     <div 
                         class="highlight-circle"
                         style="
-                            width: {isMobile ? '40px' : '50px'};
-                            height: {isMobile ? '40px' : '50px'};
+                            width: {isMobile ? '30px' : '50px'};
+                            height: {isMobile ? '30px' : '50px'};
                             opacity: {"All" === selectedYear ? 0.5 : 0};
                         "
                     ></div>
                     <!-- Main circle with SVG gradient -->
                     <svg 
                         class="main-circle-svg"
-                        width={isMobile ? "36" : "44"}
-                        height={isMobile ? "36" : "44"}
+                        width={isMobile ? "32" : "44"}
+                        height={isMobile ? "32" : "44"}
                         style="filter: {"All" === selectedYear ? 'url(#glow)' : 'none'};"
                     >
                         <circle 
-                            cx={isMobile ? "18" : "22"}
-                            cy={isMobile ? "18" : "22"}
-                            r={isMobile ? "16.5" : "20.5"}
+                            cx={isMobile ? "14" : "22"}
+                            cy={isMobile ? "14" : "22"}
+                            r={isMobile ? "14.5" : "20.5"}
                             fill="url(#gradient-all-years)"
                             stroke="#565656"
                             stroke-width="1.5"
@@ -696,6 +697,7 @@
             </div>
         </div>
     </div>
+</div>
 
 <!-- Restricted Year Modal -->
 <Dialog.Root bind:open={showRestrictedModal}>
@@ -737,7 +739,7 @@
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: 1fr;
-        align-items: center;
+        align-items: end;
         height: 4rem;
         position: relative;
         transition: all 0.3s ease;
