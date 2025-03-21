@@ -97,6 +97,9 @@
     return colorMap[key] || '#999999';
   };
   
+  // Add timeout variable
+  let autoCollapseTimeout: ReturnType<typeof setTimeout> | null = null;
+  
   // Functions
   function handleCompanyHover(data: CompanyHoverData | any[]) {
     if (Array.isArray(data)) {
@@ -184,8 +187,22 @@
     hoveredTherapeuticArea = "";
   }
   
+  // Modify toggleRightSidebar function to handle auto-collapse
   function toggleRightSidebar() {
     isRightSidebarCollapsed = !isRightSidebarCollapsed;
+    
+    // Clear any existing timeout
+    if (autoCollapseTimeout) {
+      clearTimeout(autoCollapseTimeout);
+      autoCollapseTimeout = null;
+    }
+
+    // If we're in mobile view and opening the sidebar, set auto-collapse
+    if (isMobileView && !isRightSidebarCollapsed) {
+      autoCollapseTimeout = setTimeout(() => {
+        isRightSidebarCollapsed = true;
+      }, 200);
+    }
   }
   
   function handleLegendAreaClick(area: string) {
@@ -274,6 +291,9 @@
       }
       // Remove body class if component is destroyed while active
       document.body.classList.remove('canvas-active');
+      if (autoCollapseTimeout) {
+        clearTimeout(autoCollapseTimeout);
+      }
     };
   });
 
@@ -334,6 +354,22 @@
 
   function handleHowToNavigate() {
     onHowToNavigate();
+  }
+
+  // Add watcher for isMobileView changes
+  $: if (isMobileView && !isRightSidebarCollapsed) {
+    // Clear any existing timeout
+    if (autoCollapseTimeout) {
+      clearTimeout(autoCollapseTimeout);
+    }
+    // Set new timeout
+    autoCollapseTimeout = setTimeout(() => {
+      isRightSidebarCollapsed = true;
+    }, 2500);
+  } else if (!isMobileView && autoCollapseTimeout) {
+    // Clear timeout if we switch to desktop view
+    clearTimeout(autoCollapseTimeout);
+    autoCollapseTimeout = null;
   }
 </script>
 
