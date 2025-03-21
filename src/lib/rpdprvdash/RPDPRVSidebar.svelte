@@ -38,7 +38,7 @@ export let currentArea: string | null = null;
             
             <div class="space-y-4">
                 {#each entries as entry}
-                    <div class="card px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
+                    <div class="card-2 px-4 py-4 hover:bg-slate-200 hover:cursor-pointer transition-all duration-200 ease-in-out">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-xs text-slate-600 mt-1">{entry.Indication}
@@ -53,7 +53,7 @@ export let currentArea: string | null = null;
                     </div>
                 {/each}
             </div>
-        </div>
+        </div>'.//./'
     </div>
 
 <style>
@@ -65,9 +65,12 @@ export let currentArea: string | null = null;
         padding: 0 0.15rem;
     }
 
-    .card {
-        border-bottom: .5px dotted #969696;
-        padding: .25rem 1rem 1rem 0;
-    }
+    :global(.card-2) {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    border: 1px solid #e0e0e0;
+    padding: .5rem .25rem .75rem .325rem;
+    transition: all 0.2s ease-in-out;    
+}
 
 </style>

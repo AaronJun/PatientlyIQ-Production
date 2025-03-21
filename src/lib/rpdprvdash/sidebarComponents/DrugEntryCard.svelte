@@ -13,7 +13,7 @@
 </script>
 
 <div 
-  class="card px-4 py-4 hover:bg-sky-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
+  class="card-2 px-4 py-4 hover:bg-sky-200 hover:cursor-pointer transition-all duration-200 ease-in-out"
   on:click={() => onClick(entry)}
 >
   <div class="flex flex-col gap-2">
