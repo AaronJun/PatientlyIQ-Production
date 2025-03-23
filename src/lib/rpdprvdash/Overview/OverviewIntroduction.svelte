@@ -29,14 +29,14 @@ function navigateToLearnMore() {
         This dashboard provides insights into how PRVs have been awarded, used, and traded—helping researchers, policymakers, and industry leaders assess their impact within the evolving rare disease ecosystem.</p>  
 
 <div class="flex flex-row align-baseline gap-4 mt-8">   
-    <Button.Root class="primary-button rounded-full align-middle flex flex-row gap-2 bg-[#ff4a4a] text-slate-50 font-semibold px-4 py-2 ring-1 ring-[#ff4a4a] ring-offset-2 shadow-xl text-sm hover:ring-amber-500 hover:bg-orange-500 hover:text-slate-50" on:click={navigateToSponsorTab}>
+    <Button.Root class="primary-button rounded-full align-middle flex flex-row gap-2 bg-slate-600 text-slate-50 font-semibold px-4 py-2 ring-2 ring-slate-800 ring-offset-1 shadow-xl text-sm hover:ring-amber-500 hover:bg-orange-500 hover:text-slate-50" on:click={navigateToSponsorTab}>
             Explore the Data
             <ArrowUpRight class="text-slate-50 text-center align-middle justify-center baseline" />
     </Button.Root>
-
+<!-- 
     <Button.Root class="secondary-button rounded-full bg-slate-50 shadow-md text-slate-800 font-medium px-4 py-2 text-sm border-1 border-slate-800 hover:bg-slate-800 hover:text-slate-50 on:click={navigateToLearnMore}">
             Learn More
-    </Button.Root>
+    </Button.Root> -->
 </div>
 </div>
 </div>

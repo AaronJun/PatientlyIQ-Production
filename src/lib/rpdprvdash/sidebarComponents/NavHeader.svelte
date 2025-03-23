@@ -32,23 +32,24 @@
         dispatch('tabSelect', itemId);
       }
     }
+    
 </script>
 
 <div 
   class="horizontal-sidebar-container flex flex-row min-h-fit h-12 md:h-16 fixed bg-slate-900 left-0 bottom-0 md:top-0 w-full z-40 
-         items-center justify-center md:justify-between shadow-xl md:px-8 pb-1 md:py-2
+         items-center justify-center md:justify-between shadow-xl md:px-8 pb-1 md:py-4
          transition-all duration-300 ease-in-out"
   role="navigation"
   aria-label="Main navigation sidebar"
 >
   <div class="items-center h-full hidden md:block md:justify-center md:align-middle md:w-10 md:h-10">
-    <img src={PIQLogo} alt="PIQ Logo" class="w-10 h-10" style="filter: saturate(0.625)" />
+    <img src={PIQLogo} alt="PIQ Logo" style="filter: saturate(0.625)" />
   </div>
 
   <nav class="flex flex-row items-center md:justify-between justify-center">
     {#each navItems as item}
       <button
-      class="nav-button flex flex-col lg:flex-row items-center md:align-middle w-fit mx-2 md:w-fit md:gap-2 px-1 pt-2  
+      class="nav-button flex flex-col md:flex-row items-center md:align-middle w-fit mx-2 md:w-fit md:gap-2 px-1 pt-2  
                transition-all duration-200 relative {item.isDashboard ? 'border-l-2 border-slate-600 pl-2' : ''}"
         class:text-emerald-400={activeTab === item.id}
         class:text-slate-500={activeTab !== item.id}
@@ -56,12 +57,12 @@
         on:click={() => handleNavSelect(item.id)}
         title={isCollapsed && !isHovered ? item.tooltip : ''}
       >
-        <span class="text-center w-4 h-4 md:w-8 md:h-8 md:p-1 flex-shrink-0">
+        <span class="text-left w-4 h-4 md:w-8 md:h-8 md:p-1 flex-shrink-0">
           <svelte:component this={item.icon} class="w-full h-full"/>
         </span>
         
         <span 
-          class="nav-text text-2xs md:text-sm align-middle md:w-fit text-center md:text-left"
+          class="nav-text text-2xs md:text-sm align-middle md:w-fit text-left md:text-left"
           transition:fade={{ duration: 200 }}
         >
           {item.id}

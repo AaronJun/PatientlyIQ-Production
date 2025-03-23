@@ -7,7 +7,7 @@
     export let cards: any[] = [];
     
     let carouselEl: HTMLElement;
-    let cardWidth = 300; 
+    let cardWidth = 420; 
     let currentPage = 0;
     let totalPages = 0;
     let isDragging = false;
@@ -179,9 +179,9 @@
     });
 </script>
 
-<div class="carousel-container">
+<div class="carousel-container h-full py-8">
     <div 
-        class="carousel flex flex-row overflow-x-auto"
+        class="carousel flex flex-row gap-8 overflow-x-auto"
         bind:this={carouselEl}
         on:touchstart={handleTouchStart}
         on:touchmove={handleTouchMove}

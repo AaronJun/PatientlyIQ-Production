@@ -336,7 +336,7 @@
 
 <div class="overview-wrapper w-full">  
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
-
+<!-- 
   <section class="chart-insights-section">
     <ChartCarouselSection 
       data={data} 
@@ -345,12 +345,12 @@
       on:chartOpen={handleChartOpen}
       on:navigateToTab={handleNavigateToTab}
     />
-  </section>
+  </section> -->
   
     <!-- Section 1: Program Overview Stats -->
     <section class="mb-6" aria-labelledby="program-overview-header">
       <div 
-        class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+        class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border-b-2 border-slate-800" 
         on:click={() => toggleSection('overview')}
         on:keydown={(e) => e.key === 'Enter' && toggleSection('overview')}
         role="button"
@@ -374,43 +374,43 @@
         role="region"
         aria-labelledby="program-overview-header"
       >
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
           <div 
-            class="stat-card bg-gradient-to-br from-blue-50 to-slate-50 p-4 border border-blue-100"
+          class="stat-card bg-yellow-50 p-4 border border-yellow-100"
             role="region"
             aria-labelledby="rpd-designations-label"
           >
-            <h3 id="rpd-designations-label" class="text-2xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
+            <h3 id="rpd-designations-label" class="text-xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
             <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: {totalEntries}">{totalEntries}</p>
           </div>
           
           <div 
-            class="stat-card bg-gradient-to-br from-green-50 to-slate-50 p-4 border border-green-100"
+            class="stat-card bg-purple-50 p-4 border border-purple-100"
             role="region"
             aria-labelledby="prvs-awarded-label"
           >
-            <h3 id="prvs-awarded-label" class="text-sm font-medium text-slate-500">PRVs Awarded</h3>
-            <p class="text-2xl font-bold text-green-700" aria-label="Total PRVs Awarded: {totalPRVs}">{totalPRVs}</p>
+            <h3 id="prvs-awarded-label" class="text-xs font-medium text-slate-500">PRVs Awarded</h3>
+            <p class="text-2xl font-bold text-purple-700" aria-label="Total PRVs Awarded: {totalPRVs}">{totalPRVs}</p>
           </div>
           
           <div 
-            class="stat-card bg-gradient-to-br from-purple-50 to-slate-50 p-4 border border-purple-100"
+            class="stat-card bg-emerald-50 p-4 border border-emerald-100"
             role="region"
             aria-labelledby="prvs-sold-label"
           >
-            <h3 id="prvs-sold-label" class="text-sm font-medium text-slate-500">PRVs Sold</h3>
-            <p class="text-2xl font-bold text-purple-700" aria-label="PRVs Sold: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
-              {totalSold} <span class="text-sm text-slate-500">({Math.round(totalSold/totalPRVs*100) || 0}%)</span>
+            <h3 id="prvs-sold-label" class="text-xs font-medium text-slate-500">PRVs Sold</h3>
+            <p class="text-2xl font-bold text-emerald-700" aria-label="PRVs Sold: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
+              {totalSold} <span class="text-xs text-slate-500">({Math.round(totalSold/totalPRVs*100) || 0}%)</span>
             </p>
           </div>
           
           <div 
-            class="stat-card bg-gradient-to-br from-amber-50 to-slate-50 p-4 border border-amber-100"
+            class="stat-card bg-orange-50 p-4 border border-orange-100"
             role="region"
             aria-labelledby="avg-sale-price-label"
           >
-            <h3 id="avg-sale-price-label" class="text-sm font-medium text-slate-500">Avg Sale Price</h3>
-            <p class="text-2xl font-bold text-amber-700" aria-label="Average Sale Price: ${Math.round(avgSalePrice).toLocaleString()} Million">
+            <h3 id="avg-sale-price-label" class="text-xs font-medium text-slate-500">Avg Sale Price</h3>
+            <p class="text-2xl font-bold text-orange-700" aria-label="Average Sale Price: ${Math.round(avgSalePrice).toLocaleString()} Million">
               ${Math.round(avgSalePrice).toLocaleString() || 0}M
             </p>
           </div>
@@ -418,21 +418,21 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white p-4  border border-slate-200">
-            <h3 class="text-sm font-medium text-slate-500">Top Company</h3>
+            <h3 class="text-xs font-medium text-slate-500">Top Company</h3>
             <p class="text-xl font-semibold text-slate-800">{topCompany.name || 'N/A'}</p>
-            <p class="text-sm text-slate-500">{topCompany.count || 0} drug candidates</p>
+            <p class="text-xs text-slate-500">{topCompany.count || 0} drug candidates</p>
           </div>
           
           <div class="bg-white p-4  border border-slate-200">
-            <h3 class="text-sm font-medium text-slate-500">Top Therapeutic Area</h3>
+            <h3 class="text-xs font-medium text-slate-500">Top Therapeutic Area</h3>
             <p class="text-xl font-semibold text-slate-800">{topArea.name || 'N/A'}</p>
-            <p class="text-sm text-slate-500">{topArea.count || 0} drug candidates</p>
+            <p class="text-xs text-slate-500">{topArea.count || 0} drug candidates</p>
           </div>
           
           <div class="bg-white p-4  border border-slate-200">
-            <h3 class="text-sm font-medium text-slate-500">Top Indication</h3>
+            <h3 class="text-xs font-medium text-slate-500">Top Indication</h3>
             <p class="text-xl font-semibold text-slate-800">{topIndication.name || 'N/A'}</p>
-            <p class="text-sm text-slate-500">{topIndication.count || 0} drug candidates</p>
+            <p class="text-xs text-slate-500">{topIndication.count || 0} drug candidates</p>
           </div>
         </div>
       </div>
@@ -442,7 +442,7 @@
   <!-- Program Flow Section -->
   <section class="mb-6" aria-labelledby="program-flow-header">
     <div 
-      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border-b-2 border-slate-800" 
       on:click={() => toggleSection('programFlow')}
       on:keydown={(e) => e.key === 'Enter' && toggleSection('programFlow')}
       role="button"
@@ -564,7 +564,7 @@
   <!-- Therapeutic Area Distribution Section -->
   <section class="mb-6" aria-labelledby="therapeutic-area-header">
     <div 
-      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200" 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border-b-2 border-slate-800" 
       on:click={() => toggleSection('distribution')}
       on:keydown={(e) => e.key === 'Enter' && toggleSection('distribution')}
       role="button"
@@ -711,11 +711,6 @@
   .stat-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   
   .stat-card:focus-within {

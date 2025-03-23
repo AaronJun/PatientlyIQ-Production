@@ -26,29 +26,29 @@
     }
 </script>
 
-<div class="card group" 
+<div class="card-container h-full" 
      role="button" 
      tabindex="0" 
      on:click={handleCardClick} 
      on:keydown={(e) => e.key === 'Enter' && handleCardClick()}
      aria-labelledby="card-title-{title.replace(/\s+/g, '-')}"
      aria-describedby="card-desc-{title.replace(/\s+/g, '-')}">
-    <div class="card-content">
-        <h3 class="text-sm font-semibold capitalize text-slate-800 mb-8" 
+    <div class="card-content h-full flex flex-col justify-between">
+        <h3 class="title" 
             id="card-title-{title.replace(/\s+/g, '-')}">{title}</h3>
-        <div class="image-container">
+        <div class="chart-container">
             {#if chartComponent}
                 <div class="preview-chart">
-                    <svelte:component this={chartComponent} {...chartProps} width={320} height={150} />
+                    <svelte:component this={chartComponent} {...chartProps} /> 
                 </div>
             {:else if image}
                 <img src={image} alt={title} />
             {/if}
         </div>
-        <p id="card-desc-{title.replace(/\s+/g, '-')}" class="text-left text-sm text-slate-600 font-normal">
+        <p id="card-desc-{title.replace(/\s+/g, '-')}" class="description">
             {description}
         </p>
-        <div class="view-details flex flex-row gap-2 items-center text-sm font-medium text-emerald-600 group-hover:text-orange-500">
+        <div class="view-details">
             <span>Click to view details</span>
             <ArrowUpRight class="w-4 h-4" />
         </div>
@@ -57,67 +57,85 @@
 
 <style>
     :global(.card) {
-        border-radius: 18px;
-        padding: 1rem 1rem 0 1rem;
+        padding: 1.25rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 3px 12px rgba(0, 0, 0, 0.06);
         height: 100%;
-        width: 360px;
-        border: 1px solid rgba(229, 231, 235, 0.8); /* Subtle border for card edge definition */
+        width: 100%;
+        max-width:345px;
+
+        transition: all 0.3s ease;
     }
 
     :global(.card:hover) {
         filter: brightness(1.05);
-        transition: filter 0.3s ease;
+        transform: translateY(-5px);
     }
 
     :global(.card:focus) {
         outline: 2px solid #6EE999;
         outline-offset: 2px;
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-        transform: translateY(-10px);
+        transform: translateY(-5px);
     }
-    
     
     .card-content {
         display: flex;
         flex-direction: column;
+        gap: 1rem;
         height: 100%;
         cursor: pointer;
-        position: relative;
-        z-index: 1;
     }
     
-    .image-container {
-        height: 180px;
-        width: 360px;
-        overflow: hidden;
+    .title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .chart-container {
+        aspect-ratio: 2 / 1;
+        width: 100%;
         background-color: #f9fafb;
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
     }
     
-    .image-container img {
+    .chart-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        overflow: hidden;
-        border-radius: 18px;
     }
     
     .preview-chart {
         width: 100%;
         height: 100%;
+        background-color: #f8fafc;
+        border-radius: 12px;
         overflow: hidden;
     }
     
-    .card:hover .preview-chart {
-        transform: scale(1);
+    .description {
+        font-size: 0.875rem;
+        color: #475569;
+        margin: 0;
     }
 
     .view-details {
-        transition: transform 0.2s ease;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #059669;
+        margin-top: auto;
+    }
+    
+    :global(.group:hover) .view-details {
+        color: #f97316;
     }
 </style> 

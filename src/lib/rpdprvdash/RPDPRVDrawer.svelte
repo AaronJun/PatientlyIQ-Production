@@ -387,7 +387,7 @@
                 <div class="w-full align-baseline">
                     <div class="info-row flex w-full align-baseline">
                         <div class="flex align-baseline w-5/12 gap-2">                    
-                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Treatment Class</span>
+                            <span class="text-[9.25px] text-slate-500 font-bold tracking-wide align-baseline uppercase">Treatment Modality</span>
                         </div>
                         <div class="flex justify-between w-8/12 gap-2">                    
                             <span class="text-ellipsis align-baseline text-sm text-slate-800 font-base capitalize overflow-hidden tracking-wide">
@@ -416,7 +416,7 @@
                                 <button 
                                     class="flex align-top gap-1 px-3 py-1 items-center bg-[#37587e] rounded text-xs font-semibold text-gray-100 hover:bg-green-800"
                                     on:click={() => showMOAView(mechanismOfAction)}
-                                    aria-label="View all drugs with mechanism of action {mechanismOfAction} for {year}"
+                                    aria-label="View all entries for {mechanismOfAction} in {year}"
                                 >
                                     All <ArrowUpRight size={16} />
                                 </button>
