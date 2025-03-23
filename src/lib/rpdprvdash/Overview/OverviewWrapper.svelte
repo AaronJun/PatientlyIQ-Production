@@ -381,7 +381,7 @@
             aria-labelledby="rpd-designations-label"
           >
             <h3 id="rpd-designations-label" class="text-xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
-            <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: {totalEntries}">{totalEntries}</p>
+            <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: an estimated 738">738 <span class="text-xs text-slate-500">Estimated</span></p>
           </div>
           
           <div 
