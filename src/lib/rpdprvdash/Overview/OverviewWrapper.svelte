@@ -6,9 +6,11 @@
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { createEventDispatcher } from 'svelte';
     import TherapeuticAreaWaffleChart from './TherapeuticAreaWaffleChart.svelte';
-    import MarketCapWaffleChart from './MarketCapWaffleChart.svelte';
+    import QuoteCard from './QuoteCard.svelte';
+    import CompanyStageChart from './MarketCapWaffleChart.svelte';
     import ChartCarouselSection from './ChartCarouselSection.svelte';
     import ProgramFlowSankey from './ProgramFlowSankey.svelte';
+    import QuoteCardCarousel from './QuoteCardCarousel.svelte';
     
     interface DataEntry {
         Company: string;
@@ -337,16 +339,21 @@
 <div class="overview-wrapper w-full">  
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
-  <section class="chart-insights-section">
-    <ChartCarouselSection 
+  <section class="chart-insights-section flex flex-col md:flex-row gap-4 mb-6">
+    <div class="chart-carousel-container w-full">
+      <ChartCarouselSection 
       data={data} 
       onCompanySelect={handleCompanySelect} 
       onAreaSelect={handleAreaSelect}
       on:chartOpen={handleChartOpen}
       on:navigateToTab={handleNavigateToTab}
-    />
+      />
+    </div>
   </section>
-  
+  <section class="chart-insights-section flex flex-col md:flex-row gap-4 mb-6">
+        <QuoteCardCarousel />
+</section>
+
     <!-- Section 1: Program Overview Stats -->
     <section class="mb-6" aria-labelledby="program-overview-header">
       <div 
@@ -473,14 +480,9 @@
       >
       <ProgramFlowSankey 
       {data}
-      width={width < 768 ? 380 : 750}
+      width={width < 768 ? 380 : 720}
       height={280}
       />
-      <p class="caption text-xs text-slate-600 mb-4 border-t-2 mt-2 border-slate-800 pt-2">
-        This diagram visualizes the flow of drug candidates through the RPD PRV program,
-        from initial RPD designations to Priority Review Voucher (PRV) awards and sales. The width of each flow represents
-        the relative number of drug candidates.
-      </p>
       
     </div>
         
@@ -509,8 +511,7 @@
       aria-controls="market-cap-content"
     >
       <div class="flex items-center gap-2">
-        <Money  class="text-indigo-500" aria-hidden="true" />
-        <h2 id="market-cap-header" class="text-lg font-semibold text-slate-700">Company Market Cap Distribution</h2>
+        <h2 id="market-cap-header" class="text-lg font-semibold text-slate-700">Company Stages at Time of First RPD Designation</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">
         {expandedSections.marketCap ? '−' : '+'}
@@ -518,45 +519,42 @@
     </div>
     
     {#if expandedSections.marketCap}
-      <div 
-        id="market-cap-content"
-        class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
-        role="region"
-        aria-labelledby="market-cap-header"
-      >
-        <p class="text-sm text-slate-600 mb-4">
-          This chart shows the distribution of companies by market capitalization category.
-          Each square represents one company, with different shades of the same color indicating different companies within the same market cap category.
-          Hover over any square to see company details, and click to view more information about that company.
-        </p>
-        
+    <div 
+    id="market-cap-content"
+    class="section-content flex flex-col bg-slate-50 p-2 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+    role="region"
+    aria-labelledby="market-cap-header"
+    >    
+    <div class="mt-4 w-full md:w-1/3 lg:w-1/4 text-xs text-slate-800 bg-slate-50/80 p-3 rounded">
+      <p class="text-sm text-slate-600 mb-4">
+  The RPD PRV program has primarily helped catalyze research within early stage companies. 
+      </p>
+        <p class="text-sm font-medium mb-1">How to read this chart:</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Each colored square represents one company</li>
+          <li>Color indicates market capitalization category</li>
+          <li>Different shades within the same color represent different companies</li>
+          <li>Hover over any square to see company details</li>
+          <li>Click on any square to explore that company's drug candidates</li>
+        </ul>
+      </div>
         <div 
-          class="waffle-chart-container flex justify-center p-8"
+          class="waffle-chart-container flex w-full"
           role="img"
           aria-label="Market Cap Distribution Waffle Chart"
         >
-          <MarketCapWaffleChart 
+          <CompanyStageChart 
             {data}
             width={width < 768 ? width - 40 : Math.min(width - 80, 900)}
-            height={width < 768 ? 600 : 800}
+            height={width < 768 ? 600 : 1120}
             maxCols={width < 768 ? 10 : 18}
             cellSize={width < 768 ? 14 : 18}
-            cellPadding={width < 768 ? 2 : 4}
-            legendPosition={width < 768 ? "bottom" : "right"}
+            cellPadding={width < 768 ? 2 : 2}
+            legendPosition={width < 768 ? "bottom" : "bottom"}
             onCompanySelect={handleCompanySelect}
           />
         </div>
         
-        <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
-          <p class="font-medium mb-1">How to read this chart:</p>
-          <ul class="list-disc pl-5 space-y-1">
-            <li>Each colored square represents one company</li>
-            <li>Color indicates market capitalization category</li>
-            <li>Different shades within the same color represent different companies</li>
-            <li>Hover over any square to see company details</li>
-            <li>Click on any square to explore that company's drug candidates</li>
-          </ul>
-        </div>
       </div>
     {/if}
   </section>

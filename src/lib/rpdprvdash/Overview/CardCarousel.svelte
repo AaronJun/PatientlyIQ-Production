@@ -5,6 +5,7 @@
     import { ArrowLeft, ArrowRight } from 'carbon-icons-svelte';
 
     export let cards: any[] = [];
+    export let focusScale: number = 1.08; // Scale factor for focused cards
     
     let carouselEl: HTMLElement;
     let cardWidth = 420; 
@@ -193,15 +194,16 @@
         aria-roledescription="carousel"
     >
     {#each cards as card, i}
-
         <div 
-            class="card-container"
+            class="card-container pb-8"
+            class:active={currentPage === i}
+            style="--focus-scale: {focusScale};"
             in:fly={{ x: 100, duration: 300, delay: i * 100 }}
             role="option"
             aria-selected={currentPage === i}
-            >
+        >
             <slot {card} index={i}></slot>
-            </div>
+        </div>
     {/each}
 </div>
     
@@ -248,13 +250,29 @@
     }
     
     .card-container {
-        transition: transform 0.3s ease-out;
+        transition: transform 0.3s ease-out, scale 0.3s ease-out;
+        position: relative;
+        transform-origin: center center;
+        --focus-scale: 1.08;
     }
     
-    /* Hover effect to bring card forward */
-    .card-container:hover {
-        transform: translateY(-10px) !important;
-        z-index: 100 !important;
+    /* Active state - card in focus */
+    .card-container.active {
+        transform: scale(var(--focus-scale));
+        z-index: 10;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    }
+    
+    /* Hover effect to bring card forward - enhanced for non-active cards */
+    .card-container:hover:not(.active) {
+        transform: translateY(-8px) scale(1.04);
+        z-index: 5;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+    }
+    
+    /* Combined effect for active card on hover */
+    .card-container.active:hover {
+        transform: translateY(-8px) scale(var(--focus-scale));
     }
     
     .carousel-controls {
@@ -263,6 +281,26 @@
         align-items: center;
         margin-top: 1rem;
         gap: 1rem;
+    }
+
+    .nav-button {
+        background-color: #E0E0E0;
+        border: none;
+        border-radius: 50%;
+        padding: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-button:hover {
+        background-color: #6EE999;
+        transform: scale(1.1);
+    }
+    
+    .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
     }
     
     .dots {

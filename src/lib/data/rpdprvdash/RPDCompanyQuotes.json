@@ -1,0 +1,34 @@
+[
+    {
+        "Company": "Chiesi Global Rare Diseases",
+        "Name": "Stuart Siedman",
+        "Position": "Vice President, Patient Advocacy",
+        "HighlightedQuote": "Children do not have the time to wait. We must act now to reauthorize the rare pediatric disease PRV program.",
+        "FullQuote": "If the PRV program is eliminated, investment in rare disease research and development would fall precipitously, leading to higher healthcare costs and, most importantly, denying children with rare diseases who are still waiting for a treatment. Children do not have the time to wait. We must act now to reauthorize the rare pediatric disease PRV program.",
+        "QuoteSource": "https://www.lifescienceleader.com/doc/a-father-s-perspective-on-the-rare-pediatric-disease-prv-program-0001"
+    },
+    {
+      "Company": "Inozyme Pharma",
+      "Name": "Matthew Winton",
+      "Position": "COO",
+      "HighlightedQuote": "A recent PRV sold for about $150 million. For a small company, that kind of non-diluted capital could be life or death for a specific program or other programs.",
+      "FullQuote": "It is a great policy that allows drugs to be reviewed quicker but also for small and mid-sized biotechs, which is the predominant type of company developing rare disease drugs now. It can also be a strong source of non-diluted capital. A recent PRV sold for about $150 million. For a small company, that kind of non-diluted capital could be life or death for a specific program.",
+      "QuoteSource": "https://informaconnect.com/rare-disease-therapeutic-development-facing-challenges/"
+    },
+    {
+      "Company": "Chiesi Global Rare Diseases",
+      "Name": "Giacomo Chiesi",
+      "Position": "Executive Vice President",
+      "HighlightedQuote": "Across rare diseases over the last decade, continuous R&D investments have led to the development of new treatments for rare diseases. The Pediatric Priority Review Voucher program is a contributing factor to the societal progress achieved so far.",
+      "FullQuote": "Across rare diseases over the last decade, continuous R&D investments have led to the development of new treatments for rare diseases. The Pediatric Priority Review Voucher program is a contributing factor to the societal progress achieved so far.",
+      "QuoteSource": "https://informaconnect.com/rare-disease-therapeutic-development-facing-challenges/"
+    },
+    {
+      "Company": "Rare Disease Company Coalition",
+      "Name": "Stacey Frisk",
+      "Position": "Executive Director",
+      "HighlightedQuote": "The rare pediatric disease PRV program has already spurred extraordinary progress for pediatric rare disease treatments and supported groundbreaking innovation for patients.",
+      "FullQuote":"The rare pediatric disease PRV program has already spurred extraordinary progress for pediatric rare disease treatments and supported groundbreaking innovation for patients. The RDCC's latest research found that over the past decade, the program has led to new innovations that benefit over 200,000 rare disease patients and addressed unmet medical needs across 47 rare pediatric indications. Over 90 percent of all rare pediatric disease PRVs were awarded to therapies for indications with no approved therapy on the market.",
+      "QuoteSource": "https://www.rdcc.org/news/rdcc-urges-congress-advance-continuing-resolution-support-key-programs-rare-pediatric-disease-priority-review-voucher-prv-program"
+    }
+]

@@ -28,6 +28,7 @@
     export let data: DataEntry[] = [];
     export let onCompanySelect = (company: string) => {};
     export let onAreaSelect = (area: string) => {};
+    export let focusScale: number = 1.12; // Scale factor for focused cards
     
     const dispatch = createEventDispatcher();
     
@@ -77,7 +78,7 @@
     </div>
 
     <div class="carousel-wrapper px-8 overflow-x-auto md:px-12">
-        <CardCarousel cards={cardData}>
+        <CardCarousel cards={cardData} focusScale={focusScale}>
             <div class="card" slot="default" let:card>
                 <ChartCard 
                     title={card.title}
