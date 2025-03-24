@@ -25,9 +25,9 @@
     export let data: DataEntry[] = [];
     export let width = 600;
     export let height = 300;
-    export let maxCols = 20;
-    export let cellSize = 20;
-    export let cellPadding = 3;
+    export let maxCols = 50;
+    export let cellSize = 10;
+    export let cellPadding = 2;
     export let onCompanySelect = (company: string) => {};
     export let legendPosition: 'right' | 'bottom' = 'right';
     
@@ -39,11 +39,17 @@
 
     // Define market cap categories and colors (removed 'unknown')
     const marketCapCategories = {
-        'small': { label: 'Small Cap', color: '#4F46E5' }, // Indigo
-        'mid': { label: 'Mid Cap', color: '#0D9488' }, // Teal
-        'large': { label: 'Large Cap', color: '#0891B2' }, // Cyan
-        'mega': { label: 'Mega Cap', color: '#059669' }, // Emerald
-        'private': { label: 'Private', color: '#A855F7' }, // Purple
+        'small': { label: 'Small Cap', color: '#3B76B4' },
+        'mid': { label: 'Mid Cap', color: '#3A308B' },
+        'large': { label: 'Large Cap', color: '#66B16E' },
+        'mega': { label: 'Big Pharma', color: '#059669' },
+        'startup': { label: 'Early Stage', color: '#A855F7' }, // Purple
+        'government': { label: 'Government', color: '#EC4899' }, // Pink
+        'nonprofit': { label: 'Nonprofit', color: '#F59E0B' }, // Amber
+        'academic': { label: 'Academic', color: '#14B8A6' }, // Teal-500
+        'acquired': { label: 'Acquired', color: '#8B5CF6' }, // Violet
+        'advocacy': { label: 'Advocacy', color: '#EF4444' }, // Red
+        'subsidiary': { label: 'Subsidiary', color: '#10B981' }, // Emerald-500
         'na': { label: 'N/A', color: '#94A3B8' } // Slate
     };
     
@@ -84,13 +90,26 @@
                 category = 'large';
             } else if (cap === "mega") {
                 category = 'mega';
-            } else if (cap === "private" || cap === "pvt") {
-                category = 'private';
-            } else if (cap === "#n/a" || cap.includes("n/a")) {
+            } else if (cap === "startup") {
+                category = 'startup';
+            } else if (cap === "government") {
+                category = 'government';
+            } else if (cap === "nonprofit") {
+                category = 'nonprofit';
+            } else if (cap === "academic") {
+                category = 'academic';
+            } else if (cap === "acquired") {
+                category = 'acquired';
+            } else if (cap === "advocacy") {
+                category = 'advocacy';
+            } else if (cap === "subsidiary") {
+                category = 'subsidiary';
+            } else if (cap === "#n/a" || cap.includes("n/a") || cap === "") {
                 category = 'na';
             } else {
                 // Skip companies with unknown market cap
-                return;
+                console.warn(`Unknown market cap category: ${marketCap} for company ${company}`);
+                category = 'na';
             }
             
             const categoryData = marketCapData.get(category)!;
@@ -136,8 +155,9 @@
         const rows = Math.ceil(totalCells / maxCols);
         
         // Adjust width based on legend position
-        const legendWidth = 180; // width reserved for the legend when position is 'right'
+        const legendWidth = 150; // width reserved for the legend when position is 'right'
         const legendMargin = 20; // margin between chart and legend
+        const legendOverflow = 100; // margin between chart and legend
         
         // Determine if we're using right legend based on screen width and prop
         const useRightLegend = legendPosition === 'right' && window.innerWidth >= 768; // md breakpoint
@@ -155,10 +175,20 @@
             .attr('height', adjustedHeight)
             .attr('viewBox', `0 0 ${useRightLegend ? chartWidth + legendWidth + legendMargin : chartWidth} ${adjustedHeight}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
+            
+        // Create container element with proper scaling
+        const chartContainer = svgSelection
+            .append('g')
+            .attr('class', 'chart-container');
+            
+        // Adjust SVG dimensions to fit in the available space
+        const chartArea = chartWidth / maxCols;
+        const cellScale = Math.min(chartArea / (cellSize + cellPadding), 1);
         
         // Create a container for the chart
-        const chartGroup = svgSelection.append('g')
-            .attr('class', 'chart-group');
+        const chartGroup = chartContainer.append('g')
+            .attr('class', 'chart-group')
+            .attr('transform', cellScale < 1 ? `scale(${cellScale})` : '');
             
         // Track current position in the grid
         let currentRow = 0;
@@ -179,11 +209,11 @@
                     .attr('y', y)
                     .attr('width', cellSize)
                     .attr('height', cellSize)
-                    .attr('rx', 2)
-                    .attr('ry', 2)
+                    .attr('rx', 50)
+                    .attr('ry', 50)
                     .attr('fill', baseColor) // Using only the base color for all companies in the category
                     .attr('stroke', 'white')
-                    .attr('stroke-width', 0.5)
+                    .attr('stroke-width', 1.25)
                     .attr('class', 'waffle-cell')
                     .attr('data-category', category)
                     .attr('data-company', company.name)
@@ -206,11 +236,24 @@
                         company: hoveredCompany,
                         count: parseInt(hoveredCount) 
                     };
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
+                    
+                    // Position tooltip - ensure it's visible within viewport
+                    const x = Math.min(event.clientX + 10, window.innerWidth - 200);
+                    const y = Math.min(event.clientY + 10, window.innerHeight - 100);
+                    tooltipPosition = { 
+                        x: x + window.scrollX,
+                        y: y + window.scrollY
+                    };
                     tooltipVisible = true;
                 })
                 .on('mousemove', function(event) {
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
+                    // Position tooltip - ensure it's visible within viewport
+                    const x = Math.min(event.clientX + 10, window.innerWidth - 200);
+                    const y = Math.min(event.clientY + 10, window.innerHeight - 100);
+                    tooltipPosition = { 
+                        x: x + window.scrollX,
+                        y: y + window.scrollY
+                    };
                 })
                 .on('mouseout', function() {
                     const hoveredCompany = d3.select(this).attr('data-company');
@@ -265,10 +308,10 @@
                     .attr('class', 'legend-item');
                     
                 legendItem.append('rect')
-                    .attr('width', 12)
-                    .attr('height', 12)
-                    .attr('rx', 2)
-                    .attr('ry', 2)
+                    .attr('width', 8)
+                    .attr('height', 8)
+                    .attr('rx', 50)
+                    .attr('ry', 50)
                     .attr('fill', d.color);
                     
                 legendItem.append('text')
@@ -320,10 +363,21 @@
         }
     }
     
-    // Check and update legend position on window resize
+    $: if (data && svg) {
+        renderWaffleChart();
+    }
+    
+    $: if (width || height || maxCols || cellSize || cellPadding || legendPosition) {
+        // Re-render when any dimension prop changes
+        if (svg) renderWaffleChart();
+    }
+    
     function handleResize() {
         if (svg) {
-            renderWaffleChart();
+            // Add slight delay to ensure DOM is ready
+            setTimeout(() => {
+                renderWaffleChart();
+            }, 10);
         }
     }
     
@@ -338,10 +392,6 @@
             window.removeEventListener('resize', handleResize);
         };
     });
-    
-    $: if (data && svg) {
-        renderWaffleChart();
-    }
 </script>
 
 <div class="market-cap-waffle-chart">
@@ -377,20 +427,26 @@
         padding: 8px;
         font-size: 12px;
         pointer-events: none;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         z-index: 100;
         transition: opacity 0.2s;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .tooltip-title {
         font-weight: bold;
         margin-bottom: 3px;
+        white-space: nowrap;
     }
     
     .tooltip-company {
         font-style: italic;
         color: #444;
         margin-bottom: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .tooltip-value {
@@ -408,5 +464,13 @@
     
     :global(.legend-item:hover) {
         opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        .tooltip {
+            font-size: 10px;
+            padding: 6px;
+            max-width: 160px;
+        }
     }
 </style> 

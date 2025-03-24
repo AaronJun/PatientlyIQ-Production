@@ -336,7 +336,7 @@
 
 <div class="overview-wrapper w-full">  
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
-<!-- 
+
   <section class="chart-insights-section">
     <ChartCarouselSection 
       data={data} 
@@ -345,7 +345,7 @@
       on:chartOpen={handleChartOpen}
       on:navigateToTab={handleNavigateToTab}
     />
-  </section> -->
+  </section>
   
     <!-- Section 1: Program Overview Stats -->
     <section class="mb-6" aria-labelledby="program-overview-header">
@@ -359,8 +359,8 @@
         aria-controls="program-overview-content"
       >
         <div class="flex items-center gap-2">
-          <Report size={20} class="text-orange-500" aria-hidden="true" />
-          <h2 id="program-overview-header" class="text-lg font-semibold text-slate-700">Program Overview</h2>
+          <Report  class="text-slate-800" aria-hidden="true" />
+          <h2 id="program-overview-header" class="text-3xl font-normal text-slate-700">Program Overview</h2>
         </div>
         <div class="text-slate-400" aria-hidden="true">
           {expandedSections.overview ? '−' : '+'}
@@ -451,7 +451,7 @@
       aria-controls="program-flow-content"
     >
       <div class="flex items-center gap-2">
-        <ArrowRight size={20} class="text-cyan-600" aria-hidden="true" />
+        <ArrowRight  class="text-slate-600 w-8 h-4" aria-hidden="true" />
         <h2 id="program-flow-header" class="text-lg font-semibold text-slate-700">Program Flow</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">
@@ -466,23 +466,23 @@
         role="region"
         aria-labelledby="program-flow-header"
       >
-        <p class="text-sm text-slate-600 mb-4">
-          This Sankey diagram visualizes the flow of drug candidates through the Rare Pediatric Disease (RPD) program,
-          from initial designations to Priority Review Voucher (PRV) awards and sales. The width of each flow represents
-          the relative number of drug candidates.
-        </p>
-        
-        <div 
-          class="sankey-container flex justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4"
-          role="img"
-          aria-label="Program Flow Sankey Diagram"
-        >
-          <ProgramFlowSankey 
-            {data}
-            width={width < 768 ? 380 : 750}
-            height={280}
-          />
-        </div>
+      <div 
+      class="sankey-container flex flex-col md:flex-row justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4"
+      role="img"
+      aria-label="Program Flow Sankey Diagram"
+      >
+      <ProgramFlowSankey 
+      {data}
+      width={width < 768 ? 380 : 750}
+      height={280}
+      />
+      <p class="caption text-xs text-slate-600 mb-4 border-t-2 mt-2 border-slate-800 pt-2">
+        This diagram visualizes the flow of drug candidates through the RPD PRV program,
+        from initial RPD designations to Priority Review Voucher (PRV) awards and sales. The width of each flow represents
+        the relative number of drug candidates.
+      </p>
+      
+    </div>
         
         <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
           <p class="font-medium mb-1">How to read this chart:</p>
@@ -509,7 +509,7 @@
       aria-controls="market-cap-content"
     >
       <div class="flex items-center gap-2">
-        <Money size={20} class="text-indigo-500" aria-hidden="true" />
+        <Money  class="text-indigo-500" aria-hidden="true" />
         <h2 id="market-cap-header" class="text-lg font-semibold text-slate-700">Company Market Cap Distribution</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">
@@ -531,18 +531,18 @@
         </p>
         
         <div 
-          class="waffle-chart-container flex justify-center"
+          class="waffle-chart-container flex justify-center p-8"
           role="img"
           aria-label="Market Cap Distribution Waffle Chart"
         >
           <MarketCapWaffleChart 
             {data}
-            width={900}
-            height={300}
-            maxCols={18}
-            cellSize={18}
-            cellPadding={4}
-            legendPosition="right"
+            width={width < 768 ? width - 40 : Math.min(width - 80, 900)}
+            height={width < 768 ? 600 : 800}
+            maxCols={width < 768 ? 10 : 18}
+            cellSize={width < 768 ? 14 : 18}
+            cellPadding={width < 768 ? 2 : 4}
+            legendPosition={width < 768 ? "bottom" : "right"}
             onCompanySelect={handleCompanySelect}
           />
         </div>
@@ -573,7 +573,7 @@
       aria-controls="therapeutic-area-content"
     >
       <div class="flex items-center gap-2">
-        <Report size={20} class="text-purple-500" aria-hidden="true" />
+        <Report  class="text-purple-500" aria-hidden="true" />
         <h2 id="therapeutic-area-header" class="text-lg font-semibold text-slate-700">Therapeutic Area Distribution</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">

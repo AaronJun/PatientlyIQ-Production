@@ -44,7 +44,7 @@
     
     export let data: DataEntry[] = [];
     export let width = 700;
-    export let height = 300;
+    export let height = width * 0.5;
     
     let svg: SVGSVGElement;
     let tooltip: HTMLDivElement;
