@@ -4,6 +4,7 @@
     import { quintOut } from 'svelte/easing';
     import SvelteMarkdown from 'svelte-markdown';
     import { writable } from 'svelte/store';
+    import TransactionsCaseStudiesTitle from './TransactionsCaseStudiesTitle.svelte';
     
     // Define interfaces for better type safety
     interface Section {
@@ -63,6 +64,9 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
     let isLoading: boolean = true;
     let loadError: boolean = false;
     let source: string = '';
+    
+    // Title page state
+    let showTitlePage: boolean = true;
     
     // Progress tracking
     let readSections = writable<Set<number>>(new Set());
@@ -125,6 +129,10 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
             };
         }
     };
+    
+    function handleStartReading() {
+        showTitlePage = false;
+    }
     
     onMount(async () => {
         try {
@@ -286,124 +294,127 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
 </script>
 
 <div class="case-studies-container flex flex-col md:flex-row h-full">
-    <!-- Sidebar toggle for mobile -->
-    <button 
-        class="md:hidden p-2 bg-slate-800 text-white mb-2 rounded"
-        on:click={toggleSidebar}
-    >
-        {sidebarOpen ? 'Hide' : 'Show'} Navigation
-    </button>
+    {#if showTitlePage}
+        <TransactionsCaseStudiesTitle on:startReading={handleStartReading} />
+    {:else}
+        <!-- Sidebar toggle for mobile -->
+        <button 
+            class="md:hidden p-2 bg-slate-800 text-white mb-2 rounded"
+            on:click={toggleSidebar}
+        >
+            {sidebarOpen ? 'Hide' : 'Show'} Navigation
+        </button>
 
-    <!-- Sidebar -->
-    <aside 
-        class="sidebar {sidebarOpen ? 'block' : 'hidden'} md:block bg-slate-800 text-white w-full md:w-64 md:min-w-64 overflow-y-auto p-4 md:h-[calc(100vh-200px)]"
-        transition:slide={{ duration: 300 }}
-    >
-        <div class="mb-6">
-            <h3 class="text-sm font-semibold text-slate-300">Case Study</h3>
-            <h2 class="text-xl font-bold">Sarepta Therapeutics</h2>
-            <div class="mt-2 bg-slate-700 rounded-full h-2">
-                <div class="bg-emerald-500 h-2 rounded-full" style="width: {readingProgress}%"></div>
+        <!-- Sidebar -->
+        <aside 
+            class="sidebar {sidebarOpen ? 'block' : 'hidden'} md:block bg-slate-800 text-slate-50 w-full md:w-64 md:min-w-64 overflow-y-auto p-4 md:h-[calc(100vh-200px)]"
+            transition:slide={{ duration: 300 }}
+        >
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-slate-300">Case Study</h3>
+                <h2 class="text-xl font-bold">Sarepta Therapeutics</h2>
+                <div class="mt-4 bg-slate-700 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: {readingProgress}%"></div>
+                </div>
             </div>
-            <p class="text-xs mt-1">Reading progress: {Math.round(readingProgress)}%</p>
-        </div>
+            
+            <nav>
+                <ul class="space-y-1">
+                    {#each sections as section, i}
+                        <li>
+                            <button 
+                                class="w-full text-left py-2 transition-colors text-sm {i === activeSection ? 'border-b-2 border-emerald-600 text-white' : $readSections.has(i) ? 'bg-slate-700' : 'hover:bg-slate-700'}"
+                                on:click={() => setActiveSection(i)}
+                            >
+                                {section.title}
+                                {#if $readSections.has(i)}
+                                    <span class="ml-2 text-emerald-300">✓</span>
+                                {/if}
+                            </button>
+                        </li>
+                    {/each}
+                </ul>
+            </nav>
+        </aside>
         
-        <nav>
-            <ul class="space-y-1">
-                {#each sections as section, i}
-                    <li>
-                        <button 
-                            class="w-full text-left p-2 rounded transition-colors text-sm {i === activeSection ? 'bg-emerald-600 text-white' : $readSections.has(i) ? 'bg-slate-700' : 'hover:bg-slate-700'}"
-                            on:click={() => setActiveSection(i)}
+        <!-- Main content -->
+        <main 
+            class="content flex-1 p-4 md:p-6 overflow-y-auto md:h-[calc(100vh-200px)] bg-white"
+            in:fade={{ duration: 200 }}
+        >
+            {#if isLoading}
+                <div class="flex justify-center items-center h-full">
+                    <p class="text-slate-500">Loading case study...</p>
+                </div>
+            {:else if loadError}
+                <div class="flex flex-col gap-4 justify-center items-center h-full">
+                    <p class="text-red-500 font-medium">Failed to load the case study.</p>
+                    <p class="text-slate-500 mt-2">Please try refreshing the page.</p>
+                </div>
+            {:else if sections.length > 0 && activeSection < sections.length}
+                <article class="prose prose-slate max-w-prose mx-auto">
+                    <!-- Use svelte-markdown component with reactive source -->
+                    <SvelteMarkdown 
+                        {source}
+                        {renderers}
+                    />
+                    
+                    <!-- Footnotes popup -->
+                    {#if activeFootnote && footnotes[activeFootnote]}
+                        <div 
+                            class="fixed bottom-16 left-1/2 transform -translate-x-1/2 w-11/12 md:w-3/4 lg:w-1/2 bg-white border border-slate-200 rounded-lg shadow-lg p-4 z-50"
+                            transition:slide={{ duration: 200 }}
                         >
-                            {section.title}
-                            {#if $readSections.has(i)}
-                                <span class="ml-2 text-emerald-300">✓</span>
-                            {/if}
-                        </button>
-                    </li>
-                {/each}
-            </ul>
-        </nav>
-    </aside>
-    
-    <!-- Main content -->
-    <main 
-        class="content flex-1 p-4 md:p-6 overflow-y-auto md:h-[calc(100vh-200px)] bg-white"
-        in:fade={{ duration: 200 }}
-    >
-        {#if isLoading}
-            <div class="flex justify-center items-center h-full">
-                <p class="text-slate-500">Loading case study...</p>
-            </div>
-        {:else if loadError}
-            <div class="flex flex-col gap-4 justify-center items-center h-full">
-                <p class="text-red-500 font-medium">Failed to load the case study.</p>
-                <p class="text-slate-500 mt-2">Please try refreshing the page.</p>
-            </div>
-        {:else if sections.length > 0 && activeSection < sections.length}
-            <article class="prose prose-slate max-w-prose mx-auto">
-                <!-- Use svelte-markdown component with reactive source -->
-                <SvelteMarkdown 
-                    {source}
-                    {renderers}
-                />
+                            <button 
+                                class="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
+                                on:click={() => activeFootnote = null}
+                            >
+                                ✕
+                            </button>
+                            <h4 class="text-sm font-semibold text-slate-600 mb-2">Reference [{activeFootnote}]</h4>
+                            <p class="text-sm">{footnotes[activeFootnote]}</p>
+                        </div>
+                    {/if}
+                </article>
                 
-                <!-- Footnotes popup -->
-                {#if activeFootnote && footnotes[activeFootnote]}
-                    <div 
-                        class="fixed bottom-16 left-1/2 transform -translate-x-1/2 w-11/12 md:w-3/4 lg:w-1/2 bg-white border border-slate-200 rounded-lg shadow-lg p-4 z-50"
-                        transition:slide={{ duration: 200 }}
-                    >
-                        <button 
-                            class="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
-                            on:click={() => activeFootnote = null}
-                        >
-                            ✕
-                        </button>
-                        <h4 class="text-sm font-semibold text-slate-600 mb-2">Reference [{activeFootnote}]</h4>
-                        <p class="text-sm">{footnotes[activeFootnote]}</p>
+                <!-- References section if this is the last section -->
+                {#if activeSection === sections.length - 1}
+                    <div class="mt-8 pt-4 border-t border-slate-200 max-w-prose mx-auto">
+                        <h3 class="text-lg font-semibold text-slate-700">References</h3>
+                        <ul class="mt-4 space-y-2">
+                            {#each Object.entries(footnotes) as [id, text]}
+                                <li class="text-sm text-slate-600" id="fn{id}">
+                                    <span class="text-emerald-600 font-medium">[{id}]</span> {text}
+                                </li>
+                            {/each}
+                        </ul>
                     </div>
                 {/if}
-            </article>
-            
-            <!-- References section if this is the last section -->
-            {#if activeSection === sections.length - 1}
-                <div class="mt-8 pt-4 border-t border-slate-200 max-w-prose mx-auto">
-                    <h3 class="text-lg font-semibold text-slate-700">References</h3>
-                    <ul class="mt-4 space-y-2">
-                        {#each Object.entries(footnotes) as [id, text]}
-                            <li class="text-sm text-slate-600" id="fn{id}">
-                                <span class="text-emerald-600 font-medium">[{id}]</span> {text}
-                            </li>
-                        {/each}
-                    </ul>
+                
+                <div class="flex justify-between mt-8 pt-4 border-t border-slate-200 max-w-prose mx-auto">
+                    <button 
+                        class="px-4 py-2 bg-slate-200 rounded hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={activeSection === 0}
+                        on:click={() => setActiveSection(activeSection - 1)}
+                    >
+                        Previous Section
+                    </button>
+                    
+                    <button 
+                        class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={activeSection === sections.length - 1}
+                        on:click={() => setActiveSection(activeSection + 1)}
+                    >
+                        Next Section
+                    </button>
+                </div>
+            {:else}
+                <div class="flex justify-center items-center h-full">
+                    <p class="text-slate-500">No content found. Please try refreshing the page.</p>
                 </div>
             {/if}
-            
-            <div class="flex justify-between mt-8 pt-4 border-t border-slate-200 max-w-prose mx-auto">
-                <button 
-                    class="px-4 py-2 bg-slate-200 rounded hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={activeSection === 0}
-                    on:click={() => setActiveSection(activeSection - 1)}
-                >
-                    Previous Section
-                </button>
-                
-                <button 
-                    class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={activeSection === sections.length - 1}
-                    on:click={() => setActiveSection(activeSection + 1)}
-                >
-                    Next Section
-                </button>
-            </div>
-        {:else}
-            <div class="flex justify-center items-center h-full">
-                <p class="text-slate-500">No content found. Please try refreshing the page.</p>
-            </div>
-        {/if}
-    </main>
+        </main>
+    {/if}
 </div>
 
 <style>
