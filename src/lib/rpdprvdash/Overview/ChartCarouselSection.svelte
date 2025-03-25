@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<div class="carousel-wrapper px-8 overflow-x-auto md:px-12">
+<div class="carousel-wrapper">
     <CardCarousel cards={cardData} focusScale={focusScale}>
         <div class="card" slot="default" let:card>
             <ChartCard 
@@ -96,7 +96,7 @@
         width: 100%;
         position: relative;
         margin-bottom: 2rem;
-        padding: 1rem; /* Added padding for better spacing */
+        padding: 1rem 0; /* Remove horizontal padding, keep vertical */
     }
     
     .card {

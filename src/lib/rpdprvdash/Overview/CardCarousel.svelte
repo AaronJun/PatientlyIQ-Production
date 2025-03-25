@@ -182,7 +182,7 @@
 
 <div class="carousel-container h-full py-8">
     <div 
-        class="carousel flex flex-row gap-16 overflow-x-auto"
+        class="carousel flex flex-row gap-16 overflow-x-auto w-full"
         bind:this={carouselEl}
         on:touchstart={handleTouchStart}
         on:touchmove={handleTouchMove}
@@ -241,8 +241,11 @@
 <style>
     .carousel {
         scroll-snap-type: x mandatory;
+        overflow-x: auto;
+        overflow-y: show;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        padding: 0 2rem; /* Increased padding for better spacing */
     }
     
     .carousel::-webkit-scrollbar {
@@ -252,14 +255,18 @@
     .carousel-container {
         position: relative;
         width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
+        padding: 0 1rem; /* Add container padding */
     }
     
     .card-container {
         scroll-snap-align: start;
         transition: transform 0.3s ease, filter 0.3s ease; 
         flex: 0 0 auto;
-        width: 520px;
+        width: min(520px, 85vw);
         will-change: transform;
+        margin: 0 0.5rem; /* Add small margin to prevent edge touching */
     }
     
     .card-container.active {
@@ -274,6 +281,7 @@
         align-items: center;
         gap: 1rem;
         margin-top: 1rem;
+        padding: 0 1rem; /* Add padding to align with cards */
     }
     
     .nav-button {

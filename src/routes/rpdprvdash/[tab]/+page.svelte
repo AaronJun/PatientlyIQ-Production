@@ -299,7 +299,7 @@
   });
 </script>
 
-<div class="sticky overflow-y-auto overflow-x-hidden md:h-16 z-20">
+<div class="sticky z-20">
   <NavHeader 
     {activeTab} 
     isCollapsed={isSidebarCollapsed}
@@ -309,14 +309,12 @@
     on:dashboard={handleDashboard}
   />
 </div>
-<div class="flex flex-col bg-slate-50 min-h-screen h-screen overflow-hidden">
-
+<div class="flex flex-col bg-slate-50 min-h-screen h-screen">
   <!-- Main content area with proper spacing -->
-  <main class="flex-1 relative transition-all duration-300 h-full overflow-hidden">
-
+  <main class="flex-1 relative transition-all duration-300 h-full overflow-auto">
     <div class="tab-content w-full h-full z-0 flex relative">
       <!-- Main content area taking full width -->
-      <div class="w-full relative h-full overflow-hidden">
+      <div class="w-full relative h-full overflow-auto">
         <!-- Tab content based on route parameter -->
         {#if tab === 'sponsor'}
           <SponsorWrapper
