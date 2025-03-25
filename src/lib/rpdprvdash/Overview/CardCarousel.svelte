@@ -8,7 +8,7 @@
     export let focusScale: number = 1.08; // Scale factor for focused cards
     
     let carouselEl: HTMLElement;
-    let cardWidth = 420; 
+    let cardWidth = 520; 
     let currentPage = 0;
     let totalPages = 0;
     let isDragging = false;
@@ -163,7 +163,7 @@
     
     onMount(() => {
         if (carouselEl) {
-            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 300;
+            cardWidth = carouselEl.querySelector('.card')?.clientWidth || 500;
             carouselEl.addEventListener('scroll', handleScroll);
         }
         
@@ -182,7 +182,7 @@
 
 <div class="carousel-container h-full py-8">
     <div 
-        class="carousel flex flex-row gap-8 overflow-x-auto"
+        class="carousel flex flex-row gap-16 overflow-x-auto"
         bind:this={carouselEl}
         on:touchstart={handleTouchStart}
         on:touchmove={handleTouchMove}
@@ -249,80 +249,100 @@
         display: none;
     }
     
-    .card-container {
-        transition: transform 0.3s ease-out, scale 0.3s ease-out;
+    .carousel-container {
         position: relative;
-        transform-origin: center center;
-        --focus-scale: 1.08;
+        width: 100%;
     }
     
-    /* Active state - card in focus */
+    .card-container {
+        scroll-snap-align: start;
+        transition: transform 0.3s ease, filter 0.3s ease; 
+        flex: 0 0 auto;
+        width: 520px;
+        will-change: transform;
+    }
+    
     .card-container.active {
-        transform: scale(var(--focus-scale));
+        transform: scale(var(--focus-scale, 1.08));
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
         z-index: 10;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
-    }
-    
-    /* Hover effect to bring card forward - enhanced for non-active cards */
-    .card-container:hover:not(.active) {
-        transform: translateY(-8px) scale(1.04);
-        z-index: 5;
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
-    }
-    
-    /* Combined effect for active card on hover */
-    .card-container.active:hover {
-        transform: translateY(-8px) scale(var(--focus-scale));
     }
     
     .carousel-controls {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-top: 1rem;
         gap: 1rem;
-    }
-
-    .nav-button {
-        background-color: #E0E0E0;
-        border: none;
-        border-radius: 50%;
-        padding: 0.5rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .nav-button:hover {
-        background-color: #6EE999;
-        transform: scale(1.1);
+        margin-top: 1rem;
     }
     
-    .nav-button:disabled {
+    .nav-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: none;
+        border-radius: 50%;
+        background-color: white;
+        color: #4b5563;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+    
+    .nav-button:hover:not([disabled]) {
+        background-color: #f3f4f6;
+        transform: translateY(-1px);
+    }
+    
+    .nav-button:active:not([disabled]) {
+        transform: translateY(0);
+    }
+    
+    .nav-button[disabled] {
         opacity: 0.5;
         cursor: not-allowed;
-        transform: none;
     }
     
     .dots {
         display: flex;
-        gap: 6px;
+        gap: 0.5rem;
     }
     
     .dot {
-        width: 8px;
-        height: 8px;
+        width: 0.5rem;
+        height: 0.5rem;
         border-radius: 50%;
-        background-color: #6FF117;
-        filter: saturate(0.125);
+        background-color: #d1d5db;
         border: none;
+        padding: 0;
         cursor: pointer;
-        transition: background-color 0.2s, filter 0.2s, ease-in-out;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    
+    .dot:hover {
+        transform: scale(1.2);
     }
     
     .dot.active {
-        background-color: #6EE999;
-        outline: 1px solid #6EE7B7;
-        filter: saturate(1.25);
-        outline-offset: 2px;
+        background-color: #4b5563;
+        transform: scale(1.2);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .card-container {
+            width: 85vw;
+        }
+        
+        .carousel-controls {
+            margin-top: 0.5rem;
+        }
+        
+        .nav-button {
+            width: 2rem;
+            height: 2rem;
+        }
     }
 </style> 

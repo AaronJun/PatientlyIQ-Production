@@ -62,52 +62,54 @@
         // Forward the open event to the parent component
         dispatch('chartOpen', event.detail);
     }
-    
 </script>
 
+<div class="section-intro w-full flex flex-col md:flex-row justify-evenly md:justify-between lg:justify-between gap-8 md:gap-24 lg:gap-32 px-8 py-8">
+    <h2 class="text-3xl font-light text-slate-700 mb-4">
+        Perspectives <span class="italic font-serif">from</span> the Industry
+    </h2>
+    <div class="flex-container justify-end w-full md:w-2/3 lg:w-3/5 max-w-prose"> 
+        <p class="text-slate-800 text-left font-base text-sm md:text-base">  
+            We've compiled a list of key insights from the data to help you understand the RPD PRV landscape. For those interested in a deeper dive, we've also included a list of resources to help you learn more.
+        </p>  
+    </div>
+</div>
 
-<div class="section-intro w-full flex flex-col md:flex-row justify-evenly md:justify-center lg:justify-center content-end gap-8 md:gap-24 lg:gap-32 px-8 py-8">
-    <h2 class="text-slate-600 w-full md:w-1/2 lg:w-2/5 text-balance text-left font-light text-3xl/8 lg:text-4xl md:justify-end mb-2">
-        A constellation <span class="highlight-italics italic font-serif">of</span> new companies
-            </h2>
-            <div class="flex-container justify-end w-full md:w-2/3 lg:w-3/5 max-w-prose"> 
-            <p class="text-slate-800 text-left font-base text-sm md:text-base">  
-                We've compiled a list of key insights from the data to help you understand the RPD PRV landscape. For those interested in a deeper dive, we've also included a list of resources to help you learn more.
-            </p>  
+<div class="carousel-wrapper px-8 overflow-x-auto md:px-12">
+    <CardCarousel cards={cardData} focusScale={focusScale}>
+        <div class="card" slot="default" let:card>
+            <ChartCard 
+                title={card.title}
+                description={card.description}
+                chartComponent={card.chartComponent}
+                chartProps={card.props}
+                actionButtonText={card.actionButtonText}
+                actionButtonDestination={card.actionButtonDestination}
+                on:open={handleCardOpen}
+            />
         </div>
-    </div>
-
-    <div class="carousel-wrapper px-8 overflow-x-auto md:px-12">
-        <CardCarousel cards={cardData} focusScale={focusScale}>
-            <div class="card" slot="default" let:card>
-                <ChartCard 
-                    title={card.title}
-                    description={card.description}
-                    chartComponent={card.chartComponent}
-                    chartProps={card.props}
-                    actionButtonText={card.actionButtonText}
-                    actionButtonDestination={card.actionButtonDestination}
-                    on:open={handleCardOpen}
-                />
-            </div>
-        </CardCarousel>
-    </div>
+    </CardCarousel>
+</div>
 
 <style>
     .carousel-wrapper {
         width: 100%;
         position: relative;
         margin-bottom: 2rem;
-        padding: rem; /* Added padding for better spacing */
+        padding: 1rem; /* Added padding for better spacing */
     }
     
     .card {
         height: 100%;
     }
-
     
     /* Media queries for responsive behavior */
-        .carousel-wrapper {
-            animation: fadeIn 0.5s ease-in-out;
-        }
+    .carousel-wrapper {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 </style> 

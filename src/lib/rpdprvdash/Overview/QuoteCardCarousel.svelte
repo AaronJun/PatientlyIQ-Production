@@ -50,8 +50,10 @@
     }
 </script>
 
-<div class="quote-carousel-container w-96 h-full rounded-lg border border-slate-200 pt-8 pl-8">
-    <h3 class="text-2xl font-light text-slate-700 mb-4">Perspectives <span class="italic font-serif"> from</span> the Industry</h3>
+<div class="quote-carousel-container h-full rounded-lg border border-slate-200 pt-8 pl-8">
+    <h2 class="text-3xl font-light text-slate-700 mb-4">
+        Perspectives <span class="italic font-serif">from</span> the Industry
+    </h2> 
     
     {#if quotes.length > 0}
         <CardCarousel cards={quotes} focusScale={1.1}>

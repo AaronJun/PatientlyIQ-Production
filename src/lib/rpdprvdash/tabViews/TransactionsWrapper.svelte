@@ -3,6 +3,7 @@
     import { onMount, createEventDispatcher } from 'svelte';
     import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import TransactionAnalytics from '../transactionsUI/TransactionAnalytics.svelte';
+    import TransactionsCaseStudies from '../transactionsUI/TransactionsCaseStudies.svelte';
     import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import SellerBuyerChord from '../TransactionChord.svelte';
@@ -10,7 +11,6 @@
     import RPDTransactionSummaryView from '../sidebarComponents/RPDTransactionsSummary.svelte';
     import MobileTransactionSidebar from '../sidebarComponents/MobileTransactionSidebar.svelte';
     import RpdprvSearch from '../RPDPRVSearch.svelte';
-    import { Separator } from 'bits-ui';
     import { fade, fly, slide } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
     
@@ -246,6 +246,14 @@
                     {isAllYearView} 
                     {onEntrySelect} 
                 />
+            </div>
+        <!-- Case Studies Tab -->
+        {:else if activeTransactionTab === 'case-studies'}
+            <div 
+                in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
+                out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
+            >
+                <TransactionsCaseStudies />
             </div>
         {/if}
     </div>

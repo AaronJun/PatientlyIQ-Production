@@ -342,37 +342,38 @@
   <section class="chart-insights-section flex flex-col md:flex-row gap-4 mb-6">
     <div class="chart-carousel-container w-full">
       <ChartCarouselSection 
-      data={data} 
-      onCompanySelect={handleCompanySelect} 
-      onAreaSelect={handleAreaSelect}
-      on:chartOpen={handleChartOpen}
-      on:navigateToTab={handleNavigateToTab}
+        data={data} 
+        onCompanySelect={handleCompanySelect} 
+        onAreaSelect={handleAreaSelect}
+        on:chartOpen={handleChartOpen}
+        on:navigateToTab={handleNavigateToTab}
       />
     </div>
   </section>
+  
   <section class="chart-insights-section flex flex-col md:flex-row gap-4 mb-6">
-        <QuoteCardCarousel />
-</section>
+    <QuoteCardCarousel />
+  </section>
 
-    <!-- Section 1: Program Overview Stats -->
-    <section class="mb-6" aria-labelledby="program-overview-header">
-      <div 
-        class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border-b-2 border-slate-800" 
-        on:click={() => toggleSection('overview')}
-        on:keydown={(e) => e.key === 'Enter' && toggleSection('overview')}
-        role="button"
-        tabindex="0"
-        aria-expanded={expandedSections.overview}
-        aria-controls="program-overview-content"
-      >
-        <div class="flex items-center gap-2">
-          <Report  class="text-slate-800" aria-hidden="true" />
-          <h2 id="program-overview-header" class="text-3xl font-normal text-slate-700">Program Overview</h2>
-        </div>
-        <div class="text-slate-400" aria-hidden="true">
-          {expandedSections.overview ? '−' : '+'}
-        </div>
+  <!-- Section 1: Program Overview Stats -->
+  <section class="mb-6" aria-labelledby="program-overview-header">
+    <div 
+      class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border-b-2 border-slate-800" 
+      on:click={() => toggleSection('overview')}
+      on:keydown={(e) => e.key === 'Enter' && toggleSection('overview')}
+      role="button"
+      tabindex="0"
+      aria-expanded={expandedSections.overview}
+      aria-controls="program-overview-content"
+    >
+      <div class="flex items-center gap-2">
+        <Report class="text-slate-800" aria-hidden="true" />
+        <h2 id="program-overview-header" class="text-3xl font-normal text-slate-700">Program Overview</h2>
       </div>
+      <div class="text-slate-400" aria-hidden="true">
+        {expandedSections.overview ? '−' : '+'}
+      </div>
+    </div>
     
     {#if expandedSections.overview}
       <div 
@@ -383,12 +384,14 @@
       >
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
           <div 
-          class="stat-card bg-yellow-50 p-4 border border-yellow-100"
+            class="stat-card bg-yellow-50 p-4 border border-yellow-100"
             role="region"
             aria-labelledby="rpd-designations-label"
           >
             <h3 id="rpd-designations-label" class="text-xs tracking-wide font-medium text-slate-500">RPD Designations Granted</h3>
-            <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: an estimated 738">738 <span class="text-xs text-slate-500">Estimated</span></p>
+            <p class="text-2xl font-bold text-slate-800" aria-label="Total RPD Designations: an estimated 738">
+              738 <span class="text-xs text-slate-500">Estimated</span>
+            </p>
           </div>
           
           <div 
@@ -397,7 +400,9 @@
             aria-labelledby="prvs-awarded-label"
           >
             <h3 id="prvs-awarded-label" class="text-xs font-medium text-slate-500">PRVs Awarded</h3>
-            <p class="text-2xl font-bold text-purple-700" aria-label="Total PRVs Awarded: {totalPRVs}">{totalPRVs}</p>
+            <p class="text-2xl font-bold text-purple-700" aria-label="Total PRVs Awarded: {totalPRVs}">
+              {totalPRVs}
+            </p>
           </div>
           
           <div 
@@ -424,19 +429,19 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="bg-white p-4  border border-slate-200">
+          <div class="bg-white p-4 border border-slate-200">
             <h3 class="text-xs font-medium text-slate-500">Top Company</h3>
             <p class="text-xl font-semibold text-slate-800">{topCompany.name || 'N/A'}</p>
             <p class="text-xs text-slate-500">{topCompany.count || 0} drug candidates</p>
           </div>
           
-          <div class="bg-white p-4  border border-slate-200">
+          <div class="bg-white p-4 border border-slate-200">
             <h3 class="text-xs font-medium text-slate-500">Top Therapeutic Area</h3>
             <p class="text-xl font-semibold text-slate-800">{topArea.name || 'N/A'}</p>
             <p class="text-xs text-slate-500">{topArea.count || 0} drug candidates</p>
           </div>
           
-          <div class="bg-white p-4  border border-slate-200">
+          <div class="bg-white p-4 border border-slate-200">
             <h3 class="text-xs font-medium text-slate-500">Top Indication</h3>
             <p class="text-xl font-semibold text-slate-800">{topIndication.name || 'N/A'}</p>
             <p class="text-xs text-slate-500">{topIndication.count || 0} drug candidates</p>
@@ -458,7 +463,7 @@
       aria-controls="program-flow-content"
     >
       <div class="flex items-center gap-2">
-        <ArrowRight  class="text-slate-600 w-8 h-4" aria-hidden="true" />
+        <ArrowRight class="text-slate-600 w-8 h-4" aria-hidden="true" />
         <h2 id="program-flow-header" class="text-lg font-semibold text-slate-700">Program Flow</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">
@@ -473,18 +478,17 @@
         role="region"
         aria-labelledby="program-flow-header"
       >
-      <div 
-      class="sankey-container flex flex-col md:flex-row justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4"
-      role="img"
-      aria-label="Program Flow Sankey Diagram"
-      >
-      <ProgramFlowSankey 
-      {data}
-      width={width < 768 ? 380 : 720}
-      height={280}
-      />
-      
-    </div>
+        <div 
+          class="sankey-container flex flex-col md:flex-row justify-center h-80 border border-slate-100 rounded-md bg-white mb-4 p-4"
+          role="img"
+          aria-label="Program Flow Sankey Diagram"
+        >
+          <ProgramFlowSankey 
+            {data}
+            width={width < 768 ? 380 : 720}
+            height={280}
+          />
+        </div>
         
         <div class="mt-4 text-xs text-slate-500 bg-slate-50 p-3 rounded">
           <p class="font-medium mb-1">How to read this chart:</p>
@@ -519,25 +523,26 @@
     </div>
     
     {#if expandedSections.marketCap}
-    <div 
-    id="market-cap-content"
-    class="section-content flex flex-col bg-slate-50 p-2 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
-    role="region"
-    aria-labelledby="market-cap-header"
-    >    
-    <div class="mt-4 w-full md:w-1/3 lg:w-1/4 text-xs text-slate-800 bg-slate-50/80 p-3 rounded">
-      <p class="text-sm text-slate-600 mb-4">
-  The RPD PRV program has primarily helped catalyze research within early stage companies. 
-      </p>
-        <p class="text-sm font-medium mb-1">How to read this chart:</p>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>Each colored square represents one company</li>
-          <li>Color indicates market capitalization category</li>
-          <li>Different shades within the same color represent different companies</li>
-          <li>Hover over any square to see company details</li>
-          <li>Click on any square to explore that company's drug candidates</li>
-        </ul>
-      </div>
+      <div 
+        id="market-cap-content"
+        class="section-content flex flex-col bg-slate-50 p-2 shadow-sm border-x border-b border-slate-200 transition-all duration-300"
+        role="region"
+        aria-labelledby="market-cap-header"
+      >    
+        <div class="mt-4 w-full md:w-1/3 lg:w-1/4 text-xs text-slate-800 bg-slate-50/80 p-3 rounded">
+          <p class="text-sm text-slate-600 mb-4">
+            The RPD PRV program has primarily helped catalyze research within early stage companies. 
+          </p>
+          <p class="text-sm font-medium mb-1">How to read this chart:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Each colored square represents one company</li>
+            <li>Color indicates market capitalization category</li>
+            <li>Different shades within the same color represent different companies</li>
+            <li>Hover over any square to see company details</li>
+            <li>Click on any square to explore that company's drug candidates</li>
+          </ul>
+        </div>
+        
         <div 
           class="waffle-chart-container flex w-full"
           role="img"
@@ -554,7 +559,6 @@
             onCompanySelect={handleCompanySelect}
           />
         </div>
-        
       </div>
     {/if}
   </section>
@@ -571,7 +575,7 @@
       aria-controls="therapeutic-area-content"
     >
       <div class="flex items-center gap-2">
-        <Report  class="text-purple-500" aria-hidden="true" />
+        <Report class="text-purple-500" aria-hidden="true" />
         <h2 id="therapeutic-area-header" class="text-lg font-semibold text-slate-700">Therapeutic Area Distribution</h2>
       </div>
       <div class="text-slate-400" aria-hidden="true">
@@ -795,7 +799,7 @@
   
   .modal-description {
     margin-bottom: 1.5rem;
-    color: #4b5563;
+    color: #1f2937;
     line-height: 1.5;
   }
   
@@ -820,7 +824,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #4f46e5;
+    background-color: #4338ca;
     color: white;
     border: none;
     border-radius: 0.375rem;
@@ -831,7 +835,7 @@
   }
   
   .action-button:hover {
-    background-color: #4338ca;
+    background-color: #3730a3;
   }
   
   @media (max-width: 768px) {
@@ -860,18 +864,5 @@
     outline: 2px solid #4f46e5;
     outline-offset: 2px;
     box-shadow: 0 0 0 2px white;
-  }
-  
-  /* Ensure sufficient color contrast */
-  .modal-description {
-    color: #1f2937; /* Darker gray for better contrast */
-  }
-  
-  .action-button {
-    background-color: #4338ca; /* Darker indigo for better contrast */
-  }
-  
-  .action-button:hover {
-    background-color: #3730a3;
   }
 </style>

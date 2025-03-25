@@ -30,7 +30,7 @@
 
 <div class="quote-card border border-slate-100 rounded-lg transition-all duration-300 flex flex-col justify-between h-full px-4 py-6 bg-white relative">
     <div class="card-content relative">
-        <Quotes class="text-slate-800 w-4 h-4 font-serif mb-2 absolute -top-2 -left-1" />
+        <Quotes class="text-slate-800 w-4 h-4 font-serif mb-2" />
 
         <Separator.Root
             orientation="horizontal"
@@ -38,7 +38,7 @@
         />      
           
         <div class="quote-text text-slate-700 font-light text-base leading-relaxed mb-4" in:fade={{ duration: 300 }}>
-            <p class="first-letter:text-xl first-letter:font-serif">{getQuoteText()}</p>
+            <p>{getQuoteText()}</p>
             <button 
                 class="read-more-btn mt-2 text-slate-500 text-xs hover:text-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 rounded px-2"
                 on:click={toggleExpanded}
@@ -57,7 +57,7 @@
                 href={quote.QuoteSource} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="quote-source inline-flex items-center text-slate-800 text-xs mt-2 hover:text-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 rounded px-1 py-0.5"
+                class="quote-source inline-flex items-center text-emerald-700 text-xs bold mt-2 hover:text-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 rounded pt-2"
                 aria-label="View source of quote"
             >
                 Source <ArrowUpRight class="ml-1 h-3 w-3" />
@@ -71,7 +71,6 @@
 
 <style>
     .quote-card {
-        max-width: 100%;
         height: 100%;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         position: relative;

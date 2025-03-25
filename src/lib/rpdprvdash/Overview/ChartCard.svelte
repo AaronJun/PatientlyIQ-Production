@@ -57,11 +57,12 @@
 
 <style>
     :global(.card) {
-        padding: 1.25rem;
+        padding: 0.25rem;
+        background-color: #f9fafb;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 3px 12px rgba(0, 0, 0, 0.06);
         height: 100%;
         width: 100%;
-        max-width:345px;
+        max-width: 645px;
 
         transition: all 0.3s ease;
     }
