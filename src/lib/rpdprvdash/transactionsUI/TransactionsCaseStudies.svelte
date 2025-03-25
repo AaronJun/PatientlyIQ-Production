@@ -136,18 +136,27 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
     
     onMount(async () => {
         try {
-            // Import the case study directly in development mode
+            // Clear loading state when we try to load content
+            isLoading = true;
+            loadError = false;
+            
+            // Try multiple methods to load the case study
+            let loadedContent = false;
+            
+            // Method 1: Import the case study directly in development mode
             try {
                 const module = await import('/static/research/SareptaCaseStudy.md?raw');
                 if (module.default) {
                     caseStudyContent = module.default;
-                    console.log("Loaded case study directly via import");
+                    console.log("Loaded case study directly via import, length:", caseStudyContent.length);
+                    loadedContent = true;
                 }
             } catch (importError) {
                 console.warn("Could not import directly:", importError);
-                
-                // Fall back to fetch attempts if import fails
-                let response;
+            }
+            
+            // Method 2: Try fetching with different paths if import fails
+            if (!loadedContent) {
                 const possiblePaths = [
                     '/static/research/SareptaCaseStudy.md',
                     './static/research/SareptaCaseStudy.md',
@@ -156,43 +165,52 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
                     '/SareptaCaseStudy.md'
                 ];
                 
-                let fetchSuccess = false;
                 for (const path of possiblePaths) {
                     try {
                         console.log(`Attempting to load from: ${path}`);
-                        response = await fetch(path);
+                        const response = await fetch(path);
                         if (response.ok) {
-                            console.log(`Successfully loaded from: ${path}`);
-                            fetchSuccess = true;
+                            caseStudyContent = await response.text();
+                            console.log(`Successfully loaded from: ${path}, length:`, caseStudyContent.length);
+                            loadedContent = true;
                             break;
                         }
                     } catch (e) {
                         console.warn(`Failed to load from ${path}:`, e);
                     }
                 }
-                
-                if (fetchSuccess && response) {
-                    caseStudyContent = await response.text();
-                    console.log("Loaded case study content via fetch, length:", caseStudyContent.length);
-                } else {
-                    // Use fallback content if fetch fails
-                    console.log("Using fallback content after fetch attempts failed");
-                    caseStudyContent = FALLBACK_CONTENT;
-                }
             }
             
-            // Parse the markdown content into sections
-            parseSections(caseStudyContent);
-            isLoading = false;
+            // Method 3: Fallback content if all else fails
+            if (!loadedContent) {
+                console.log("Using fallback content after all load attempts failed");
+                caseStudyContent = FALLBACK_CONTENT;
+            }
+            
+            // Parse the content into sections regardless of how we got it
+            if (caseStudyContent) {
+                parseSections(caseStudyContent);
+                isLoading = false;
+                
+                // If no sections were found, that's an error
+                if (sections.length === 0) {
+                    console.error("No sections were parsed from the content");
+                    loadError = true;
+                }
+            } else {
+                loadError = true;
+                isLoading = false;
+            }
             
         } catch (error) {
             console.error('Failed to load case study:', error);
+            loadError = true;
+            isLoading = false;
             
             // Use fallback content on error
             console.log("Using fallback content after error");
             caseStudyContent = FALLBACK_CONTENT;
             parseSections(caseStudyContent);
-            isLoading = false;
         }
     });
     
@@ -218,20 +236,23 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
         // Clean content from footnote definitions at the end of the document
         content = content.replace(/\[\^(\d+)\]: .*?(?=\n\[\^|$)/gs, '');
         
-        // Split by headers (# for major sections)
+        // Split by headers (# for major sections and ## for subsections)
         const lines = content.split('\n');
         const sectionMap: Section[] = [];
         let currentSection: Section = { title: '', content: '', id: '' };
         
-        lines.forEach((line: string) => {
-            if (line.startsWith('# ')) {
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // Check if it's a main section header (# Section)
+            if (line.match(/^# /)) {
                 // If we have content in the current section, add it to the map
                 if (currentSection.title) {
                     sectionMap.push({ ...currentSection });
                 }
                 
                 // Start a new section
-                const title = line.replace('# ', '');
+                const title = line.replace(/^# /, '');
                 const id = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
                 currentSection = { 
                     title, 
@@ -240,17 +261,28 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
                 };
             } else {
                 // Add this line to the current section
-                currentSection.content += line + '\n';
+                if (currentSection.title) {
+                    currentSection.content += line + '\n';
+                } else if (line.trim() !== '') {
+                    // If we encounter content before any section header, create a default section
+                    const title = "Introduction";
+                    const id = "introduction";
+                    currentSection = {
+                        title,
+                        content: line + '\n',
+                        id
+                    };
+                }
             }
-        });
+        }
         
-        // Add the last section
+        // Add the last section if it has content
         if (currentSection.title) {
             sectionMap.push({ ...currentSection });
         }
         
         sections = sectionMap;
-        console.log(`Parsed ${sections.length} sections from case study`);
+        console.log(`Parsed ${sections.length} sections from case study:`, sections.map(s => s.title));
         
         // Update source for active section
         updateActiveSection();
@@ -259,18 +291,28 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
     function updateActiveSection() {
         if (sections.length > activeSection) {
             source = sections[activeSection].content;
+            console.log(`Updated active section to ${activeSection}: ${sections[activeSection].title}`);
         }
     }
     
     function setActiveSection(index: number): void {
-        activeSection = index;
-        updateReadStatus(index);
-        
-        // Reset active footnote when changing sections
-        activeFootnote = null;
-        
-        // Update source for the new active section
-        updateActiveSection();
+        // Make sure index is valid
+        if (index >= 0 && index < sections.length) {
+            activeSection = index;
+            updateReadStatus(index);
+            
+            // Reset active footnote when changing sections
+            activeFootnote = null;
+            
+            // Update source for the new active section
+            updateActiveSection();
+            
+            // Scroll to top of content area for better reading experience
+            const contentElement = document.querySelector('.content');
+            if (contentElement) {
+                contentElement.scrollTop = 0;
+            }
+        }
     }
     
     function updateReadStatus(index: number): void {
@@ -287,9 +329,12 @@ Drugs that earn priority review vouchers are often **orphan products or novel th
     // Calculate reading progress
     $: readingProgress = $readSections.size / (sections.length || 1) * 100;
     
-    // Update source when active section changes
-    $: if (sections.length > 0) {
-        source = sections[activeSection]?.content || '';
+    // Update source when active section changes - This is more reliable than relying on function calls
+    $: {
+        if (sections.length > 0 && activeSection >= 0 && activeSection < sections.length) {
+            source = sections[activeSection].content;
+            console.log(`Reactive update: Active section ${activeSection}: ${sections[activeSection].title}`);
+        }
     }
 </script>
 

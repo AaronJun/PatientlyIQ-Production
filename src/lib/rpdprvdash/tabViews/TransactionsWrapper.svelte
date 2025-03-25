@@ -3,7 +3,7 @@
     import { onMount, createEventDispatcher } from 'svelte';
     import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import TransactionAnalytics from '../transactionsUI/TransactionAnalytics.svelte';
-    import TransactionsCaseStudies from '../transactionsUI/TransactionsCaseStudies.svelte';
+    import SareptaCaseStudyHtml from '../transactionsUI/SareptaCaseStudyHtml.svelte';
     import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import SellerBuyerChord from '../TransactionChord.svelte';
@@ -253,7 +253,7 @@
                 in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
                 out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
             >
-                <TransactionsCaseStudies />
+                <SareptaCaseStudyHtml />
             </div>
         {/if}
     </div>

@@ -66,11 +66,11 @@
 
 <div class="section-intro w-full flex flex-col md:flex-row justify-evenly md:justify-between lg:justify-between gap-8 md:gap-24 lg:gap-32 px-8 py-8">
     <h2 class="text-3xl font-light text-slate-700 mb-4">
-        Perspectives <span class="italic font-serif">from</span> the Industry
+        Insights <span class="italic font-serif">from</span> the Data
     </h2>
     <div class="flex-container justify-end w-full md:w-2/3 lg:w-3/5 max-w-prose"> 
         <p class="text-slate-800 text-left font-base text-sm md:text-base">  
-            We've compiled a list of key insights from the data to help you understand the RPD PRV landscape. For those interested in a deeper dive, we've also included a list of resources to help you learn more.
+
         </p>  
     </div>
 </div>

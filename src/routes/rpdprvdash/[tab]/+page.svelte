@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, afterUpdate } from 'svelte';
   import { Separator } from 'bits-ui';
   import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
+  import { goto, invalidate } from '$app/navigation';
+  import { browser } from '$app/environment';
   
   // Import components
   import SponsorWrapper from '$lib/rpdprvdash/tabViews/SponsorWrapper.svelte';  
@@ -47,7 +48,8 @@
   const typedRpdCompanyValues = rpdCompanyValues as any[];
   
   // Get the tab parameter from the page store
-  const tab = $page.params.tab;
+  $: tab = $page.params.tab;
+  let previousTab = ''; // Track previous tab for navigation
   
   // Map tab route parameters to display names
   const tabDisplayNames = {
@@ -58,7 +60,7 @@
   };
   
   // Set the active tab based on the route parameter
-  let activeTab = tabDisplayNames[tab as keyof typeof tabDisplayNames] || 'Program Overview';
+  $: activeTab = tabDisplayNames[tab as keyof typeof tabDisplayNames] || 'Program Overview';
   
   // State variables
   let selectedYear = "2024"; // Default year
@@ -72,6 +74,7 @@
   let isTabletView = false; // Track if we're in tablet/iPad view
   let processedConstellationData: any[] = [];
   let stockDataByCompany: Record<string, any[]> = {};
+  let isNavigating = false;
   
   // State for drawer components
   interface DrawerProps {
@@ -134,12 +137,40 @@
         return entry["PRV Year"] === selectedYear || entry["RPDD Year"] === selectedYear;
       });
   
+  // Reset relevant state when tab changes
+  $: if (tab !== previousTab && browser) {
+    // Reset drawer states when changing tabs
+    isDrawerOpen = false;
+    isCompanyDetailDrawerOpen = false;
+    isTherapeuticAreaDrawerOpen = false;
+    isDashboardOpen = false;
+    
+    // Update the previous tab
+    previousTab = tab;
+    
+    // Force invalidation of the current URL to ensure data is fresh
+    invalidate(`/rpdprvdash/${tab}`);
+  }
+  
   // Functions
-  function handleTabSelect(tabName: string) {
-    // Convert display name to route parameter
-    const tabParam = Object.entries(tabDisplayNames).find(([_, v]) => v === tabName)?.[0];
-    if (tabParam) {
-      goto(`/rpdprvdash/${tabParam}`);
+  async function handleTabSelect(tabName: string) {
+    // Avoid navigation if already navigating
+    if (isNavigating) return;
+    
+    try {
+      isNavigating = true;
+      
+      // Convert display name to route parameter
+      const tabParam = Object.entries(tabDisplayNames).find(([_, v]) => v === tabName)?.[0];
+      if (tabParam && tabParam !== tab) {
+        // Force hard navigation for better reliability
+        const url = `/rpdprvdash/${tabParam}`;
+        await goto(url, { invalidateAll: true });
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+    } finally {
+      isNavigating = false;
     }
   }
   
@@ -226,8 +257,18 @@
     return companyMap;
   }
 
+  afterUpdate(() => {
+    // Ensure the component re-renders properly after tab changes
+    if (browser && previousTab !== tab) {
+      previousTab = tab;
+    }
+  });
+
   onMount(() => {
     try {
+      // Set initial previous tab
+      previousTab = tab;
+      
       // Process stock data on mount
       stockDataByCompany = processStockData(typedRpdCompanyValues);
       
@@ -365,7 +406,7 @@
   <div class="flex flex-col"> 
     <p class="text-2xs text-[#ff4a4a] font-mono">Copyright 2025 Patiently Studio</p>
 
-    <a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500  font-mono">Contact us</a>
+    <a href="/contact" target="_blank" class="text-2xs text-sky-800 underline cursor-pointer underline-offset-4 font-semibold hover:text-emerald-500 font-mono">Contact us</a>
   </div>
   <div class="flex flex-col w-32 md:w-auto place-items-end justify-end text-right">
   <p class="text-2xs text-slate-500 font-mono">Data updated through <span class="text-[#ff4a4a]">{new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</span></p>
