@@ -16,11 +16,28 @@ const directoryImportPlugin = () => {
 		return null;
 	  }
 	};
-  };  
+};
+
+// Plugin to handle markdown imports
+const markdownPlugin = () => {
+  return {
+    name: 'vite-plugin-markdown',
+    transform(code, id) {
+      if (id.endsWith('.md')) {
+        // For ?raw imports, return the content as a string
+        if (id.includes('?raw')) {
+          return `export default ${JSON.stringify(code)};`;
+        }
+      }
+      return null;
+    }
+  };
+};  
 
 export default defineConfig({
 	plugins: [
 		directoryImportPlugin(),
+		markdownPlugin(),
 		sveltekit()
 	],
 
@@ -28,8 +45,8 @@ export default defineConfig({
 		preserveSymlinks: true, // Sometimes helps with import resolution
 		// Add mainFields to prioritize certain module formats
 		mainFields: ['svelte', 'browser', 'module', 'main']
-	  },
-	  optimizeDeps: {
+	},
+	optimizeDeps: {
 		include: [
 			'@xyflow/svelte',
 			'zwitch',
@@ -37,7 +54,7 @@ export default defineConfig({
 			'property-information',
 			'unist-util-is'
 		]
-	  }
+	}
 	// optimizeDeps:{
 	// 	disabled: 'dev',
 	// 	noDiscovery: true,
