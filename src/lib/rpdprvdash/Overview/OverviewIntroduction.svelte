@@ -119,18 +119,18 @@ function setupGradient() {
 }
 </script>
 
-<header class="section-slanted-bottom flex flex-row w-full items-center min-h-[25vh] bg-slate-900 relative overflow-hidden">
+<header class="section-slanted-bottom flex flex-row w-full items-center min-h-[45vh] bg-slate-900 relative overflow-hidden shadow-xl">
     <canvas 
-        bind:this={gradientCanvas} 
+        bind:this={gradientCanvas}
         class="gradient-canvas absolute inset-0 w-full h-full {canvasLoaded ? 'is-loaded' : ''}"
         data-js-darken-top
     ></canvas>
-    <div class="absolute w-2/3 inset-0 z-10">
+    <div class="absolute mx-8 pr-32 bg-gradient-to-bl fade-in inset-0 z-10">
         <AnimatedStars />
     </div>
 </header>
 
-<div class="section-slanted-top w-full flex flex-col justify-evenly min-h-[40vh] place-content-end gap-12 md:gap-24 lg:gap-32 px-8 py-8 md:py-16 mb-20">
+<div class="section-slanted-top w-full flex flex-col justify-evenly min-h-[30vh] md:min-h-[40vh] place-content-end gap-12 md:gap-24 lg:gap-32 px-8 py-8 md:py-16 mb-20">
     <h1 class="text-slate-600 w-full md:w-1/2 lg:w-/5 text-balance text-left font-light text-4xl lg:text-5xl md:justify-end mb-2">
         A Catalyst <span class="italic font-serif">for</span> 
         Rare Pediatric Disease Research</h1>

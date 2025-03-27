@@ -391,7 +391,7 @@
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
   <!-- Section 1: Program Overview Stats -->
-  <section class="section grid grid-cols-1 md:grid-cols-3 gap-4 px-8 md:px-16 lg:px-20  py-8 md:py-16 bg-slate-800">
+  <section class="section-slanted-both z-0 grid grid-cols-1 md:grid-cols-3 gap-4 px-8 md:px-16 lg:px-20 pt-8 md:pt-16 pb-16 md:pb-24 bg-slate-800">
     <div class="col-span-2">
     <h3 class="text-3xl font-normal text-slate-100 col-span-1 mb-8">
     The program spurred the development of new treatments for <span class="font-semibold text-orange-200">previously untreatable diseases</span>.
@@ -446,7 +446,7 @@
 </section>
 
 
-<section class="chart-insights-section flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 md:px-16 lg:px-20 00">
+<section class="section-slanted-both flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 md:px-16 lg:px-20 bg-slate-200">
   <QuoteCardCarousel />
 </section>
 
@@ -1022,6 +1022,7 @@ Chart Detail Modal -->
   .section-slanted-both {
     position: relative;
     margin-top: -72px;
+    z-index: 1000;
     padding-top: calc(72px + 3rem);
     padding-bottom: calc(72px + 3rem);
     clip-path: polygon(0 72px, 100% 0, 100% calc(100% - 72px), 0 100%);
