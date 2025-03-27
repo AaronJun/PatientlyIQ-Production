@@ -1,4 +1,4 @@
-  <!-- RPDPRVAnalytics.svelte -->
+<!-- RPDPRVAnalytics.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
     import OverviewIntroduction from './OverviewIntroduction.svelte';   
@@ -15,9 +15,7 @@
     import CompanyDistributionChart from './CompanyDistributionChart.svelte';
     import ProgramOverview from './ProgramOverview.svelte';
     import TherapeuticAreaSection from './TherapeuticAreaSection.svelte';
-    import MarketCapSection from './MarketCapSection.svelte';
-    import RPDDFilteredTable from '../components/RPDDFilteredTable.svelte';
-    import EconomicsSection from './EconomicsSection.svelte';
+    
     interface DataEntry {
         Company: string;
         Candidate: string;
@@ -113,8 +111,7 @@
       distribution: true,
       marketCap: true,
       programFlow: true,
-      companyDistribution: true,
-      rpdd2018Table: true  // Set to true so it's visible by default
+      companyDistribution: true
     };
     
     function toggleSection(section: keyof typeof expandedSections) {
@@ -391,81 +388,87 @@
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
   <!-- Section 1: Program Overview Stats -->
-  <section class="section grid grid-cols-1 md:grid-cols-3 gap-4 px-8 md:px-16 lg:px-20  py-8 md:py-16 bg-slate-800">
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 px-8 md:px-16 lg:px-20  py-8 md:py-16 bg-slate-800">
     <div class="col-span-2">
     <h3 class="text-3xl font-normal text-slate-100 col-span-1 mb-8">
     The program spurred the development of new treatments for <span class="font-semibold text-orange-200">previously untreatable diseases</span>.
     </h3>
     </div>
     
-    <div class="flex flex-col gap-4 mt-4 col-span-2 md:max-w-4xl">      
+    <div class="flex flex-col gap-4 mt-4 col-span-2 md:max-w-4xl">
+      <Separator.Root
+      orientation="horizontal"
+      class="bg-slate-200 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />      
+      
       <div 
-      class="stat-card-2 flex justify-between gap-12 pb-8 px-2 bg-transparent border-2 border-slate-100" 
+      class="stat-card-2 flex justify-between gap-12 py-4 px-2 bg-transparent border-2 border-slate-100" 
       role="region"
       aria-labelledby="prvs-awarded-label"
     >
       <h3 id="prvs-awarded-label" class="text-xl font-medium text-slate-50 col-span-1">Small + Start-Up Companies Supported</h3>
-      <p class="text-7xl font-bold text-slate-50 col-span-1" aria-label="Small Cap Companies Supported: {smallCapCompanies}">
+      <p class="text-6xl font-bold text-slate-50 col-span-1" aria-label="Small Cap Companies Supported: {smallCapCompanies}">
             {smallCapCompanies}
       </p>
     </div>
     
+
+      <Separator.Root
+      orientation="horizontal"
+      class="bg-slate-200 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />      
       <div 
-        class="stat-card-2 flex justify-between gap-12 pb-8 px-2"
+        class="stat-card-2 flex justify-between gap-12 py-4 px-2"
         role="region"
         aria-labelledby="rpd-designations-label"
       >
         <h3 id="rpd-designations-label" class="text-xl tracking-wide font-medium text-slate-200">RPD Designations Granted</h3>
-        <p class="text-7xl font-semibold text-right text-slate-50" aria-label="Total RPD Designations: an estimated 738">
+        <p class="text-6xl font-semibold text-right text-slate-50" aria-label="Total RPD Designations: an estimated 738">
           738<br> 
           <span class="text-sm font-normal text-right align-top text-slate-50">Estimated</span>   
         </p>
       </div>
 
+      <Separator.Root
+      orientation="horizontal"
+      class="bg-slate-200 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />      
+      
       <div 
-      class="stat-card-2 flex justify-between gap-12 pb-8 px-2" 
+      class="stat-card-2 flex justify-between gap-12 py-4 px-2" 
       role="region"
       aria-labelledby="prvs-awarded-label"
     >
       <h3 id="prvs-awarded-label" class="text-xl font-medium text-slate-50 col-span-1">PRVs Awarded</h3>
-      <p class="text-7xl font-bold text-slate-50 col-span-1" aria-label="Total PRVs Awarded: {totalPRVs}">
+      <p class="text-6xl font-bold text-slate-50 col-span-1" aria-label="Total PRVs Awarded: {totalPRVs}">
         {totalPRVs}
       </p>
     </div>
 
+      <Separator.Root
+      orientation="horizontal"
+      class="bg-slate-200 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+      />      
+      
       <div 
-      class="stat-card-2 flex justify-between gap-12 pb-8 px-2 bg-transparent border-2 border-slate-100" 
+      class="stat-card-2 flex justify-between gap-12 py-4 px-2 bg-transparent border-2 border-slate-100" 
       role="region"
       aria-labelledby="prvs-awarded-label"
     >
       <h3 id="prvs-awarded-label" class="text-xl font-medium text-slate-50 col-span-1">PRVs Sold</h3>
-      <p class="text-7xl font-bold text-slate-50 col-span-1" aria-label="Total PRVs Awarded: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
+      <p class="text-6xl font-bold text-slate-50 col-span-1" aria-label="Total PRVs Awarded: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
             {totalSold}
       </p>
     </div>
 </section>
-
-
-<section class="chart-insights-section flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 md:px-16 lg:px-20 00">
+<section class="chart-insights-section flex flex-col md:flex-row gap-4 mb-6">
   <QuoteCardCarousel />
 </section>
 
 <!-- Replace the therapeutic area section with the new component -->
-<section class="section-slanted-both flex flex-col md:flex-row gap-4 pt-16 md:py-16 lg:py-24 px-8 bg-stone-100">
 <TherapeuticAreaSection {data} onAreaClick={handleAreaClick} />
-</section>
 
-
-<section class="section-slanted-top flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 bg-stone-200">
-  <MarketCapSection {data} onMarketCapClick={handleCompanySelect}/>
-</section>
-
-<!-- Additional diagonal separator can be added here if needed -->
-<!-- <div class="diagonal-separator-container">
-  <div class="diagonal-separator diagonal-separator--emerald"></div>
-</div> -->
-
-  <!--
+    <!--
     </section> 
     Section 2: Program Overview Stats
     <ProgramOverview {data} sectionTitle="Economic Impact" />
@@ -809,7 +812,7 @@
     {/if}
   </section>
 
-Market Cap Distribution Section
+  <!-- Market Cap Distribution Section
   <section class="mb-6 px-8 md:px-12 lg:px-16" aria-labelledby="market-cap-header">
     <div 
       class="section-header flex items-center justify-between cursor-pointer bg-slate-50 p-3 border border-slate-200"
@@ -869,7 +872,7 @@ Market Cap Distribution Section
     {/if}
 
 
-Chart Detail Modal -->
+<!-- Chart Detail Modal -->
 {#if isModalOpen}
 <div 
   class="modal-overlay" 
@@ -937,16 +940,6 @@ Chart Detail Modal -->
   </div>
 </div>
 {/if}
-<!-- 
-{#if expandedSections.rpdd2018Table}
-  <RPDDFilteredTable 
-    {data} 
-    filterYear="2018" 
-    filterPRVStatus="non-awarded"
-    title="RPDD 2018 Entries with Development Status Details"
-    {onEntrySelect}
-  />
-{/if} -->
 </div>
 
 <style>
@@ -978,73 +971,6 @@ Chart Detail Modal -->
     outline-offset: 4px;
   }
   
-  /* Diagonal separator styles */
-  .diagonal-separator-container {
-    height: 72px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    z-index: 10;
-  }
-  
-  .diagonal-separator {
-    height: 10px;
-    position: absolute;
-    width: 100%;
-    left: 0;
-    right: 0;
-    transform: skewY(-6deg) translateY(-0.35px);
-    transform-origin: 100% 0;
-  }
-  
-  .diagonal-separator--teal {
-    background-color: #2dd4bf; /* teal-400 */
-  }
-  
-  .diagonal-separator--sky {
-    background-color: #38bdf8; /* sky-400 */
-  }
-  
-  .diagonal-separator--emerald {
-    background-color: #34d399; /* emerald-400 */
-  }
-  
-  /* Slanted section styles */
-  .section-slanted-top {
-    position: relative;
-    margin-top: -72px;
-    padding-top: calc(72px + 3rem);
-    clip-path: polygon(0 72px, 100% 0, 100% 100%, 0 100%);
-    z-index: 5;
-  }
-  
-  /* New slanted both top and bottom style */
-  .section-slanted-both {
-    position: relative;
-    margin-top: -72px;
-    padding-top: calc(72px + 3rem);
-    padding-bottom: calc(72px + 3rem);
-    clip-path: polygon(0 72px, 100% 0, 100% calc(100% - 72px), 0 100%);
-    z-index: 5;
-  }
-
-    /* New slanted both top and bottom style */
-    .section-slanted-bottom {
-    position: relative;
-    padding-bottom: calc(72px + 3rem);
-    clip-path: polygon(0 72px, 100% 0, 100% calc(100% - 72px), 0 100%);
-    z-index: 5;
-  }
-  
-  @media (max-width: 768px) {
-    .section-slanted-top, .section-slanted-both {
-      padding-top: calc(72px + 3rem);
-    }
-    
-    .section-slanted-both {
-      padding-bottom: calc(72px + 3rem);
-    }
-  }
   
   /* Modal styles */
   .modal-overlay {

@@ -35,14 +35,14 @@
     // Card data for the carousel
     const cardData = [
         {
-            title: 'Market Cap Distribution',
+            title: 'Company Type Distribution',
             description: 'Visualizes the distribution of companies by market capitalization categories, highlighting the representation of each group in the PRV landscape.',
             chartComponent: MarketCapWaffleChart,
             props: {
                 data,
                 onCompanySelect
             },
-            actionButtonText: 'View Transactions',
+            actionButtonText: 'View Details',
             actionButtonDestination: 'By Transactions'
         },
         {
@@ -96,7 +96,7 @@
         width: 100%;
         position: relative;
         margin-bottom: 2rem;
-        padding: 1rem 0; /* Remove horizontal padding, keep vertical */
+        padding: 1rem 2rem; /* Remove horizontal padding, keep vertical */
     }
     
     .card {

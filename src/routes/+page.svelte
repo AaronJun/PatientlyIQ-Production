@@ -77,3 +77,16 @@
 	</section>
 	
 </div>
+
+<div class="flex flex-col items-center justify-center min-h-screen p-4 space-y-4">
+	<h1 class="text-3xl font-bold">Welcome to PIQ3</h1>
+	
+	<div class="flex space-x-4">
+		<a href="/rpdprvdash/overview" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+			RPD PRV Dashboard
+		</a>
+		<a href="/rpdd-table" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
+			RPDD 2018 Table (Non-PRV Awarded)
+		</a>
+	</div>
+</div>

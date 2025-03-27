@@ -28,6 +28,9 @@
             if (quotesImport.length === 1) {
                 // If only one quote, duplicate it to enable carousel
                 quotes = [...quotesImport, ...quotesImport] as RPDCompanyQuote[];
+            } else if (quotesImport.length < 4) {
+                // If we have less than 4 quotes (needed for grid view), duplicate them
+                quotes = [...quotesImport, ...quotesImport] as RPDCompanyQuote[];
             } else {
                 quotes = quotesImport as RPDCompanyQuote[];
             }
@@ -50,15 +53,15 @@
     }
 </script>
 
-<div class="quote-carousel-container h-full rounded-lg border border-slate-200 pt-8 pl-8">
-    <h2 class="text-3xl font-light text-slate-700 mb-4">
-        Perspectives <span class="italic font-serif">from</span> the Industry
+<div class="quote-carousel-container flex flex-col lg:flex-row gap-8 lg:gap-16 h-full py-12">
+    <h2 class="text-3xl font-medium text-slate-700 mb-4 lg:w-1/3 text-pretty lg:pr-8">
+        Perspectives from the Industry
     </h2> 
     
     {#if quotes.length > 0}
-        <CardCarousel cards={quotes} focusScale={1.1}>
+        <CardCarousel cards={quotes} >
             <svelte:fragment let:card let:index>
-                <div class="card">
+                <div class="card h-full">
                     <QuoteCard 
                         quote={card} 
                         isExpanded={expandedStates[index]} 
@@ -75,12 +78,6 @@
 </div>
 
 <style>
-    .quote-carousel-container {
-        width: 100%;
-        height: 100%;
-        min-height: 250px;
-    }
-    
     .loading-container {
         display: flex;
         justify-content: center;
@@ -89,12 +86,4 @@
         color: #6b7280;
     }
     
-    /* Enhance the card appearance */
-    :global(.card) {
-        transition: all 0.3s ease;
-        height: 100%;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
-        overflow: hidden;
-    }
 </style> 

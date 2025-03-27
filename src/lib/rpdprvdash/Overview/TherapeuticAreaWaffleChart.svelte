@@ -2,6 +2,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import WaffleChartLegend from './WaffleChartLegend.svelte';
     
     interface DataEntry {
         Company: string;
@@ -30,6 +31,9 @@
     export let cellPadding = 4;
     export let borderRadius = 50;
     export let onAreaClick = (area: string) => {};
+    export let showLegend = true;
+    export let legendTitle = "Therapeutic Areas";
+    export let useColorVariations = true;
     
     let svg: SVGSVGElement;
     let tooltip: HTMLDivElement;
@@ -37,6 +41,7 @@
     let tooltipVisible = false;
     let tooltipPosition = { x: 0, y: 0 };
     let isMobile = false;
+    let legendData: { id: string; label: string; count: number; color: string }[] = [];
     
     // Base color map for therapeutic areas
     const baseColorMap: Record<string, string> = {
@@ -133,6 +138,14 @@
             }))
             .sort((a, b) => b.count - a.count);
         
+        // Update legend data
+        legendData = sortedData.map(item => ({
+            id: item.area,
+            label: item.area,
+            count: item.count,
+            color: baseColorMap[item.area] || '#999999'
+        }));
+        
         return sortedData;
     }
     
@@ -151,32 +164,43 @@
         // Create color maps for each area with variations for indications
         const areaColorMaps = new Map<string, Map<string, string>>();
         
-        processedData.forEach(areaData => {
-            const area = areaData.area;
-            const baseColor = baseColorMap[area] || '#999999';
-            const indicationsCount = areaData.indications.length;
-            
-            const colorVariations = generateColorVariations(baseColor, indicationsCount);
-            const indicationColorMap = new Map<string, string>();
-            
-            areaData.indications.forEach((indication, index) => {
-                indicationColorMap.set(
-                    indication.name,
-                    colorVariations[Math.min(index, colorVariations.length - 1)]
-                );
+        if (useColorVariations) {
+            processedData.forEach(areaData => {
+                const area = areaData.area;
+                const baseColor = baseColorMap[area] || '#999999';
+                const indicationsCount = areaData.indications.length;
+                
+                const colorVariations = generateColorVariations(baseColor, indicationsCount);
+                const indicationColorMap = new Map<string, string>();
+                
+                areaData.indications.forEach((indication, index) => {
+                    indicationColorMap.set(
+                        indication.name,
+                        colorVariations[Math.min(index, colorVariations.length - 1)]
+                    );
+                });
+                
+                areaColorMaps.set(area, indicationColorMap);
             });
-            
-            areaColorMaps.set(area, indicationColorMap);
-        });
+        }
             
         // Calculate total count and number of cells needed
         const totalCount = processedData.reduce((sum, d) => sum + d.count, 0);
         
-        // Adjust maxCols for mobile
-        const responsiveMaxCols = isMobile ? Math.min(6, maxCols) : maxCols;
+        // Calculate optimal number of columns based on available width
+        const containerWidth = svg.parentElement?.clientWidth || width;
+        const minCellSize = isMobile ? 7 : Math.max(12, Math.min(24, Math.floor(containerWidth / 40)));
+        const minCellPadding = isMobile ? 1 : Math.max(3, Math.min(6, Math.floor(containerWidth / 100)));
+        const optimalCols = Math.max(
+            Math.floor(containerWidth / (minCellSize + minCellPadding)),
+            isMobile ? 8 : 16
+        );
+        
+        // Use the smaller of optimal columns or max columns
+        const responsiveMaxCols = Math.min(optimalCols, maxCols);
         const smallScreen = window.innerWidth < 1000;
-        const responsiveCellSize = smallScreen ? 8 : (isMobile ? Math.max(8, cellSize - 4) : cellSize);
-        const responsiveCellPadding = isMobile ? Math.max(2, cellPadding - 2) : (smallScreen ? 3 : cellPadding);
+        const responsiveCellSize = smallScreen ? 14 : (isMobile ? Math.max(10, cellSize - 4) : Math.max(28, cellSize));
+        const responsiveCellPadding = isMobile ? Math.max(2, cellPadding - 2) : (smallScreen ? 3 : Math.max(4, cellPadding));
         
         const totalCells = responsiveMaxCols * Math.ceil(totalCount / responsiveMaxCols);
         
@@ -205,7 +229,9 @@
             // Draw one cell for each entry with indication-specific color
             entries.forEach(entry => {
                 const indication = entry.Indication || 'Unknown';
-                const color = indicationColorMap.get(indication) || baseColor;
+                const color = useColorVariations 
+                    ? (indicationColorMap.get(indication) || baseColor)
+                    : baseColor;
                 
                 const x = currentCol * (responsiveCellSize + responsiveCellPadding);
                 const y = currentRow * (responsiveCellSize + responsiveCellPadding);
@@ -218,8 +244,6 @@
                     .attr('rx', isMobile ? borderRadius / 2 : borderRadius)
                     .attr('ry', isMobile ? borderRadius / 2 : borderRadius)
                     .attr('fill', color)
-                    .attr('stroke', 'white')
-                    .attr('stroke-width', isMobile ? 0.3 : 0.5)
                     .attr('class', 'waffle-cell')
                     .attr('data-area', area)
                     .attr('data-indication', indication)
@@ -231,8 +255,12 @@
                     const hoveredIndication = d3.select(this).attr('data-indication');
                     const hoveredCount = d3.select(this).attr('data-count');
                     
-                    // Highlight all cells of the same area and indication
-                    d3.selectAll(`.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`)
+                    // Highlight cells based on color variation setting
+                    const selector = useColorVariations 
+                        ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
+                        : `.waffle-cell[data-area="${hoveredArea}"]`;
+                    
+                    d3.selectAll(selector)
                         .attr('stroke', '#333')
                         .attr('stroke-width', isMobile ? 1 : 1.5);
                         
@@ -252,8 +280,12 @@
                     const hoveredArea = d3.select(this).attr('data-area');
                     const hoveredIndication = d3.select(this).attr('data-indication');
                     
-                    // Remove highlight
-                    d3.selectAll(`.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`)
+                    // Remove highlight based on color variation setting
+                    const selector = useColorVariations 
+                        ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
+                        : `.waffle-cell[data-area="${hoveredArea}"]`;
+                    
+                    d3.selectAll(selector)
                         .attr('stroke', 'white')
                         .attr('stroke-width', isMobile ? 0.3 : 0.5);
                         
@@ -286,6 +318,10 @@
         }
     }
     
+    function handleLegendItemClick(area: string) {
+        onAreaClick(area);
+    }
+    
     onMount(() => {
         checkMobileScreen();
         renderWaffleChart();
@@ -298,27 +334,31 @@
     $: if (data && svg) {
         renderWaffleChart();
     }
+    
+    $: if (useColorVariations !== undefined && svg) {
+        renderWaffleChart();
+    }
 </script>
 
-<div class="waffle-chart-container">
-    <div class="chart-area">
+
+
+
+
+<div class="waffle-chart-container flex flex-col w-fit gap-4 lg:gap-8 md:px-8">
+    <div class="chart-area w-full">
         <svg bind:this={svg}></svg>
     </div>
     
-    <div class="legend-sidebar">
-        {#each processData(data) as area}
-            <div 
-                class="legend-item" 
-                on:click={() => onAreaClick(area.area)}
-            >
-                <div 
-                    class="legend-color" 
-                    style="background-color: {baseColorMap[area.area] || '#999999'};"
-                ></div>
-                <span class="legend-text">{area.area} ({area.count})</span>
-            </div>
-        {/each}
-    </div>
+    {#if showLegend}
+        <div class="legend-container w-fit hidden md:block">
+            <WaffleChartLegend 
+                legendItems={legendData} 
+                onItemClick={handleLegendItemClick}
+                title={legendTitle}
+            />
+        </div>
+    {/if}
+    
     
     {#if tooltipVisible}
         <div 
@@ -336,60 +376,6 @@
 </div>
 
 <style>
-    .waffle-chart-container {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        height: 100%;
-        gap: 8px;
-    }
-    
-    .chart-area {
-        flex: 1;
-        min-width: 0; /* Prevents flex items from overflowing */
-    }
-    
-    .legend-sidebar {
-        width: 200px;
-        border-left: 1px solid #eee;
-        max-height: 100%;
-        overflow-y: auto;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        padding: 0.5rem;
-        gap: 0.5rem;
-    }
-    
-    .legend-item {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-    
-    .legend-item:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    .legend-color {
-        width: 8px;
-        height: 8px;
-        border-radius: 10px;
-        margin-right: 2px;
-        flex-shrink: 0;
-    }
-    
-    .legend-text {
-        font-size: 9.25px;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
     .tooltip {
         position: fixed;
         background: rgba(255, 255, 255, 0.95);
@@ -425,38 +411,5 @@
     
     :global(.waffle-cell:hover) {
         opacity: 0.9;
-    }
-    
-    @media (max-width: 767px) {
-        .waffle-chart-container {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .legend-sidebar {
-            width: 100%;
-            border-left: none;
-            border-top: 1px solid #eee;
-            grid-template-columns: repeat(3, 1fr);
-        }
-        
-        .legend-item {
-            padding: 3px;
-        }
-        
-        .legend-text {
-            font-size: 8px;
-        }
-        
-        .tooltip {
-            padding: 6px;
-            font-size: 10px;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .legend-sidebar {
-            grid-template-columns: repeat(2, 1fr);
-        }
     }
 </style> 

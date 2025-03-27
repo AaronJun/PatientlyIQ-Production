@@ -37,12 +37,12 @@
 
 <div 
   class="horizontal-sidebar-container flex flex-row min-h-fit h-12 md:h-16 fixed bg-slate-900 left-0 bottom-0 md:top-0 w-full z-40 
-         items-center justify-center md:justify-between shadow-xl md:px-8 pb-1 md:py-4
+         items-center justify-center md:justify-between shadow-xl md:px-8
          transition-all duration-300 ease-in-out"
   role="navigation"
   aria-label="Main navigation sidebar"
 >
-  <div class="items-center h-full hidden md:block md:justify-center md:align-middle md:w-10 md:h-10">
+  <div class="items-center h-full hidden md:block md:justify-center md:align-middle md:w-8 md:h-8">
     <img src={PIQLogo} alt="PIQ Logo" style="filter: saturate(0.625)" />
   </div>
 
@@ -57,12 +57,12 @@
         on:click={() => handleNavSelect(item.id)}
         title={isCollapsed && !isHovered ? item.tooltip : ''}
       >
-        <span class="text-left w-4 h-4 md:w-8 md:h-8 md:p-1 flex-shrink-0">
+        <span class="text-left w-4 h-4 md:w-6 md:h-6 flex-shrink-0">
           <svelte:component this={item.icon} class="w-full h-full"/>
         </span>
         
         <span 
-          class="nav-text text-2xs md:text-sm align-middle md:w-fit text-left md:text-left"
+          class="nav-text text-2xs md:text-xs align-middle md:w-fit text-center md:text-left"
           transition:fade={{ duration: 200 }}
         >
           {item.id}

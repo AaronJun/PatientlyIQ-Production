@@ -379,9 +379,10 @@
      on:touchstart={handleCanvasInteractionStart}
      on:touchend={handleCanvasInteractionEnd}
      on:touchcancel={handleCanvasInteractionEnd}>
-
-  <div class="w-full h-full items-center relative">
-    <div class="timeline-container fixed w-full bg-slate-100 transition-all duration-300">
+     
+     <div class="w-full h-[90vh] md:mt-16 items-center relative">
+      <div class="timeline-container fixed w-full bg-slate-100 transition-all duration-300">
+  
       <RPDPRVHorizontalTimeline 
         data={data}
         {selectedYear}
@@ -446,8 +447,9 @@
       </InfiniteCanvasWrapper>
   </div>
 
+
   <div 
-  class="sidebar-area fixed top-24 md:top-36 h-[82.25vh] md:h-[75.25vh] bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-50/90 backdrop-blur-sm
+  class="sidebar-area fixed top-28 md:top-36 h-[82.25vh] md:h-[75.25vh] lg:max-w-[620px] bottom-0 right-0 z-0 flex flex-col transition-all duration-300 ease-in-out pt-8 pb-4 shadow-md bg-slate-100/90 backdrop-blur-sm
   "
   class:md:w-[38.25vw]={!isRightSidebarCollapsed}
   class:w-[87.25vw]={!isRightSidebarCollapsed && isMobileView}
