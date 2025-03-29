@@ -135,8 +135,8 @@
     }
 </script>
 
-<div class="transactions-wrapper h-full overflow-y-auto">
-    <TransactionsIntroduction />
+<div class="transactions-wrapper h-full overflow-y-auto pt-20">
+    <!-- <TransactionsIntroduction /> -->
     
     <!-- Transaction Tab Navigation using bits-ui -->
 
@@ -146,11 +146,11 @@
         class="shadow-mini-inset dark:bg-background w-full flex flex-col gap-1 justify-evenly place-content-center p-1 text-sm font-medium dark:border dark:border-neutral-600/30"
     >
         <Tabs.List
-            class="flex flex-row place-content-start w-full gap-1 p-1 text-sm font-medium leading-5 bg-slate-200"
+            class="flex rounded-md shadow-mini-inset dark:bg-background flex-row place-content-start mx-8 mb-8 w-fit gap-1 p-1 text-sm font-medium leading-5 bg-slate-200"
         >
             <Tabs.Trigger
                 value="transaction-flow"
-                class="data-[state=active]:shadow-sm flex flex-row gap-2 md:gap-4 lg:gap-8 dark:data-[state=active]:bg-muted h-8 rounded-sm bg-transparent data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-2 md:px-8 place-items-center"
+                class="data-[state=active]:shadow-sm flex flex-row gap-2 md:gap-4 lg:gap-8 dark:data-[state=active]:bg-muted h-8 rounded-sm  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-2 md:px-8 place-items-center"
             >
                 <CicsTransactionServerZos class="w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm font-medium">Transaction Network</span>
@@ -158,7 +158,7 @@
             
             <Tabs.Trigger
                 value="transaction-analytics"
-                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm bg-transparent data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
+                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm hover:bg-slate-100  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
             >
                 <Money class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm">Transaction Analytics</span>
@@ -166,7 +166,7 @@
             
             <Tabs.Trigger
                 value="rpdd-table"
-                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm bg-transparent data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
+                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm hover:bg-slate-100  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
             >
                 <Table class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm">RPDD Table</span>
@@ -174,7 +174,7 @@
             
             <Tabs.Trigger
                 value="case-studies"
-                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm bg-transparent data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
+                class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm hover:bg-slate-100  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
             >
                 <TextLinkAnalysis class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm font-medium">Case Studies</span>

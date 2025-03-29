@@ -74,7 +74,7 @@
 
 <style>
   .horizontal-sidebar-container {
-    z-index: 99;
+    z-index: 10;
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
   }

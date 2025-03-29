@@ -299,7 +299,7 @@
   });
 </script>
 
-<div class="sticky z-20">
+<div class="sticky z-10">
   <NavHeader 
     {activeTab} 
     isCollapsed={isSidebarCollapsed}
