@@ -460,6 +460,10 @@
   <MarketCapSection {data} onMarketCapClick={handleCompanySelect}/>
 </section>
 
+<section class="section-slanted-both flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 bg-slate-100">
+<EconomicsSection {data} />
+</section>
+
 <!-- Additional diagonal separator can be added here if needed -->
 <!-- <div class="diagonal-separator-container">
   <div class="diagonal-separator diagonal-separator--emerald"></div>
@@ -1022,11 +1026,11 @@ Chart Detail Modal -->
   .section-slanted-both {
     position: relative;
     margin-top: -72px;
-    z-index: 1000;
+    z-index: 999;
     padding-top: calc(72px + 3rem);
     padding-bottom: calc(72px + 3rem);
     clip-path: polygon(0 72px, 100% 0, 100% calc(100% - 72px), 0 100%);
-    z-index: 5;
+    z-index: 10;
   }
 
     /* New slanted both top and bottom style */

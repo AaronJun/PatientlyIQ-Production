@@ -95,7 +95,7 @@ import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icon
 {#if isOpen}
 <div class="drawer-backdrop" on:click={handleCloseClick} transition:fade={{ duration: 300, easing: cubicOut }}>
   <div 
-    class="drawer w-[94.275vw] lg:w-[55vw] xl:w-[47.25vw]"
+    class="drawer  w-[94.275vw] lg:w-[55vw] xl:w-[47.25vw]"
     on:click|stopPropagation={() => {}}
     transition:fly={{ x: 400, duration: 400, opacity: 1, easing: cubicOut }}
   >
@@ -221,7 +221,7 @@ import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icon
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 200;
     display: flex;
     justify-content: flex-end;
   }
@@ -230,6 +230,7 @@ import { Close, Information, Receipt, Chemistry, Development } from 'carbon-icon
     height: 100%;
     background-color: white;
     overflow-y: auto;
+    z-index: 999;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   }
 

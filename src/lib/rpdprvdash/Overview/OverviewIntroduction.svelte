@@ -17,7 +17,7 @@ let canvasLoaded = false;
 interface GradientColor {
     r: number;
     g: number;
-    b: number;
+    b: number;  
 }
 
 interface GradientPoint {

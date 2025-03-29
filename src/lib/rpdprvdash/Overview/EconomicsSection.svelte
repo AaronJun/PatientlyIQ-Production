@@ -1,8 +1,11 @@
-<!-- MarketCapSection.svelte -->
+<!-- EconomicsSection.svelte -->
 <script lang="ts">
-    import { Button,    Separator } from 'bits-ui';
+    import { Button, Separator } from 'bits-ui';
     import { ChartBar, ArrowUpRight } from 'carbon-icons-svelte';
     import MarketCapWaffleChart from './MarketCapWaffleChart.svelte';
+    import RPDDFilteredTable from '../components/RPDDFilteredTable.svelte';
+    import { hasPRVAward } from '../utils/data-processing-utils';
+    import { onMount } from 'svelte';
     
     interface DataEntry {
         Company: string;
@@ -29,6 +32,9 @@
     export let data: DataEntry[] = [];
     export let onMarketCapClick: (marketCap: string) => void = () => {};
     
+    // Define onEntrySelect function to resolve the linter error
+    const onEntrySelect = (entry: DataEntry) => {};
+    
     // Set default width and height to ensure the chart is fully visible
     let chartWidth = 800;
     let chartHeight = 500;
@@ -36,6 +42,11 @@
     // Get container dimensions for responsive sizing
     let containerWidth: number;
     let containerRef: HTMLDivElement;
+    
+    // Statistics for PRV sales
+    let totalPRVs = 0;
+    let totalSold = 0;
+    let avgSalePrice = 0;
     
     // Update chart dimensions when container size changes
     function updateChartDimensions() {
@@ -49,9 +60,32 @@
         }
     }
     
-    import { onMount } from 'svelte';
+    function calculateStats() {
+        if (!data || data.length === 0) return;
+        
+        // Filter to just PRV data using PRV Year and Status
+        const prvData = data.filter(d => hasPRVAward(d));
+        totalPRVs = prvData.length;
+        
+        // Calculate sold vouchers
+        const soldData = prvData.filter(d => d.Purchased === "Y");
+        totalSold = soldData.length;
+        
+        // Calculate average value from sale prices
+        const valuedSales = soldData
+            .filter(d => d["Sale Price (USD Millions)"] && d["Sale Price (USD Millions)"] !== "Undisclosed")
+            .map(d => parseFloat(d["Sale Price (USD Millions)"] ?? '0'));
+            
+        const totalValue = valuedSales.reduce((sum, val) => sum + val, 0);
+        avgSalePrice = valuedSales.length > 0 ? totalValue / valuedSales.length : 0;
+    }
+    
+    $: if (data) {
+        calculateStats();
+    }
     
     onMount(() => {
+        calculateStats();
         updateChartDimensions();
         
         // Add resize listener
@@ -66,49 +100,15 @@
     });
 </script>
 
-<section class="market-cap-section flex flex-col md:flex-row mb-6 md:px-4 lg:px-8 justify-evenly h-fit min-h-[45.25vh]" aria-labelledby="market-cap-header">
-    <div class="flex flex-col md:flex-row gap-4 md:gap-8 lg:gap-16 w-full">
-        <div class="flex flex-col items-start gap-8 align-top md:w-1/3 lg:w-2/">
-            <h3 class="text-4xl/10 font-medium text-slate-800">The program overwhelmingly encouraged research and development from <span class="text-sky-700 font-semibold">smaller teams and companies</span>.</h3>
-            <Separator.Root
-            orientation="horizontal"
-            class="bg-slate-600 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]  mt-20"
-            />
-            <div class="flex align-middle items-center place-content-evenly justify-start gap-2 w-full">
-                <ChartBar class="text-sky-800 w-10 h-10 p-2 bg-sky-200" aria-hidden="true" />
-                <h4 id="therapeutic-area-header" class="font-semibold text-slate-800">
-                Company size distribution    
-                </h4>
-            </div>
-                    <p class="text-sm text-slate-600 mb-4">
-                        This visualization shows the distribution of drug candidates across different company market caps. Each square represents a drug candidate,
-                        with colors indicating the company's market cap category. Hover over any square to see details about the company and indication,
-                        and click to filter the data by market cap.
-                    </p>
-                    <Button.Root class="rounded-input flex-row gap-2 bg- border-1 border-slate-800 text-slate-800 text-left shadow-mini hover:bg-slate-200 inline-flex w-full px-4 py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all">
-                        Explore Economics + Transactions Data <ArrowUpRight class="p-1 ring-1 ring-slate-800 w-8 h-8 font-light rounded-full" />   
-                    </Button.Root>
-            </div>
 
-        <div 
-            bind:this={containerRef}
-            class="waffle-chart-container flex items-center justify-center w-full md:w-2/3"
-            role="img"
-            aria-label="Market Cap Distribution Waffle Chart"
-        >
-                <MarketCapWaffleChart 
-                    {data} 
-                    width={chartWidth} 
-                    height={chartHeight}
-                    maxCols={20}
-                    cellSize={20}
-                    cellPadding={2}
-                    onMarketCapClick={onMarketCapClick}
-                    />
-                </div>
-            </div>
+<section class="market-cap-section flex flex-col md:flex-row gap-8 lg:gap-16 mb-6 md:px-4 lg:px-8 justify-evenly h-fit min-h-[45.25vh] place-content-stretch align-baseline" aria-labelledby="market-cap-header">
 
+    
+    <RPDDFilteredTable 
+    {data} 
+    filterYear="2018" 
+    filterPRVStatus="non-awarded"
+    title="Company Navigator"
+    {onEntrySelect}
+/>
 </section>
-
-<style>
-</style> 
