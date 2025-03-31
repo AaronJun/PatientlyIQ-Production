@@ -82,12 +82,21 @@
     
     const marketCapLower = marketCap.toLowerCase();
     
+    // Public company market caps
     if (marketCapLower.includes('mega')) return 'bg-blue-100 text-blue-800'; // Mega cap
     if (marketCapLower.includes('large')) return 'bg-green-100 text-green-800'; // Large cap
     if (marketCapLower.includes('mid')) return 'bg-teal-100 text-teal-800'; // Mid cap
     if (marketCapLower.includes('small')) return 'bg-emerald-100 text-emerald-800'; // Small cap
     if (marketCapLower.includes('micro')) return 'bg-yellow-100 text-yellow-800'; // Micro cap
     if (marketCapLower.includes('nano')) return 'bg-orange-100 text-orange-800'; // Nano cap
+    
+    // Private company financing stages
+    if (marketCapLower.includes('series a')) return 'bg-pink-100 text-pink-800'; // Series A
+    if (marketCapLower.includes('series b')) return 'bg-purple-100 text-purple-800'; // Series B
+    if (marketCapLower.includes('series c')) return 'bg-indigo-100 text-indigo-800'; // Series C
+    if (marketCapLower.includes('series d')) return 'bg-violet-100 text-violet-800'; // Series D
+    if (marketCapLower.includes('seed')) return 'bg-rose-100 text-rose-800'; // Seed
+    if (marketCapLower.includes('grant')) return 'bg-lime-100 text-lime-800'; // Grant-supported
     
     return 'bg-gray-200 text-gray-700'; // Default for unknown values
   }
@@ -132,9 +141,21 @@
     grant: false  // Add grant-supported option
   };
   
+  // Add class filter state
+  let selectedClasses = {
+    green: false,
+    yellow: false,
+    red: false
+  };
+  
   // Function to check if any market cap is selected
   function isAnyMarketCapSelected(): boolean {
     return Object.values(selectedMarketCaps).some(value => value);
+  }
+  
+  // Function to check if any class is selected
+  function isAnyClassSelected(): boolean {
+    return Object.values(selectedClasses).some(value => value);
   }
   
   // Function to toggle expansion of a company row
@@ -237,12 +258,28 @@
     }
   };
   
-  // Filter data based on provided criteria
+  // Update filterData function to include class filtering
   function filterData() {
     let result = [...data];
     
     // First filter out non-commercial entities
     result = result.filter(entry => !isNonCommercialEntity(entry.Company || ''));
+
+    // Apply class filter if any classes are selected
+    if (isAnyClassSelected()) {
+      // Get all companies that match the selected classifications
+      const validCompanies = new Set(
+        result.filter(entry => {
+          const company = entry.Company || '';
+          const entries = groupByCompany(result)[company] || [];
+          const classification = getCompanyClassification(entries);
+          return selectedClasses[classification as keyof typeof selectedClasses];
+        }).map(entry => entry.Company)
+      );
+      
+      // Keep only entries from companies that match the classification
+      result = result.filter(entry => validCompanies.has(entry.Company));
+    }
 
     // Apply search filter if there is a search query
     if (searchQuery.trim()) {
@@ -261,30 +298,55 @@
     
     // Filter by Market Cap / Size and Financing Series
     if (isAnyMarketCapSelected()) {
-      result = result.filter(entry => {
-        const marketCap = entry.MarketCap?.toLowerCase() || '';
-        const lastFundraise = entry.LastFundraise?.toLowerCase() || '';
-        
-        // Check public company market caps
-        const isSelectedPublicSize = Object.entries(selectedMarketCaps)
-          .filter(([key, _]) => ['mega', 'large', 'mid', 'small', 'micro', 'nano'].includes(key))
-          .some(([size, isSelected]) => isSelected && marketCap.includes(size));
-        
-        // Check private company financing series
-        const isSelectedPrivateFinancing = Object.entries(selectedMarketCaps)
-          .filter(([key, _]) => ['seriesa', 'seriesb', 'seriesc', 'seriesd', 'seed'].includes(key))
-          .some(([series, isSelected]) => {
-            if (!isSelected) return false;
-            const seriesName = series.replace('series', 'series ');
-            return lastFundraise.includes(seriesName);
-          });
-        
-        // Check grant support
-        const isGrantSupported = selectedMarketCaps.grant && 
-          (lastFundraise.includes('grant') || marketCap.toLowerCase().includes('grant'));
-        
-        return isSelectedPublicSize || isSelectedPrivateFinancing || isGrantSupported;
-      });
+      // Get all companies that match the market cap criteria
+      const validCompanies = new Set(
+        result.filter(entry => {
+          const marketCap = entry.MarketCap?.toLowerCase() || '';
+          const lastFundraise = entry.LastFundraise?.toLowerCase() || '';
+          
+          // Check public company market caps
+          const isSelectedPublicSize = Object.entries(selectedMarketCaps)
+            .filter(([key, _]) => ['mega', 'large', 'mid', 'small', 'micro', 'nano'].includes(key))
+            .some(([size, isSelected]) => isSelected && marketCap.includes(size));
+          
+          // Check private company financing series
+          const isSelectedPrivateFinancing = Object.entries(selectedMarketCaps)
+            .filter(([key, _]) => ['seriesa', 'seriesb', 'seriesc', 'seriesd', 'seed'].includes(key))
+            .some(([series, isSelected]) => {
+              if (!isSelected) return false;
+              // More flexible matching for series financing - check both LastFundraise and MarketCap fields
+              if (series === 'seriesa' && (
+                lastFundraise.includes('series a') || lastFundraise.includes('seriesa') || 
+                marketCap.includes('series a') || marketCap.includes('seriesa')
+              )) return true;
+              if (series === 'seriesb' && (
+                lastFundraise.includes('series b') || lastFundraise.includes('seriesb') || 
+                marketCap.includes('series b') || marketCap.includes('seriesb')
+              )) return true;
+              if (series === 'seriesc' && (
+                lastFundraise.includes('series c') || lastFundraise.includes('seriesc') || 
+                marketCap.includes('series c') || marketCap.includes('seriesc')
+              )) return true;
+              if (series === 'seriesd' && (
+                lastFundraise.includes('series d') || lastFundraise.includes('seriesd') || 
+                marketCap.includes('series d') || marketCap.includes('seriesd')
+              )) return true;
+              if (series === 'seed' && (
+                lastFundraise.includes('seed') || marketCap.includes('seed')
+              )) return true;
+              return false;
+            });
+          
+          // Check grant support
+          const isGrantSupported = selectedMarketCaps.grant && 
+            (lastFundraise.toLowerCase().includes('grant') || marketCap.toLowerCase().includes('grant'));
+          
+          return isSelectedPublicSize || isSelectedPrivateFinancing || isGrantSupported;
+        }).map(entry => entry.Company)
+      );
+      
+      // Keep only entries from companies that match the market cap criteria
+      result = result.filter(entry => validCompanies.has(entry.Company));
     }
     
     // Filter by RPDD Year if specified - only allow 2020
@@ -334,16 +396,19 @@
         const classB = getCompanyClassification(groupsB[b.Company || ''] || []);
         
         // Define order: green > yellow > red > none
-        const order = { green: 3, yellow: 2, red: 1, none: 0 };
+        const classOrder = { green: 4, yellow: 3, red: 2, none: 1 };
+        
+        const orderA = classOrder[classA as keyof typeof classOrder];
+        const orderB = classOrder[classB as keyof typeof classOrder];
         
         if (sortDirection === 'asc') {
-          return order[classB] - order[classA];
+          return orderA - orderB;
         } else {
-          return order[classA] - order[classB];
+          return orderB - orderA;
         }
       }
 
-      // Use index signature to safely access properties
+      // Regular sorting for other columns
       const valueA = (a as any)[sortKey] || '';
       const valueB = (b as any)[sortKey] || '';
       
@@ -414,6 +479,42 @@
 
     <!-- Filter rows -->
     <div class="flex flex-col space-y-2">
+      <!-- Class filters -->
+      <div class="flex items-center space-x-4 bg-slate-50 p-2 rounded-lg">
+        <span class="text-sm font-medium text-slate-800 min-w-[100px]">Classification:</span>
+        <div class="flex items-center space-x-4">
+          <div class="flex flex-wrap gap-2 items-center">
+            <label class="inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                bind:checked={selectedClasses.green}
+                on:change={() => { filteredData = filterData(); sortData(); }}
+                class="form-checkbox h-3 w-3 text-emerald-600 rounded border-gray-300 focus:ring-2 focus:ring-offset-0 focus:ring-emerald-500"
+              >
+              <span class="ml-1 text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Green</span>
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                bind:checked={selectedClasses.yellow}
+                on:change={() => { filteredData = filterData(); sortData(); }}
+                class="form-checkbox h-3 w-3 text-yellow-600 rounded border-gray-300 focus:ring-2 focus:ring-offset-0 focus:ring-yellow-500"
+              >
+              <span class="ml-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">Yellow</span>
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                bind:checked={selectedClasses.red}
+                on:change={() => { filteredData = filterData(); sortData(); }}
+                class="form-checkbox h-3 w-3 text-red-600 rounded border-gray-300 focus:ring-2 focus:ring-offset-0 focus:ring-red-500"
+              >
+              <span class="ml-1 text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full">Red</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <!-- Public company filters -->
       <div class="flex items-center space-x-4 bg-purple-50 p-2 rounded-lg">
         <span class="text-sm font-medium text-purple-800 min-w-[100px]">Public Companies:</span>
@@ -549,7 +650,12 @@
       <thead class="sticky top-0 z-10">
         <tr>
           <th class="header-cell py-2 w-4 text-center font-medium text-[9.2px] font-mono px-2 text-slate-50 bg-slate-600 shadow-sm"></th>
-          <th class="header-cell py-2 w-fit text-left font-medium text-[9.2px] font-mono px-2 text-slate-50 bg-slate-600 shadow-sm">CLASS</th>
+          <th 
+            class="header-cell py-2 w-fit text-left font-medium text-[9.2px] font-mono px-2 text-slate-50 bg-slate-600 cursor-pointer hover:bg-slate-700 shadow-sm"
+            on:click={() => handleSort('Class')}
+          >
+            CLASS {sortKey === 'Class' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+          </th>
           <th 
             class="header-cell py-2 w-fit text-left font-medium text-[9.2px] font-mono px-2 text-slate-50 bg-slate-600 cursor-pointer hover:bg-slate-700 shadow-sm" 
             on:click={() => handleSort('Company')}
@@ -634,7 +740,7 @@
                 {@const activeStudyCount = entries.filter(e => 
                   ['active', 'recruiting', 'initiating', 'active, not recruiting']
                     .some(s => e.CurrentStudyStatus?.toLowerCase().includes(s))
-                ).length}
+                ).length}`
                 {@const unknownStudyCount = entries.filter(e => 
                   e.CurrentStudyStatus?.toLowerCase().includes('unknown')
                 ).length}
@@ -650,19 +756,19 @@
                         <span class="text-emerald-700">
                           {company} is a <span class="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">GREEN</span> target, due to 
                           {#if ['nano', 'micro', 'small'].some(size => marketCap.includes(size))}
-                            company size class of <span class="font-semibold border-b border-dotted border-emerald-700">{marketCap.toUpperCase()}</span>
+                            market cap class of <span class="font-semibold border-b border-dotted border-emerald-700">{marketCap.toUpperCase()}</span>
                           {:else if ['series a', 'series b', 'seed', 'grant'].some(stage => marketCap.includes(stage))}
-                            being <span class="font-semibold border-b border-dotted border-emerald-700">{marketCap.toUpperCase()}</span> stage
+                            being a <span class="font-semibold border-b border-dotted border-emerald-700">{marketCap.toUpperCase()}</span> company
                           {/if}
                           and {activeStudyCount === 1 ? 'one study' : `${activeStudyCount} studies`} with a status of <span class="font-semibold border-b border-dotted border-emerald-700">{studyStatus.toUpperCase()}</span>.
                         </span>
                       {:else if classification === 'yellow'}
                         <span class="text-yellow-700">
-                          {company} is a <span class="inline-block px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-semibold">YELLOW</span> due to {unknownStudyCount === 1 ? 'one study' : `${unknownStudyCount} studies`} with <span class="font-semibold border-b border-dotted border-yellow-700">unknown</span> study status.
+                          {company} is a <span class="inline-block px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-semibold">YELLOW</span> target due to {unknownStudyCount === 1 ? 'one study' : `${unknownStudyCount} studies`} with <span class="font-semibold border-b border-dotted border-yellow-700">unknown</span> study status.
                         </span>
                       {:else if classification === 'red'}
                         <span class="text-red-700">
-                          {company} is a <span class="inline-block px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold">RED</span> due to {terminatedStudyCount === 1 ? 'one study' : `${terminatedStudyCount} studies`} with <span class="font-semibold border-b border-dotted border-red-700">terminated</span> study status.
+                          {company} is a <span class="inline-block px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold">RED</span> target due to {terminatedStudyCount === 1 ? 'one study' : `${terminatedStudyCount} studies`} with <span class="font-semibold border-b border-dotted border-red-700">terminated</span> study status.
                         </span>
                       {/if}
                     </div>
