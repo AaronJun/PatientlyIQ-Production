@@ -39,7 +39,7 @@
     }
   </script>
   
-  <div class="sidebar bg-slate-50/50 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
+  <div class="sidebar bg-slate-50/90 overflow-y-auto" style="max-height: calc(80vh - 2rem)">
     <div class="space-y-2">
       {#if currentEntries.length > 0 && currentArea && areaMetrics}
         <!-- Display area metrics -->

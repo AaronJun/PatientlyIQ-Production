@@ -428,13 +428,26 @@
     width: 55.25vw;
     height: 100vh;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 9999;
     overflow-y: auto;
     transition: right 0.3s ease;
   }
   
   .therapeutic-area-drawer.open {
     right: 0;
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
   }
   
   .drawer-header {

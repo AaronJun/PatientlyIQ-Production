@@ -390,8 +390,20 @@
 <div class="overview-wrapper w-full">  
   <OverviewIntroduction on:navigateToSponsor={handleNavigateToSponsor} />
 
+  <section class="section-slanted-both flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 md:px-16 lg:px-20 bg-slate-200">
+    News Feed 
+  </section>
   <!-- Section 1: Program Overview Stats -->
-  <section class="section-slanted-both z-0 grid grid-cols-1 md:grid-cols-3 gap-4 px-8 md:px-16 lg:px-20 pt-8 md:pt-16 pb-16 md:pb-24 bg-slate-800">
+  <section class="bg-blue-900 min-h-96 py-20 md:py-24">
+    <div class="flex flex-col gap-4 justify-start px-8 md:px-16 lg:px-20">
+      <p class="text-4xl text-left font-normal text-slate-100 col-span-1 max-w-lg text-pre-wrap mb-8">
+        <span class="font-semibold text-blue-200">"Children do not have the time to wait.</span> <br> <br> We must act now to reauthorize the rare pediatric disease PRV program."
+      </p>
+    </div>
+
+  </section>
+  <section class="section-slanted-both z-0 grid grid-cols-1 md:grid-cols-3 
+  gap-4 px-8 md:px-16 lg:px-20 pt-8 md:pt-16 pb-16 md:pb-24 bg-slate-800">
     <div class="col-span-2">
     <h3 class="text-3xl font-normal text-slate-100 col-span-1 mb-8">
     The program spurred the development of new treatments for <span class="font-semibold text-orange-200">previously untreatable diseases</span>.
@@ -458,11 +470,11 @@
 
 <section class="section-slanted-top flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 bg-stone-200">
   <MarketCapSection {data} onMarketCapClick={handleCompanySelect}/>
-</section>
+<!-- </section>
 
 <section class="section-slanted-both flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 bg-slate-100">
 <EconomicsSection {data} />
-</section>
+</section> -->
 
 <!-- Additional diagonal separator can be added here if needed -->
 <!-- <div class="diagonal-separator-container">
