@@ -36,41 +36,74 @@
     
     let svg: SVGSVGElement;
     let tooltip: HTMLDivElement;
-    let tooltipContent = { marketCap: '', indication: '', count: 0 };
+    let tooltipContent = { 
+        marketCap: '', 
+        companyName: '',
+        companyCount: 0,
+        entryCount: 0
+    };
     let tooltipVisible = false;
     let tooltipPosition = { x: 0, y: 0 };
     let isMobile = false;
     let legendData: { id: string; label: string; count: number; color: string }[] = [];
     
-    // Base color map for market cap categories
+    // Base color map for market cap categories with subcategory shades
     const baseColorMap: Record<string, string> = {
-        'Small': '#4299E1',     // Blue
-        'Mid': '#38A169',       // Green
-        'Large': '#ED8936',     // Orange
-        'Mega': '#9F7AEA',      // Purple
-        'Advocacy': '#F56565',  // Red
-        'Government': '#667EEA', // Indigo
-        'Academic': '#ECC94B',  // Yellow
-        'Subsidiary': '#76E4F7' // Cyan
+        // Small public companies (Blue shades)
+        'Small': '#4299E1',    // Base blue
+        'Nano': '#2B6CB0',     // Darker blue
+        'Micro': '#63B3ED',    // Lighter blue
+
+        // Early stage startups (Green shades)
+        'Series A': '#38A169',  // Base green
+        'Series B': '#2F855A',  // Darker green
+        'Seed': '#48BB78',      // Lighter green
+        'Grant-supported': '#68D391', // Lightest green
+
+        // Institutional (Indigo shades)
+        'Government': '#667EEA', // Base indigo
+        'Academic': '#5A67D8',   // Darker indigo
+
+        // Mega/Large/Mid (Purple shades)
+        'Mega': '#9F7AEA',      // Base purple
+        'Large': '#805AD5',     // Darker purple
+        'Mid': '#B794F4',       // Lighter purple
+
+        // Advocacy (Red)
+        'Advocacy': '#F56565'   // Base red
     };
     
     // Process data to count drugs by market cap and indications
     function processData(entries: DataEntry[]) {
-        // Count occurrences of each market cap category
+        // Count occurrences of each market cap category and track companies
         const marketCapData = new Map<string, {
             count: number;
+            companies: Set<string>;
             indications: Map<string, number>;
             entries: DataEntry[];
         }>();
         
         entries.forEach(entry => {
             if (entry.MarketCap) {
-                const marketCap = entry.MarketCap;
-                const indication = entry.Indication || 'Unknown';
+                let marketCap = entry.MarketCap.trim();
+                
+                // Skip bankrupt companies
+                if (marketCap.toLowerCase().includes('bankrupt')) {
+                    return;
+                }
+                
+                // Keep original category but ensure it's one we support
+                if (Object.keys(baseColorMap).includes(marketCap)) {
+                    // Use the category as is
+                } else {
+                    // Skip categories we don't recognize
+                    return;
+                }
                 
                 if (!marketCapData.has(marketCap)) {
                     marketCapData.set(marketCap, {
                         count: 0,
+                        companies: new Set(),
                         indications: new Map<string, number>(),
                         entries: []
                     });
@@ -78,8 +111,10 @@
                 
                 const capInfo = marketCapData.get(marketCap)!;
                 capInfo.count++;
+                capInfo.companies.add(entry.Company || 'Unknown');
                 capInfo.entries.push(entry);
                 
+                const indication = entry.Indication || 'Unknown';
                 capInfo.indications.set(
                     indication,
                     (capInfo.indications.get(indication) || 0) + 1
@@ -97,8 +132,26 @@
                     .sort((a, b) => b.count - a.count),
                 entries: info.entries
             }))
-            .sort((a, b) => b.count - a.count);
-        
+            .sort((a, b) => {
+                // Custom sort order: Mega -> Large -> Mid -> Small -> Micro -> Nano -> Series A/B -> Seed -> Grant -> Government/Academic -> Advocacy
+                const order: Record<string, number> = {
+                    'Mega': 1,
+                    'Large': 2,
+                    'Mid': 3,
+                    'Small': 4,
+                    'Micro': 5,
+                    'Nano': 6,
+                    'Series A': 7,
+                    'Series B': 8,
+                    'Seed': 9,
+                    'Grant-supported': 10,
+                    'Government': 11,
+                    'Academic': 12,
+                    'Advocacy': 13
+                };
+                return (order[a.marketCap] || 99) - (order[b.marketCap] || 99);
+            });
+            
         // Update legend data
         legendData = sortedData.map(item => ({
             id: item.marketCap,
@@ -119,6 +172,27 @@
         // Process the data
         const processedData = processData(data);
         
+        // Create a map for quick lookup of market cap data
+        const marketCapLookup = new Map();
+        processedData.forEach(capData => {
+            const companiesSet = new Set();
+            const entriesByCompany = new Map();
+            
+            capData.entries.forEach(entry => {
+                if (entry.Company) {
+                    companiesSet.add(entry.Company);
+                    const companyEntries = entriesByCompany.get(entry.Company) || [];
+                    companyEntries.push(entry);
+                    entriesByCompany.set(entry.Company, companyEntries);
+                }
+            });
+            
+            marketCapLookup.set(capData.marketCap, {
+                companies: companiesSet,
+                entriesByCompany: entriesByCompany
+            });
+        });
+
         // Clear previous content
         d3.select(svg).selectAll('*').remove();
         
@@ -178,19 +252,20 @@
                     .attr('rx', isMobile ? borderRadius / 2 : borderRadius)
                     .attr('ry', isMobile ? borderRadius / 2 : borderRadius)
                     .attr('fill', baseColor)
-                    
                     .attr('class', 'waffle-cell')
                     .attr('data-market-cap', marketCap)
-                    .attr('data-indication', indication)
-                    .attr('data-count', capData.count)
                     .attr('data-company', entry.Company || '');
                     
                 // Add mouseover events
                 cell.on('mouseover', function(event) {
                     const hoveredCap = d3.select(this).attr('data-market-cap');
-                    const hoveredIndication = d3.select(this).attr('data-indication');
-                    const hoveredCount = d3.select(this).attr('data-count');
                     const hoveredCompany = d3.select(this).attr('data-company');
+                    
+                    // Get data from our lookup map
+                    const marketCapInfo = marketCapLookup.get(hoveredCap);
+                    const companyCount = marketCapInfo ? marketCapInfo.companies.size : 0;
+                    const companyEntries = marketCapInfo ? 
+                        (marketCapInfo.entriesByCompany.get(hoveredCompany) || []).length : 0;
                     
                     // Highlight all cells of the same market cap
                     d3.selectAll(`.waffle-cell[data-market-cap="${hoveredCap}"]`)
@@ -200,8 +275,9 @@
                     // Update tooltip
                     tooltipContent = { 
                         marketCap: hoveredCap,
-                        indication: hoveredIndication,
-                        count: parseInt(hoveredCount) 
+                        companyName: hoveredCompany,
+                        companyCount: companyCount,
+                        entryCount: companyEntries
                     };
                     tooltipPosition = { x: event.pageX, y: event.pageY };
                     tooltipVisible = true;
@@ -286,9 +362,14 @@
             style="left: {tooltipPosition.x + 10}px; top: {tooltipPosition.y - 10}px; opacity: {tooltipVisible ? 1 : 0};"
         >
             <div class="tooltip-content">
-                <div class="tooltip-title">{tooltipContent.marketCap}</div>
-                <div class="tooltip-indication">{tooltipContent.indication}</div>
-                <div class="tooltip-value">{tooltipContent.count} drug candidates</div>
+                <div class="tooltip-category">{tooltipContent.marketCap}</div>
+                <div class="tooltip-company">{tooltipContent.companyName}</div>
+                <div class="tooltip-stats">
+                    <span class="stat-label">Total Companies:</span> {tooltipContent.companyCount}
+                </div>
+                <div class="tooltip-stats">
+                    <span class="stat-label">Company Entries:</span> {tooltipContent.entryCount}
+                </div>
             </div>
         </div>
     {/if}
@@ -306,21 +387,33 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         z-index: 100;
         transition: opacity 0.2s;
+        min-width: 200px;
     }
     
-    .tooltip-title {
+    .tooltip-category {
         font-weight: bold;
         margin-bottom: 3px;
+        color: #1a202c;
+        font-size: 13px;
     }
     
-    .tooltip-indication {
+    .tooltip-company {
         font-style: italic;
-        color: #444;
-        margin-bottom: 3px;
+        color: #2d3748;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #e2e8f0;
     }
     
-    .tooltip-value {
-        color: #666;
+    .tooltip-stats {
+        color: #4a5568;
+        margin-top: 2px;
+        font-size: 11px;
+    }
+    
+    .stat-label {
+        color: #718096;
+        font-weight: 500;
     }
     
     :global(.waffle-cell) {

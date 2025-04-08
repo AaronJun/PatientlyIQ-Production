@@ -102,7 +102,7 @@
                 with different color shades indicating different indications within the same therapeutic area.
                 Hover over any square to see the specific indication, and click to view details about that therapeutic area.
             </p>
-            <Button.Root class="rounded-input flex-row gap-2 border-1 border-teal-800 text-teal-800 text-left text-xs shadow-mini bg-teal-200 hover:bg-slate-200 inline-flex w-full px-4 py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all">
+       <Button.Root class="rounded-input flex-row gap-2 border-b-1 border-emerald-800 text-emerald-800 text-left text-sm shadow-mini hover:border-blue-700 hover:text-blue-700 inline-flex w-full py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all">
                 Explore Data by Therapeutic Area <ArrowUpRight class="p-1 ring-1 ring-slate-800 w-6 h-6 font-light rounded-full" />   
             </Button.Root>
         </div>

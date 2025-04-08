@@ -25,10 +25,10 @@
     
     export let data: DataEntry[] = [];
     export let width = 800;
-    export let height = 400;
+    export let height = 500;
     export let maxCols = 20;
-    export let cellSize = 12;
-    export let cellPadding = 4;
+    export let cellSize = 8;
+    export let cellPadding = 2;
     export let borderRadius = 50;
     export let onAreaClick = (area: string) => {};
     export let showLegend = true;
@@ -222,86 +222,98 @@
         
         // Draw cells for each area
         processedData.forEach((areaData) => {
-            const { area, entries } = areaData;
+            const { area, entries, indications } = areaData;
             const indicationColorMap = areaColorMaps.get(area) || new Map<string, string>();
             const baseColor = baseColorMap[area] || '#999999';
             
-            // Draw one cell for each entry with indication-specific color
+            // Group entries by indication
+            const entriesByIndication = new Map<string, DataEntry[]>();
             entries.forEach(entry => {
                 const indication = entry.Indication || 'Unknown';
-                const color = useColorVariations 
-                    ? (indicationColorMap.get(indication) || baseColor)
-                    : baseColor;
-                
-                const x = currentCol * (responsiveCellSize + responsiveCellPadding);
-                const y = currentRow * (responsiveCellSize + responsiveCellPadding);
-                
-                const cell = svgSelection.append('rect')
-                    .attr('x', x)
-                    .attr('y', y)
-                    .attr('width', responsiveCellSize)
-                    .attr('height', responsiveCellSize)
-                    .attr('rx', isMobile ? borderRadius / 2 : borderRadius)
-                    .attr('ry', isMobile ? borderRadius / 2 : borderRadius)
-                    .attr('fill', color)
-                    .attr('class', 'waffle-cell')
-                    .attr('data-area', area)
-                    .attr('data-indication', indication)
-                    .attr('data-count', areaData.count);
-                    
-                // Add mouseover events
-                cell.on('mouseover', function(event) {
-                    const hoveredArea = d3.select(this).attr('data-area');
-                    const hoveredIndication = d3.select(this).attr('data-indication');
-                    const hoveredCount = d3.select(this).attr('data-count');
-                    
-                    // Highlight cells based on color variation setting
-                    const selector = useColorVariations 
-                        ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
-                        : `.waffle-cell[data-area="${hoveredArea}"]`;
-                    
-                    d3.selectAll(selector)
-                        .attr('stroke', '#333')
-                        .attr('stroke-width', isMobile ? 1 : 1.5);
-                        
-                    // Update tooltip
-                    tooltipContent = { 
-                        area: hoveredArea, 
-                        indication: hoveredIndication,
-                        count: parseInt(hoveredCount) 
-                    };
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
-                    tooltipVisible = true;
-                })
-                .on('mousemove', function(event) {
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
-                })
-                .on('mouseout', function() {
-                    const hoveredArea = d3.select(this).attr('data-area');
-                    const hoveredIndication = d3.select(this).attr('data-indication');
-                    
-                    // Remove highlight based on color variation setting
-                    const selector = useColorVariations 
-                        ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
-                        : `.waffle-cell[data-area="${hoveredArea}"]`;
-                    
-                    d3.selectAll(selector)
-                        .attr('stroke', 'white')
-                        .attr('stroke-width', isMobile ? 0.3 : 0.5);
-                        
-                    tooltipVisible = false;
-                })
-                .on('click', function() {
-                    const clickedArea = d3.select(this).attr('data-area');
-                    onAreaClick(clickedArea);
-                });
-                
-                // Update position
-                currentCol++;
-                if (currentCol >= responsiveMaxCols) {
-                    currentCol = 0;
-                    currentRow++;
+                if (!entriesByIndication.has(indication)) {
+                    entriesByIndication.set(indication, []);
                 }
+                entriesByIndication.get(indication)!.push(entry);
+            });
+
+            // Draw cells grouped by indication
+            indications.forEach(indication => {
+                const indicationEntries = entriesByIndication.get(indication.name) || [];
+                const color = useColorVariations 
+                    ? (indicationColorMap.get(indication.name) || baseColor)
+                    : baseColor;
+
+                indicationEntries.forEach(entry => {
+                    const x = currentCol * (responsiveCellSize + responsiveCellPadding);
+                    const y = currentRow * (responsiveCellSize + responsiveCellPadding);
+                    
+                    const cell = svgSelection.append('rect')
+                        .attr('x', x)
+                        .attr('y', y)
+                        .attr('width', responsiveCellSize)
+                        .attr('height', responsiveCellSize)
+                        .attr('rx', isMobile ? borderRadius / 2 : borderRadius)
+                        .attr('ry', isMobile ? borderRadius / 2 : borderRadius)
+                        .attr('fill', color)
+                        .attr('class', 'waffle-cell')
+                        .attr('data-area', area)
+                        .attr('data-indication', indication.name)
+                        .attr('data-count', areaData.count);
+                        
+                    // Add mouseover events
+                    cell.on('mouseover', function(event) {
+                        const hoveredArea = d3.select(this).attr('data-area');
+                        const hoveredIndication = d3.select(this).attr('data-indication');
+                        const hoveredCount = d3.select(this).attr('data-count');
+                        
+                        // Highlight cells based on color variation setting
+                        const selector = useColorVariations 
+                            ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
+                            : `.waffle-cell[data-area="${hoveredArea}"]`;
+                        
+                        d3.selectAll(selector)
+                            .attr('stroke', '#333')
+                            .attr('stroke-width', isMobile ? 1 : 1.5);
+                            
+                        // Update tooltip
+                        tooltipContent = { 
+                            area: hoveredArea, 
+                            indication: hoveredIndication,
+                            count: parseInt(hoveredCount) 
+                        };
+                        tooltipPosition = { x: event.pageX, y: event.pageY };
+                        tooltipVisible = true;
+                    })
+                    .on('mousemove', function(event) {
+                        tooltipPosition = { x: event.pageX, y: event.pageY };
+                    })
+                    .on('mouseout', function() {
+                        const hoveredArea = d3.select(this).attr('data-area');
+                        const hoveredIndication = d3.select(this).attr('data-indication');
+                        
+                        // Remove highlight based on color variation setting
+                        const selector = useColorVariations 
+                            ? `.waffle-cell[data-area="${hoveredArea}"][data-indication="${hoveredIndication}"]`
+                            : `.waffle-cell[data-area="${hoveredArea}"]`;
+                        
+                        d3.selectAll(selector)
+                            .attr('stroke', 'white')
+                            .attr('stroke-width', isMobile ? 0.3 : 0.5);
+                            
+                        tooltipVisible = false;
+                    })
+                    .on('click', function() {
+                        const clickedArea = d3.select(this).attr('data-area');
+                        onAreaClick(clickedArea);
+                    });
+                    
+                    // Update position
+                    currentCol++;
+                    if (currentCol >= responsiveMaxCols) {
+                        currentCol = 0;
+                        currentRow++;
+                    }
+                });
             });
         });
     }
@@ -350,7 +362,7 @@
     </div>
     
     {#if showLegend}
-        <div class="legend-container w-fit hidden md:block">
+        <div class="legend-container w-fit md:block">
             <WaffleChartLegend 
                 legendItems={legendData} 
                 onItemClick={handleLegendItemClick}

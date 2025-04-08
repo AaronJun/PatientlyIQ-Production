@@ -69,7 +69,7 @@
 <section class="market-cap-section flex flex-col lg:flex-row gap-8 lg:gap-16 mb-6 md:px-4 lg:px-8 justify-evenly h-fit min-h-[45.25vh] place-content-stretch align-baseline" aria-labelledby="market-cap-header">
     <div 
     bind:this={containerRef}
-    class="waffle-chart-container justify-items-around items-center align-middle flex w-full"
+    class="waffle-chart-container justify-items-around items-center align-middle flex w-full h-full"
     role="img"
     aria-label="Company Size Cap Distribution Waffle Chart"
 >
@@ -103,9 +103,9 @@
                         with colors indicating the company's market cap category. Hover over any square to see details about the company and indication,
                         and click to filter the data by market cap.
                     </p>
-                    <Button.Root class="rounded-input flex-row gap-2 bg- border-1 border-sky-600 text-slate-100 text-left shadow-sm bg-sky-700 hover:bg-sky-800 inline-flex w-full px-4 py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all text-xs">
-                        Explore Data by Company <ArrowUpRight class="p-1 ring-1 ring-sky-100 w-8 h-8 font-light rounded-full" />   
-                    </Button.Root>
+                    <Button.Root class="rounded-input flex-row gap-2 border-b-1 border-emerald-800 text-emerald-800 text-left text-sm shadow-mini hover:border-blue-700 hover:text-blue-700 inline-flex w-full py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all">
+                        Explore Data by Company <ArrowUpRight class="p-1 ring-1 ring-slate-800 w-6 h-6 font-light rounded-full" />   
+            </Button.Root>
             </div>
 
  

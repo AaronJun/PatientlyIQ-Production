@@ -20,7 +20,7 @@
     class="bg-slate-600 shrink-0 data-[orientation=horizontal]:h-[.25px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     />
     
-    <div class="legend-items grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-1 w-full">
+    <div class="legend-items pl-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-1 w-full">
         {#each legendItems as item}
             <div 
                 class="legend-item flex flex-row gap-2 w-full align- items-top" 

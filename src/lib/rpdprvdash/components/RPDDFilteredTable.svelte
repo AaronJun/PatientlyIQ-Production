@@ -82,21 +82,57 @@
     
     const marketCapLower = marketCap.toLowerCase();
     
-    // Public company market caps
-    if (marketCapLower.includes('mega')) return 'bg-blue-100 text-blue-800'; // Mega cap
-    if (marketCapLower.includes('large')) return 'bg-green-100 text-green-800'; // Large cap
-    if (marketCapLower.includes('mid')) return 'bg-teal-100 text-teal-800'; // Mid cap
-    if (marketCapLower.includes('small')) return 'bg-emerald-100 text-emerald-800'; // Small cap
-    if (marketCapLower.includes('micro')) return 'bg-yellow-100 text-yellow-800'; // Micro cap
-    if (marketCapLower.includes('nano')) return 'bg-orange-100 text-orange-800'; // Nano cap
+    // Skip bankrupt companies
+    if (marketCapLower.includes('bankrupt')) {
+      return 'bg-gray-200 text-gray-700';
+    }
+
+    // Public company sizes (Blue/Purple shades)
+    if (marketCapLower.includes('mega')) {
+      return 'bg-purple-200 text-purple-800'; // Mega cap
+    }
+    if (marketCapLower.includes('large')) {
+      return 'bg-purple-100 text-purple-900'; // Large cap
+    }
+    if (marketCapLower.includes('mid')) {
+      return 'bg-purple-50 text-purple-800'; // Mid cap
+    }
+    if (marketCapLower.includes('small')) {
+      return 'bg-blue-100 text-blue-800'; // Small cap
+    }
+    if (marketCapLower.includes('micro')) {
+      return 'bg-blue-200 text-blue-900'; // Micro cap
+    }
+    if (marketCapLower.includes('nano')) {
+      return 'bg-blue-300 text-blue-900'; // Nano cap
+    }
     
-    // Private company financing stages
-    if (marketCapLower.includes('series a')) return 'bg-pink-100 text-pink-800'; // Series A
-    if (marketCapLower.includes('series b')) return 'bg-purple-100 text-purple-800'; // Series B
-    if (marketCapLower.includes('series c')) return 'bg-indigo-100 text-indigo-800'; // Series C
-    if (marketCapLower.includes('series d')) return 'bg-violet-100 text-violet-800'; // Series D
-    if (marketCapLower.includes('seed')) return 'bg-rose-100 text-rose-800'; // Seed
-    if (marketCapLower.includes('grant')) return 'bg-lime-100 text-lime-800'; // Grant-supported
+    // Private company financing stages (Green shades)
+    if (marketCapLower.includes('series a')) {
+      return 'bg-green-100 text-green-800'; // Series A
+    }
+    if (marketCapLower.includes('series b')) {
+      return 'bg-green-200 text-green-900'; // Series B
+    }
+    if (marketCapLower.includes('seed')) {
+      return 'bg-green-50 text-green-800'; // Seed
+    }
+    if (marketCapLower.includes('grant')) {
+      return 'bg-emerald-50 text-emerald-800'; // Grant-supported
+    }
+    
+    // Institutional (Indigo shades)
+    if (marketCapLower.includes('government')) {
+      return 'bg-indigo-100 text-indigo-800'; // Government
+    }
+    if (marketCapLower.includes('academic')) {
+      return 'bg-indigo-200 text-indigo-900'; // Academic
+    }
+    
+    // Advocacy (Red)
+    if (marketCapLower.includes('advocacy')) {
+      return 'bg-red-100 text-red-800'; // Advocacy
+    }
     
     return 'bg-gray-200 text-gray-700'; // Default for unknown values
   }

@@ -141,7 +141,7 @@ function setupGradient() {
         This dashboard provides insights into how PRVs have been awarded, used, and traded—helping researchers, policymakers, and industry leaders assess their impact within the evolving rare disease ecosystem.</p>  
 
 <div class="flex flex-row align-baseline gap-4 mt-8">   
-    <Button.Root class="rounded-input flex-row gap-2 border-1 border-slate-800 text-slate-800 text-left text-sm shadow-mini hover:bg-slate-200 inline-flex w-full px-4 py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all" on:click={navigateToSponsorTab}>
+    <Button.Root class="rounded-input flex-row gap-2 border-b-1 border-slate-800 text-slate-800 text-left text-sm shadow-mini hover:border-blue-700 hover:text-blue-700 inline-flex w-full py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all" on:click={navigateToSponsorTab}>
         Explore the Data <ArrowUpRight class="p-1 ring-1 ring-slate-800 w-6 h-6 font-light rounded-full" />   
     </Button.Root>
 <!-- 
