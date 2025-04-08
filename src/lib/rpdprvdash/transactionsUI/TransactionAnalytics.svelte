@@ -116,30 +116,36 @@
             <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- PRV Value Timeline -->
-                    <div class="p-4 border border-slate-200">
+                    <div class="p-4 border border-slate-200 w-full">
                         <h3 class="text-base font-semibold text-slate-700 mb-3">PRV Value Timeline</h3>
-                        <PRVValueTimeline {data} />
+                        <div class="w-full">
+                            <PRVValueTimeline {data} />
+                        </div>
                         <p class="text-sm text-slate-500 mt-3">PRV values have ranged from $68M to $350M since program inception, with recent stabilization around $110M.</p>
                     </div>
                     
                     <!-- PRV Award Count by Year -->
-                    <div class="p-4 border border-slate-200">
+                    <div class="p-4 border border-slate-200 w-full">
                         <h3 class="text-base font-semibold text-slate-700 mb-3">PRV Awards by Year</h3>
-                        <PRVAwardCount yearlyData={yearlyPRVs} />
+                        <div class="w-full">
+                            <PRVAwardCount yearlyData={yearlyPRVs} />
+                        </div>
                         <p class="text-sm text-slate-500 mt-3">The number of PRVs awarded has increased in recent years, with {yearlyPRVs[yearlyPRVs.length-1]?.count || 0} vouchers in {yearlyPRVs[yearlyPRVs.length-1]?.year || 'the latest year'}.</p>
                     </div>
                     
                     <!-- Total PRV Value -->
-                    <div class="p-4 border border-slate-200 bg-gradient-to-br from-emerald-50 to-slate-50">
+                    <div class="p-4 border border-slate-200 bg-gradient-to-br from-emerald-50 to-slate-50 w-full">
                         <h3 class="text-base font-semibold text-slate-700 mb-2">Total PRV Sales Value</h3>
                         <p class="text-5xl font-bold text-emerald-600 text-center my-4">${totalValue.toLocaleString()}M</p>
                         <p class="text-sm text-slate-500 text-center">Cumulative value of sold PRVs to date</p>
                     </div>
                     
                     <!-- Therapeutic Area Distribution -->
-                    <div class="p-4 border border-slate-200">
+                    <div class="p-4 border border-slate-200 w-full">
                         <h3 class="text-base font-semibold text-slate-700 mb-3">Therapeutic Area Distribution</h3>
-                        <TherapeuticAreaDistribution {data} />
+                        <div class="w-full">
+                            <TherapeuticAreaDistribution {data} />
+                        </div>
                         <p class="text-sm text-slate-500 mt-3">Therapeutic areas with the most PRVs awarded include neuromuscular disorders, metabolic diseases, and rare cancers.</p>
                     </div>
                 </div>
@@ -162,7 +168,7 @@
         
         {#if expandedSections.topPerformers}
             <div class="section-content bg-white p-4 shadow-sm border-x border-b border-slate-200 transition-all duration-300">
-                <div class="mb-4">
+                <div class="w-full">
                     <CompanyLeaderboard {data} />
                 </div>
             </div>
