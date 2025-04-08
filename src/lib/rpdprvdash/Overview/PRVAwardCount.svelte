@@ -1,29 +1,36 @@
 <!-- PRVAwardCount.svelte -->
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     
-    export let yearlyData = [];
+    export let yearlyData: { year: string, count: number }[] = [];
     export let height = 250;
     
-    let svg;
+    let svg: any;
+    let chartContainer: any;
     let tooltipVisible = false;
     let tooltipX = 0;
     let tooltipY = 0;
     let tooltipContent = { year: '', count: 0 };
     
-    $: if (yearlyData && svg) {
+    // Track if the chart was rendered initially
+    let wasInitiallyRendered = false;
+    
+    $: if (yearlyData && chartContainer) {
       setTimeout(createVisualization, 0);
     }
     
-    onMount(() => {
-      if (yearlyData && yearlyData.length > 0) {
+    function handleResize() {
+      if (chartContainer) {
         createVisualization();
       }
-      
-      const handleResize = () => {
-        createVisualization();
-      };
+    }
+    
+    // Remove the visibility checker since we now use direct method calls
+    onMount(() => {
+      if (yearlyData && yearlyData.length > 0 && chartContainer) {
+        setTimeout(createVisualization, 0);
+      }
       
       window.addEventListener('resize', handleResize);
       
@@ -32,16 +39,22 @@
       };
     });
     
-    function createVisualization() {
-      if (!svg || !yearlyData || yearlyData.length === 0) return;
+    // Export this function to allow external components to trigger a redraw
+    export function createVisualization() {
+      if (!svg || !chartContainer || !yearlyData || yearlyData.length === 0) return;
       
       const svgElement = d3.select(svg);
       svgElement.selectAll("*").remove();
       
+      // Get actual container width
+      const containerWidth = chartContainer.clientWidth;
+      
+      // Set SVG width to match container
+      svgElement.attr("width", containerWidth);
+      
       // Set up dimensions
-      const width = svg.clientWidth;
-      const margin = { top: 20, right: 20, bottom: 40, left: 40 };
-      const chartWidth = width - margin.left - margin.right;
+      const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+      const chartWidth = containerWidth - margin.left - margin.right;
       const chartHeight = height - margin.top - margin.bottom;
       
       // Create scales
@@ -51,7 +64,7 @@
         .padding(0.3);
       
       const yScale = d3.scaleLinear()
-        .domain([0, d3.max(yearlyData, d => d.count) * 1.1])
+        .domain([0, d3.max(yearlyData, d => d.count) * 1.1 || 0])
         .range([chartHeight, 0]);
       
       // Create chart group
@@ -63,7 +76,7 @@
         .attr("class", "grid")
         .call(d3.axisLeft(yScale)
           .tickSize(-chartWidth)
-          .tickFormat("")
+          .tickFormat(() => '')
           .ticks(5))
         .call(g => g.select(".domain").remove())
         .call(g => g.selectAll(".tick line")
@@ -89,7 +102,7 @@
         .data(yearlyData)
         .join("rect")
         .attr("class", "bar")
-        .attr("x", d => xScale(d.year))
+        .attr("x", d => xScale(d.year) || 0)
         .attr("y", d => yScale(d.count))
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - yScale(d.count))
@@ -124,7 +137,7 @@
         .data(yearlyData)
         .join("text")
         .attr("class", "label")
-        .attr("x", d => xScale(d.year) + xScale.bandwidth() / 2)
+        .attr("x", d => (xScale(d.year) || 0) + xScale.bandwidth() / 2)
         .attr("y", d => yScale(d.count) - 5)
         .attr("text-anchor", "middle")
         .attr("font-size", "10px")
@@ -140,10 +153,13 @@
         .attr("font-weight", "500")
         .attr("fill", "#4A5568")
         .text("PRVs Awarded by Year");
+        
+      // Mark that the chart has been rendered
+      wasInitiallyRendered = true;
     }
   </script>
   
-  <div class="prv-award-chart relative">
+  <div bind:this={chartContainer} class="prv-award-chart relative w-full">
     <svg bind:this={svg} width="100%" height={height}></svg>
     
     {#if tooltipVisible}
@@ -160,5 +176,6 @@
   <style>
     .prv-award-chart {
       width: 100%;
+      box-sizing: border-box;
     }
   </style>

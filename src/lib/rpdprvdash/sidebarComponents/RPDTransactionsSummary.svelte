@@ -2,10 +2,28 @@
 <script lang="ts">
     import { hasPRVAward } from '../utils/data-processing-utils';
     import { Arc, Chart, Svg } from 'layerchart';
+    import { createEventDispatcher } from 'svelte';
+    
+    // Create a dispatcher for events
+    const dispatch = createEventDispatcher();
     
     // A component to display summary statistics for PRV transactions
     export let data: any[] = []; // Full dataset for the selected year
     export let year = ""; // Selected year
+    
+    // Get available years for the dropdown from the data
+    $: availableYears = ["All", ...Array.from(new Set(
+      data
+        .filter(d => d.Purchased === "Y" && d["Purchase Year"])
+        .map(d => d["Purchase Year"])
+        .sort((a, b) => parseInt(b) - parseInt(a))
+    ))];
+    
+    // Handle year change
+    function handleYearSelect(newYear) {
+      year = newYear;
+      dispatch('yearSelect', newYear);
+    }
     
     // Filter to transactions
     $: transactions = data.filter(d => d.Purchased === "Y" && d["Purchase Year"]);
@@ -88,8 +106,30 @@
   </script>
   
   <div class="summary-view"> 
+    <!-- Year selector -->
+    <div class="mb-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-semibold text-slate-700">Transaction Summary</h3>
+        <select 
+          class="text-xs p-1 border border-slate-200 rounded-md bg-white"
+          value={year}
+          on:change={(e) => handleYearSelect(e.target.value)}
+        >
+          {#each availableYears as yearOption}
+            <option value={yearOption}>{yearOption}</option>
+          {/each}
+        </select>
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        {#if year === "All"}
+          Showing all transaction data
+        {:else}
+          Showing transactions from {year}
+        {/if}
+      </div>
+    </div>
     
-        <!-- Companies section -->
+    <!-- Companies section -->
     <div class="grid grid-cols-2 gap-2 mb-4">
            <!-- Gauge visualization using layerchart Arc -->
            <div class="relative w-full max-w-54 h-36 flex pr-8 items-center justify-center">

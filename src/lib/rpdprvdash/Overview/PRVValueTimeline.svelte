@@ -1,19 +1,24 @@
 <!-- PRVValueTimeline.svelte -->
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     
-    export let data = [];
+    export let data: any[] = [];
     export let height = 250;
     
-    let svg;
+    let svg: any;
+    let chartContainer: any;
     let tooltipVisible = false;
     let tooltipX = 0;
     let tooltipY = 0;
-    let tooltipContent = { year: '', value: 0, buyer: '', seller: '' };
+    let tooltipContent = { year: '', value: 0, buyer: '', seller: '', drug: '' };
     
-    function createVisualization() {
-      if (!svg || !data || data.length === 0) return;
+    // Add a variable to track if the chart was initially rendered
+    let wasInitiallyRendered = false;
+    
+    // Export this function to allow external components to trigger a redraw
+    export function createVisualization() {
+      if (!svg || !chartContainer || !data || data.length === 0) return;
       
       const svgElement = d3.select(svg);
       svgElement.selectAll("*").remove();
@@ -29,11 +34,11 @@
           seller: d.Company || "Unknown",
           drug: d.Candidate || "Unknown"
         }))
-        .sort((a, b) => a.date - b.date);
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
       
       if (transactions.length === 0) {
         svgElement.append("text")
-          .attr("x", svg.clientWidth / 2)
+          .attr("x", chartContainer.clientWidth / 2)
           .attr("y", height / 2)
           .attr("text-anchor", "middle")
           .attr("font-size", "12px")
@@ -42,20 +47,25 @@
         return;
       }
       
+      // Get actual container width
+      const containerWidth = chartContainer.clientWidth;
+      
+      // Set SVG width to match container
+      svgElement.attr("width", containerWidth);
+      
       // Set up dimensions
-      const width = svg.clientWidth;
-      const margin = { top: 20, right: 20, bottom: 40, left: 50 };
-      const chartWidth = width - margin.left - margin.right;
+      const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+      const chartWidth = containerWidth - margin.left - margin.right;
       const chartHeight = height - margin.top - margin.bottom;
       
       // Create scales
       const xScale = d3.scaleTime()
-        .domain(d3.extent(transactions, d => d.date))
+        .domain(d3.extent(transactions, d => d.date) as [Date, Date])
         .range([0, chartWidth])
         .nice();
       
       const yScale = d3.scaleLinear()
-        .domain([0, d3.max(transactions, d => d.value) * 1.1])
+        .domain([0, d3.max(transactions, d => d.value) * 1.1 || 0])
         .range([chartHeight, 0]);
       
       // Create chart group
@@ -67,7 +77,7 @@
         .attr("class", "grid")
         .call(d3.axisLeft(yScale)
           .tickSize(-chartWidth)
-          .tickFormat("")
+          .tickFormat(() => '')
           .ticks(5))
         .call(g => g.select(".domain").remove())
         .call(g => g.selectAll(".tick line")
@@ -77,7 +87,7 @@
       // Add x-axis
       chart.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
-        .call(d3.axisBottom(xScale).ticks(5).tickFormat(d3.timeFormat("%Y")))
+        .call(d3.axisBottom(xScale).ticks(5).tickFormat(d3.timeFormat("%Y") as any))
         .selectAll("text")
         .attr("font-size", "10px")
         .attr("text-anchor", "middle");
@@ -89,7 +99,7 @@
         .attr("font-size", "10px");
       
       // Add line
-      const line = d3.line()
+      const line = d3.line<{date: Date, value: number}>()
         .x(d => xScale(d.date))
         .y(d => yScale(d.value))
         .curve(d3.curveMonotoneX);
@@ -119,7 +129,7 @@
             .attr("opacity", 1);
           
           tooltipContent = {
-            year: d.date.getFullYear(),
+            year: d.date.getFullYear().toString(),
             value: d.value,
             buyer: d.buyer,
             seller: d.seller,
@@ -151,20 +161,26 @@
         .attr("font-weight", "500")
         .attr("fill", "#4A5568")
         .text("PRV Sale Prices Over Time");
+        
+      // Mark as initially rendered
+      wasInitiallyRendered = true;
     }
     
-    $: if (data && svg) {
+    function handleResize() {
+      if (chartContainer) {
+        createVisualization();
+      }
+    }
+    
+    // Remove IntersectionObserver approach since we're now using direct method calling
+    $: if (data && chartContainer) {
       setTimeout(createVisualization, 0);
     }
     
     onMount(() => {
-      if (data && data.length > 0) {
-        createVisualization();
+      if (data && data.length > 0 && chartContainer) {
+        setTimeout(createVisualization, 0);
       }
-      
-      const handleResize = () => {
-        createVisualization();
-      };
       
       window.addEventListener('resize', handleResize);
       
@@ -174,7 +190,7 @@
     });
   </script>
   
-  <div class="prv-value-chart relative">
+  <div bind:this={chartContainer} class="prv-value-chart relative w-full">
     <svg bind:this={svg} width="100%" height={height}></svg>
     
     {#if tooltipVisible}
@@ -196,5 +212,6 @@
   <style>
     .prv-value-chart {
       width: 100%;
+      box-sizing: border-box;
     }
   </style>

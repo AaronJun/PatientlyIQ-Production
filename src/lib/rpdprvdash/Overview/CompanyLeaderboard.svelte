@@ -2,261 +2,222 @@
 <script>
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import { hasPRVAward } from '../utils/data-processing-utils';
     
     export let data = [];
-    export let height = 400;
-    export let maxCompanies = 10;
+    export let height = 300;
     
-    let topCompanies = [];
-    let prvsByCompany = [];
-    let salesByCompany = [];
+    let svg;
+    let chartContainer;
+    let tooltipVisible = false;
+    let tooltipX = 0;
+    let tooltipY = 0;
+    let tooltipContent = { company: '', count: 0, transactions: 0 };
     
-    function processData() {
-      if (!data || data.length === 0) return;
+    function createVisualization() {
+      if (!svg || !chartContainer || !data || data.length === 0) return;
       
-      // Count PRVs and sales by company
-      const companyStats = {};
+      const svgElement = d3.select(svg);
+      svgElement.selectAll("*").remove();
       
-      // Process PRVs
-      data.filter(d => d["PRV Year"]).forEach(d => {
-        const company = d.Company;
-        if (!companyStats[company]) {
-          companyStats[company] = {
-            company,
-            prvCount: 0,
-            salesCount: 0,
-            totalSalesValue: 0,
-            saleDetails: []
-          };
-        }
+      // Process data - extract company leaderboard data
+      const companyCounts = {};
+      const transactionCounts = {};
+      
+      // Count PRVs awarded per company
+      data.filter(d => hasPRVAward(d)).forEach(d => {
+        const company = d.Company || 'Unknown';
+        companyCounts[company] = (companyCounts[company] || 0) + 1;
         
-        companyStats[company].prvCount += 1;
-        
-        // Track sales
+        // Count transactions (PRVs with purchase information)
         if (d.Purchased === "Y") {
-          companyStats[company].salesCount += 1;
-          
-          // Add sale value if available
-          if (d["Sale Price (USD Millions)"] && d["Sale Price (USD Millions)"] !== "Undisclosed") {
-            const saleValue = parseFloat(d["Sale Price (USD Millions)"]);
-            companyStats[company].totalSalesValue += saleValue;
-            
-            companyStats[company].saleDetails.push({
-              drug: d.Candidate,
-              buyer: d.Purchaser,
-              year: d["Purchase Year"],
-              value: saleValue
-            });
-          }
+          transactionCounts[company] = (transactionCounts[company] || 0) + 1;
         }
       });
       
       // Convert to array and sort
-      topCompanies = Object.values(companyStats)
-        .filter(c => c.prvCount > 0)
-        .sort((a, b) => b.prvCount - a.prvCount || b.totalSalesValue - a.totalSalesValue)
-        .slice(0, maxCompanies);
-      
-      // Format data for d3
-      prvsByCompany = topCompanies.map(c => ({
-        company: c.company,
-        count: c.prvCount
-      }));
-      
-      salesByCompany = topCompanies
-        .filter(c => c.totalSalesValue > 0)
-        .map(c => ({
-          company: c.company,
-          totalValue: c.totalSalesValue,
-          salesCount: c.salesCount,
-          avgValue: c.totalSalesValue / c.salesCount,
-          details: c.saleDetails
+      const companyData = Object.entries(companyCounts)
+        .map(([company, count]) => ({
+          company,
+          count,
+          transactions: transactionCounts[company] || 0
         }))
-        .sort((a, b) => b.totalValue - a.totalValue);
+        .sort((a, b) => b.count - a.count || b.transactions - a.transactions)
+        .slice(0, 10); // Top 10 companies
+      
+      if (companyData.length === 0) {
+        svgElement.append("text")
+          .attr("x", chartContainer.clientWidth / 2)
+          .attr("y", height / 2)
+          .attr("text-anchor", "middle")
+          .attr("font-size", "12px")
+          .attr("fill", "#4A5568")
+          .text("No company data available");
+        return;
+      }
+      
+      // Get actual container width
+      const containerWidth = chartContainer.clientWidth;
+      
+      // Set SVG width to match container
+      svgElement.attr("width", containerWidth);
+      
+      // Set up dimensions
+      const margin = { top: 20, right: 100, bottom: 40, left: 140 };
+      const chartWidth = containerWidth - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
+      
+      // Create scales
+      const yScale = d3.scaleBand()
+        .domain(companyData.map(d => d.company))
+        .range([0, chartHeight])
+        .padding(0.3);
+      
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(companyData, d => d.count) * 1.1])
+        .range([0, chartWidth]);
+      
+      // Create chart group
+      const chart = svgElement.append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+      
+      // Add gridlines
+      chart.append("g")
+        .attr("class", "grid")
+        .call(d3.axisTop(xScale)
+          .tickSize(-chartHeight)
+          .tickFormat("")
+          .ticks(5))
+        .call(g => g.select(".domain").remove())
+        .call(g => g.selectAll(".tick line")
+          .attr("stroke", "#e2e8f0")
+          .attr("stroke-dasharray", "2,2"));
+      
+      // Add x-axis
+      chart.append("g")
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(d3.axisBottom(xScale).ticks(5))
+        .selectAll("text")
+        .attr("font-size", "10px")
+        .attr("text-anchor", "middle");
+      
+      // Add y-axis
+      chart.append("g")
+        .call(d3.axisLeft(yScale))
+        .selectAll("text")
+        .attr("font-size", "10px")
+        .attr("font-weight", "500")
+        .attr("fill", "#4A5568");
+      
+      // Create color scale for transaction ratio
+      const colorScale = d3.scaleSequential()
+        .domain([0, d3.max(companyData, d => d.count)])
+        .interpolator(d3.interpolateBlues);
+      
+      // Add bars
+      chart.selectAll(".bar")
+        .data(companyData)
+        .join("rect")
+        .attr("class", "bar")
+        .attr("y", d => yScale(d.company))
+        .attr("x", 0)
+        .attr("height", yScale.bandwidth())
+        .attr("width", d => xScale(d.count))
+        .attr("fill", d => colorScale(d.count))
+        .attr("opacity", 0.8)
+        .on("mouseenter", (event, d) => {
+          d3.select(event.currentTarget)
+            .attr("opacity", 1)
+            .attr("stroke", "#2C5282")
+            .attr("stroke-width", 1);
+          
+          tooltipContent = { 
+            company: d.company, 
+            count: d.count, 
+            transactions: d.transactions 
+          };
+          
+          tooltipX = event.pageX;
+          tooltipY = event.pageY;
+          tooltipVisible = true;
+        })
+        .on("mousemove", (event) => {
+          tooltipX = event.pageX;
+          tooltipY = event.pageY;
+        })
+        .on("mouseleave", (event) => {
+          d3.select(event.currentTarget)
+            .attr("opacity", 0.8)
+            .attr("stroke", null);
+          
+          tooltipVisible = false;
+        });
+      
+      // Add value and transaction labels
+      chart.selectAll(".label")
+        .data(companyData)
+        .join("text")
+        .attr("class", "label")
+        .attr("y", d => yScale(d.company) + yScale.bandwidth() / 2)
+        .attr("x", d => xScale(d.count) + 10)
+        .attr("dy", "0.35em")
+        .attr("font-size", "10px")
+        .attr("fill", "#4A5568")
+        .text(d => `${d.count} PRVs (${d.transactions} sold)`);
+      
+      // Add x-axis label
+      chart.append("text")
+        .attr("x", chartWidth / 2)
+        .attr("y", chartHeight + 30)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "11px")
+        .attr("fill", "#4A5568")
+        .text("Number of PRVs Awarded");
     }
     
-    $: {
-      if (data) {
-        processData();
+    function handleResize() {
+      if (chartContainer) {
+        createVisualization();
       }
+    }
+    
+    $: if (data && chartContainer) {
+      setTimeout(createVisualization, 0);
     }
     
     onMount(() => {
-      if (data && data.length > 0) {
-        processData();
+      if (data && data.length > 0 && chartContainer) {
+        setTimeout(createVisualization, 0);
       }
+      
+      window.addEventListener('resize', handleResize);
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
     });
   </script>
   
-  <div class="company-leaderboard">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- PRVs Awarded by Company -->
-      <div class="bg-white p-4 rounded-lg border border-slate-200">
-        <h3 class="text-base font-semibold text-slate-700 mb-3">Top Companies by PRVs</h3>
-        
-        <div class="overflow-hidden">
-          <table class="min-w-full">
-            <thead>
-              <tr class="border-b border-slate-200">
-                <th class="py-2 text-left text-xs font-medium text-slate-500">Company</th>
-                <th class="py-2 text-right text-xs font-medium text-slate-500">PRVs Awarded</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each prvsByCompany as entry, i}
-                <tr class="border-b border-slate-100 {i % 2 === 0 ? 'bg-slate-50' : ''}">
-                  <td class="py-2 text-sm font-medium text-slate-700">{entry.company}</td>
-                  <td class="py-2 text-sm text-right text-slate-700">
-                    <span class="inline-flex items-center">
-                      {entry.count}
-                    </span>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <!-- Sales by Company -->
-      <div class="bg-white p-4 rounded-lg border border-slate-200">
-        <h3 class="text-base font-semibold text-slate-700 mb-3">Top Companies by Sales Value</h3>
-        
-        <div class="overflow-hidden">
-          <table class="min-w-full">
-            <thead>
-              <tr class="border-b border-slate-200">
-                <th class="py-2 text-left text-xs font-medium text-slate-500">Company</th>
-                <th class="py-2 text-right text-xs font-medium text-slate-500">Total Value (USD M)</th>
-                <th class="py-2 text-right text-xs font-medium text-slate-500">Sales</th>
-                <th class="py-2 text-right text-xs font-medium text-slate-500">Avg Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each salesByCompany as entry, i}
-                <tr class="border-b border-slate-100 {i % 2 === 0 ? 'bg-slate-50' : ''}">
-                  <td class="py-2 text-sm font-medium text-slate-700">{entry.company}</td>
-                  <td class="py-2 text-sm text-right text-slate-700">
-                    ${entry.totalValue.toFixed(1)}M
-                  </td>
-                  <td class="py-2 text-sm text-right text-slate-700">
-                    {entry.salesCount}
-                  </td>
-                  <td class="py-2 text-sm text-right text-slate-700">
-                    ${entry.avgValue.toFixed(1)}M
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div bind:this={chartContainer} class="company-leaderboard-chart relative w-full">
+    <svg bind:this={svg} width="100%" height={height}></svg>
     
-    <!-- Sale Details Expansion Section -->
-    {#if salesByCompany.length > 0}
-      <div class="mt-6 bg-white p-4 rounded-lg border border-slate-200">
-        <h3 class="text-base font-semibold text-slate-700 mb-3">Notable Sales Details</h3>
-        
-        <div class="space-y-4">
-          {#each salesByCompany.slice(0, 3) as company}
-            <div class="border-b border-slate-100 pb-3">
-              <h4 class="text-sm font-medium text-slate-700 mb-2">{company.company}</h4>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {#each company.details.sort((a, b) => b.value - a.value).slice(0, 3) as sale}
-                  <div class="bg-slate-50 p-2 rounded text-xs">
-                    <div class="font-medium text-slate-700">{sale.drug}</div>
-                    <div class="text-slate-500">Purchased by {sale.buyer || 'Undisclosed'}</div>
-                    <div class="text-slate-500">{sale.year || 'N/A'} • ${sale.value.toFixed(1)}M</div>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/each}
+    {#if tooltipVisible}
+      <div 
+        class="absolute z-10 bg-white p-2 rounded shadow-lg border border-slate-200 text-sm"
+        style="left: {tooltipX}px; top: {tooltipY - 40}px; transform: translate(-50%, -100%);"
+      >
+        <div class="font-medium text-slate-800">{tooltipContent.company}</div>
+        <div class="text-slate-600">
+          <div>PRVs Awarded: <span class="font-medium">{tooltipContent.count}</span></div>
+          <div>PRVs Sold: <span class="font-medium">{tooltipContent.transactions}</span></div>
         </div>
       </div>
     {/if}
-    
-    <!-- PRV Distribution Visualization -->
-    <div class="mt-6 bg-white p-4 rounded-lg border border-slate-200">
-      <h3 class="text-base font-semibold text-slate-700 mb-3">PRV Distribution by Company</h3>
-      
-      <div class="h-64" id="prv-distribution-chart">
-        <!-- D3 Chart will be rendered here -->
-      </div>
-      
-      <script>
-        import { afterUpdate } from 'svelte';
-        
-        let chart;
-        
-        afterUpdate(() => {
-          if (prvsByCompany.length > 0) {
-            renderPRVDistributionChart();
-          }
-        });
-        
-        function renderPRVDistributionChart() {
-          const chartElement = document.getElementById('prv-distribution-chart');
-          if (!chartElement) return;
-          
-          // Clear previous chart
-          chartElement.innerHTML = '';
-          
-          // Set dimensions
-          const margin = {top: 20, right: 30, bottom: 40, left: 90};
-          const width = chartElement.clientWidth - margin.left - margin.right;
-          const height = chartElement.clientHeight - margin.top - margin.bottom;
-          
-          // Create SVG
-          const svg = d3.select(chartElement)
-            .append('svg')
-            .attr('width', '100%')
-            .attr('height', '100%')
-            .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
-          
-          // X axis
-          const x = d3.scaleLinear()
-            .domain([0, d3.max(prvsByCompany, d => d.count) * 1.1])
-            .range([0, width]);
-          
-          svg.append('g')
-            .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(x));
-          
-          // Y axis
-          const y = d3.scaleBand()
-            .domain(prvsByCompany.map(d => d.company))
-            .range([0, height])
-            .padding(0.2);
-          
-          svg.append('g')
-            .call(d3.axisLeft(y));
-          
-          // Bars
-          svg.selectAll('rect')
-            .data(prvsByCompany)
-            .join('rect')
-            .attr('x', 0)
-            .attr('y', d => y(d.company))
-            .attr('width', d => x(d.count))
-            .attr('height', y.bandwidth())
-            .attr('fill', '#60a5fa');
-          
-          // Bar labels
-          svg.selectAll('.bar-label')
-            .data(prvsByCompany)
-            .join('text')
-            .attr('class', 'bar-label')
-            .attr('x', d => x(d.count) + 5)
-            .attr('y', d => y(d.company) + y.bandwidth() / 2)
-            .attr('dy', '.35em')
-            .text(d => d.count)
-            .attr('fill', '#1e40af')
-            .attr('font-size', '10px');
-        }
-      </script>
-    </div>
   </div>
+  
+  <style>
+    .company-leaderboard-chart {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>

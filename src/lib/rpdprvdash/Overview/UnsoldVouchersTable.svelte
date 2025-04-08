@@ -106,25 +106,18 @@
                 <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
               {/if}
             </th>
-            <th class="text-left py-2 px-3 font-medium text-slate-600 cursor-pointer" on:click={() => sortTable("stage")}>
-              Stage
-              {#if sortField === "stage"}
-                <span class="ml-1">{sortDirection > 0 ? '↑' : '↓'}</span>
-              {/if}
-            </th>
           </tr>
         </thead>
         <tbody>
           {#each sortedVouchers as voucher}
             <tr 
-              class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" 
+              class="border-b-2 border-slate-700 bg-slate-100 hover:bg-slate-50 cursor-pointer" 
               on:click={() => handleRowClick(voucher)}
             >
-              <td class="py-2 px-3 text-slate-700">{voucher.company}</td>
-              <td class="py-2 px-3 text-slate-700">{voucher.candidate}</td>
-              <td class="py-2 px-3 text-slate-700">{voucher.indication}</td>
+              <td class="py-2 px-3 text-slate-800 text-xs md:text-sm font-md">{voucher.company}</td>
+              <td class="py-2 px-3 text-slate-600 text-xs md:text-sm font-md">{voucher.candidate}</td>
+              <td class="py-2 px-3 text-slate-800 text-xs md:text-sm font-normal capitalize">{voucher.indication}</td>
               <td class="py-2 px-3 text-slate-700">{voucher.prvYear}</td>
-              <td class="py-2 px-3 text-slate-700">{voucher.stage}</td>
             </tr>
           {/each}
         </tbody>

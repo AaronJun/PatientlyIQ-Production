@@ -73,6 +73,9 @@
     let filterYear = "2020";
     let filterPRVStatus = "non-awarded";
     
+    // Add reference to TransactionAnalytics component
+    let transactionAnalyticsComponent: TransactionAnalytics;
+    
     // Function signature matches the bits-ui Tabs expected type
     function handleTabChange(value: string | undefined) {
         if (!value || value === activeTransactionTab) return;
@@ -85,6 +88,15 @@
         animationDirection = newIndex > currentIndex ? 1 : -1;
         previousTab = activeTransactionTab;
         activeTransactionTab = value;
+        
+        // If switching to the analytics tab, force redraw charts after transition
+        if (value === 'transaction-analytics') {
+            setTimeout(() => {
+                if (transactionAnalyticsComponent && transactionAnalyticsComponent.forceRedrawCharts) {
+                    transactionAnalyticsComponent.forceRedrawCharts();
+                }
+            }, 500); // Wait for transition to complete
+        }
     }
     
     function toggleRightSidebar() {
@@ -135,7 +147,7 @@
     }
 </script>
 
-<div class="transactions-wrapper h-full overflow-y-auto pt-20">
+<div class="transactions-wrapper grid grid-cols-1 md:grid-cols-2 h-full overflow-y-auto pt-8 md:pt-20">
     <!-- <TransactionsIntroduction /> -->
     
     <!-- Transaction Tab Navigation using bits-ui -->
@@ -150,9 +162,9 @@
         >
             <Tabs.Trigger
                 value="transaction-flow"
-                class="data-[state=active]:shadow-sm flex flex-row gap-2 md:gap-4 lg:gap-8 dark:data-[state=active]:bg-muted h-8 rounded-sm  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-2 md:px-8 place-items-center"
+                class="data-[state=active]:shadow-sm flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm hover:bg-slate-100  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
             >
-                <CicsTransactionServerZos class="w-3 h-3 md:w-4 md:h-4 align" />
+                <CicsTransactionServerZos class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm font-medium">Transaction Network</span>
             </Tabs.Trigger>
             
@@ -213,46 +225,43 @@
                     
                     <!-- Desktop sidebar - only show on non-mobile -->
                     {#if !isMobileView}
-                        <div class="absolute right-2 top-24 {isRightSidebarCollapsed ? 'w-2' : 'w-2/6'} h-[calc(74vh-2rem)] transition-all duration-300">
-                            <button
-                                class="nav-button absolute -left-4 top-4 z-50 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full shadow-md transition-colors duration-200"
+                        <div 
+                            class="absolute top-0 right-0 h-full bg-white border-l border-slate-200 transition-all duration-300 ease-in-out {isRightSidebarCollapsed ? 'w-16 opacity-70 hover:opacity-100' : 'w-[30%]'}"
+                        >
+                            <!-- Toggle button -->
+                            <button 
+                                class="absolute top-4 left-2 text-slate-500 hover:text-slate-700 bg-white hover:bg-slate-100 rounded-full p-1"
                                 on:click={toggleRightSidebar}
                                 title={isRightSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                             >
-                            <ChevronRight class="w-4 h-4 transform transition-transform duration-200 {isRightSidebarCollapsed ? 'rotate-180' : ''}" />
+                                <ChevronRight size={16} class="transform {isRightSidebarCollapsed ? '' : 'rotate-180'}" />
                             </button>
-
-                            <div class="{isRightSidebarCollapsed ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-lg rounded-l-lg p-6 flex flex-col h-full max-h-[calc(100vh-10rem)]">
-                                <!-- Transaction content -->
-                                <div class="flex-1 flex flex-col gap-4 overflow-y-auto">
-                                    <p class="text-xs text-slate-500 mt-4 text-left">
-                                        Select transactions in the chord diagram to see details
-                                    </p>
-                                    <div class="rounded-lg shadow-sm p-4">
-                                        <div class="h-[20vh]">
-                                            <VoucherBeeswarmPlot 
-                                                data={data}
-                                                {highlightedTransaction}
-                                                selectedYear={selectedTransactionYear}
-                                                onPointClick={handlePointClick}
-                                                on:transactionHover={handleTransactionHover}
-                                                on:transactionLeave={handleTransactionLeave}
-                                                on:yearSelect={(e) => handleYearChange(e.detail)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="pt-4">
-                                        <RPDTransactionSummaryView 
-                                            data={data}
-                                            year={selectedTransactionYear}
-                                        />
-                                    </div>
+                            
+                            {#if !isRightSidebarCollapsed}
+                                <!-- Search component -->
+                                <div class="p-4 pt-12">
+                                    <RpdprvSearch
+                                        data={data}
+                                        onShowDrugDetail={onEntrySelect}
+                                        onShowCompanyDetail={handleShowCompanyDetail}
+                                    />
                                 </div>
-                            </div>
+                                
+                                <!-- Transaction Summary -->
+                                <div class="px-4 pb-4">
+                                    <RPDTransactionSummaryView
+                                        {data}
+                                        year={selectedTransactionYear}
+                                        on:transactionHover={handleTransactionHover}
+                                        on:transactionLeave={handleTransactionLeave}
+                                        on:yearSelect={(e) => handleYearChange(e.detail)}
+                                    />
+                                </div>
+                            {/if}
                         </div>
                     {/if}
                     
-                    <!-- Mobile bottom sidebar -->
+                    <!-- Mobile sidebar - only show on mobile -->
                     {#if isMobileView}
                         <MobileTransactionSidebar
                             data={data}
@@ -280,12 +289,13 @@
             </Tabs.Content>
         
             <!-- Transaction Analytics Tab -->
-            <Tabs.Content value="transaction-analytics" class="select-none">
+            <Tabs.Content value="transaction-analytics" class="select-none justify-stretch">
                 <div 
                     in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
                     out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
                 >
                     <TransactionAnalytics 
+                        bind:this={transactionAnalyticsComponent}
                         {data} 
                         {isAllYearView} 
                         {onEntrySelect} 

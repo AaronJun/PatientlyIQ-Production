@@ -64,6 +64,7 @@
           <RPDTransactionSummaryView 
             data={data}
             year={selectedYear}
+            on:yearSelect={(e) => dispatch('yearSelect', e.detail)}
           />
         </div>
       </div>
