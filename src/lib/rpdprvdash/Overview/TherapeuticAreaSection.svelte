@@ -76,9 +76,9 @@
         {data} 
         width={chartWidth} 
         height={chartHeight}
-        maxCols={25}
-        cellSize={20}
-        cellPadding={4}
+        maxCols={28}
+        cellSize={8}
+        cellPadding={2}
         onAreaClick={onAreaClick}
     />
 </div>

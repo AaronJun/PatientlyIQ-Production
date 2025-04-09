@@ -3,6 +3,7 @@
     import { Button,    Separator } from 'bits-ui';
     import { ChartBar, ArrowUpRight } from 'carbon-icons-svelte';
     import MarketCapWaffleChart from './MarketCapWaffleChart.svelte';
+    import { createEventDispatcher } from 'svelte';
     
     interface DataEntry {
         Company: string;
@@ -28,6 +29,12 @@
     
     export let data: DataEntry[] = [];
     export let onMarketCapClick: (marketCap: string) => void = () => {};
+    
+    const dispatch = createEventDispatcher();
+    
+    function handleButtonClick() {
+        dispatch('navigateToSponsor');
+    }
     
     // Set default width and height to ensure the chart is fully visible
     let chartWidth = 800;
@@ -69,7 +76,7 @@
 <section class="market-cap-section flex flex-col lg:flex-row gap-8 lg:gap-16 mb-6 md:px-4 lg:px-8 justify-evenly h-fit min-h-[45.25vh] place-content-stretch align-baseline" aria-labelledby="market-cap-header">
     <div 
     bind:this={containerRef}
-    class="waffle-chart-container justify-items-around items-center align-middle flex w-full h-full"
+    class="waffle-chart-container justify-items-around items-center align-middle flex w-full h-full w-3/5"
     role="img"
     aria-label="Company Size Cap Distribution Waffle Chart"
 >
@@ -77,8 +84,8 @@
             {data} 
             width={chartWidth} 
             height={chartHeight}
-            maxCols={20}
-            cellSize={20}
+            maxCols={28}
+            cellSize={8}
             cellPadding={2}
             onMarketCapClick={onMarketCapClick}
             />
@@ -99,13 +106,16 @@
                 </h4>
             </div>
                     <p class="text-sm text-slate-600 mb-4">
-                        This visualization shows the distribution of drug candidates across different company market caps. Each square represents a drug candidate,
-                        with colors indicating the company's market cap category. Hover over any square to see details about the company and indication,
-                        and click to filter the data by market cap.
+                        This visualization shows the distribution of drug candidates across different company sizes. Each circle represents a drug candidate,
+                        with colors indicating the company's size and stage category. Hover over any circle to see details about the company and indication,
+                        and click to filter the data by size and stage.
                     </p>
-                    <Button.Root class="rounded-input flex-row gap-2 border-b-1 border-emerald-800 text-emerald-800 text-left text-sm shadow-mini hover:border-blue-700 hover:text-blue-700 inline-flex w-full py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all">
+                    <Button.Root 
+                        class="rounded-input flex-row gap-2 border-b-1 border-sky-800 text-sky-800 text-left text-sm shadow-mini hover:border-blue-700 hover:text-blue-700 inline-flex w-full py-2 h-12 place-items-center justify-between font-semibold active:scale-[0.98] active:transition-all"
+                        on:click={handleButtonClick}
+                    >
                         Explore Data by Company <ArrowUpRight class="p-1 ring-1 ring-slate-800 w-6 h-6 font-light rounded-full" />   
-            </Button.Root>
+                    </Button.Root>
             </div>
 
  

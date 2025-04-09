@@ -425,13 +425,13 @@
   <section class="bg-blue-900 min-h-96 py-20 md:py-24 relative overflow-hidden">
     <div class="absolute inset-0 opacity-10">
       <img 
-        src="/assets/star.svg" 
+        src="/assets/staroutline.svg" 
         alt="" 
         class="absolute w-96 h-96 -right-20 -top-20 transform rotate-12"
         aria-hidden="true"
       />
       <img 
-        src="/assets/star.svg" 
+        src="/assets/staroutline.svg" 
         alt="" 
         class="absolute w-64 h-64 left-20 bottom-10 transform -rotate-12 opacity-50"
         aria-hidden="true"
