@@ -2,7 +2,26 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
 
-    export let data = {
+    // Define proper types for sentiment data
+    type SentimentCounts = {
+        "Entirely Negative"?: number;
+        "Somewhat Negative"?: number;
+        "Neutral"?: number;
+        "Somewhat Positive"?: number;
+        "Entirely Positive"?: number;
+        [key: string]: number | undefined;
+    };
+
+    type StageData = {
+        name: string;
+        sentiments: SentimentCounts;
+    };
+
+    type WaffleData = {
+        stages: StageData[];
+    };
+
+    export let data: WaffleData = {
         stages: []
     };
 

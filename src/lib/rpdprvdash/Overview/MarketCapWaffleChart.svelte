@@ -172,6 +172,10 @@
         // Process the data
         const processedData = processData(data);
         
+        // Split data into two groups: large caps and others
+        const largeCaps = processedData.filter(d => ['Mega', 'Large', 'Mid'].includes(d.marketCap));
+        const otherCaps = processedData.filter(d => !['Mega', 'Large', 'Mid'].includes(d.marketCap));
+        
         // Create a map for quick lookup of market cap data
         const marketCapLookup = new Map();
         processedData.forEach(capData => {
@@ -196,113 +200,142 @@
         // Clear previous content
         d3.select(svg).selectAll('*').remove();
         
-        // Calculate total count and number of cells needed
-        const totalCount = processedData.reduce((sum, d) => sum + d.count, 0);
-        
         // Calculate optimal number of columns based on available width
         const containerWidth = svg.parentElement?.clientWidth || width;
-        const minCellSize = isMobile ? 8 : Math.max(12, Math.min(24, Math.floor(containerWidth / 40)));
-        const minCellPadding = isMobile ? 2 : Math.max(3, Math.min(6, Math.floor(containerWidth / 100)));
-        const optimalCols = Math.max(
-            Math.floor(containerWidth / (minCellSize + minCellPadding)),
-            isMobile ? 4 : 8
+        const smallScreen = window.innerWidth < 1000;
+        const isTinyScreen = window.innerWidth < 375;
+        
+        // Adjust base sizes for different screen sizes
+        const baseMinCellSize = isTinyScreen ? 6 : (isMobile ? 8 : Math.max(12, Math.min(24, Math.floor(containerWidth / 40))));
+        const baseMinCellPadding = isTinyScreen ? 1 : (isMobile ? 2 : Math.max(3, Math.min(6, Math.floor(containerWidth / 100))));
+        
+        // Calculate responsive cell size and padding
+        const responsiveCellSize = isTinyScreen ? 12 : (smallScreen ? 16 : (isMobile ? Math.max(10, cellSize - 4) : Math.max(22, cellSize)));
+        const responsiveCellPadding = isTinyScreen ? 1 : (isMobile ? Math.max(2, cellPadding - 2) : (smallScreen ? 3 : Math.max(4, cellPadding)));
+        
+        // Calculate max columns based on container width and minimum sizes
+        const maxCols = Math.max(
+            Math.min(
+                Math.floor((containerWidth) / (baseMinCellSize + baseMinCellPadding)),
+                isTinyScreen ? 12 : (isMobile ? 6 : 22)
+            ),
+            isTinyScreen ? 3 : (isMobile ? 18 : 24)
         );
         
-        // Use the smaller of optimal columns or max columns
-        const responsiveMaxCols = Math.min(optimalCols, maxCols);
-        const smallScreen = window.innerWidth < 1000;
-        const responsiveCellSize = smallScreen ? 16 : (isMobile ? Math.max(10, cellSize - 4) : Math.max(22, cellSize));
-        const responsiveCellPadding = isMobile ? Math.max(2, cellPadding - 2) : (smallScreen ? 3 : Math.max(4, cellPadding));
+        // Count total entries for both sections
+        const otherCapCount = otherCaps.reduce((sum, d) => sum + d.entries.length, 0);
+        const largeCapCount = largeCaps.reduce((sum, d) => sum + d.entries.length, 0);
         
-        const totalCells = responsiveMaxCols * Math.ceil(totalCount / responsiveMaxCols);
+        // Calculate rows needed for each section
+        const otherCapsRows = Math.ceil(otherCapCount / maxCols);
+        const largeCapRows = Math.ceil(largeCapCount / maxCols);
         
-        // Calculate grid dimensions
-        const rows = Math.ceil(totalCells / responsiveMaxCols);
-        const adjustedWidth = Math.min(width, (responsiveCellSize + responsiveCellPadding) * responsiveMaxCols);
-        const adjustedHeight = Math.min(height, (responsiveCellSize + responsiveCellPadding) * rows);
+        // Calculate total dimensions
+        const totalRows = otherCapsRows + largeCapRows + 1; // +1 for spacing between sections
+        const totalWidth = maxCols * (responsiveCellSize + responsiveCellPadding);
+        const totalHeight = totalRows * (responsiveCellSize + responsiveCellPadding);
         
-        // Create SVG
+        // Create SVG with adjusted dimensions
         const svgSelection = d3.select(svg)
-            .attr('width', adjustedWidth)
-            .attr('height', adjustedHeight)
-            .attr('viewBox', `0 0 ${adjustedWidth} ${adjustedHeight}`)
+            .attr('width', totalWidth)
+            .attr('height', totalHeight)
+            .attr('viewBox', `0 0 ${totalWidth} ${totalHeight}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
             
-        // Track current position in the grid
+        // Function to render a cell
+        const renderCell = (x: number, y: number, marketCap: string, entry: DataEntry) => {
+            const baseColor = baseColorMap[marketCap] || '#999999';
+            
+            const cell = svgSelection.append('rect')
+                .attr('x', x)
+                .attr('y', y)
+                .attr('width', responsiveCellSize)
+                .attr('height', responsiveCellSize)
+                .attr('rx', isTinyScreen ? borderRadius / 3 : (isMobile ? borderRadius / 2 : borderRadius))
+                .attr('ry', isTinyScreen ? borderRadius / 3 : (isMobile ? borderRadius / 2 : borderRadius))
+                .attr('fill', baseColor)
+                .attr('class', 'waffle-cell')
+                .attr('data-market-cap', marketCap)
+                .attr('data-company', entry.Company || '');
+                
+            // Add mouseover events
+            cell.on('mouseover', function(event) {
+                const hoveredCap = d3.select(this).attr('data-market-cap');
+                const hoveredCompany = d3.select(this).attr('data-company');
+                
+                // Get data from our lookup map
+                const marketCapInfo = marketCapLookup.get(hoveredCap);
+                const companyCount = marketCapInfo ? marketCapInfo.companies.size : 0;
+                const companyEntries = marketCapInfo ? 
+                    (marketCapInfo.entriesByCompany.get(hoveredCompany) || []).length : 0;
+                
+                // Highlight all cells of the same market cap
+                d3.selectAll(`.waffle-cell[data-market-cap="${hoveredCap}"]`)
+                    .attr('stroke', '#333')
+                    .attr('stroke-width', isTinyScreen ? 0.5 : (isMobile ? 1 : 1.5));
+                    
+                // Update tooltip
+                tooltipContent = { 
+                    marketCap: hoveredCap,
+                    companyName: hoveredCompany,
+                    companyCount: companyCount,
+                    entryCount: companyEntries
+                };
+                tooltipPosition = { x: event.pageX, y: event.pageY };
+                tooltipVisible = true;
+            })
+            .on('mousemove', function(event) {
+                tooltipPosition = { x: event.pageX, y: event.pageY };
+            })
+            .on('mouseout', function() {
+                const hoveredCap = d3.select(this).attr('data-market-cap');
+                
+                // Remove highlight from all cells of the same market cap
+                d3.selectAll(`.waffle-cell[data-market-cap="${hoveredCap}"]`)
+                    .attr('stroke', 'white')
+                    .attr('stroke-width', isTinyScreen ? 0.2 : (isMobile ? 0.3 : 0.5));
+                    
+                tooltipVisible = false;
+            })
+            .on('click', function() {
+                const clickedCap = d3.select(this).attr('data-market-cap');
+                onMarketCapClick(clickedCap);
+            });
+        };
+        
+        // Render other caps (top section)
         let currentRow = 0;
         let currentCol = 0;
         
-        // Draw cells for each market cap
-        processedData.forEach((capData) => {
-            const { marketCap, entries } = capData;
-            const baseColor = baseColorMap[marketCap] || '#999999';
-            
-            // Draw one cell for each entry with the same color for all entries in this category
-            entries.forEach(entry => {
-                const indication = entry.Indication || 'Unknown';
-                
+        otherCaps.forEach(capData => {
+            capData.entries.forEach(entry => {
                 const x = currentCol * (responsiveCellSize + responsiveCellPadding);
                 const y = currentRow * (responsiveCellSize + responsiveCellPadding);
                 
-                const cell = svgSelection.append('rect')
-                    .attr('x', x)
-                    .attr('y', y)
-                    .attr('width', responsiveCellSize)
-                    .attr('height', responsiveCellSize)
-                    .attr('rx', isMobile ? borderRadius / 2 : borderRadius)
-                    .attr('ry', isMobile ? borderRadius / 2 : borderRadius)
-                    .attr('fill', baseColor)
-                    .attr('class', 'waffle-cell')
-                    .attr('data-market-cap', marketCap)
-                    .attr('data-company', entry.Company || '');
-                    
-                // Add mouseover events
-                cell.on('mouseover', function(event) {
-                    const hoveredCap = d3.select(this).attr('data-market-cap');
-                    const hoveredCompany = d3.select(this).attr('data-company');
-                    
-                    // Get data from our lookup map
-                    const marketCapInfo = marketCapLookup.get(hoveredCap);
-                    const companyCount = marketCapInfo ? marketCapInfo.companies.size : 0;
-                    const companyEntries = marketCapInfo ? 
-                        (marketCapInfo.entriesByCompany.get(hoveredCompany) || []).length : 0;
-                    
-                    // Highlight all cells of the same market cap
-                    d3.selectAll(`.waffle-cell[data-market-cap="${hoveredCap}"]`)
-                        .attr('stroke', '#333')
-                        .attr('stroke-width', isMobile ? 1 : 1.5);
-                        
-                    // Update tooltip
-                    tooltipContent = { 
-                        marketCap: hoveredCap,
-                        companyName: hoveredCompany,
-                        companyCount: companyCount,
-                        entryCount: companyEntries
-                    };
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
-                    tooltipVisible = true;
-                })
-                .on('mousemove', function(event) {
-                    tooltipPosition = { x: event.pageX, y: event.pageY };
-                })
-                .on('mouseout', function() {
-                    const hoveredCap = d3.select(this).attr('data-market-cap');
-                    
-                    // Remove highlight from all cells of the same market cap
-                    d3.selectAll(`.waffle-cell[data-market-cap="${hoveredCap}"]`)
-                        .attr('stroke', 'white')
-                        .attr('stroke-width', isMobile ? 0.3 : 0.5);
-                        
-                    tooltipVisible = false;
-                })
-                .on('click', function() {
-                    const clickedCap = d3.select(this).attr('data-market-cap');
-                    onMarketCapClick(clickedCap);
-                });
+                renderCell(x, y, capData.marketCap, entry);
                 
-                // Update position
                 currentCol++;
-                if (currentCol >= responsiveMaxCols) {
+                if (currentCol >= maxCols) {
+                    currentCol = 0;
+                    currentRow++;
+                }
+            });
+        });
+        
+        // Add one row of spacing
+        currentRow = otherCapsRows + 1;
+        currentCol = 0;
+        
+        // Render large caps (bottom section)
+        largeCaps.forEach(capData => {
+            capData.entries.forEach(entry => {
+                const x = currentCol * (responsiveCellSize + responsiveCellPadding);
+                const y = currentRow * (responsiveCellSize + responsiveCellPadding);
+                
+                renderCell(x, y, capData.marketCap, entry);
+                
+                currentCol++;
+                if (currentCol >= maxCols) {
                     currentCol = 0;
                     currentRow++;
                 }
@@ -361,15 +394,17 @@
             class="tooltip" 
             style="left: {tooltipPosition.x + 10}px; top: {tooltipPosition.y - 10}px; opacity: {tooltipVisible ? 1 : 0};"
         >
-            <div class="tooltip-content">
+            <div class="tooltip-content flex flex-row gap-2 mb-1 align-bottom justify-between">
                 <div class="tooltip-category">{tooltipContent.marketCap}</div>
-                <div class="tooltip-company">{tooltipContent.companyName}</div>
                 <div class="tooltip-stats">
-                    <span class="stat-label">Total Companies:</span> {tooltipContent.companyCount}
+                    <span class="stat-value">{tooltipContent.companyCount}</span>
+                    <span class="stat-label">Total</span>
                 </div>
-                <div class="tooltip-stats">
-                    <span class="stat-label">Company Entries:</span> {tooltipContent.entryCount}
-                </div>
+            </div>
+            <div class="tooltip-stats">
+                <div class="tooltip-company pt-2">{tooltipContent.companyName}</div>
+                <span class="stat-label">RPD Designations:</span>
+                <span class="stat-value">{tooltipContent.entryCount}</span>
             </div>
         </div>
     {/if}
@@ -402,17 +437,21 @@
         color: #2d3748;
         margin-bottom: 6px;
         padding-bottom: 4px;
-        border-bottom: 1px solid #e2e8f0;
+        border-top: 1px solid #e2e8f0;
     }
     
     .tooltip-stats {
         color: #4a5568;
-        margin-top: 2px;
         font-size: 11px;
     }
     
     .stat-label {
         color: #718096;
+        font-weight: 500;
+    }
+
+    .stat-value {
+        color: #1a202c;
         font-weight: 500;
     }
     

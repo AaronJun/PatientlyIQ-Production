@@ -4,7 +4,7 @@
     import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
     import TransactionAnalytics from '../transactionsUI/TransactionAnalytics.svelte';
     import SareptaCaseStudyHtml from '../transactionsUI/SareptaCaseStudyHtml.svelte';
-    import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis, Table } from 'carbon-icons-svelte';
+    import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis, Table, Calculator } from 'carbon-icons-svelte';
     import { hasPRVAward } from '../utils/data-processing-utils';
     import SellerBuyerChord from '../TransactionChord.svelte';
     import VoucherBeeswarmPlot from '../VoucherBeeswarmPlot.svelte';
@@ -12,6 +12,7 @@
     import MobileTransactionSidebar from '../sidebarComponents/MobileTransactionSidebar.svelte';
     import RpdprvSearch from '../RPDPRVSearch.svelte';
     import RPDDTableWrapper from './RPDDTableWrapper.svelte';
+    import PRVCalculatorWrapper from '../calculatorcomponents/PRVCalculatorWrapper.svelte';
     import { fade, fly, slide } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
     import { Tabs } from 'bits-ui';
@@ -196,7 +197,7 @@
                 value="prv-calculator"
                 class="data-[state=active]:shadow-mini flex flex-row dark:data-[state=active]:bg-muted h-8 rounded-sm hover:bg-slate-100  data-[state=active]:bg-slate-800 data-[state=active]:text-slate-50 align-middle justify-center place-content-center px-4 place-items-center"
             >
-                <Money class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
+                <Calculator class="mr-2 md:mr-4 w-3 h-3 md:w-4 md:h-4 align" />
                 <span class="text-2xs md:text-xs lg:text-sm font-medium">PRV Calculator</span>
             </Tabs.Trigger>
         </Tabs.List>
@@ -336,11 +337,9 @@
                 <div 
                     in:fly={{ x: animationDirection * 300, duration: 400, opacity: 0.1, easing: quintOut }}
                     out:fly={{ x: -1 * animationDirection * 300, duration: 400, opacity: 0, easing: quintOut }}
-                    class="relative h-[calc(100vh-200px)]"
+                    class="relative h-[calc(100vh-200px)] overflow-y-auto"
                 >
-                    <div class="absolute inset-0 bg-gray-200/80 backdrop-blur-sm flex items-center justify-center">
-                        <h2 class="text-2xl font-semibold text-gray-700">Coming Soon</h2>
-                    </div>
+                    <PRVCalculatorWrapper />
                 </div>
             </Tabs.Content>
         </div>

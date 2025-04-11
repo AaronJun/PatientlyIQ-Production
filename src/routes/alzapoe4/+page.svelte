@@ -30,6 +30,7 @@
 
 	import PositiveSentimentDriversChart from './PositiveSentimentDriversChart.svelte';
 	import NegativeSentimentDriversChart from './NegativeSentimentDriversChart.svelte';
+    import { lazyLoad } from '$lib/actions/lazyLoad';
     
     let selectedDisease = "pompe";
     
@@ -41,8 +42,17 @@
     const pageImage = `${siteUrl}/rpd-program-preview.png`; // Make image URL absolute
     const pageUrl = `${siteUrl}/alzapoe4`; // Make page URL absolute
     
+    // Component visibility states
+    let waffleStagesVisible = false;
+    let sentimentDriversVisible = false;
+    let ctWaffleStagesVisible = false;
+    let ctPositiveChartVisible = false;
+    let journeyCard1Visible = false;
+    let journeyCard2Visible = false;
+    let journeyCard3Visible = false;
 </script>
 
+<svelte:options immutable={false} />
 
 <div class="flex-1 place-content-center bg-slate-50 pt-12">
     <!-- Sidebar -->
@@ -58,20 +68,56 @@
     </div>
     <div class="flex-1 place-content-center pt-4 col-span-8">        
     <AlzIntroductionS1P1 />
-    <WaffleStages data={ sentimentData } />
+    <div
+        use:lazyLoad
+        class="visualization-placeholder min-h-[400px] flex items-center justify-center"
+        on:lazyload={() => waffleStagesVisible = true}
+    >
+        {#if waffleStagesVisible}
+            <WaffleStages data={ sentimentData } />
+        {:else}
+            <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center">
+                <p class="text-slate-500">Loading visualization...</p>
+            </div>
+        {/if}
+    </div>
 </div>
 </div>
     <div class="mb-2 place-content-center justify-center">
         <AlzIntroductionS1P2 />
-        <PositiveSentimentDriversChart />
-        <NegativeSentimentDriversChart />
+        <div
+            use:lazyLoad
+            class="visualization-container min-h-[400px]"
+            on:lazyload={() => sentimentDriversVisible = true}
+        >
+            {#if sentimentDriversVisible}
+                <PositiveSentimentDriversChart />
+                <NegativeSentimentDriversChart />
+            {:else}
+                <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center">
+                    <p class="text-slate-500">Loading sentiment analysis...</p>
+                </div>
+            {/if}
+        </div>
     </div>
     
     <div class="vignette text-slate-800 pt-6 pb-8 place-content-center">        
         <p class="text-sm max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2  underline underline-offset-4 text-left">
            Community Vignette
        </p>
-       <SwipeableJourneyCards selectedDisease="pompe" selectedId="maggie-p" />
+       <div
+            use:lazyLoad
+            class="journey-card-container min-h-[600px]"
+            on:lazyload={() => journeyCard1Visible = true}
+        >
+            {#if journeyCard1Visible}
+                <SwipeableJourneyCards selectedDisease="pompe" selectedId="maggie-p" isVisible={journeyCard1Visible} />
+            {:else}
+                <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center h-[500px] flex items-center justify-center">
+                    <p class="text-slate-500">Loading patient journey...</p>
+                </div>
+            {/if}
+        </div>
    </div>
 
 
@@ -88,7 +134,19 @@
                 <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
                Community Vignette
               </p>
-              <SwipeableJourneyCards selectedDisease="pompe" selectedId="timothy-k" />
+              <div
+                  use:lazyLoad
+                  class="journey-card-container min-h-[600px]"
+                  on:lazyload={() => journeyCard2Visible = true}
+              >
+                  {#if journeyCard2Visible}
+                      <SwipeableJourneyCards selectedDisease="pompe" selectedId="timothy-k" isVisible={journeyCard2Visible} />
+                  {:else}
+                      <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center h-[500px] flex items-center justify-center">
+                          <p class="text-slate-500">Loading patient journey...</p>
+                      </div>
+                  {/if}
+              </div>
     </div>
     </div>
 
@@ -96,27 +154,62 @@
     
     <div id="3. Clinical Trials" class="place-content-center justify-center">
         <AlzIntroductionS3P1 />
-        <CtWaffleStages data={ ctsentimentData } />
-            <CtPositiveSentimentChart />
-        </div>  
-        <div class="mb-2 place-content-center justify-center">
-            <AlzIntroductionS3P2 />
+        <div
+            use:lazyLoad
+            class="visualization-container min-h-[400px]"
+            on:lazyload={() => ctWaffleStagesVisible = true}
+        >
+            {#if ctWaffleStagesVisible}
+                <CtWaffleStages data={ ctsentimentData } />
+            {:else}
+                <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center">
+                    <p class="text-slate-500">Loading clinical trial visualization...</p>
+                </div>
+            {/if}
+        </div>
+        <div
+            use:lazyLoad
+            class="visualization-container min-h-[400px]"
+            on:lazyload={() => ctPositiveChartVisible = true}
+        >
+            {#if ctPositiveChartVisible}
+                <CtPositiveSentimentChart />
+            {:else}
+                <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center">
+                    <p class="text-slate-500">Loading sentiment chart...</p>
+                </div>
+            {/if}
+        </div>
+    </div>  
+    <div class="mb-2 place-content-center justify-center">
+        <AlzIntroductionS3P2 />
             
-            <div class="vignette text-slate-800 pt-6 pb-8 place-content-center">                <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
-                   Community Vignette
-               </p>
-               <SwipeableJourneyCards selectedDisease="pompe" selectedId="nancy-a" />
-        
-           </div>
+        <div class="vignette text-slate-800 pt-6 pb-8 place-content-center">                <p class="text-xs max-w-fit mx-auto mb-8 rounded-full font-mono px-4 py-2 bg-orange-100 text-left">
+                Community Vignette
+            </p>
+            <div
+                use:lazyLoad
+                class="journey-card-container min-h-[600px]"
+                on:lazyload={() => journeyCard3Visible = true}
+            >
+                {#if journeyCard3Visible}
+                    <SwipeableJourneyCards selectedDisease="pompe" selectedId="nancy-a" isVisible={journeyCard3Visible} />
+                {:else}
+                    <div class="loading-placeholder bg-slate-100 animate-pulse rounded-lg p-8 text-center h-[500px] flex items-center justify-center">
+                        <p class="text-slate-500">Loading patient journey...</p>
+                    </div>
+                {/if}
+            </div>
         </div>
-        <div id="4. Looking Forward" class="mb-2 place-content-center justify-center">
+    </div>
+    <div id="4. Looking Forward" class="mb-2 place-content-center justify-center">
         <AlzConclusion />
-        </div>
-        </div>    
-        <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
+    </div>
+    </div>    
+    <div class="grid grid-cols-8 lg:grid-cols-8 gap-2">
 
-        </div>
-        <ALZMethology />
+    </div>
+    <ALZMethology />
 
 
 <style>
@@ -162,5 +255,17 @@
         line-height: 1;
         font-weight: 400;
         color: #FF4A4A
+    }
+    
+    .loading-placeholder {
+        width: 100%;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .visualization-container {
+        transition: opacity 0.5s ease;
     }
 </style>

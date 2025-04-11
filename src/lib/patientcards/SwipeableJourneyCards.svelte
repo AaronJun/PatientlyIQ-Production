@@ -9,18 +9,28 @@
     import TopicBarChart from '../RPDPatientStories/TopicBarChart.svelte';
     import SentimentGauge from '../RPDPatientStories/SentimentGauge.svelte';
    
-    export let selectedDisease = "pompe";
-    export let selectedId = null;
+    export let selectedDisease: string = "pompe";
+    export let selectedId: string | null = null;
+    export let isVisible: boolean = false;  // Added prop to control lazy loading
 
-    let showGrid = false;
-    let containerRef;
-    let active = 0;
-    let startX;
-    let selectedPatient;
-    let expandedCards = [];
-    let imageLoading = new Map();
+    let showGrid: boolean = false;
+    let containerRef: HTMLElement;
+    let active: number = 0;
+    let startX: number | null = null;
+    let selectedPatient: any;
+    let expandedCards: any[] = [];
+    let isInitialized: boolean = false;
+    
+    // Image handling
+    type ImageStatus = 'loading' | 'loaded' | 'error';
+    let imageStatus: Record<string, ImageStatus> = {};
 
-    function getImagePath(imgPath) {
+    /**
+     * Constructs the proper image path
+     * @param imgPath - The source image path
+     * @returns A valid image path
+     */
+    function getImagePath(imgPath: string | undefined): string {
         if (!imgPath) return '/api/placeholder/128/128';
         
         if (imgPath.startsWith('http')) return imgPath;
@@ -34,40 +44,55 @@
         }
     }
 
+    // Handle type safety for accessing patient data
+    function getPatientData(disease: string) {
+        // Type guard to check if the disease exists in patientData
+        if (disease in patientData.diseases) {
+            return patientData.diseases[disease as keyof typeof patientData.diseases];
+        }
+        return null;
+    }
+
     $: {
-        if (selectedId && patientData.diseases[selectedDisease]) {
-            selectedPatient = patientData.diseases[selectedDisease].patients.find(
-                p => p.id === selectedId
-            );
-            if (selectedPatient) {
-                const introCard = {
-                    type: 'intro',
-                    isIntro: true,
-                    ...selectedPatient
-                };
+        if (selectedId && selectedDisease) {
+            const diseaseData = getPatientData(selectedDisease);
+            if (diseaseData) {
+                selectedPatient = diseaseData.patients.find(
+                    (p: any) => p.id === selectedId
+                );
+                if (selectedPatient) {
+                    const introCard = {
+                        type: 'intro',
+                        isIntro: true,
+                        ...selectedPatient
+                    };
 
-                const firstQuoteCard = {
-                    ...selectedPatient.cards[0],
-                    isQuote: true
-                };
+                    const firstQuoteCard = {
+                        ...selectedPatient.cards[0],
+                        isQuote: true
+                    };
 
-                const bioCard = {
-                    ...selectedPatient.cards[0],
-                    isQuote: false,
-                    type: 'Bio'
-                };
+                    const bioCard = {
+                        ...selectedPatient.cards[0],
+                        isQuote: false,
+                        type: 'Bio'
+                    };
 
-                const remainingCards = selectedPatient.cards.slice(1).flatMap(card => [
-                    { ...card, isQuote: true },
-                    { ...card, isQuote: false }
-                ]);
+                    const remainingCards = selectedPatient.cards.slice(1).flatMap((card: any) => [
+                        { ...card, isQuote: true },
+                        { ...card, isQuote: false }
+                    ]);
 
-                expandedCards = [introCard, firstQuoteCard, bioCard, ...remainingCards];
+                    expandedCards = [introCard, firstQuoteCard, bioCard, ...remainingCards];
+                    
+                    // Reset image statuses
+                    imageStatus = {};
+                }
             }
         }
     }
 
-    function handleNext() {
+    function handleNext(): void {
         if (!showGrid && active === expandedCards.length - 1) {
             showGrid = true;
             return;
@@ -78,7 +103,7 @@
         }
     }
 
-    function handlePrev() {
+    function handlePrev(): void {
         if (showGrid) {
             active = expandedCards.length - 1;
             showGrid = false;
@@ -94,13 +119,13 @@
         }
     }
 
-    function handleTouchStart(e) {
+    function handleTouchStart(e: TouchEvent): void {
         startX = e.touches[0].clientX;
     }
 
-    function handleTouchMove(e) {
+    function handleTouchMove(e: TouchEvent): void {
         e.preventDefault();
-        if (!startX) return;
+        if (startX === null) return;
         
         const currentX = e.touches[0].clientX;
         const diff = startX - currentX;
@@ -112,11 +137,39 @@
         }
     }
 
-    function handleTouchEnd() {
+    function handleTouchEnd(): void {
         startX = null;
     }
 
-    function createVisualizationCard(card) {
+    /**
+     * Update the status of an image
+     * @param id - Image identifier
+     * @param status - New status
+     */
+    function updateImageStatus(id: string, status: ImageStatus): void {
+        imageStatus[id] = status;
+        imageStatus = {...imageStatus}; // Trigger reactivity
+    }
+
+    // Preload the images for better user experience
+    function preloadImages(): void {
+        if (!expandedCards.length) return;
+        
+        expandedCards.forEach(card => {
+            if (card.isIntro && card.img) {
+                const imageId = `img-${card.id}`;
+                const imgSrc = getImagePath(card.img);
+                
+                // Create a new Image object to preload
+                const img = new Image();
+                img.onload = () => updateImageStatus(imageId, 'loaded');
+                img.onerror = () => updateImageStatus(imageId, 'error');
+                img.src = imgSrc;
+            }
+        });
+    }
+
+    function createVisualizationCard(card: any): HTMLElement {
         const chartContainer = document.createElement('div');
         chartContainer.className = 'flex flex-col gap-6 mt-6';
 
@@ -169,25 +222,32 @@
         return chartContainer;
     }
 
-    function createCardContent(d) {
+    function createCardContent(d: any): HTMLElement | string {
         if (d.isIntro) {
             const imageId = `img-${d.id}`;
-            imageLoading.set(imageId, true);
+            
+            // Initialize image status if not already set
+            if (!imageStatus[imageId]) {
+                imageStatus[imageId] = 'loading';
+                imageStatus = {...imageStatus}; // Trigger reactivity
+            }
 
+            const imgSrc = getImagePath(d.img);
+            
             return `
                 <div class="h-full w-full flex flex-col items-center justify-top bg-gradient-to-b from-orange-50 to-white pt-12 px-8 pb-6">
                     <div class="cardcircle flex flex-col items-center gap-8">
                         <div class="relative w-24 sm:w-32 h-24 sm:h-32 mb-4">
                             ${d.img ? `
-                                <div class="image-loading-skeleton absolute inset-0 rounded-full bg-gray-200 animate-pulse ${imageId}-loading"></div>
+                                <div class="image-loading-skeleton absolute inset-0 rounded-full bg-gray-200 animate-pulse ${imageStatus[imageId] === 'loading' ? '' : 'hidden'}"></div>
                                 <img 
-                                    src="${getImagePath(d.img)}"
+                                    src="${imgSrc}"
                                     alt="${d.name}"
-                                    class="rounded-full object-cover w-full h-full shadow-lg border-2 border-orange-200 transition-opacity duration-300"
-                                    onload="this.classList.add('opacity-100'); document.querySelector('.${imageId}-loading').style.display = 'none';"
-                                    onerror="this.src='/api/placeholder/128/128'; this.classList.add('error-fallback');"
-                                    loading="lazy"
-                                    style="opacity: 0;"
+                                    class="rounded-full object-cover w-full h-full shadow-lg border-2 border-orange-200 transition-opacity duration-300 ${imageStatus[imageId] === 'loaded' ? 'opacity-100' : 'opacity-0'} ${imageStatus[imageId] === 'error' ? 'error-fallback' : ''}"
+                                    id="${imageId}"
+                                    onerror="window.dispatchEvent(new CustomEvent('imgError', {detail: this.id}));"
+                                    onload="window.dispatchEvent(new CustomEvent('imgLoaded', {detail: this.id}));"
+                                    loading="eager"
                                 />
                             ` : `
                                 <div class="w-full h-full rounded-full bg-orange-100 flex items-center justify-center">
@@ -299,21 +359,21 @@
         return container;
     }
 
-    function updateCards() {
-        if (!expandedCards.length) return;
+    function updateCards(): void {
+        if (!expandedCards.length || !isVisible) return;
         
         const container = d3.select(containerRef);
         
         container.selectAll('.journey-card')
-            .data(expandedCards, (d, i) => `${d.type}-${d.isQuote}-${i}`)
+            .data(expandedCards, (d: any, i: number) => `${d.type}-${d.isQuote}-${i}`)
             .join('div')
             .attr('class', 'journey-card absolute inset-0 rounded-xl shadow-xl overflow-hidden')
-            .style('z-index', (d, i) => i === active ? 99 : expandedCards.length + 2 - i)
-            .style('background-color', d => d.isQuote ? '#FF4A4A' : 'white')
+            .style('z-index', (d: any, i: number) => i === active ? 99 : expandedCards.length + 2 - i)
+            .style('background-color', (d: any) => d.isQuote ? '#FF4A4A' : 'white')
             .transition()
             .duration(600)
             .ease(d3.easeQuadInOut)
-            .style('transform', (d, i) => {
+            .style('transform', (d: any, i: number) => {
                 const translateY = i === active ? 0 : '12.25px';
                 const translateZ = i === active ? 0 : '-10px';
                 const scale = i === active ? 1 : 0.95;
@@ -322,50 +382,71 @@
             });
     }
 
-    function initializeCards() {
-    if (!expandedCards.length) return;
-    
-    const container = d3.select(containerRef);
-    
-    container.selectAll('.journey-card')
-        .data(expandedCards, (d, i) => `${d.type}-${d.isQuote}-${i}`)
-        .join('div')
-        .attr('class', 'journey-card pt-12 absolute inset-0 rounded-2xl shadow-xl overflow-hidden')
-        .style('background-color', d => d.isQuote ? '#FF4A4A' : 'white')
-        .each(function(d) {
-            const content = createCardContent(d);
-            if (content instanceof Element) {
-                this.innerHTML = '';
-                this.appendChild(content);
-            } else {
-                this.innerHTML = content;
-            }
-        });
+    function initializeCards(): void {
+        if (!expandedCards.length || !isVisible) return;
+        
+        const container = d3.select(containerRef);
+        
+        container.selectAll('.journey-card')
+            .data(expandedCards, (d: any, i: number) => `${d.type}-${d.isQuote}-${i}`)
+            .join('div')
+            .attr('class', 'journey-card pt-12 absolute inset-0 rounded-2xl shadow-xl overflow-hidden')
+            .style('background-color', (d: any) => d.isQuote ? '#FF4A4A' : 'white')
+            .each(function(d: any) {
+                const content = createCardContent(d);
+                if (content instanceof Element) {
+                    const element = this as HTMLElement;
+                    element.innerHTML = '';
+                    element.appendChild(content);
+                } else {
+                    const element = this as HTMLElement;
+                    element.innerHTML = content;
+                }
+            });
 
-    updateCards();
-}
+        updateCards();
+        isInitialized = true;
+    }
 
-onMount(() => {
-    initializeCards();
-    
-    const handleKeydown = (e) => {
-        if (e.key === 'ArrowLeft') handlePrev();
-        if (e.key === 'ArrowRight') handleNext();
-    };
-    
-    window.addEventListener('keydown', handleKeydown);
-    
-    return () => {
-        window.removeEventListener('keydown', handleKeydown);
-    };
-});
+    // Handle visibility changes
+    $: if (isVisible && selectedPatient && !isInitialized) {
+        preloadImages();
+        initializeCards();
+    }
 
-$: if (selectedPatient) {
-    initializeCards();
-}
+    onMount(() => {
+        if (isVisible && selectedPatient) {
+            preloadImages();
+            initializeCards();
+        }
+        
+        const handleKeydown = (e: KeyboardEvent): void => {
+            if (e.key === 'ArrowLeft') handlePrev();
+            if (e.key === 'ArrowRight') handleNext();
+        };
+
+        const handleImgLoaded = (e: CustomEvent): void => {
+            updateImageStatus(e.detail, 'loaded');
+        };
+
+        const handleImgError = (e: CustomEvent): void => {
+            updateImageStatus(e.detail, 'error');
+        };
+        
+        window.addEventListener('keydown', handleKeydown);
+        window.addEventListener('imgLoaded', handleImgLoaded as EventListener);
+        window.addEventListener('imgError', handleImgError as EventListener);
+        
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+            window.removeEventListener('imgLoaded', handleImgLoaded as EventListener);
+            window.removeEventListener('imgError', handleImgError as EventListener);
+        };
+    });
 </script>
 
-<div class="w-full max-w-[900px] mx-auto px-4">
+<div class="w-full max-w-[900px] mx-auto px-4" 
+     in:fade={{ duration: 800, delay: 200 }}>
 {#if selectedPatient}
     {#if !showGrid}
         <div class="flex justify-center">
@@ -456,18 +537,24 @@ $: if (selectedPatient) {
                             <div class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-orange-50 to-white py-2 px-2">
                                 <div class="relative w-12 h-12 mb-4">
                                     {#if card.img}
-                                        <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
+                                        {@const imageId = `img-${card.id}`}
+                                        {@const imgSrc = getImagePath(card.img)}
+                                        
+                                        <div class="absolute inset-0 rounded-full bg-gray-200 animate-pulse" 
+                                             class:hidden={imageStatus[imageId] === 'loaded' || imageStatus[imageId] === 'error'}>
+                                        </div>
+                                        
                                         <img 
-                                            src={getImagePath(card.img)}
+                                            src={imgSrc}
                                             alt={card.name}
+                                            id={imageId}
                                             class="rounded-full object-cover w-full h-full shadow-lg border-2 border-orange-200 transition-opacity duration-300"
-                                            on:load={(e) => e.currentTarget.classList.add('opacity-100')}
-                                            on:error={(e) => {
-                                                e.currentTarget.src = '/api/placeholder/128/128';
-                                                e.currentTarget.classList.add('error-fallback');
-                                            }}
-                                            loading="lazy"
-                                            style="opacity: 0;"
+                                            class:opacity-100={imageStatus[imageId] === 'loaded'}
+                                            class:opacity-0={imageStatus[imageId] !== 'loaded'}
+                                            class:error-fallback={imageStatus[imageId] === 'error'}
+                                            on:load={() => updateImageStatus(imageId, 'loaded')}
+                                            on:error={() => updateImageStatus(imageId, 'error')}
+                                            loading="eager"
                                         />
                                     {:else}
                                         <div class="w-full h-full rounded-full bg-orange-100 flex items-center justify-center">
