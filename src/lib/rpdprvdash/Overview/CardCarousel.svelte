@@ -25,7 +25,7 @@
 </script>
 
 <div class="quotes-container h-full">
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-row gap-4">
             {#each Array(totalPages) as _, pageIndex}
                 {#if currentPage === pageIndex}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

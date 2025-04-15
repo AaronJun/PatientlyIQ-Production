@@ -1,7 +1,5 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
-    import { onMount } from 'svelte';
-    import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
+
     import "carbon-components-svelte/css/all.css";
 
 </script>

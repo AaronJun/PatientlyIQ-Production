@@ -28,15 +28,9 @@
     }
 </script>
 
-<div class="quote-card transition-all duration-300 flex flex-col justify-between h-full px-4 py-6">
+<div class="quote-card transition-all duration-300 flex flex-col justify-between h-full">
     <div class="card-content relative">
-        <Quotes class="text-slate-800 w-4 h-4 font-serif mb-2" />
-
-        <Separator.Root
-            orientation="horizontal"
-            class="bg-stone-600 shrink-0 data-[orientation=horizontal]:h-[1.2725px] data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px] mb-4"
-        />      
-          
+        <Quotes class="text-slate-100 w-10 h-10 font-serif mb-8 p-3 bg-slate-500 rounded-full" />
         <div class="quote-text text-slate-700 font-light text-base leading-relaxed mb-4" in:fade={{ duration: 300 }}>
             <p>{getQuoteText()}</p>
             <!-- <button 
@@ -57,7 +51,7 @@
                 href={quote.QuoteSource} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="quote-source inline-flex items-center text-emerald-700 font-semibold text-xs mt-2 hover:text-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 rounded pt-2"
+                class="quote-source inline-flex items-center text-emerald-700 font-semibold text-xs mt-2 hover:text-orange-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 rounded pt-2"
                 aria-label="View source of quote"
             >
                 Source <ArrowUpRight class="ml-1 h-3 w-3" />

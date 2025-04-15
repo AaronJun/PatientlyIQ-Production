@@ -5,7 +5,7 @@
 
   export let data = [];
   export let width = 300;
-  export let height = 300;
+  export let height = 200;
   export let title = "Top Topics";
 
   let chartContainer;
@@ -61,7 +61,7 @@
       .attr("y", d => y(d.topic))
       .attr("height", y.bandwidth()/1.725)
       .attr("fill", "#ff5151")
-      .attr("rx", 4)
+      .attr("rx", 2)
       .attr("opacity", 0.85);
 
     bars.transition()

@@ -20,7 +20,8 @@
   $: routeID = $page.url.pathname.split("/");
   
   // Check if current route is the RPDPRVDash page
-  $: isRPDPRVDashRoute = routeID[1] === "rpdprvdash";
+  $: isRPDPRVDashRoute = routeID[1] === "rpdprvdash" || routeID[1] === "prvconstellation";
+  $: isAlzapoe4Route = routeID[1] === "alzapoe4";
 
   import { resetMode, setMode } from "mode-watcher";
   import Header from '$lib/layouts/Header.svelte';
@@ -117,15 +118,15 @@ injectSpeedInsights();
 <svelte:window bind:innerWidth={pageWidth} />
 
 <!-- Only render the Header if not on the RPDPRVDash route -->
-{#if !isRPDPRVDashRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route}
   <Header />
 {/if}
 
 <div>
   <slot />
-</div>
+</div>  
 
 <!-- Conditionally render Footer based on route if needed -->
-{#if !isRPDPRVDashRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route}
   <Footer />
 {/if}

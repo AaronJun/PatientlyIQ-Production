@@ -18,6 +18,7 @@
     import MarketCapSection from './MarketCapSection.svelte';
     import RPDDFilteredTable from '../components/RPDDFilteredTable.svelte';
     import EconomicsSection from './EconomicsSection.svelte';
+    import AdvocacyLinks from './AdvocacyLinks.svelte';
     interface DataEntry {
         Company: string;
         Candidate: string;
@@ -422,96 +423,102 @@
     News Feed 
   </section> -->
   <!-- Section 1: Program Overview Stats -->
-  <section class="bg-blue-900 min-h-96 py-20 md:py-24 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-      <img 
-        src="/assets/staroutline.svg" 
-        alt="" 
-        class="absolute w-96 h-96 -right-20 -top-20 transform rotate-12"
-        aria-hidden="true"
-      />
-      <img 
-        src="/assets/staroutline.svg" 
-        alt="" 
-        class="absolute w-64 h-64 left-20 bottom-10 transform -rotate-12 opacity-50"
-        aria-hidden="true"
-      />
+  <section class="bg-slate-900 min-h-96 py-20 md:py-24 relative overflow-hidden">
+
+    
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-24 justify-start md:justify-evenly relative z-10 px-8 md:px-16 lg:px-20">
+      <div class="flex flex-col gap-4 col-span-1">
+      <p class="text-sm text-left font-normal text-slate-100 text-pre-wrap mb-8">
+        <span class="font-semibold text-lg text-blue-200">Joe and Courtney Dion</span> <br><br>
+        <span class="text-xs text-slate-100 capitalize">parents of two children with limb-girdle muscular dystrophy 2C &</span>
+        <br>
+        <span class="text-xs">Founders of the Dion Foundation for Children with Rare Diseases</span>
+        </p>
+        
+      </div>
+      <div class="flex flex-col col-span-3 max-w-prose">
+        <p class="text-xl md:text-2xl text-left justify-start font-medium leading-tight text-slate-100">
+          For parents of children with rare, untreatable conditions, easy answers are difficult to come by.
+            <br>
+            <br>
+           But the rare pediatric disease priority review voucher program is a policy we know  works.
+        </p>
+        <p class="text-sm text-left font-normal text-slate-100 text-pre-wrap mt-8">
+          <span class="font-semibold text-lg text-blue-200">Joe and Courtney Dion</span> <br><br>
+          <span class="text-xs text-slate-100 capitalize">parents of two children with limb-girdle muscular dystrophy 2C &</span>
+          <br>
+          <span class="text-xs">Founders of the Dion Foundation for Children with Rare Diseases</span>
+          </p>
+
+      </div>
+
+        <div class="flex-shrink-0 relative col-span-1 aspect-square">
+          <img 
+          src="/profiles/DionFamily.jpg" 
+          alt="The Dion Family" 
+          class="w-48 h-48 md:w-64 md:h-64 object-cover filter grayscale opacity-90 mix-blend-luminosity"
+          />
+        </div>
+
+        
     </div>
     
-    <div class="flex flex-col-reverse md:flex-row gap-8 justify-start md:justify-around px-8 md:px-16 lg:px-20 relative z-10">
-      <div class="flex flex-col gap-4 max-w-lg">
-        <p class="text-4xl text-left font-light text-slate-100 col-span-1 text-pre-wrap mb-8">
-          <span class="font-light font-serif text-blue-200">"Children do not have the time to wait.</span> <br> <br> We must act now to reauthorize the rare pediatric disease PRV program."
-        </p>
-        <p class="text-sm text-left font-normal text-slate-100 col-span-1 text-pre-wrap mb-8">
-          <span class="font-semibold text-lg text-blue-200">Stuart Siedman</span> <br>
-          Vice President, Patient Advocacy, Chiesi Global Rare Diseases
-        </p>
-      </div>
-      
-      <div class="flex-shrink-0 relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-blue-900/20 mix-blend-multiply z-10 rounded-sm"></div>
-        <img 
-          src="/profiles/StuartSiedmanChiesi.jpg" 
-          alt="Stuart Siedman, Vice President of Patient Advocacy at Chiesi Global Rare Diseases" 
-          class="w-48 h-48 md:w-96 md:h-96 object-cover rounded-full filter grayscale opacity-90 mix-blend-luminosity"
-        />
-      </div>
-    </div>
   </section>
-  <section class="section-slanted-both z-0 grid grid-cols-1 gap-8 md:grid-cols-3 px-8 md:px-16 lg:px-20 pt-8 md:pt-16 pb-16 md:pb-24 bg-slate-800 justify-items-end">
-    <div class="col-span-1">
-      <h3 class="text-3xl font-normal text-slate-100 col-span-1 mb-8">
-        The program spurred the development of new treatments for <span class="font-semibold text-orange-200">previously untreatable diseases</span>.
+  <section class="section-slanted-both z-0 grid grid-cols-1 gap-8 md:grid-cols-3 px-8 md:px-16 lg:px-20 pt-8 md:pt-16 pb-16 md:pb-24 bg-slate-800">
+    <div class="col-span-2 max-w-prose justify-start">
+      <h3 class="text-2xl font-normal text-slate-100 col-span-1 mb-8">
+        The program spurred the development of new treatments for nearly <span class="italic text-yellow-400">four dozen </span> previously untreatable diseases.
       </h3>
     </div>
     
     <div class="flex flex-col md:grid md:grid-cols-2 md:align-middle gap-6 col-span-2 md:max-w-2xl justify-end">      
       <div 
-        class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full align-top" 
-        role="region"
-        aria-labelledby="small-cap-label"
-      >
-        <h3 id="small-cap-label" class="text-lg font-medium text-slate-50 align-top">Small + Start-Up Companies Supported</h3>
-        <p class="text-7xl font-bold text-slate-50 align-top" aria-label="Small Cap Companies Supported: {smallCapCompanies}">
-          {smallCapCompanies}
-        </p>
-      </div>
-
-      <div 
-        class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full" 
-        role="region"
-        aria-labelledby="rpd-designations-label"
-      >
-        <h3 id="rpd-designations-label" class="text-lg font-medium text-slate-50">RPD Designations Granted</h3>
-        <p class="text-7xl font-semibold text-slate-50 mt-auto" aria-label="Total RPD Designations: an estimated 738">
-          738<br> 
-          <span class="text-sm font-normal text-slate-50 align-top">Estimated</span>   
-        </p>
-      </div>
-
-      <div 
-        class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full" 
-        role="region"
-        aria-labelledby="prvs-awarded-label"
-      >
-        <h3 id="prvs-awarded-label" class="text-lg font-medium text-slate-50">PRVs Awarded</h3>
-        <p class="text-7xl font-bold text-slate-50 mt-auto" aria-label="Total PRVs Awarded: {totalPRVs}">
-          {totalPRVs}
-        </p>
-      </div>
-
-      <div 
-        class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full" 
-        role="region"
-        aria-labelledby="prvs-sold-label"
-      >
-        <h3 id="prvs-sold-label" class="text-lg font-medium text-slate-50">PRVs Sold</h3>
-        <p class="text-7xl font-bold text-slate-50 mt-auto" aria-label="Total PRVs Sold: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
-          {totalSold}
-        </p>
-      </div>
+      class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full" 
+      role="region"
+      aria-labelledby="prvs-awarded-label"
+    >
+    <p class="text-8xl text-slate-50" aria-label="Total Approvals: {totalPRVs}">
+      {totalPRVs}
+    </p>
+      <h3 id="prvs-awarded-label" class="text-sm font-medium text-slate-50">New Treatments <span class="italic">for</span>
+      </h3>
     </div>
+
+    <div 
+      class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full" 
+      role="region"
+      aria-labelledby="prvs-sold-label"
+      >
+      <p class="text-8xl text-slate-50" aria-label="Total PRVs Sold: {totalSold}, {Math.round(totalSold/totalPRVs*100)}% of total">
+        47
+      </p>
+      <h3 id="prvs-sold-label" class="text-sm font-medium text-slate-50">Rare Diseases</h3>
+    </div>
+    </div>
+    <div class="flex flex-col md:grid md:grid-cols-2 md:align-middle gap-6 col-span-2 md:max-w-2xl justify-end">      
+    <div 
+    class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent border-2 border-slate-100 rounded-lg h-full align-top" 
+    role="region"
+    aria-labelledby="small-cap-label"
+  >
+  <p class="text-8xl text-slate-50 align-top" aria-label="Small Cap Companies Supported: {smallCapCompanies}">
+    {smallCapCompanies}
+  </p>
+    <h3 id="small-cap-label" class="text-sm font-medium text-slate-50 align-top">Small + Start-Up Companies Supported</h3>
+  </div>
+
+  <div 
+    class="stat-card-2 flex flex-col items-start gap-4 pb-8 px-6 bg-transparent" 
+    role="region"
+    aria-labelledby="rpd-designations-label"
+  >
+  <p class="text-8xl text-slate-50 align-top" aria-label="Total RPD Designations: an estimated 738">
+    738 
+    <span class="text-xs italic align-bottom font-normal text-slate-50 align-top">Estimated</span>   
+  </p>
+    <h3 id="rpd-designations-label" class="text-sm font-medium text-slate-50">RPD Designations Granted</h3>
+  </div>
+  </div>
   </section>
 
 
@@ -524,10 +531,50 @@
 <TherapeuticAreaSection {data} onAreaClick={handleAreaClick} />
 </section>
 
-
 <section class="section-slanted-top flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 px-8 bg-stone-200">
   <MarketCapSection {data} onMarketCapClick={handleCompanySelect}/>
-<!-- </section>
+</section>
+
+<section class="bg-slate-900 min-h-96 py-20 md:py-24 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <img 
+      src="/assets/staroutline.svg" 
+      alt="" 
+      class="absolute w-96 h-96 -right-20 -top-20 transform rotate-12"
+      aria-hidden="true"
+    />
+    <img 
+      src="/assets/staroutline.svg" 
+      alt="" 
+      class="absolute w-64 h-64 left-20 bottom-10 transform -rotate-12 opacity-50"
+      aria-hidden="true"
+    />
+  </div>
+  
+  <div class="flex flex-col-reverse md:flex-row gap-8 justify-start md:justify-around px-8 md:px-16 lg:px-20 relative z-10">
+    <div class="flex flex-col gap-4 max-w-lg">
+      <h4 class="text-xs text-slate-400 mb-8">Spurring Industry Innovation</h4>
+      <p class="text-4xl text-left font-light text-slate-100 col-span-1 text-pre-wrap mb-8">
+        Children do not have the time to wait. <br> <br> We must act now to reauthorize the rare pediatric disease PRV program.
+      </p>
+      <p class="text-sm text-left font-normal text-slate-100 col-span-1 text-pre-wrap mb-8">
+        <span class="font-semibold text-lg text-blue-200">Stuart Siedman</span> <br>
+        Vice President, Patient Advocacy, Chiesi Global Rare Diseases
+      </p>
+    </div>
+    
+    <div class="flex-shrink-0 relative">
+      <div class="absolute inset-0 mix-blend-multiply z-10 rounded-sm"></div>
+      <img 
+        src="/profiles/StuartSiedmanChiesi.jpg" 
+        alt="Stuart Siedman, Vice President of Patient Advocacy at Chiesi Global Rare Diseases" 
+        class="w-48 h-48 md:w-96 md:h-96 object-cover rounded-full filter grayscale opacity-90 mix-blend-luminosity"
+      />
+    </div>
+  </div>
+
+
+  <!-- </section>
 
 <section class="section-slanted-both flex flex-col md:flex-row gap-4 py-12 md:py-16 lg:py-24 bg-slate-100">
 <EconomicsSection {data} />

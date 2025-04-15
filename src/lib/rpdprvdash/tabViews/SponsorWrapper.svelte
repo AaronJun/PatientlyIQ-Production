@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
   import { fade, fly, slide } from 'svelte/transition';
-  import { ChevronRight, ChevronLeft } from 'carbon-icons-svelte';
+  import { ChevronRight, ChevronLeft, Download } from 'carbon-icons-svelte';
   
   import RPDPRVHorizontalTimeline from '../RPDPRVTimeline.svelte';
   import RpdprvCompanyTree from '../RadialComponents/RPDPRVCompanyTree.svelte';
@@ -51,6 +51,10 @@
   let currentArea: string | null = null;
   let areaMetrics: any | null = null;
   let isCanvasActive = false; // Track if user is interacting with canvas
+  let showIntroduction = false; // Add showIntroduction state variable
+  
+  // Add a reference to the company tree component
+  let companyTreeComponent: RpdprvCompanyTree;
   
   // Add a change detection mechanism
   let previousFilteredDataLength = 0;
@@ -401,6 +405,20 @@
     clearTimeout(autoCollapseTimeout);
     autoCollapseTimeout = null;
   }
+
+  // Export the SVG visualization
+  function handleExportSVG() {
+    if (companyTreeComponent && companyTreeComponent.exportAsSVG) {
+      // Generate filename based on year and current date
+      const dateStr = new Date().toISOString().split('T')[0];
+      const filename = `rpd-prv-visualization-${selectedYear}-${dateStr}`;
+      
+      // Call the export function
+      companyTreeComponent.exportAsSVG(filename);
+    } else {
+      console.error("Export function not available");
+    }
+  }
 </script>
 
 <svelte:head>
@@ -434,12 +452,30 @@
      
      
   <div class="w-full h-[90vh] md:mt-16 items-center relative">
-    <div class="timeline-container fixed w-full bg-slate-100 transition-all duration-300">
-      <RPDPRVHorizontalTimeline 
-        data={data}
-        selectedYear={selectedYear}
-        onYearSelect={onYearSelect}
-      />
+    <div class="top-bar-wrapper py-2 border-b border-gray-200 bg-white z-10 shadow-sm">
+      <div class="flex justify-between items-center max-w-[1400px] mx-auto px-4">
+        <!-- Left side with timeline -->
+        <div class="flex-grow">
+          <RPDPRVHorizontalTimeline 
+            data={data}
+            {selectedYear}
+            {onYearSelect}
+          />
+        </div>
+        
+        <!-- Right side with controls -->
+        <div class="flex items-center gap-2">
+          <!-- Export SVG button -->
+          <button 
+            class="export-button flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md border border-blue-200 text-sm transition-colors"
+            on:click={handleExportSVG}
+            title="Export visualization as SVG"
+          >
+            <Download size={16} />
+            <span class={isMobileView ? "hidden" : ""}>Export SVG</span>
+          </button>
+        </div>
+      </div>
     </div>
     
     {#if isMobileView}
@@ -459,6 +495,7 @@
     >
       {#if mainGroup}
         <RpdprvCompanyTree 
+          bind:this={companyTreeComponent}
           data={filteredData}
           isAllYearView={selectedYear === "All"}
           onCompanyHover={handleCompanyHover}

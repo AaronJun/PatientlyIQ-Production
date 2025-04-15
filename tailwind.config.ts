@@ -83,6 +83,10 @@ const config: Config = {
                 '6': '6px',
                 '8': '8px',
             },
+            borderColor: theme => ({
+                ...theme('colors'),
+                DEFAULT: theme('colors.gray.200', 'currentColor'),
+            }),
             fontFamily: {
                 sans: ['"IBM Plex Sans"', ...fontFamily.sans],
                 mono: ['"IBM Plex Mono"', ...fontFamily.mono],

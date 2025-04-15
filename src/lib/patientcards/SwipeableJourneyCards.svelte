@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount, onDestroy, tick } from 'svelte';
     import * as d3 from 'd3';
     import { fade } from 'svelte/transition';
     import { assets } from '$app/paths';
@@ -25,32 +25,61 @@
     type ImageStatus = 'loading' | 'loaded' | 'error';
     let imageStatus: Record<string, ImageStatus> = {};
 
+    // Memoize image paths
+    const imagePathCache = new Map<string, string>();
+
     /**
-     * Constructs the proper image path
-     * @param imgPath - The source image path
-     * @returns A valid image path
+     * Constructs the proper image path with caching
      */
     function getImagePath(imgPath: string | undefined): string {
         if (!imgPath) return '/api/placeholder/128/128';
         
-        if (imgPath.startsWith('http')) return imgPath;
-        
-        try {
-            const cleanPath = imgPath.startsWith('/') ? imgPath : `/${imgPath}`;
-            return `${assets}${cleanPath}`;
-        } catch (error) {
-            console.error('Error processing image path:', error);
-            return '/api/placeholder/128/128';
+        if (imagePathCache.has(imgPath)) {
+            return imagePathCache.get(imgPath)!;
         }
+        
+        let path: string;
+        if (imgPath.startsWith('http')) {
+            path = imgPath;
+        } else {
+            try {
+                const cleanPath = imgPath.startsWith('/') ? imgPath : `/${imgPath}`;
+                path = `${assets}${cleanPath}`;
+            } catch (error) {
+                console.error('Error processing image path:', error);
+                path = '/api/placeholder/128/128';
+            }
+        }
+        
+        imagePathCache.set(imgPath, path);
+        return path;
     }
 
     // Handle type safety for accessing patient data
+    const patientDataCache = new Map<string, any>();
     function getPatientData(disease: string) {
-        // Type guard to check if the disease exists in patientData
+        if (patientDataCache.has(disease)) {
+            return patientDataCache.get(disease);
+        }
+        
         if (disease in patientData.diseases) {
-            return patientData.diseases[disease as keyof typeof patientData.diseases];
+            const data = patientData.diseases[disease as keyof typeof patientData.diseases];
+            patientDataCache.set(disease, data);
+            return data;
         }
         return null;
+    }
+
+    // Debounce function for performance optimization
+    function debounce<T extends (...args: any[]) => void>(
+        fn: T,
+        delay: number
+    ): (...args: Parameters<T>) => void {
+        let timeoutId: ReturnType<typeof setTimeout>;
+        return (...args: Parameters<T>) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn(...args), delay);
+        };
     }
 
     $: {
@@ -87,43 +116,16 @@
                     
                     // Reset image statuses
                     imageStatus = {};
+                    
+                    // Set initialized to start Svelte rendering
+                    isInitialized = true;
                 }
             }
         }
     }
 
-    function handleNext(): void {
-        if (!showGrid && active === expandedCards.length - 1) {
-            showGrid = true;
-            return;
-        }
-        if (!showGrid && expandedCards.length) {
-            active = (active + 1) % expandedCards.length;
-            updateCards();
-        }
-    }
-
-    function handlePrev(): void {
-        if (showGrid) {
-            active = expandedCards.length - 1;
-            showGrid = false;
-            setTimeout(() => {
-                initializeCards();
-                updateCards();
-            }, 300);
-            return;
-        }
-        if (!showGrid && expandedCards.length) {
-            active = (active - 1 + expandedCards.length) % expandedCards.length;
-            updateCards();
-        }
-    }
-
-    function handleTouchStart(e: TouchEvent): void {
-        startX = e.touches[0].clientX;
-    }
-
-    function handleTouchMove(e: TouchEvent): void {
+    // Throttle touch events
+    const handleTouchMove = debounce((e: TouchEvent): void => {
         e.preventDefault();
         if (startX === null) return;
         
@@ -135,10 +137,35 @@
             else handlePrev();
             startX = null;
         }
+    }, 16); // ~60fps
+
+    function handleTouchStart(e: TouchEvent): void {
+        startX = e.touches[0].clientX;
     }
 
     function handleTouchEnd(): void {
         startX = null;
+    }
+
+    function handleNext(): void {
+        if (!showGrid && active === expandedCards.length - 1) {
+            showGrid = true;
+            return;
+        }
+        if (!showGrid && expandedCards.length) {
+            active = (active + 1) % expandedCards.length;
+        }
+    }
+
+    function handlePrev(): void {
+        if (showGrid) {
+            active = expandedCards.length - 1;
+            showGrid = false;
+            return;
+        }
+        if (!showGrid && expandedCards.length) {
+            active = (active - 1 + expandedCards.length) % expandedCards.length;
+        }
     }
 
     /**
@@ -169,299 +196,192 @@
         });
     }
 
-    function createVisualizationCard(card: any): HTMLElement {
-        const chartContainer = document.createElement('div');
-        chartContainer.className = 'flex flex-col gap-6 mt-6';
-
-        const chartsWrapper = document.createElement('div');
-        chartsWrapper.className = 'grid grid-cols-3 lg:grid-cols-3 gap-6 mb-8';
-
-        if (card.quadrantData) {
-            const quadrantContainer = document.createElement('div');
-            quadrantContainer.className = 'bg-white rounded-lg shadow-sm p-4';
-            
-            const quadrantTitle = document.createElement('h3');
-            quadrantTitle.className = 'text-[9.25px] font-mono text-slate-600 mb-2';
-            quadrantTitle.textContent = 'Patient Journey Progress';
-            
-            new QuadrantChart({
-                target: quadrantContainer,
-                props: {
-                    data: card.quadrantData,
-                    width: 250,
-                    height: 250
-                }
-            });
-            
-            quadrantContainer.insertBefore(quadrantTitle, quadrantContainer.firstChild);
-            chartsWrapper.appendChild(quadrantContainer);
-        }
-
-        if (card.topics) {
-            const topicsContainer = document.createElement('div');
-            topicsContainer.className = 'bg-white rounded-lg shadow-sm p-4';
-            
-            const topicsTitle = document.createElement('h3');
-            topicsTitle.className = 'text-[9.25px] font-mono text-slate-600 mb-2';
-            topicsTitle.textContent = 'Most Frequent Discussion Topics';
-            
-            new TopicBarChart({
-                target: topicsContainer,
-                props: {
-                    data: card.topics,
-                    width: 250,
-                    height: 200
-                }
-            });
-            
-            topicsContainer.insertBefore(topicsTitle, topicsContainer.firstChild);
-            chartsWrapper.appendChild(topicsContainer);
-        }
-
-        chartContainer.appendChild(chartsWrapper);
-        return chartContainer;
-    }
-
-    function createCardContent(d: any): HTMLElement | string {
-        if (d.isIntro) {
-            const imageId = `img-${d.id}`;
-            
-            // Initialize image status if not already set
-            if (!imageStatus[imageId]) {
-                imageStatus[imageId] = 'loading';
-                imageStatus = {...imageStatus}; // Trigger reactivity
-            }
-
-            const imgSrc = getImagePath(d.img);
-            
-            return `
-                <div class="h-full w-full flex flex-col items-center justify-top bg-gradient-to-b from-orange-50 to-white pt-12 px-8 pb-6">
-                    <div class="cardcircle flex flex-col items-center gap-8">
-                        <div class="relative w-24 sm:w-32 h-24 sm:h-32 mb-4">
-                            ${d.img ? `
-                                <div class="image-loading-skeleton absolute inset-0 rounded-full bg-gray-200 animate-pulse ${imageStatus[imageId] === 'loading' ? '' : 'hidden'}"></div>
-                                <img 
-                                    src="${imgSrc}"
-                                    alt="${d.name}"
-                                    class="rounded-full object-cover w-full h-full shadow-lg border-2 border-orange-200 transition-opacity duration-300 ${imageStatus[imageId] === 'loaded' ? 'opacity-100' : 'opacity-0'} ${imageStatus[imageId] === 'error' ? 'error-fallback' : ''}"
-                                    id="${imageId}"
-                                    onerror="window.dispatchEvent(new CustomEvent('imgError', {detail: this.id}));"
-                                    onload="window.dispatchEvent(new CustomEvent('imgLoaded', {detail: this.id}));"
-                                    loading="eager"
-                                />
-                            ` : `
-                                <div class="w-full h-full rounded-full bg-orange-100 flex items-center justify-center">
-                                    <span class="text-2xl text-orange-500">${d.name[0]}</span>
-                                </div>
-                            `}
-                        </div>
-                        
-                        <div class="text-center">
-                            <h2 class="text-xl sm:text-2xl font-serif text-slate-800">
-                                ${d.name}
-                            </h2>
-                            
-                            <p class="text-base sm:text-lg mx-auto w-11/12 sm:w-5/6 text-pretty text-slate-600 font-serif leading-normal mt-4 sm:mt-6">
-                                ${d.bio}
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mb-6 sm:mb-8">
-                            ${[d.age, d.disease, d.persona].map(tag => `
-                                <span class="px-3 py-1.5 bg-orange-200 rounded-full text-xs font-semibold text-slate-900">
-                                    ${tag}
-                                </span>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        if (d.isQuote) {
-            return `
-                <div class="h-full mx-auto px-8 sm:px-24 pt-8 sm:pt-12 pb-8 sm:pb-10 flex flex-col items-center justify-center">
-                    <div class="mb-6 sm:mb-8">
-                        <p class="text-3xl sm:text-4xl font-serif text-orange-50">"</p>
-                    </div>
-                    <p class="text-xl sm:text-2xl font-serif text-orange-50 text-center leading-normal">
-                        ${d.quote}
-                    </p>
-                    <p class="text-3xl sm:text-4xl text-orange-50 mt-8 sm:mt-12 rotate-180 font-serif">"</p>
-                </div>
-            `;
-        }
-
-        const container = document.createElement('div');
-        container.className = 'h-full w-full px-4 sm:px-8 pt-6 sm:pt-8 pb-8 sm:pb-10 flex flex-col';
-        
-        if (d.type === "Bio" && !d.isIntro && !d.isQuote) {
-            container.innerHTML = `
-                <div class="w-full flex-col">
-                    <div class="w-full sm:w-5/6">
-                        <h3 class="text-2xl sm:text-xl font-medium text-[#FF4A4A] mb-2">
-                            ${d.context}
-                        </h3>
-                        <p class="text-lg sm:text-lg prose text-pretty font-serif text-slate-800 mb-12">
-                            ${d.contextDescription}
-                        </p>
-                    </div>
-                    
-                    <div class="flex flex-col space-evenly gap-6 sm:gap-8 mt-4 sm:mt-6 pb-2">
-                        <div class="flex flex-col gap-4">
-                            <h3 class="px-2 py-1.5 max-w-fit bg-green-200 rounded-full text-xs font-semibold text-slate-900">Goals</h3>
-                            <p class="text-sm text-slate-800">${d.goals || 'Not specified'}</p>
-                        </div>
-                        <div class="bio-item basis-1/3 flex flex-col gap-4">
-                            <h3 class="px-3 py-1.5 max-w-fit bg-red-200 rounded-full text-xs font-semibold text-slate-900">Strengths</h3>
-                            <p class="text-sm text-slate-800">${d.strengths || 'Not specified'}</p>
-                        </div>
-                        <div class="bio-item basis-1/3 flex flex-col gap-4">
-                            <h3 class="px-3 py-1.5 max-w-fit bg-yellow-200 rounded-full text-xs font-semibold text-slate-900">Anxieties</h3>
-                            <p class="text-sm text-slate-800">${d.anxieties || 'Not specified'}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="w-full mb-4">
-                    <h3 class="text-2xl sm:text-xl font-medium capitalize font-bold text-[#FF4A4A] mb-2">
-                        ${d.context}
-                    </h3>
-                    <p class="text-base sm:text-base prose text-pretty font-serif text-slate-700 mb-2">
-                        ${d.contextDescription}
-                    </p>
-                </div>
-            `;
-        }
-
-        if (d.sentiment) {
-            const gaugeContainer = document.createElement('div');
-            gaugeContainer.className = 'sentiment-gauge mb-4';
-            container.appendChild(gaugeContainer);
-
-            setTimeout(() => {
-                new SentimentGauge({
-                    target: gaugeContainer,
-                    props: {
-                        value: d.sentiment,
-                        label: "Stage Sentiment",
-                        size: 100
-                    }
-                });
-            }, 0);
-        }
-
-        if (d.quadrantData || d.topics) {
-            container.appendChild(createVisualizationCard(d));
-        }
-
-        return container;
-    }
-
-    function updateCards(): void {
-        if (!expandedCards.length || !isVisible) return;
-        
-        const container = d3.select(containerRef);
-        
-        container.selectAll('.journey-card')
-            .data(expandedCards, (d: any, i: number) => `${d.type}-${d.isQuote}-${i}`)
-            .join('div')
-            .attr('class', 'journey-card absolute inset-0 rounded-xl shadow-xl overflow-hidden')
-            .style('z-index', (d: any, i: number) => i === active ? 99 : expandedCards.length + 2 - i)
-            .style('background-color', (d: any) => d.isQuote ? '#FF4A4A' : 'white')
-            .transition()
-            .duration(600)
-            .ease(d3.easeQuadInOut)
-            .style('transform', (d: any, i: number) => {
-                const translateY = i === active ? 0 : '12.25px';
-                const translateZ = i === active ? 0 : '-10px';
-                const scale = i === active ? 1 : 0.95;
-                const rotate = i === active ? 0 : Math.floor(Math.random() * 21) - 10;
-                return `translate3d(0, ${translateY}, ${translateZ}) scale(${scale}) rotate(${rotate}deg)`;
-            });
-    }
-
-    function initializeCards(): void {
-        if (!expandedCards.length || !isVisible) return;
-        
-        const container = d3.select(containerRef);
-        
-        container.selectAll('.journey-card')
-            .data(expandedCards, (d: any, i: number) => `${d.type}-${d.isQuote}-${i}`)
-            .join('div')
-            .attr('class', 'journey-card pt-12 absolute inset-0 rounded-2xl shadow-xl overflow-hidden')
-            .style('background-color', (d: any) => d.isQuote ? '#FF4A4A' : 'white')
-            .each(function(d: any) {
-                const content = createCardContent(d);
-                if (content instanceof Element) {
-                    const element = this as HTMLElement;
-                    element.innerHTML = '';
-                    element.appendChild(content);
-                } else {
-                    const element = this as HTMLElement;
-                    element.innerHTML = content;
-                }
-            });
-
-        updateCards();
-        isInitialized = true;
-    }
-
     // Handle visibility changes
     $: if (isVisible && selectedPatient && !isInitialized) {
         preloadImages();
-        initializeCards();
+        isInitialized = true; // Mark as initialized to trigger Svelte rendering
     }
 
     onMount(() => {
         if (isVisible && selectedPatient) {
             preloadImages();
-            initializeCards();
         }
         
-        const handleKeydown = (e: KeyboardEvent): void => {
+        const handleKeydown = debounce((e: KeyboardEvent): void => {
             if (e.key === 'ArrowLeft') handlePrev();
             if (e.key === 'ArrowRight') handleNext();
-        };
-
-        const handleImgLoaded = (e: CustomEvent): void => {
-            updateImageStatus(e.detail, 'loaded');
-        };
-
-        const handleImgError = (e: CustomEvent): void => {
-            updateImageStatus(e.detail, 'error');
-        };
+        }, 100);
         
         window.addEventListener('keydown', handleKeydown);
-        window.addEventListener('imgLoaded', handleImgLoaded as EventListener);
-        window.addEventListener('imgError', handleImgError as EventListener);
         
         return () => {
             window.removeEventListener('keydown', handleKeydown);
-            window.removeEventListener('imgLoaded', handleImgLoaded as EventListener);
-            window.removeEventListener('imgError', handleImgError as EventListener);
         };
     });
 </script>
 
-<div class="w-full max-w-[900px] mx-auto px-4" 
+<div class="w-full md:max-w-2xl mx-auto px-4" 
      in:fade={{ duration: 800, delay: 200 }}>
 {#if selectedPatient}
     {#if !showGrid}
         <div class="flex justify-center">
             <div 
                 bind:this={containerRef}
-                class="relative h-[40rem] sm:h-[42.25rem] w-full cursor-grab active:cursor-grabbing"
+                class="relative h-[40rem] w-full cursor-grab active:cursor-grabbing"
                 on:touchstart={handleTouchStart}
                 on:touchmove={handleTouchMove}
                 on:touchend={handleTouchEnd}
             >
-                <!-- Cards will be inserted here by D3 -->
+                <!-- Cards rendered with D3 will be replaced with Svelte components -->
+                {#each expandedCards as card, i}
+                    <div 
+                        class="journey-card pb-4 pt-8 absolute inset-0 rounded-2xl shadow-xl overflow-hidden"
+                        style="background-color: {card.isQuote ? '#FF4A4A' : 'white'}; 
+                               z-index: {i === active ? 99 : expandedCards.length + 2 - i};
+                               transform: translate3d(0, {i === active ? 0 : '12.25px'}, {i === active ? 0 : '-10px'}) 
+                                          scale({i === active ? 1 : 0.95}) 
+                                          rotate({i === active ? 0 : Math.floor(Math.random() * 21) - 10}deg);"
+                    >
+                        {#if card.isIntro}
+                            <div class="h-full w-full flex flex-col items-center justify-top px-8 pb-6">
+                                <div class="cardcircle flex flex-col items-center gap-8">
+                                    <div class="relative w-24 sm:w-32 h-24 sm:h-32 mb-4">
+                                        {#if card.img}
+                                            {@const imageId = `img-${card.id}`}
+                                            {@const imgSrc = getImagePath(card.img)}
+                                            
+                                            <div class="image-loading-skeleton absolute inset-0 rounded-full bg-gray-200 animate-pulse" 
+                                                class:hidden={imageStatus[imageId] === 'loaded' || imageStatus[imageId] === 'error'}>
+                                            </div>
+                                            
+                                            <img 
+                                                src={imgSrc}
+                                                alt={card.name}
+                                                class="rounded-full object-cover w-full h-full shadow-lg border-2 border-slate-200 transition-opacity duration-300"
+                                                class:opacity-100={imageStatus[imageId] === 'loaded'}
+                                                class:opacity-0={imageStatus[imageId] !== 'loaded'}
+                                                class:error-fallback={imageStatus[imageId] === 'error'}
+                                                id={imageId}
+                                                on:error={() => updateImageStatus(imageId, 'error')}
+                                                on:load={() => updateImageStatus(imageId, 'loaded')}
+                                                loading="eager"
+                                            />
+                                        {:else}
+                                            <div class="w-full h-full rounded-full bg-orange-100 flex items-center justify-center">
+                                                <span class="text-2xl text-orange-500">{card.name[0]}</span>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <h2 class="text-xl sm:text-2xl font-serif text-slate-800">
+                                            {card.name}
+                                        </h2>
+                                        
+                                        <p class="text-base sm:text-lg mx-auto w-11/12 sm:w-5/6 text-pretty text-slate-600 font-serif leading-normal mt-4 sm:mt-6">
+                                            {card.bio}
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2 mb-6 sm:mb-8">
+                                        {#each [card.age, card.disease, card.persona] as tag}
+                                            <span class="px-3 py-1.5 bg-orange-200 rounded-full text-xs font-semibold text-slate-900">
+                                                {tag}
+                                            </span>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </div>
+                        {:else if card.isQuote}
+                            <div class="h-full mx-auto px-8 pb-8 sm:pb-10 flex flex-col items-center justify-center">
+                                <div class="mb-6">
+                                    <p class="text-3xl font-serif text-orange-50">"</p>
+                                </div>
+                                <p class="text-xl sm:text-2xl font-serif text-orange-50 text-center leading-normal">
+                                    {card.quote}
+                                </p>
+                                <p class="text-3xl sm:text-4xl text-orange-50 mt-8 sm:mt-12 rotate-180 font-serif">"</p>
+                            </div>
+                        {:else if card.type === "Bio" && !card.isIntro && !card.isQuote}
+                            <div class="h-full w-full px-8 pb-8 sm:pb-10 flex flex-col">
+                                <div class="max-w-prose flex flex-col">
+                                    <div class="w-full">
+                                        <h3 class="text-lg md:text-xl font-medium text-[#FF4A4A]">
+                                            {card.context}
+                                        </h3>
+                                        <p class="mt-4 max-w-prose text-pretty font-serif text-slate-800">
+                                            {card.contextDescription}
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="flex flex-col space-evenly gap-6 pb-2">
+                                    <div class="bio-item basis-1/3 mt-6 flex flex-col gap-4">
+                                     <h3 class="px-3 py-1.5 max-w-fit bg-blue-200 rounded-full text-xs font-semibold text-slate-900">Goals</h3>
+                                            <p class="text-sm text-slate-800">{card.goals || 'Not specified'}</p>
+                                        </div>
+                                        <div class="bio-item basis-1/3 flex flex-col gap-4">
+                                            <h3 class="px-3 py-1.5 max-w-fit bg-emerald-200 rounded-full text-xs font-semibold text-slate-900">Strengths</h3>
+                                            <p class="text-sm text-slate-800">{card.strengths || 'Not specified'}</p>
+                                        </div>
+                                        <div class="bio-item basis-1/3 flex flex-col gap-4">
+                                            <h3 class="px-3 py-1.5 max-w-fit bg-yellow-200 rounded-full text-xs font-semibold text-slate-900">Anxieties</h3>
+                                            <p class="text-sm text-slate-800">{card.anxieties || 'Not specified'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="h-full w-full px-8 pb-8 sm:pb-10 flex flex-col">
+                                <div class="w-full mb-4">
+                                {#if card.sentiment}
+                                    <div class="sentiment-gauge">
+                                        <SentimentGauge
+                                            value={card.sentiment}
+                                            label="Stage Sentiment"
+                                            size={100}
+                                        />
+                                    </div>
+                                {/if}
+                                
+                                    <h3 class="text-lg md:text-xl font-medium capitalize font-bold text-[#FF4A4A] mb-2">
+                                        {card.context}
+                                    </h3>
+                                    <p class="text-base sm:text-base prose text-pretty font-serif text-slate-700 mb-2">
+                                        {card.contextDescription}
+                                    </p>
+                                </div>
+                                
+                                {#if card.quadrantData || card.topics}
+                                    <div class="flex flex-col gap-6 mt-6">
+                                        <div class="grid grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
+                                            {#if card.quadrantData}
+                                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                                    <h3 class="text-xs font-mono text-slate-600 mb-2">Patient Journey Progress</h3>
+                                                    <QuadrantChart
+                                                        data={card.quadrantData}
+                                         
+                                                    />
+                                                </div>
+                                            {/if}
+                                            
+                                            {#if card.topics}
+                                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                                    <h3 class="text-xs font-mono text-slate-600 mb-2">Most Frequent Discussion Topics</h3>
+                                                    <TopicBarChart
+                                                        data={card.topics}
+                                                    />
+                                                </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+                    </div>
+                {/each}
             </div>
         </div>
 
-        <div class="flex place-content-center mx-auto justify-between max-w-xl gap-4 mt-28 sm:mt-24 px-4 md:px-0">
+        <div class="flex place-content-center mx-auto justify-between max-w-prose gap-4 mt-28 sm:mt-24 px-4 md:px-0">
             <button
                 on:click={handlePrev}
                 class="h-10 w-10 rounded-full bg-orange-600 dark:bg-neutral-800 dark:hover:bg-orange-500 flex items-center justify-center group hover:bg-orange-500 hover:text-white transition-all duration-300"
@@ -523,18 +443,14 @@
                     on:click={() => {
                         active = i;
                         showGrid = false;
-                        setTimeout(() => {
-                            initializeCards();
-                            updateCards();
-                        }, 300);
                     }}
                     class="transform transition-transform hover:scale-105 focus:outline-none"
                 >
                     <div 
-                        class="h-[12.25rem] w-full rounded-lg shadow-md overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300"
+                        class="w-full rounded-lg shadow-md overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300"
                     >
                         {#if card.isIntro}
-                            <div class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-orange-50 to-white py-2 px-2">
+                            <div class="h-full w-full flex flex-col items-center justify-center px-2">
                                 <div class="relative w-12 h-12 mb-4">
                                     {#if card.img}
                                         {@const imageId = `img-${card.id}`}
@@ -548,13 +464,7 @@
                                             src={imgSrc}
                                             alt={card.name}
                                             id={imageId}
-                                            class="rounded-full object-cover w-full h-full shadow-lg border-2 border-orange-200 transition-opacity duration-300"
-                                            class:opacity-100={imageStatus[imageId] === 'loaded'}
-                                            class:opacity-0={imageStatus[imageId] !== 'loaded'}
-                                            class:error-fallback={imageStatus[imageId] === 'error'}
-                                            on:load={() => updateImageStatus(imageId, 'loaded')}
-                                            on:error={() => updateImageStatus(imageId, 'error')}
-                                            loading="eager"
+                                            class="rounded-full object-cover w-full h-full shadow-lg border-2 border-slate-200 transition-opacity duration-300"
                                         />
                                     {:else}
                                         <div class="w-full h-full rounded-full bg-orange-100 flex items-center justify-center">
@@ -562,8 +472,8 @@
                                         </div>
                                     {/if}
                                 </div>
-                                <h3 class="text-base font-serif text-slate-800">{card.name}</h3>
-                                <p class="text-[11px] text-slate-800 text-center line-clamp-2">{card.bio}</p>
+                                <h3 class="text-sm font-serif text-slate-800">{card.name}</h3>
+                                <p class="text-sm text-slate-800 text-center line-clamp-2">{card.bio}</p>
                             </div>
                         {:else if card.isQuote}
                             <div class="h-full w-full flex flex-col items-center justify-center bg-[#FF4A4A] p-4">
@@ -575,15 +485,15 @@
                                 </p>
                             </div>
                         {:else}
-                            <div class="h-full w-full flex flex-col p-6">
-                                <h3 class="text-[9.25px] capitalize font-bold text-[#FF4A4A] mb-2">
+                            <div class="h-full w-full flex flex-col px-8">
+                                <h3 class="text-sm capitalize font-bold text-[#FF4A4A] mb-2">
                                     {card.context}
                                 </h3>
-                                <p class="text-[11px] text-slate-800 line-clamp-2">
+                                <p class="text-sm text-slate-800 line-clamp-2">
                                     {card.contextDescription}
                                 </p>
                                 {#if card.sentiment}
-                                    <div class="mt-auto mx-auto mt-2 pt-2">
+                                    <div class="mt-auto mx-auto pt-2">
                                         <SentimentGauge 
                                             value={card.sentiment}
                                             label="Stage Sentiment"
@@ -610,13 +520,13 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
-    border-top: 1px solid #ff1155;
 }
 
 .journey-card {
     backface-visibility: hidden;
     transform-style: preserve-3d;
     border: 1px solid #ff1155;
+    will-change: transform;
 }
 
 .image-loading-skeleton {
@@ -643,38 +553,4 @@ img {
     -webkit-backface-visibility: hidden;
 }
 
-@media (max-width: 640px) {
-    img {
-        width: 100%;
-        height: auto;
-    }
-}
-
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.line-clamp-4 {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.line-clamp-6 {
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
 </style>

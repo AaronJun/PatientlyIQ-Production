@@ -7,9 +7,8 @@
 
 </script>
 
-<div class="grid items-center place-content-center pt-8">
-    <div class="min-w-[100vw] max-w-4xl py-12 bg-slate-800 mx-auto px-4 place-content-center">
-
+<div class="grid items-center place-content-center">
+    <div class="min-w-[100vw] pt-16 pb-12 bg-slate-800 mx-auto px-4 place-content-center">
         <img src={PIQLogo} alt="PIQ Logo" class="h-8 w-full" />
     
         <div class="text-center py-16">
@@ -20,7 +19,7 @@
             </div>
             </div>
 
-            <div class="max-w-prose mx-auto mt-16">
+            <div class="max-w-prose justify-center mx-auto  px-8 mt-8">
             <h3 class="section-header text-lg font-semibold place-content-center mx-auto text-slate-500 mb-6">The Paradox of Knowledge</h3>   
             <p class="text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
                 We often talk about medical breakthroughs and genetic testing as unalloyed goods – more knowledge means better outcomes. <br><br> Or so we assume. <br> <br>
@@ -28,17 +27,13 @@
                 <br><br></p>
                 </div>
                 <ALZPatientQuoteCards />
-                <div class="max-w-prose mx-auto mt-16">
+                <div class="max-w-prose mx-auto px-8 mt-8">
                <p class="prose text-left place-content-center text-lg text-slate-600 font-serif mt-8 mb-12">
-        
                 Their stories, chronicled through online communities and support groups, show us how medical advances are outpacing our systems for handling their psychological and social implications. Understanding this disconnect isn't just about improving patient care – it's about rethinking how we help people navigate the sometimes painful space between genetic knowledge and intervention.                          
             </div>
         </div>
 <style>
     .section-header {
         font-family: 'IBM Plex Sans', sans-serif;
-        border-top: .5px solid #102014;
-        padding-top: 4rem;
-        margin-top: 8rem;
     }
 </style>

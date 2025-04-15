@@ -19,7 +19,7 @@
     // Create a local array to hold all quotes
     let quotes: RPDCompanyQuote[] = [];
     
-    // Track expanded state for each quote
+    // Track expanded state for ea   quote
     let expandedStates: boolean[] = [];
 
     // If we have just one quote, duplicate it to make carousel work better
@@ -53,15 +53,16 @@
     }
 </script>
 
-<div class="quote-carousel-container flex flex-col lg:flex-row gap-8 lg:gap-16 h-full py-12">
-    <h2 class="text-3xl font-medium text-slate-700 mb-4 lg:w-1/3 text-pretty lg:pr-8">
-        Perspectives from the Industry
-    </h2> 
+<div class="flex flex-col md:flex-row align-top justify-evenly">
+<h2 class="text-xl font-medium text-slate-700 lg:w-1/3 text-pretty">
+    Industry Perspectives
+</h2> 
+<div class="quote-carousel-container flex flex-col gap-8 lg:gap-16 h-full align-top ">
     
     {#if quotes.length > 0}
         <CardCarousel cards={quotes} >
             <svelte:fragment let:card let:index>
-                <div class="card h-full">
+                <div class="quote-card flex flex-col justify-between w-full md:max-w-prose h-full align-top mb-2 mr-2 p-4 bg-slate-100/50">
                     <QuoteCard 
                         quote={card} 
                         isExpanded={expandedStates[index]} 
@@ -76,6 +77,7 @@
         </div>
     {/if}
 </div>
+</div>
 
 <style>
     .loading-container {
@@ -84,6 +86,9 @@
         align-items: center;
         height: 200px;
         color: #6b7280;
+    }
+
+    .quote-card {
     }
     
 </style> 

@@ -1,0 +1,9 @@
+{
+    "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
+    "workbench.preferredDarkColorTheme": "Monokai Pro (Filter Spectrum)",
+    "workbench.preferredHighContrastLightColorTheme": "Monokai Pro Light",
+    "notebook.defaultFormatter": "vscode.html-language-features",
+    "editor.defaultFoldingRangeProvider": null,
+    "workbench.preferredLightColorTheme": "Monokai Pro (Filter Spectrum)",
+    "workbench.iconTheme": "Monokai Pro Icons"
+}

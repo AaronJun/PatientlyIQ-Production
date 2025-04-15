@@ -2,17 +2,13 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import "carbon-components-svelte/css/all.css";  
-    import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
-    import NegativeSentimentChart from './NegativeSentimentChart.svelte';
-    import NegativeSentimetDriversChart from './NegativeSentimentDriversChart.svelte';
-    import PatientJourneyCards from '$lib/patientcards/ALZPatientJourneyCards.svelte';
+
     import ScrollProgress from './ScrollProgress.svelte';
-    import AlzStoryCardXlContainer from './ALZStoryCardXLContainer.svelte';
 
     import ALZIntroduction from './ALZIntroduction.svelte';
     import AlzIntroductionS1P1 from './ALZIntroductionS1P1.svelte';
     import AlzIntroductionS1P2 from './ALZIntroductionS1P2.svelte';
-    import AlzIntroductionS1P3 from './ALZIntroductionS1P3.svelte';
+
     import AlzIntroductionS2P1 from './ALZIntroductionS2P1.svelte';
     import AlzIntroductionS3P1 from './ALZIntroductionS3P1.svelte';
     import AlzIntroductionS2P2 from './ALZIntroductionS2P2.svelte';
@@ -54,7 +50,7 @@
 
 <svelte:options immutable={false} />
 
-<div class="flex-1 place-content-center bg-slate-50 pt-12">
+<div class="flex-1 place-content-center bg-slate-50">
     <!-- Sidebar -->
     <!-- Main Content -->
 
@@ -63,7 +59,7 @@
 
     <div class="relative max-w-full mx-auto place-content-center">
 
-    <div id="1. Introduction" class="flex-1 place-content-center pt-4 col-span-4">
+    <div id="1. Introduction" class="flex-1 place-content-center col-span-4">
         <ALZIntroduction />
     </div>
     <div class="flex-1 place-content-center pt-4 col-span-8">        

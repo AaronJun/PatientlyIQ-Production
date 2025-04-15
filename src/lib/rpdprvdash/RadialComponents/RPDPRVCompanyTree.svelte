@@ -87,6 +87,100 @@
         uniqueAreas: number;
     }
 
+    // Export the SVG visualization
+    export function exportAsSVG(filename: string = 'rare-disease-visualization') {
+        if (!mainGroup) {
+            console.error("mainGroup is not available for export");
+            return null;
+        }
+
+        try {
+            // Get the SVG element
+            const svgElement = mainGroup.node()?.ownerSVGElement;
+            if (!svgElement) {
+                console.error("Could not find SVG element for export");
+                return null;
+            }
+
+            // Create a clone of the SVG to avoid modifying the original
+            const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+            
+            // Set viewport and size
+            svgClone.setAttribute('width', width.toString());
+            svgClone.setAttribute('height', height.toString());
+            svgClone.setAttribute('viewBox', `${-width/2} ${-height/2} ${width} ${height}`);
+            
+            // Find the transform of the main group and apply it directly to the clone
+            const mainGroupClone = svgClone.querySelector('g');
+            if (mainGroupClone) {
+                // Extract current transform if available
+                const currentTransform = mainGroup.attr('transform');
+                if (currentTransform) {
+                    mainGroupClone.setAttribute('transform', currentTransform);
+                }
+            }
+
+            // Remove any interactive elements or event listeners
+            svgClone.querySelectorAll('.loading-indicator').forEach(el => el.remove());
+            
+            // Add necessary styles inline
+            const styleElement = document.createElement('style');
+            styleElement.textContent = `
+                .company-label text {
+                    text-anchor: middle;
+                    font-family: sans-serif;
+                }
+                .stage-label {
+                    font-size: 10px;
+                    font-weight: 500;
+                    fill: #666;
+                    text-anchor: middle;
+                }
+                .drug-node circle {
+                    stroke-width: 1;
+                }
+                .connection-line {
+                    fill: none;
+                    stroke-opacity: 0.6;
+                }
+            `;
+            svgClone.insertBefore(styleElement, svgClone.firstChild);
+            
+            // Add title and description
+            const titleElement = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            titleElement.textContent = 'Rare Disease Priority Review Voucher Program Visualization';
+            svgClone.insertBefore(titleElement, svgClone.firstChild);
+            
+            const descElement = document.createElementNS('http://www.w3.org/2000/svg', 'desc');
+            descElement.textContent = 'Visualization of companies and drugs in the rare disease priority review voucher program';
+            svgClone.insertBefore(descElement, svgClone.firstChild?.nextSibling || null);
+            
+            // Convert SVG to string
+            const serializer = new XMLSerializer();
+            let svgString = serializer.serializeToString(svgClone);
+            
+            // Add XML declaration and namespace
+            svgString = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + svgString;
+            
+            // Create a blob and download link
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `${filename}.svg`;
+            downloadLink.click();
+            
+            // Clean up
+            URL.revokeObjectURL(url);
+            
+            return svgString;
+        } catch (error) {
+            console.error("Error exporting SVG:", error);
+            return null;
+        }
+    }
+
     function createVisualization() {
         if (!mainGroup) {
             console.error("mainGroup is not available");
