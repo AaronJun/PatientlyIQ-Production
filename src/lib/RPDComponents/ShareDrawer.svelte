@@ -14,7 +14,7 @@
   const shareTitle = "The FDA's Rare Disease Research Garden is Blooming";
   const shareText = "The FDA's Priority Review Voucher Program has planted the seeds for 55 new rare disease treatments, with 41 first-ever therapies blooming where none existed before. 2024 is our most fruitful year yet—help us keep this garden growing.";
   const callToAction = "Explore the data and learn how to advocate for the program renewal.";
-  const previewImage = "/rpd-program-preview.png";
+  const previewImage = "/static/rpd-program-preview.png";
 
   
     function handleKeydown(event: KeyboardEvent) {

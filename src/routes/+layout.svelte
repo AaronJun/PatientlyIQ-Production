@@ -10,7 +10,7 @@
   const defaultMetadata = {
     title: "PatientlyIQ",
     description: "PatientlyIQ is a comprehensive database built to elevate the patient and caregiver voice.",
-    image: "https://patientlyiq.com/static/rpd-program-preview.png", // Add a default social image
+    image: "/static/rpd-program-preview.png", // Add a default social image
     url: "https://patientlyiq.com",
     siteName: "PatientlyIQ"
   };
