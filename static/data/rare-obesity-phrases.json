@@ -1,0 +1,332 @@
+[
+  {
+    "word": "agency",
+    "frequency": 1,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "appeals",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "outburst",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "referral",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "visit length",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "burden",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "burnout",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "calmer",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "meals",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "clarity",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "confusion",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "consent",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "cost",
+    "frequency": 5,
+    "group": "Trial Participation",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "denied",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "disappointed",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "disruption",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "emotional",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "empowered",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "excluded",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "fatigue",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "access",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "work",
+    "frequency": 1,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "grateful",
+    "frequency": 6,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "healing",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "hopeful",
+    "frequency": 7,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "improvement",
+    "frequency": 6,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "included",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "injections",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "insurance",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "kindness",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "laugh",
+    "frequency": 1,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "listened",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "logistics",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "miscommunication",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "new drug",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "open label",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "progress",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "relieved",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "respected",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "results",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "rigid",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "sacrifice",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "safe",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "sedation",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "side effects",
+    "frequency": 4,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "sleep",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "stress",
+    "frequency": 5,
+    "group": "Trial Participation",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "supportive",
+    "frequency": 5,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "team",
+    "frequency": 5,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "time",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "trauma",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "travel",
+    "frequency": 6,
+    "group": "Trial Participation",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "trust",
+    "frequency": 3,
+    "group": "Trial Participation",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "waitlists",
+    "frequency": 2,
+    "group": "Trial Participation",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "weight loss",
+    "frequency": 5,
+    "group": "Trial Participation",
+    "sentiment": "entirely positive"
+  }
+]

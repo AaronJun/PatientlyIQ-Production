@@ -39,7 +39,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@carbon/charts": "^1.22.15",
+		"@carbon/charts": "^1.23.5",
+		"@carbon/charts-react": "^1.23.5",
 		"@carbon/charts-svelte": "^1.22.15",
 		"@internationalized/date": "^3.5.4",
 		"@sendgrid/mail": "^8.1.4",
