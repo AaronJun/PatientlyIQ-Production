@@ -140,14 +140,7 @@
     // First create a background group for proper layering
     const background = svg.append("g").attr("class", "background-layer");
     
-    // Add a background for the map
-    background.append("rect")
-      .attr("class", "map-background")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", "#fff")
-      .attr("rx", 8)
-      .attr("ry", 8);
+   
       
     // Main map group (draw on top of background)  
     g = svg.append("g").attr("class", "map-layer");
