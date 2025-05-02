@@ -306,8 +306,8 @@ function handleCalculatorOpen() {
 
 .sidebar-container {
   position: absolute;
-  right: 24px;
-  top: 0; /* Positioned within map-view-container which already has pt-[90px] from parent */
+  right: 20px;
+  top: 20px; /* Positioned within map-view-container which already has pt-[90px] from parent */
   height: 100%;
   z-index: 2;
   display: flex;
