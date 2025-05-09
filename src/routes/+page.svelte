@@ -78,7 +78,7 @@
 	
 </div>
 
-<div class="flex flex-col items-center justify-center min-h-screen p-4 space-y-4">
+<!-- <div class="flex flex-col items-center justify-center min-h-screen p-4 space-y-4">
 	<h1 class="text-3xl font-bold">Welcome to PIQ3</h1>
 	
 	<div class="flex space-x-4">
@@ -89,4 +89,4 @@
 			RPDD 2018 Table (Non-PRV Awarded)
 		</a>
 	</div>
-</div>
+</div> -->
