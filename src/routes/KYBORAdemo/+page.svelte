@@ -138,8 +138,7 @@
         creating value for our clients worldwide. With offices in the US,
         Switzerland, and China, and a direct presence in all key biopharma
         markets around the world, KYBORA offers unparalleled global
-        reach and local knowledge. Contact us to explore how we can
-        help you address your most pressing challenges.
+        reach and local knowledge. 
         <br>
         <br>
         <button class="text-sky-200 font-mono text-xs hover:text-blue-500 transition-colors flex flex-row align-center justify-center">
