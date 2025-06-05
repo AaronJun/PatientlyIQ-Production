@@ -3,15 +3,6 @@ export type LazyLoadOptions = {
     rootMargin?: string;
 };
 
-// Declare the custom event for TypeScript
-declare global {
-    namespace svelte.JSX {
-        interface HTMLAttributes<T> {
-            'on:lazyload'?: (event: CustomEvent) => void;
-        }
-    }
-}
-
 /**
  * A Svelte action that observes when an element enters the viewport
  * and dispatches a 'lazyload' event when it does.

@@ -29,8 +29,8 @@
 	  <!-- Section Label -->
 	  <div class="border-t border-[#ff5151] pt-2">
 		<div class="flex items-center gap-5">
-		  <span class="font-mono text-[10px] sm:text-xs font-bold text-gray-500">01</span>
-		  <span class="font-mono text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+		  <span class="font-mono text-xs capitalize sm:text-xs font-bold text-gray-500">01</span>
+		  <span class="font-mono text-xs capitalize sm:text-xs text-gray-500 dark:text-gray-400 capitalize">
 			Comprehensive patient insights
 		  </span>
 		</div>

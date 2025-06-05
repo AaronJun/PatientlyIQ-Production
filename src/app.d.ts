@@ -17,6 +17,12 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	
+	namespace svelte.JSX {
+		interface HTMLAttributes<T> {
+			'on:lazyload'?: (event: CustomEvent) => void;
+		}
+	}
 }
 
 export {};

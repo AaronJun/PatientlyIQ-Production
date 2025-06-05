@@ -1,0 +1,35 @@
+{
+    "drug": "avrapritinib",
+    "approval_history": [
+      {
+        "date": "2020-01-09",
+        "region": "United States",
+        "agency": "FDA",
+        "indication": "Unresectable or metastatic GIST harboring a PDGFRA exon 18 mutation"
+      },
+      {
+        "date": "2021-06-16",
+        "region": "United States",
+        "agency": "FDA",
+        "indication": "Advanced systemic mastocytosis (SM)"
+      },
+      {
+        "date": "2023-05-22",
+        "region": "United States",
+        "agency": "FDA",
+        "indication": "Indolent systemic mastocytosis"
+      },
+      {
+        "date": "2020-09",
+        "region": "European Union",
+        "agency": "EMA",
+        "indication": "Gastrointestinal stromal tumor (GIST)"
+      },
+      {
+        "date": "2021-03-30",
+        "region": "China",
+        "agency": "NMPA",
+        "indication": "Unspecified"
+      }
+    ]
+  }

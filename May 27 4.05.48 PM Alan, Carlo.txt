@@ -1,0 +1,2062 @@
+[
+  {
+    "text" : "Welcome to Kaibora Healthcare Insight and today I have the privilege to have my friend Carlo Denatore Stefani joining us and we have a very interesting conversation about the state of manufacturing in the biopharma industry today as well as what we perceive to be potential challenges coming our way. Carlo, it's a pleasure having you join the podcast. So you and I just saw the background on how we got to know each other. I think you were at Bristlemeyer Squibb at the time working on a transformation of a region, Project Arrow in Latin America and you were leading the tech ops operation at Bristlemeyer Squibb and so we got to interact. Take me through your background and where you come from and where you studied and what your career in the biopharma industry has been. We share some common experience at Bristlemeyer Squibb. Those were interesting times, right? But times have always been interesting in our industry for many, many years. A little bit of background about me. I'm originally from Italy. I was born and raised in Italy. I'm a chemical engineer by training. I went to school in southern Italy, Naples as a matter of fact, where I was born and I grew up. And I come from a very unusual family in a sense, which I realized only later growing up because my father was a chemical engineer like me and they run a business, a manufacturing business. My mother, she was a professor of British, English and French literature and language. And so I grew up in Naples, which is a pretty nice place.",
+    "timestamp" : "00:00-01:58"
+  },
+  {
+    "timestamp" : "01:58-02:52",
+    "text" : "I learned several foreign languages growing up, French, English, Spanish, because initially my idea was to go into career to become a career diplomat. But then growing up, I started to work on my father business, which was a manufacturing business. And so I found that attractive too. And so I kind of flipped the coin when the time came to go to college. And the result was I went to engineering school. I learned chemical engineering. In the meantime, my father's business had folded following the oil embargo. It was a manufacturing business on plastics for the construction industry. And Italy went through a significant crisis like many countries at that point in time. I went to school. I liked it very much."
+  },
+  {
+    "timestamp" : "02:52-03:52",
+    "text" : "And then as I finished, I went into the draft. Italy had the mandatory draft for boys at that time. At the same time, Italy had the big earthquake. About 5000 people died in Southern Italy. And so being an engineer, being in the army and having been an earthquake, I was shipped to the area where the earthquake had struck. And so I had this first experience in dealing with the with a relatively large organization and having to manage operations. Our job was to demolish demolition. Our job was to demolition. Our job was to demolition buildings which had been damaged by the earthquake and build prefabs, rebuild bridges, roads, and so help the towns which had been basically destroyed rebuild the normal life. I did that for a year and a half as an officer. And then I started my first job in the engineering."
+  },
+  {
+    "timestamp" : "03:52-04:20",
+    "text" : "industry. That for a couple of years. And then I realized that I really didn't like spend time in front of a computer screen doing software writing and design. I care more about the personal interactions with people. And that led me to my first significant move. I went to work for Dow Chemical in their pharmaceutical business. And that's where my 40 years old career in pharmaceutical started."
+  },
+  {
+    "timestamp" : "04:20-04:34",
+    "text" : "Okay. It's interesting that your background of a diplomat because when I was a kid, I always wanted to become a diplomat as well because my grandfather was a diplomat. He was the ambassador of Czechoslovakia to the United Nations."
+  },
+  {
+    "timestamp" : "04:34-04:49",
+    "text" : "And so that's how I became an American citizen because my mother was born in New York City. And I always joked that, you know, I wanted to be a diplomat when I was younger. And I'm not a diplomat now, but I do deals all over the world."
+  },
+  {
+    "text" : "Well, it's probably the closest thing to that. It's a very attractive lifestyle, right? It brings you all around the world, both doing deals and being a diplomat.",
+    "timestamp" : "04:49-05:01"
+  },
+  {
+    "timestamp" : "05:01-05:06",
+    "text" : "Absolutely. So then after Dow, you joined Aventis, is that correct?"
+  },
+  {
+    "timestamp" : "05:06-05:28",
+    "text" : "Well, it actually evolved into Aventis. From 1984, when I joined Dow, till 2004, when I left Aventis to go to Bristol-Myers Squibb, it was actually a sequence of mergers and acquisitions that turned the company name around, the headquarter around, the management around."
+  },
+  {
+    "timestamp" : "05:28-05:35",
+    "text" : "I never really changed because things were changing around me so fast that I couldn't get bored."
+  },
+  {
+    "text" : "Right. So I started with Dow Chemical in the API business.",
+    "timestamp" : "05:35-05:39"
+  },
+  {
+    "timestamp" : "05:39-05:45",
+    "text" : "Did the first four years there, build the site, became a site manager."
+  },
+  {
+    "timestamp" : "05:45-05:52",
+    "text" : "Then somebody told me, well, you should really try to learn about formulation, fill, finish, and those aspects."
+  },
+  {
+    "timestamp" : "05:52-06:05",
+    "text" : "So I moved to a different location, always in Italy, where there was this site in Anagini, Rome, where we had injectables, solids, liquids, OTC products."
+  },
+  {
+    "text" : "So a lot of different technologies.",
+    "timestamp" : "06:05-06:07"
+  },
+  {
+    "text" : "In the meantime, Dow kept investing in the pharma business.",
+    "timestamp" : "06:07-06:11"
+  },
+  {
+    "text" : "They acquired Richardson and Merrill.",
+    "timestamp" : "06:11-06:13"
+  },
+  {
+    "text" : "Then they acquired Merriam Labs.",
+    "timestamp" : "06:13-06:16"
+  },
+  {
+    "text" : "And as part of these acquisitions, I got my first opportunity to move abroad.",
+    "timestamp" : "06:16-06:22"
+  },
+  {
+    "text" : "I went to Kansas City.",
+    "timestamp" : "06:22-06:24"
+  },
+  {
+    "text" : "So from Rome to Kansas City in 1994.",
+    "timestamp" : "06:24-06:28"
+  },
+  {
+    "text" : "Cultural shock.",
+    "timestamp" : "06:28-06:29"
+  },
+  {
+    "text" : "It was very interesting, right?",
+    "timestamp" : "06:29-06:31"
+  },
+  {
+    "text" : "1994 was the year where actually the soccer World Cup was being played in the US.",
+    "timestamp" : "06:31-06:38"
+  },
+  {
+    "timestamp" : "06:38-06:44",
+    "text" : "And I came to the US at the beginning of the soccer World Cup."
+  },
+  {
+    "text" : "And I was very surprised because nobody really seemed to care or knew much about it.",
+    "timestamp" : "06:44-06:49"
+  },
+  {
+    "timestamp" : "06:49-06:52",
+    "text" : "But I loved Kansas City."
+  },
+  {
+    "timestamp" : "06:52-06:56",
+    "text" : "Everybody had warned me about the cultural change and the shock."
+  },
+  {
+    "text" : "But the reality is, it was a fantastic place for a young family with kids to move to.",
+    "timestamp" : "06:56-07:03"
+  },
+  {
+    "timestamp" : "07:03-07:04",
+    "text" : "People were friendly."
+  },
+  {
+    "text" : "The school adjustment for the kids was very easy.",
+    "timestamp" : "07:04-07:08"
+  },
+  {
+    "timestamp" : "07:08-07:09",
+    "text" : "We really loved it."
+  },
+  {
+    "text" : "Somebody told me that's the birthplace of Walt Disney.",
+    "timestamp" : "07:09-07:13"
+  },
+  {
+    "timestamp" : "07:13-07:22",
+    "text" : "And it really looks like a little bit, it looked at least at the time, a little bit like a world designed by Disney."
+  },
+  {
+    "text" : "Designed by kids for kids.",
+    "timestamp" : "07:22-07:25"
+  },
+  {
+    "timestamp" : "07:25-07:30",
+    "text" : "So Dow acquired Merriam Labs and created Merriam Merrill Dow."
+  },
+  {
+    "text" : "But then after a year I had moved, Dow had to divest the pharma business to Hext.",
+    "timestamp" : "07:30-07:36"
+  },
+  {
+    "text" : "And that created Hext, Merriam Russel.",
+    "timestamp" : "07:36-07:40"
+  },
+  {
+    "text" : "When Hext acquired Russel-Luclaf as well and merged three ways the three companies.",
+    "timestamp" : "07:40-07:46"
+  },
+  {
+    "timestamp" : "07:46-07:53",
+    "text" : "And that eventually, Hext, Merriam Russel was merged with Ronpoulin-Krohrer to form Aventis."
+  },
+  {
+    "text" : "And so all this sequence of mergers happened within a six, seven years period.",
+    "timestamp" : "07:53-08:00"
+  },
+  {
+    "text" : "And in the meantime, I had moved to Kansas City.",
+    "timestamp" : "08:00-08:03"
+  },
+  {
+    "timestamp" : "08:03-08:09",
+    "text" : "From Kansas City as a consequence to the merger, I was offered a position in Barcelona, Spain."
+  },
+  {
+    "text" : "So after three years in Kansas City, I moved to Barcelona, where I spent three years.",
+    "timestamp" : "08:09-08:15"
+  },
+  {
+    "timestamp" : "08:15-08:22",
+    "text" : "But again, the Ronpoulin-Krohrer acquisition and the creation of Aventis happened during my Barcelona stay."
+  },
+  {
+    "text" : "And so as part of the new management team and the new organization design, I moved to New Jersey, running supply chain for Intercontinental, which would be North America, Latin America, Asia Pacific and Middle East and Africa.",
+    "timestamp" : "08:22-08:39"
+  },
+  {
+    "timestamp" : "08:39-08:42",
+    "text" : "But that lasted about six months."
+  },
+  {
+    "timestamp" : "08:42-08:48",
+    "text" : "Then I had to move to Paris because the headquarter of Aventis had moved to Paris."
+  },
+  {
+    "timestamp" : "08:48-09:00",
+    "text" : "And I took responsibility for running operations for Intercontinental, so everywhere except Western Europe, which was a very interesting time."
+  },
+  {
+    "timestamp" : "09:00-09:01",
+    "text" : "Right."
+  },
+  {
+    "timestamp" : "09:01-09:04",
+    "text" : "I was based in Paris, wonderful place to live."
+  },
+  {
+    "timestamp" : "09:04-09:09",
+    "text" : "My kids, one in college in the US, the other one finishing high school in Paris."
+  },
+  {
+    "timestamp" : "09:09-09:13",
+    "text" : "But I was traveling about 99% of the time."
+  },
+  {
+    "timestamp" : "09:13-09:17",
+    "text" : "And so came the point where my wife said, you know, enough is enough."
+  },
+  {
+    "text" : "Our kids were both in college in the US at the time.",
+    "timestamp" : "09:17-09:21"
+  },
+  {
+    "timestamp" : "09:21-09:26",
+    "text" : "And so I left Aventis and my Bristol Myers Squibb experience started."
+  },
+  {
+    "text" : "Okay.",
+    "timestamp" : "09:26-09:27"
+  },
+  {
+    "timestamp" : "09:27-09:28",
+    "text" : "Yeah."
+  },
+  {
+    "text" : "I was going to say, BMS didn't buy Aventis.",
+    "timestamp" : "09:28-09:30"
+  },
+  {
+    "timestamp" : "09:30-09:33",
+    "text" : "No, that's the point where I made the change."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "09:33-09:34"
+  },
+  {
+    "text" : "But, you know, it's been an interesting ride through all these years.",
+    "timestamp" : "09:34-09:39"
+  },
+  {
+    "timestamp" : "09:39-09:55",
+    "text" : "And again, between managing an intercontinental organization, having mergers and so organization rebuilt every couple of years and moving five times across the ocean back and forth."
+  },
+  {
+    "timestamp" : "09:55-09:56",
+    "text" : "Certainly kept me busy."
+  },
+  {
+    "timestamp" : "09:56-09:59",
+    "text" : "Do you remember Ian Leshley?"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "09:59-10:00"
+  },
+  {
+    "timestamp" : "10:00-10:02",
+    "text" : "I went to see a talk here in Princeton."
+  },
+  {
+    "text" : "They was giving a few years ago and he made me laugh because he was talking about merger and acquisitions.",
+    "timestamp" : "10:02-10:08"
+  },
+  {
+    "text" : "And of course, he's famous for doing the, what is GSK today, basically.",
+    "timestamp" : "10:08-10:13"
+  },
+  {
+    "text" : "And he said, you know, M&A is a little bit like peeing in your pants.",
+    "timestamp" : "10:13-10:19"
+  },
+  {
+    "text" : "At first, it kind of feels good.",
+    "timestamp" : "10:19-10:20"
+  },
+  {
+    "timestamp" : "10:20-10:25",
+    "text" : "I thought it was such a great line."
+  },
+  {
+    "text" : "It's true because, you know, if you go back and you look at the history of the pharma industry, when I started back in 84, there were big chemical companies who had the small pharma business.",
+    "timestamp" : "10:25-10:39"
+  },
+  {
+    "timestamp" : "10:39-10:40",
+    "text" : "Right."
+  },
+  {
+    "text" : "Baxter, Mer, Bayer, Huxt, Dow Chemical, DuPont.",
+    "timestamp" : "10:40-10:46"
+  },
+  {
+    "timestamp" : "10:46-10:48",
+    "text" : "These were all big chemical companies."
+  },
+  {
+    "timestamp" : "10:48-10:57",
+    "text" : "They all had a small pharma business, which they looked sort of like their pet toy to play with."
+  },
+  {
+    "text" : "And then over time, through mergers and acquisitions, the few juggernauts have increased.",
+    "timestamp" : "10:57-11:04"
+  },
+  {
+    "timestamp" : "11:04-11:10",
+    "text" : "Even if you look at AstraZeneca, again, that was ICI at the time."
+  },
+  {
+    "timestamp" : "11:10-11:19",
+    "text" : "And so those times were very exciting because all these companies were trying to bank on innovation."
+  },
+  {
+    "text" : "But there, are in the engine, wasn't really exciting with few exceptions.",
+    "timestamp" : "11:19-11:26"
+  },
+  {
+    "text" : "At least the Aventus story is that several mergers didn't really fix the innovation engine and they had to continue merging until eventually they were acquired by Sanofi.",
+    "timestamp" : "11:26-11:40"
+  },
+  {
+    "timestamp" : "11:40-11:52",
+    "text" : "And so at BMS, did you come in immediately as the head of tech ops or you were at the… No, I actually entered as the head of API and a couple of other things."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "11:52-11:53"
+  },
+  {
+    "text" : "But the agreement was that I would become the head of tech ops six months later when the damn current head of tech ops was retiring.",
+    "timestamp" : "11:53-12:01"
+  },
+  {
+    "timestamp" : "12:01-12:08",
+    "text" : "So that was part of the agreement, even if it wasn't officially announced at the point in which I joined."
+  },
+  {
+    "text" : "And did you oversee the transformation of BMS from being a traditional, diversified pharma company to becoming a very focused oncology organization?",
+    "timestamp" : "12:08-12:22"
+  },
+  {
+    "timestamp" : "12:22-12:23",
+    "text" : "That's right."
+  },
+  {
+    "timestamp" : "12:23-12:26",
+    "text" : "I joined working for Peter Dolan."
+  },
+  {
+    "timestamp" : "12:26-12:34",
+    "text" : "And then, as you remember, Peter got the boot when the Plavix, a little generic launch."
+  },
+  {
+    "text" : "I remember.",
+    "timestamp" : "12:34-12:35"
+  },
+  {
+    "timestamp" : "12:35-12:41",
+    "text" : "And so Peter, our general counsel, our head of strategy, had to leave the company."
+  },
+  {
+    "timestamp" : "12:41-12:46",
+    "text" : "Jim Cornelius became first an interim CEO and then the CEO."
+  },
+  {
+    "timestamp" : "12:46-12:51",
+    "text" : "he was followed by Lamberto and I worked for all three of them."
+  },
+  {
+    "timestamp" : "12:51-13:05",
+    "text" : "But the consequence of losing Plavix and then we had recently lost glucophage and Taxol clearly brought some stress to our financial looks, as you remember."
+  },
+  {
+    "text" : "So we had to do a lot of divestment.",
+    "timestamp" : "13:05-13:08"
+  },
+  {
+    "text" : "I participated to the divestment of Convatec, Mead Johnson and medical imaging.",
+    "timestamp" : "13:08-13:15"
+  },
+  {
+    "timestamp" : "13:15-13:20",
+    "text" : "We divested the OTC brands to Novartis at the time."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "13:20-13:21"
+  },
+  {
+    "text" : "So we had to really redesign the organization.",
+    "timestamp" : "13:21-13:25"
+  },
+  {
+    "text" : "As part of that, I had to stop the manufacturing of penicillins in Syracuse, divest the Latina site, which was manufacturing pens and safs.",
+    "timestamp" : "13:25-13:36"
+  },
+  {
+    "text" : "And so really focus all the resources on the few oncology and biologics products we had at the time.",
+    "timestamp" : "13:36-13:45"
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "13:45-13:46"
+  },
+  {
+    "timestamp" : "13:46-13:51",
+    "text" : "We had Erbitux, the licensing deal with Inclone."
+  },
+  {
+    "text" : "And then we had two assets in our pipeline, Orencia and Bellatasset.",
+    "timestamp" : "13:51-13:57"
+  },
+  {
+    "text" : "So Abatasset and Bellatasset.",
+    "timestamp" : "13:57-13:59"
+  },
+  {
+    "timestamp" : "13:59-14:03",
+    "text" : "These were the two assets we had in our internal pipeline."
+  },
+  {
+    "timestamp" : "14:03-14:07",
+    "text" : "So we were to source deals."
+  },
+  {
+    "text" : "And the one thing I have to say, we really had strong R&D organization in BMS.",
+    "timestamp" : "14:07-14:15"
+  },
+  {
+    "timestamp" : "14:15-14:19",
+    "text" : "And so we ended up bringing in your boy and Doc Divo."
+  },
+  {
+    "timestamp" : "14:19-14:20",
+    "text" : "Right, right."
+  },
+  {
+    "timestamp" : "14:20-14:21",
+    "text" : "As part of those deals."
+  },
+  {
+    "timestamp" : "14:21-14:22",
+    "text" : "A string of pearls."
+  },
+  {
+    "timestamp" : "14:22-14:24",
+    "text" : "A string of pearls with Jeremy Levin."
+  },
+  {
+    "timestamp" : "14:24-14:26",
+    "text" : "That was an amazing transformation."
+  },
+  {
+    "text" : "And from a manufacturing standpoint, it must have been something extraordinary to go from this diversified organization to a very narrow company.",
+    "timestamp" : "14:26-14:35"
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "14:35-14:36"
+  },
+  {
+    "text" : "And you probably had to shut down a lot of sites and transform.",
+    "timestamp" : "14:36-14:40"
+  },
+  {
+    "timestamp" : "14:40-14:41",
+    "text" : "That's right."
+  },
+  {
+    "text" : "It was a challenge because from one side, we had, as you say, we had to shut down and drive efficiencies and exit an old product portfolio that really didn't have a future and was collapsing in front of our eyes.",
+    "timestamp" : "14:41-14:56"
+  },
+  {
+    "text" : "But at the same time, we had to redeploy the savings, the efficiencies, and the divestment proceeds into building the future through in licensing deals, but also rebuilding the manufacturing infrastructure.",
+    "timestamp" : "14:56-15:13"
+  },
+  {
+    "text" : "We turned Syracuse into a biologics plant.",
+    "timestamp" : "15:13-15:17"
+  },
+  {
+    "timestamp" : "15:17-15:27",
+    "text" : "We selected Devons as the locations for the first biologics plant dedicated for the company, which was a significant investment for the company."
+  },
+  {
+    "text" : "At that time, the board approved $850 million to build the damage plan.",
+    "timestamp" : "15:27-15:32"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "15:32-15:33"
+  },
+  {
+    "timestamp" : "15:33-15:35",
+    "text" : "I remember being on the commercial side of things."
+  },
+  {
+    "text" : "I always ranted that, why are we killing products to fix a cost center?",
+    "timestamp" : "15:35-15:40"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "15:40-15:41"
+  },
+  {
+    "timestamp" : "15:41-15:46",
+    "text" : "And it brought a lot of tension internal to the organization, right?"
+  },
+  {
+    "text" : "Especially you were working on the Latin American organization.",
+    "timestamp" : "15:46-15:51"
+  },
+  {
+    "text" : "Many general managers in Latin America weren't happy because they didn't see the customer service, the care, and the priority recognition for that part of the world.",
+    "timestamp" : "15:51-16:05"
+  },
+  {
+    "text" : "But, you know, unfortunately, it was a tough choice.",
+    "timestamp" : "16:05-16:08"
+  },
+  {
+    "text" : "And restructuring is not fun, but it really helped the company turn around.",
+    "timestamp" : "16:08-16:14"
+  },
+  {
+    "text" : "Yeah, absolutely.",
+    "timestamp" : "16:14-16:15"
+  },
+  {
+    "timestamp" : "16:15-16:22",
+    "text" : "And then based on that experience, you got the massive challenge of fixing Teva, right?"
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "16:22-16:23"
+  },
+  {
+    "timestamp" : "16:23-16:31",
+    "text" : "Again, banking on that experience, when I left BMS at the end of 2011, I went to Teva."
+  },
+  {
+    "text" : "And Teva, I joined Jeremy Levin, who had moved as CEO of Teva a few months earlier, and he had recruited me into Teva.",
+    "timestamp" : "16:31-16:41"
+  },
+  {
+    "text" : "Teva at the time wanted to become an innovative company, right?",
+    "timestamp" : "16:41-16:46"
+  },
+  {
+    "timestamp" : "16:46-16:56",
+    "text" : "Invest into creating a pipeline of innovation, but that didn't work out the way the board hoped to."
+  },
+  {
+    "timestamp" : "16:56-17:03",
+    "text" : "And so we had to do a lot of restructuring there as well on a more significant scale."
+  },
+  {
+    "timestamp" : "17:03-17:13",
+    "text" : "So, when I joined Teva, Teva had 68 plants and I had about 20,000 people in operations."
+  },
+  {
+    "text" : "And then with the activist acquisition, we went as high as over 95 plants and about 30,000 people.",
+    "timestamp" : "17:13-17:20"
+  },
+  {
+    "timestamp" : "17:20-17:21",
+    "text" : "Quite complex."
+  },
+  {
+    "text" : "Quite complex.",
+    "timestamp" : "17:21-17:22"
+  },
+  {
+    "text" : "Very complex.",
+    "timestamp" : "17:22-17:23"
+  },
+  {
+    "text" : "Also there in evolution in the product portfolio to peptides, biologics, biosimilars.",
+    "timestamp" : "17:23-17:32"
+  },
+  {
+    "timestamp" : "17:32-17:43",
+    "text" : "But again, the company went through a similar financial near-death experience, having loaded $39 billion of debt for the activist acquisition."
+  },
+  {
+    "text" : "And at the same time, seeing our product portfolio and profit margin in the US collapsing.",
+    "timestamp" : "17:43-17:50"
+  },
+  {
+    "text" : "And so when you're looking at very large organizations like that, what would you say are the core challenges of running such large operations, manufacturing operations?",
+    "timestamp" : "17:50-18:02"
+  },
+  {
+    "text" : "Well, the challenge that comes from the size clearly is to maintain a standard across all the organization.",
+    "timestamp" : "18:02-18:12"
+  },
+  {
+    "text" : "And there is a balance, right?",
+    "timestamp" : "18:12-18:14"
+  },
+  {
+    "text" : "Because as you know, regulatory authorities have similar expectations, but not exactly the same expectations.",
+    "timestamp" : "18:14-18:22"
+  },
+  {
+    "text" : "The FDA, EMA, regulatory authorities like Anvisa, they all have their own set of GMP expectations.",
+    "timestamp" : "18:22-18:33"
+  },
+  {
+    "text" : "They all issue guidance, documents, legislation.",
+    "timestamp" : "18:33-18:37"
+  },
+  {
+    "timestamp" : "18:37-18:42",
+    "text" : "And so you have to comply at the same time with all these regulations."
+  },
+  {
+    "timestamp" : "18:42-18:48",
+    "text" : "You have to create your own set of quality policies and systems to ensure compliance."
+  },
+  {
+    "text" : "As the organization grows around the world, maintaining that standard in a uniform way across the organization becomes more and more challenging.",
+    "timestamp" : "18:48-18:59"
+  },
+  {
+    "timestamp" : "18:59-19:03",
+    "text" : "You have to combine this with the difference in cultures."
+  },
+  {
+    "text" : "The way people work in the US is certainly different than the way people work in France, Italy, or Germany, or India, or Brazil, as you know very well.",
+    "timestamp" : "19:03-19:14"
+  },
+  {
+    "text" : "And so you have to create the systems and the culture that adapts to the different local realities and ensures compliant and efficient operations everywhere around the world.",
+    "timestamp" : "19:14-19:28"
+  },
+  {
+    "timestamp" : "19:28-19:36",
+    "text" : "And the conclusions I've come after years of experience is that you can't rule this from the center."
+  },
+  {
+    "text" : "You have to build an organization that understands that culture and propagates that culture everywhere.",
+    "timestamp" : "19:36-19:43"
+  },
+  {
+    "text" : "There are key positions in the organization.",
+    "timestamp" : "19:43-19:47"
+  },
+  {
+    "text" : "And in manufacturing, the key position is the site manager.",
+    "timestamp" : "19:47-19:50"
+  },
+  {
+    "timestamp" : "19:50-19:53",
+    "text" : "Like in commercial is the country GM, right?"
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "19:53-19:54"
+  },
+  {
+    "timestamp" : "19:54-20:02",
+    "text" : "So these are the pivot positions that shape the culture of the company in the place where the company operates."
+  },
+  {
+    "timestamp" : "20:02-20:21",
+    "text" : "And so the ability to recruit the right people to these positions, train them to the company culture and expectations, and ensure the right incentives and management processes to create visibility, transparency, but also support for these individuals."
+  },
+  {
+    "text" : "These key individuals, it's absolutely critical.",
+    "timestamp" : "20:21-20:27"
+  },
+  {
+    "timestamp" : "20:27-20:30",
+    "text" : "And that's the biggest challenge in a global organization."
+  },
+  {
+    "timestamp" : "20:30-20:38",
+    "text" : "At the time also, there were a lot of countries that required that you have your own plan in the country in order to sell a product."
+  },
+  {
+    "timestamp" : "20:38-20:43",
+    "text" : "A lot of these requirements have gone away since then."
+  },
+  {
+    "timestamp" : "20:43-20:50",
+    "text" : "How do you, I mean, and I guess if you were obligated to have your own plan at the time, it was an easy decision."
+  },
+  {
+    "timestamp" : "20:50-20:55",
+    "text" : "Now it's not so much an easy decision because building a plan does take time."
+  },
+  {
+    "text" : "It's a large investment and things like that.",
+    "timestamp" : "20:55-20:57"
+  },
+  {
+    "text" : "So the aspect of supply chain in general becomes a lot more important today, right?",
+    "timestamp" : "20:57-21:03"
+  },
+  {
+    "timestamp" : "21:03-21:04",
+    "text" : "And how can."
+  },
+  {
+    "timestamp" : "21:04-21:05",
+    "text" : "True."
+  },
+  {
+    "text" : "True.",
+    "timestamp" : "21:05-21:05"
+  },
+  {
+    "timestamp" : "21:05-21:13",
+    "text" : "And there is a difference between big pharma or in general, innovative pharma and generics, right?"
+  },
+  {
+    "timestamp" : "21:13-21:17",
+    "text" : "Innovative pharma clearly has a limited product portfolio."
+  },
+  {
+    "text" : "And these are global products that they sell in, if not all of the world, most of the world.",
+    "timestamp" : "21:17-21:24"
+  },
+  {
+    "text" : "And so for big pharma, the choice of where to build the plant and where to source the product, it's driven mostly by strategic considerations about IP protection, tax supply chain design, not really about the manufacturing driven considerations.",
+    "timestamp" : "21:24-21:47"
+  },
+  {
+    "timestamp" : "21:47-21:50",
+    "text" : "For generics, it's the other way around."
+  },
+  {
+    "text" : "Generics is a very different business where margins, gross margins get eroded every year.",
+    "timestamp" : "21:50-21:57"
+  },
+  {
+    "timestamp" : "21:57-22:02",
+    "text" : "You are in an environment where 5 to 10% price decline."
+  },
+  {
+    "timestamp" : "22:02-22:03",
+    "text" : "It's the norm."
+  },
+  {
+    "text" : "And you can only survive if you can derive an equivalent quantity of efficiencies from manufacturing.",
+    "timestamp" : "22:03-22:10"
+  },
+  {
+    "text" : "When you talk about pharma at large, you really have these two different realities.",
+    "timestamp" : "22:10-22:15"
+  },
+  {
+    "timestamp" : "22:15-22:36",
+    "text" : "Big pharma has clearly focused on areas like Puerto Rico, Ireland, Switzerland, Singapore, certain locations which have provided a good access to skilled talent, competent organization, friendly governments, tax benefits."
+  },
+  {
+    "text" : "And these are the hubs which have evolved over the years.",
+    "timestamp" : "22:36-22:41"
+  },
+  {
+    "timestamp" : "22:41-22:55",
+    "text" : "For generics, there's been an evolution and a move towards low cost countries, whether this is India, Eastern Europe, China, or other similarly placed situations."
+  },
+  {
+    "text" : "Do you see, from a manufacturing standpoint, do you see biosimilar to be more on the generic side or more on the big pharma side of the business model?",
+    "timestamp" : "22:55-23:05"
+  },
+  {
+    "timestamp" : "23:05-23:12",
+    "text" : "I think they are evolving more and more for like the generics, like the old fashioned OSD generics."
+  },
+  {
+    "text" : "It's a much more competitive business than anybody expected 10 years ago.",
+    "timestamp" : "23:12-23:17"
+  },
+  {
+    "text" : "There are multiple players.",
+    "timestamp" : "23:17-23:18"
+  },
+  {
+    "text" : "There are multiple players.",
+    "timestamp" : "23:18-23:20"
+  },
+  {
+    "text" : "And from a manufacturing technology perspective, clearly it's becoming commonplace.",
+    "timestamp" : "23:20-23:27"
+  },
+  {
+    "timestamp" : "23:27-23:28",
+    "text" : "Right."
+  },
+  {
+    "timestamp" : "23:28-23:35",
+    "text" : "So there isn't a hurdle, a technology hurdle that restricts the number of participants."
+  },
+  {
+    "text" : "And clearly the industry is learning their way around it.",
+    "timestamp" : "23:35-23:42"
+  },
+  {
+    "text" : "And the agencies are also changing.",
+    "timestamp" : "23:42-23:43"
+  },
+  {
+    "text" : "We just had one of our clients was able to get, they were building or developing a biosimilar of Obdivo and they were able to get a phase three waiver from the FDA because of their characterization of their product was so good that the FDA said that you don't need to do that.",
+    "timestamp" : "23:43-24:01"
+  },
+  {
+    "timestamp" : "24:01-24:06",
+    "text" : "So to your point, I think, is it going to be more like, you know, like a generic moving forward?"
+  },
+  {
+    "timestamp" : "24:06-24:09",
+    "text" : "Which again, it's not surprising, right?"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "24:09-24:10"
+  },
+  {
+    "timestamp" : "24:10-24:14",
+    "text" : "We have been in this technology for over 25 years now."
+  },
+  {
+    "text" : "It's clearly well mature.",
+    "timestamp" : "24:14-24:18"
+  },
+  {
+    "timestamp" : "24:18-24:25",
+    "text" : "We digressed a little bit, but so after Teva, then Operation Warp Speed, right?"
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "24:25-24:26"
+  },
+  {
+    "timestamp" : "24:26-24:34",
+    "text" : "I had committed to stay with Teva for two years following Korshul's, the last CEO I worked with."
+  },
+  {
+    "timestamp" : "24:34-24:39",
+    "text" : "I did that and I retired from Teva at the end of 2019."
+  },
+  {
+    "text" : "The plan at this point was for me to go sailing around the world for a year or two.",
+    "timestamp" : "24:39-24:45"
+  },
+  {
+    "timestamp" : "24:45-24:51",
+    "text" : "I had prepared a sailboat to do that, but unfortunately COVID stuck."
+  },
+  {
+    "timestamp" : "24:51-24:54",
+    "text" : "So I couldn't go sailing."
+  },
+  {
+    "text" : "I spent a few months boring at home and then I got greatest opportunity of my life to join Operation Warp Speed, where I helped design the supply chain and create the partnership between the US government and the CDMOs and the manufacturers.",
+    "timestamp" : "24:54-25:14"
+  },
+  {
+    "text" : "We eventually manufacture and supply all the vaccines, the antibodies, the antiviral.",
+    "timestamp" : "25:14-25:20"
+  },
+  {
+    "timestamp" : "25:20-25:21",
+    "text" : "It was a great experience."
+  },
+  {
+    "timestamp" : "25:21-25:22",
+    "text" : "I can imagine."
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "25:22-25:23"
+  },
+  {
+    "text" : "And the pressure was, you had to work so fast, right?",
+    "timestamp" : "25:23-25:27"
+  },
+  {
+    "text" : "It was amazing, right?",
+    "timestamp" : "25:27-25:28"
+  },
+  {
+    "text" : "It was amazing, right?",
+    "timestamp" : "25:28-25:30"
+  },
+  {
+    "timestamp" : "25:30-25:32",
+    "text" : "Because I got this call."
+  },
+  {
+    "text" : "It was early April 2020.",
+    "timestamp" : "25:32-25:35"
+  },
+  {
+    "text" : "I was interested in joining what was described to me at the time as a sort of a Manhattan project where, you know, HHS and NIH and the Department of Defense together will work with the industry to develop a vaccine and supply 300 million doses of the vaccine before the end of the year.",
+    "timestamp" : "25:35-25:58"
+  },
+  {
+    "timestamp" : "25:58-26:05",
+    "text" : "Which, I mean, seemed basically crazy if you are familiar with the cycle time for developing a vaccine."
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "26:05-26:06"
+  },
+  {
+    "text" : "Talking about doing that in eight months, nine months.",
+    "timestamp" : "26:06-26:11"
+  },
+  {
+    "text" : "And I had a few chats with the HHS Secretary at the time, Alex Azar, and Monsef Slaoui, who was leading this task force.",
+    "timestamp" : "26:11-26:25"
+  },
+  {
+    "text" : "And I jumped on it.",
+    "timestamp" : "26:25-26:26"
+  },
+  {
+    "timestamp" : "26:26-26:29",
+    "text" : "It was a great opportunity."
+  },
+  {
+    "text" : "The secret that would make it possible was really to de-risk it for the industry.",
+    "timestamp" : "26:29-26:36"
+  },
+  {
+    "timestamp" : "26:36-26:47",
+    "text" : "The government would take all of the financial risks so that the industry could pursue the manufacturing readiness in parallel to the clinical trials."
+  },
+  {
+    "text" : "And if the clinical trials would fail, well, the industry was protected by the commitment of the U.S. government to cover the cost.",
+    "timestamp" : "26:47-26:57"
+  },
+  {
+    "text" : "And that made possible to move from a strictly sequential development and manufacturing organization to a parallel organization.",
+    "timestamp" : "26:57-27:08"
+  },
+  {
+    "text" : "And the FDA also agreed to basically accept a rolling submission, which they had never done before.",
+    "timestamp" : "27:08-27:18"
+  },
+  {
+    "text" : "So there was no compromise on the quality of the data.",
+    "timestamp" : "27:18-27:22"
+  },
+  {
+    "text" : "The phase three clinical trials had about 30,000 to 40,000 patients.",
+    "timestamp" : "27:22-27:29"
+  },
+  {
+    "text" : "Wow.",
+    "timestamp" : "27:29-27:30"
+  },
+  {
+    "text" : "We minimized the time to recruitment by using CDC data to identify the hotspots of the pandemic in the U.S.",
+    "timestamp" : "27:30-27:41"
+  },
+  {
+    "timestamp" : "27:41-27:53",
+    "text" : "And we equipped some movable, trailable clinical trial centers to move across the country in order to be where the hotspot of the pandemic was."
+  },
+  {
+    "text" : "So that we could inoculate healthy patients and then see the outcome quickly later.",
+    "timestamp" : "27:53-28:01"
+  },
+  {
+    "timestamp" : "28:01-28:06",
+    "text" : "The rest, I mean, we had seven vaccines selected out of the seven."
+  },
+  {
+    "text" : "One quickly failed and was removed from the roster.",
+    "timestamp" : "28:06-28:10"
+  },
+  {
+    "text" : "So we stayed with six.",
+    "timestamp" : "28:10-28:12"
+  },
+  {
+    "timestamp" : "28:12-28:17",
+    "text" : "Eventually all six vaccines were approved, which nobody really expected."
+  },
+  {
+    "text" : "I could say it has exceeded everybody's expectations.",
+    "timestamp" : "28:17-28:20"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "28:20-28:21"
+  },
+  {
+    "timestamp" : "28:21-28:27",
+    "text" : "Then we had a lot of proposals for other products, monoclonal antibodies."
+  },
+  {
+    "timestamp" : "28:27-28:39",
+    "text" : "We supported the Regeneron and the Lilly monoclonal for treating patients who had already contracted COVID and helping them recover."
+  },
+  {
+    "text" : "And we worked on two antiviral or oral antiviral Pfizer and Mert products.",
+    "timestamp" : "28:39-28:46"
+  },
+  {
+    "text" : "And there was at the time, because you had to quickly manufacture your clinical patches, I guess.",
+    "timestamp" : "28:46-28:54"
+  },
+  {
+    "text" : "So the technology was already thought of, you know, using the mRNA as a base for vaccines.",
+    "timestamp" : "28:54-29:02"
+  },
+  {
+    "timestamp" : "29:02-29:05",
+    "text" : "It must have been developed already by the time you decided to use it."
+  },
+  {
+    "timestamp" : "29:05-29:06",
+    "text" : "Yeah."
+  },
+  {
+    "timestamp" : "29:06-29:08",
+    "text" : "The technology had been developed."
+  },
+  {
+    "text" : "It was not proven though.",
+    "timestamp" : "29:08-29:11"
+  },
+  {
+    "timestamp" : "29:11-29:12",
+    "text" : "Right."
+  },
+  {
+    "text" : "And so the nice thing about the mRNA technology is basically it's not biologics, right?",
+    "timestamp" : "29:12-29:18"
+  },
+  {
+    "timestamp" : "29:18-29:20",
+    "text" : "It's a chemical synthesis."
+  },
+  {
+    "timestamp" : "29:20-29:30",
+    "text" : "So you start from plasmid, which is the only cell culture bacterial step, but everything from there then is a synthetic step."
+  },
+  {
+    "text" : "And it's very quick.",
+    "timestamp" : "29:30-29:31"
+  },
+  {
+    "timestamp" : "29:31-29:39",
+    "text" : "So in less than a few days, you go from plasmid to the full mRNA vaccine."
+  },
+  {
+    "text" : "The technology was extremely successful.",
+    "timestamp" : "29:39-29:43"
+  },
+  {
+    "text" : "So we manufactured by the end of the year, we had already about 20 million doses.",
+    "timestamp" : "29:43-29:50"
+  },
+  {
+    "timestamp" : "29:50-30:00",
+    "text" : "And by mid February, we had manufactured all the 300 million doses for the two mRNA vaccines ready."
+  },
+  {
+    "text" : "And so after that great experience, you decided to consult basically and to put your knowledge to the benefit of the industry.",
+    "timestamp" : "30:00-30:09"
+  },
+  {
+    "timestamp" : "30:09-30:10",
+    "text" : "Right."
+  },
+  {
+    "text" : "I decided to stay involved.",
+    "timestamp" : "30:10-30:12"
+  },
+  {
+    "timestamp" : "30:12-30:14",
+    "text" : "I love this industry."
+  },
+  {
+    "text" : "I love the people in this industry.",
+    "timestamp" : "30:14-30:17"
+  },
+  {
+    "text" : "I think it's one of those industries where you can actually do good by doing well.",
+    "timestamp" : "30:17-30:24"
+  },
+  {
+    "timestamp" : "30:24-30:30",
+    "text" : "It's incredibly exciting because the technology keeps evolving and you can't get bored."
+  },
+  {
+    "text" : "There is innovation coming up every day, every week.",
+    "timestamp" : "30:30-30:34"
+  },
+  {
+    "timestamp" : "30:34-30:47",
+    "text" : "I think there is a growing need as the demographic of the Western world and now of the Eastern world as well drive towards an aging population."
+  },
+  {
+    "text" : "The need for our industry will always be greater.",
+    "timestamp" : "30:47-30:50"
+  },
+  {
+    "timestamp" : "30:50-30:51",
+    "text" : "And that's interesting."
+  },
+  {
+    "timestamp" : "30:51-30:55",
+    "text" : "I mean, I've been in the industry 25 years now."
+  },
+  {
+    "text" : "And I always say the pace of change is accelerating.",
+    "timestamp" : "30:55-31:00"
+  },
+  {
+    "text" : "I've seen it, you know, from the beginning.",
+    "timestamp" : "31:00-31:03"
+  },
+  {
+    "timestamp" : "31:03-31:08",
+    "text" : "It was you had a 10 year period where everything's kind of looked the same."
+  },
+  {
+    "timestamp" : "31:08-31:15",
+    "text" : "And then now it's almost like it started to be every three years and now it's every year and every quarter there's something new."
+  },
+  {
+    "timestamp" : "31:15-31:23",
+    "text" : "So if you look at the future of the industry in general, what do you think it's going to look like in 10, 15 years?"
+  },
+  {
+    "text" : "What are they going to be the key elements of the biopharma industry?",
+    "timestamp" : "31:23-31:26"
+  },
+  {
+    "timestamp" : "31:26-31:28",
+    "text" : "Even if you can call it biopharma."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "31:28-31:29"
+  },
+  {
+    "timestamp" : "31:29-31:32",
+    "text" : "Who knows how it will be called, but you're absolutely right."
+  },
+  {
+    "text" : "There has been an accelerating pace of innovation.",
+    "timestamp" : "31:32-31:35"
+  },
+  {
+    "text" : "And the consequences for that is that the life of a product has become shorter.",
+    "timestamp" : "31:35-31:42"
+  },
+  {
+    "timestamp" : "31:42-31:47",
+    "text" : "The space for me to product, it's much smaller."
+  },
+  {
+    "timestamp" : "31:47-31:53",
+    "text" : "This innovation requires really disruptive innovation to continue."
+  },
+  {
+    "text" : "from a manufacturing perspective, that means that technologies that just a few years ago were groundbreaking, now are commonplace and you cannot afford to miss the next generation of technology because then you will be out of the game very quickly.",
+    "timestamp" : "31:53-32:13"
+  },
+  {
+    "timestamp" : "32:13-32:27",
+    "text" : "And that has implication, not only from a capital investment perspective, from a strategic supply chain design, but has huge implication from a talent perspective."
+  },
+  {
+    "text" : "You know, the innovation is so fast that you don't get people out of school knowing the technology anymore.",
+    "timestamp" : "32:27-32:35"
+  },
+  {
+    "text" : "Companies need to think about how to train their next generation of leadership at every level in the organization.",
+    "timestamp" : "32:35-32:44"
+  },
+  {
+    "text" : "And it's no longer only be leadership training.",
+    "timestamp" : "32:44-32:49"
+  },
+  {
+    "timestamp" : "32:49-33:06",
+    "text" : "It will be more and more technical training because the other new feature is that this innovation doesn't follow the usual path of starting early on in academia and then slowly progressing to businesses and companies to corporate."
+  },
+  {
+    "text" : "It's really joint innovation popping up everywhere.",
+    "timestamp" : "33:06-33:07"
+  },
+  {
+    "timestamp" : "33:07-33:20",
+    "text" : "And you have to be abreast of the latest development to be able then to internalize as they become more mainstream."
+  },
+  {
+    "timestamp" : "33:20-33:30",
+    "text" : "Do you think that you're going to see more outsourcing of the manufacturing capability as we move forward from big pharma?"
+  },
+  {
+    "timestamp" : "33:30-33:36",
+    "text" : "I remember when I was still in big pharma, they started to talk about outsourcing discovery, right?"
+  },
+  {
+    "text" : "It was not a place where they wanted to be.",
+    "timestamp" : "33:36-33:39"
+  },
+  {
+    "timestamp" : "33:39-33:45",
+    "text" : "They just wanted to be more in the clinical development and the commercialization and the manufacturing of those products."
+  },
+  {
+    "text" : "But I think that has resulted in most of the early innovation coming from biotech and then big pharma becoming more buyers of innovation.",
+    "timestamp" : "33:45-33:56"
+  },
+  {
+    "text" : "Do you foresee the same kind of model for the manufacturing or do you believe that manufacturing is going to remain a key competitive advantage for those who have the ability to invest in those technologies?",
+    "timestamp" : "33:56-34:10"
+  },
+  {
+    "timestamp" : "34:10-34:18",
+    "text" : "Listen, I don't think in innovative pharma manufacturing is or will be a competitive advantage."
+  },
+  {
+    "timestamp" : "34:18-34:30",
+    "text" : "I think the big challenge for the industry, frankly, is that the innovation model hasn't evolved as fast as the speed of innovation."
+  },
+  {
+    "timestamp" : "34:30-34:44",
+    "text" : "So we still rely on the old funnel model where you have to put a lot of iron to the fire on the discovery side to eventually generate that one product."
+  },
+  {
+    "text" : "And I haven't seen in evolution yet in the productivity of that innovative process.",
+    "timestamp" : "34:44-34:53"
+  },
+  {
+    "text" : "I still look at the probability of technical and regulatory success for phase one product is what, 14, 15%?",
+    "timestamp" : "34:53-35:04"
+  },
+  {
+    "timestamp" : "35:04-35:05",
+    "text" : "Correct."
+  },
+  {
+    "timestamp" : "35:05-35:08",
+    "text" : "Hasn't changed much in the last 30 years."
+  },
+  {
+    "text" : "And I think that's where the future will bring some changes, right?",
+    "timestamp" : "35:08-35:13"
+  },
+  {
+    "timestamp" : "35:13-35:37",
+    "text" : "That's where I hope AI innovations will make a difference because so far pharma has outsourced some of the discovery and certainly some of the innovation because as their top line has grown, they needed to expand their R&D outcome to support that top line."
+  },
+  {
+    "timestamp" : "35:37-35:46",
+    "text" : "And being forced through the same shape of the funnel, the base discovery has become huge in terms of effort."
+  },
+  {
+    "text" : "The companies had no way to do everything internally at that scale.",
+    "timestamp" : "35:46-35:52"
+  },
+  {
+    "text" : "They had to resource to outsourcing of some of that.",
+    "timestamp" : "35:52-35:57"
+  },
+  {
+    "text" : "I think that's where AI can make a difference.",
+    "timestamp" : "35:57-36:01"
+  },
+  {
+    "text" : "If it can improve R&D productivity.",
+    "timestamp" : "36:01-36:05"
+  },
+  {
+    "timestamp" : "36:05-36:10",
+    "text" : "And the early science are certainly encouraging in that direction."
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "36:10-36:11"
+  },
+  {
+    "text" : "there is going to be a positive outcome for the R&D and some challenges from manufacturing because the outcome will be, we will see more and more product from the current pipeline reaching regulatory success beyond the current expectations, which is great for everyone, but will pose some challenges for the organization that will have to supply all those products in an unexpected way.",
+    "timestamp" : "36:11-36:38"
+  },
+  {
+    "timestamp" : "36:38-36:39",
+    "text" : "Right."
+  },
+  {
+    "text" : "Sort of what happened to the GLP once.",
+    "timestamp" : "36:39-36:42"
+  },
+  {
+    "text" : "Nobody expected the huge commercial success and the demand and Novo and Lilly have been struggling for years now to catch up with the demand.",
+    "timestamp" : "36:42-36:53"
+  },
+  {
+    "timestamp" : "36:53-37:08",
+    "text" : "And do you think that again, because of AI, you will have and real world evidence, real world data, you'll be able to develop products that hit a narrower segment of the population."
+  },
+  {
+    "text" : "So it's not a one fit all, you know, it's going to be the same product for Carlo is going to be at that dosage and for Allen is going to be slightly different dosage or even a different delivery method or something like that.",
+    "timestamp" : "37:08-37:23"
+  },
+  {
+    "text" : "That's also a big impact on manufacturing.",
+    "timestamp" : "37:23-37:26"
+  },
+  {
+    "timestamp" : "37:26-37:27",
+    "text" : "Absolutely."
+  },
+  {
+    "text" : "And I think that's sort of the dream we have had for many years, right, of customized medicines.",
+    "timestamp" : "37:27-37:33"
+  },
+  {
+    "timestamp" : "37:33-37:36",
+    "text" : "I think we will get closer to that."
+  },
+  {
+    "timestamp" : "37:36-37:43",
+    "text" : "As at the same time, there has been a big push towards orphan diseases and rare diseases."
+  },
+  {
+    "text" : "On the other side of the equation, there is this more custom tailored medicine for individuals through real world evidence.",
+    "timestamp" : "37:43-37:53"
+  },
+  {
+    "timestamp" : "37:53-37:59",
+    "text" : "From a manufacturing perspective, again, I think is exciting, will pose new challenges."
+  },
+  {
+    "text" : "And I'm sure that the organization of the future will be happy to address those challenges.",
+    "timestamp" : "37:59-38:06"
+  },
+  {
+    "text" : "It will make life interesting.",
+    "timestamp" : "38:06-38:08"
+  },
+  {
+    "text" : "Do you sense today in your consulting that Big Pharma is interested in retaining this capability in house or it's really kind of looking to say, let me see what is out there and who else can do this better than when we could internally or the complexity to bring something that evolves so quickly.",
+    "timestamp" : "38:08-38:28"
+  },
+  {
+    "timestamp" : "38:28-38:44",
+    "text" : "For narrower space of the market might mean that it's I'd rather pay for it in case it doesn't work versus really investing in developing these capabilities, which could be really expensive over the long run."
+  },
+  {
+    "text" : "They will, but I think it would be a bold decision if Big Pharma decided to completely outsource their manufacturing.",
+    "timestamp" : "38:44-38:53"
+  },
+  {
+    "text" : "I do expect a trend towards partnerships more and more.",
+    "timestamp" : "38:53-38:59"
+  },
+  {
+    "text" : "I expect that the old relationship between customer and supplier will evolve into a more partnership of equal kind with the recognition that certain manufacturing technologies will have limited accessibility.",
+    "timestamp" : "38:59-39:16"
+  },
+  {
+    "timestamp" : "39:16-39:26",
+    "text" : "And if you look at the technology, then the role of these technological providers of manufacturing services will become more of a partner to Big Pharma."
+  },
+  {
+    "text" : "But I think Big Pharma will still have internal manufacturing capabilities.",
+    "timestamp" : "39:26-39:31"
+  },
+  {
+    "timestamp" : "39:31-39:35",
+    "text" : "So it's not going to be complete outsourcing."
+  },
+  {
+    "text" : "And if you look at the smaller biotech, so not Big Pharma, but I have a theory which may not be correct, but that, you know, if you're looking at the industry 50 years from now, it's going to be a collection or smaller midsize biotech company that have the ability to deliver innovation to a narrower set of patients.",
+    "timestamp" : "39:35-40:00"
+  },
+  {
+    "timestamp" : "40:00-40:10",
+    "text" : "So the challenges that you're talking about to sustain a very large organization, you need to have an enormous funnel and you need to have, you know, this enormous scale."
+  },
+  {
+    "timestamp" : "40:10-40:21",
+    "text" : "And then we're going towards a world where the relationship with the patient is becoming more important."
+  },
+  {
+    "text" : "You know, the relationship with the physician, the patients is not only becoming more important, but also is becoming easier to establish.",
+    "timestamp" : "40:21-40:26"
+  },
+  {
+    "text" : "Right. Because now I can have more direct contact with them and have a better understanding.",
+    "timestamp" : "40:26-40:31"
+  },
+  {
+    "timestamp" : "40:31-40:38",
+    "text" : "And then my entire supply chain and what I'm developing may be for that narrower set of patients."
+  },
+  {
+    "text" : "And because my market is smaller, I can't have this big infrastructure behind me.",
+    "timestamp" : "40:38-40:42"
+  },
+  {
+    "timestamp" : "40:42-40:46",
+    "text" : "Otherwise, I'm not able to survive long term."
+  },
+  {
+    "text" : "Do you ever see a world like that?",
+    "timestamp" : "40:46-40:49"
+  },
+  {
+    "timestamp" : "40:49-40:51",
+    "text" : "That's an interesting idea."
+  },
+  {
+    "text" : "Certainly there are forces at play that would lead in that direction.",
+    "timestamp" : "40:51-40:56"
+  },
+  {
+    "timestamp" : "40:56-41:00",
+    "text" : "Innovation is more and more focused."
+  },
+  {
+    "timestamp" : "41:00-41:08",
+    "text" : "And on the opposite end of the spectrum, there is a smaller number of pharma companies which keep growing, right?"
+  },
+  {
+    "timestamp" : "41:08-41:09",
+    "text" : "And become bigger."
+  },
+  {
+    "timestamp" : "41:09-41:10",
+    "text" : "bigger."
+  },
+  {
+    "timestamp" : "41:10-41:15",
+    "text" : "And in order to sustain these companies, you need the universe of innovation."
+  },
+  {
+    "text" : "I don't know, frankly, how much the, this innovation will continue to pursue the innovate and sell out model.",
+    "timestamp" : "41:15-41:26"
+  },
+  {
+    "text" : "Big pharma versus how many of these companies will try to build their own market and commercial capabilities and their own supply chain capabilities.",
+    "timestamp" : "41:26-41:38"
+  },
+  {
+    "text" : "I've seen less and less of that happening.",
+    "timestamp" : "41:38-41:42"
+  },
+  {
+    "text" : "And so what I expect is that you're right.",
+    "timestamp" : "41:42-41:47"
+  },
+  {
+    "timestamp" : "41:47-41:56",
+    "text" : "Innovation will be more focused on specific niche technologies and therapeutic areas."
+  },
+  {
+    "timestamp" : "41:56-42:04",
+    "text" : "But at the same time, there will be always this process of innovation and acquisition."
+  },
+  {
+    "text" : "One of the things we're seeing is that, and I don't know if it's because, you know, there's been a strong lack of IPOs and things like that for biotech companies, is that a lot of the VCs are funding companies for a longer period of time.",
+    "timestamp" : "42:04-42:19"
+  },
+  {
+    "text" : "But they also believe that there is more value in actually establishing a commercial proof of concept and then be acquired by a big pharma.",
+    "timestamp" : "42:19-42:31"
+  },
+  {
+    "text" : "And eventually you're right that there is an acquisition at the end of the tunnel, right?",
+    "timestamp" : "42:31-42:35"
+  },
+  {
+    "text" : "Where every few will stay independent and continue to grow and things like that.",
+    "timestamp" : "42:35-42:39"
+  },
+  {
+    "text" : "It'll be interesting to see if the technology then allows you to do that because it's easier to acquire customers and easier to work with them.",
+    "timestamp" : "42:39-42:47"
+  },
+  {
+    "text" : "And you don't have to go through all these layers of retailers and distributors and things like that.",
+    "timestamp" : "42:47-42:54"
+  },
+  {
+    "timestamp" : "42:54-42:56",
+    "text" : "And it might make it a little bit easier."
+  },
+  {
+    "text" : "So, and also the capabilities to gain access to the market, it's becoming more and more sophisticated and difficult for a new entrance to that game.",
+    "timestamp" : "42:56-43:08"
+  },
+  {
+    "text" : "That's true.",
+    "timestamp" : "43:08-43:09"
+  },
+  {
+    "timestamp" : "43:09-43:13",
+    "text" : "Of course, there's been a lot of conversation around tariffs and all of that."
+  },
+  {
+    "timestamp" : "43:13-43:33",
+    "text" : "And in the recent weeks, I think there was an article actually this weekend in the Wall Street Journal that talked about the hypothesis, which I don't really believe that if you have a higher tax bracket and you do most of your manufacturing in the US, then you're favored by the investors."
+  },
+  {
+    "text" : "And so your stock is performing better.",
+    "timestamp" : "43:33-43:36"
+  },
+  {
+    "timestamp" : "43:36-43:39",
+    "text" : "That was a little bit of nonsense, but it is what it is."
+  },
+  {
+    "text" : "And, but there's been a few other articles about also some of the larger pharma choosing to invest more in the US to beef up their manufacturing in response to potential geopolitical issues that we're having and things.",
+    "timestamp" : "43:39-43:55"
+  },
+  {
+    "timestamp" : "43:55-44:05",
+    "text" : "So what are your thoughts around where that is potentially going and what are the impacts of such tariffs on the industry?"
+  },
+  {
+    "text" : "There is a difference, as we said, between innovative big pharma and generics.",
+    "timestamp" : "44:05-44:11"
+  },
+  {
+    "timestamp" : "44:11-44:21",
+    "text" : "For innovative big pharma, the selection of the sourcing point for manufacturing has never been driven by labor cost efficiencies, right?"
+  },
+  {
+    "text" : "It has always been driven by strategic consideration, access to talent and tax efficiency in the supply chain.",
+    "timestamp" : "44:21-44:29"
+  },
+  {
+    "text" : "And at the same time, this group of companies is undergoing, as you said, a technological revolution.",
+    "timestamp" : "44:29-44:37"
+  },
+  {
+    "text" : "Their future pipeline requires investments because of skill and technology difference.",
+    "timestamp" : "44:37-44:44"
+  },
+  {
+    "timestamp" : "44:44-44:52",
+    "text" : "The GLP ones require investment because the success was beyond anybody's expectations."
+  },
+  {
+    "text" : "And we have seen shortages of capacity.",
+    "timestamp" : "44:52-44:55"
+  },
+  {
+    "text" : "Cell and gene therapies, it's an emerging platform technology that will, has a lot of potential.",
+    "timestamp" : "44:55-45:02"
+  },
+  {
+    "timestamp" : "45:02-45:08",
+    "text" : "So companies are in the process of deciding investment anyhow."
+  },
+  {
+    "text" : "And so it's relatively easy to redirect these investments to the US if it's the politically correct thing to do.",
+    "timestamp" : "45:08-45:17"
+  },
+  {
+    "timestamp" : "45:17-45:20",
+    "text" : "It needs to be done anyhow, right?"
+  },
+  {
+    "timestamp" : "45:20-45:28",
+    "text" : "You're not in a restructuring situation where you have to replace an existing supply chain with the new supply chain."
+  },
+  {
+    "timestamp" : "45:28-45:35",
+    "text" : "So I think we will see more of these advanced technologies coming to the US."
+  },
+  {
+    "text" : "Not surprising.",
+    "timestamp" : "45:35-45:36"
+  },
+  {
+    "timestamp" : "45:36-45:52",
+    "text" : "When I joined Operations for Speed and we made sort of the status of manufacturing capacity around the world for biologics and vaccines, the US had the largest installed base of biologics capacity."
+  },
+  {
+    "timestamp" : "45:52-45:59",
+    "text" : "Now, not for contract manufacturers, not for biosimilars, but for innovators."
+  },
+  {
+    "timestamp" : "45:59-46:10",
+    "text" : "The driver of that capacity were the, obviously the Angen, Genentech, Biogen, Regeneron, Lilly, Merck, Bristol Myers-Web of the world."
+  },
+  {
+    "text" : "But if you look at generics and biosimilar, it's a completely different story.",
+    "timestamp" : "46:10-46:16"
+  },
+  {
+    "text" : "The driver of the supply chain is really supply chain efficiency.",
+    "timestamp" : "46:16-46:22"
+  },
+  {
+    "timestamp" : "46:22-46:25",
+    "text" : "That's how those supply chains have been designed."
+  },
+  {
+    "timestamp" : "46:25-46:40",
+    "text" : "And outside of where there are regulatory requirements to be in the US, like for controlled substances, you see an evolution towards lower cost countries that can provide cost competitive product."
+  },
+  {
+    "text" : "That has been the priority and the original intent of the Axe Waxman Act, which has delivered on its promises.",
+    "timestamp" : "46:40-46:49"
+  },
+  {
+    "timestamp" : "46:49-46:54",
+    "text" : "Will tariff be able to substantially change that?"
+  },
+  {
+    "text" : "I doubt it.",
+    "timestamp" : "46:54-46:55"
+  },
+  {
+    "text" : "I doubt it.",
+    "timestamp" : "46:55-46:56"
+  },
+  {
+    "text" : "I doubt it because I would just say they're not enough.",
+    "timestamp" : "46:56-47:00"
+  },
+  {
+    "timestamp" : "47:00-47:06",
+    "text" : "There has to be some other policy component to make it sustainable."
+  },
+  {
+    "text" : "And also the big question in my eyes is what does it mean to manufacture in the US a generic product?",
+    "timestamp" : "47:06-47:14"
+  },
+  {
+    "timestamp" : "47:14-47:17",
+    "text" : "How do you define manufacturing?"
+  },
+  {
+    "timestamp" : "47:17-47:18",
+    "text" : "It's just the formulation."
+  },
+  {
+    "timestamp" : "47:18-47:21",
+    "text" : "It's the active ingredient."
+  },
+  {
+    "timestamp" : "47:21-47:24",
+    "text" : "It's just the GMP steps of the active ingredient."
+  },
+  {
+    "timestamp" : "47:24-47:34",
+    "text" : "I think there has to be a lot more clarity around that in order for companies to even consider what steps should be made."
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "47:34-47:35"
+  },
+  {
+    "timestamp" : "47:35-47:48",
+    "text" : "And then if you really wanted to be fully independent, there are so many other things like the machines, the excipients, everything is being sourced as a global supply chain."
+  },
+  {
+    "text" : "Absolutely.",
+    "timestamp" : "47:48-47:49"
+  },
+  {
+    "timestamp" : "47:49-48:06",
+    "text" : "And, you know, pharma usually starts their manufacturing process from some starting material, which is agreed upon with the regulators and that starting material, it's also has some pretty complex chemistry behind it."
+  },
+  {
+    "text" : "And those starting material, most of them come from Asia.",
+    "timestamp" : "48:06-48:11"
+  },
+  {
+    "text" : "Full supply chain independency for pharmaceuticals, in my opinion, is a long way.",
+    "timestamp" : "48:11-48:19"
+  },
+  {
+    "text" : "A pipe dream.",
+    "timestamp" : "48:19-48:20"
+  },
+  {
+    "text" : "Yeah.",
+    "timestamp" : "48:20-48:21"
+  },
+  {
+    "timestamp" : "48:21-48:22",
+    "text" : "It's really a pipe dream."
+  },
+  {
+    "text" : "It will, it can't happen.",
+    "timestamp" : "48:22-48:25"
+  },
+  {
+    "timestamp" : "48:25-48:29",
+    "text" : "It has never been anywhere fully independent, right?"
+  },
+  {
+    "text" : "At least since I've been in this industry, even when most of our, when all of our manufacturing sites were in Europe or the US, still our starting material, our solvents, our many components would be coming from elsewhere in the world.",
+    "timestamp" : "48:29-48:49"
+  },
+  {
+    "text" : "It's an interconnected world and it cannot be easily decoupled.",
+    "timestamp" : "48:49-48:54"
+  },
+  {
+    "text" : "I had a consultant spoke to last week and he was telling me that he's hearing VCs in San Francisco area.",
+    "timestamp" : "48:54-49:03"
+  },
+  {
+    "timestamp" : "49:03-49:21",
+    "text" : "They're talking about building fully automated manufacturing, a pharmaceutical manufacturing plant in the United States and taking advantage of the fact that, you know, the administration is having that as a concern, as a way of raising capital to make that happen."
+  },
+  {
+    "text" : "So, you know, this kind of combining AI robotization, the need for investment or, or onshoring of development and then creating manufacturing site in the US that could do that.",
+    "timestamp" : "49:21-49:35"
+  },
+  {
+    "timestamp" : "49:35-49:41",
+    "text" : "It still does not necessarily answer the question that we just, we just asked, but what are your thoughts on that?"
+  },
+  {
+    "text" : "Well, you see, it just transferred the burden of operating the plant from the shop floor operators to the maintenance technicians, the software engineers who will have to design and keep the plant running.",
+    "timestamp" : "49:41-49:58"
+  },
+  {
+    "timestamp" : "49:58-50:03",
+    "text" : "So, you see, there were examples of light out."
+  },
+  {
+    "text" : "There were examples of light out plants in Japan in the late nineties.",
+    "timestamp" : "50:03-50:06"
+  },
+  {
+    "text" : "They were successful.",
+    "timestamp" : "50:06-50:07"
+  },
+  {
+    "timestamp" : "50:07-50:19",
+    "text" : "Even in Teba, we had a light out plant in Japan that could make oral solid dosage products without any operator interventions."
+  },
+  {
+    "text" : "They worked pretty well.",
+    "timestamp" : "50:19-50:20"
+  },
+  {
+    "timestamp" : "50:20-50:21",
+    "text" : "They worked pretty well."
+  },
+  {
+    "text" : "You just transferred the operating costs from the shop floor to the management team and the technical team.",
+    "timestamp" : "50:21-50:30"
+  },
+  {
+    "text" : "Those plants require pretty advanced skill from a maintenance perspective, design perspective.",
+    "timestamp" : "50:30-50:37"
+  },
+  {
+    "text" : "they need to be kept up to speed in terms of software revisions.",
+    "timestamp" : "50:37-50:43"
+  },
+  {
+    "text" : "It's a little bit like your iPhone.",
+    "timestamp" : "50:43-50:45"
+  },
+  {
+    "text" : "How often do you upload and update your systems?",
+    "timestamp" : "50:45-50:49"
+  },
+  {
+    "timestamp" : "50:49-50:55",
+    "text" : "Well, for the plant, it's exactly the same, just to order of magnitude more complex."
+  },
+  {
+    "timestamp" : "50:55-50:56",
+    "text" : "Yeah, that's funny."
+  },
+  {
+    "timestamp" : "50:56-51:00",
+    "text" : "And with the, I'm sure you heard about the blackout in Europe today."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "51:00-51:01"
+  },
+  {
+    "timestamp" : "51:01-51:04",
+    "text" : "We want to do things as well."
+  },
+  {
+    "timestamp" : "51:04-51:10",
+    "text" : "So, it'd be great to have this and then the Chinese cyber attack us and we can't manufacture anything."
+  },
+  {
+    "text" : "Right.",
+    "timestamp" : "51:10-51:11"
+  },
+  {
+    "timestamp" : "51:11-51:19",
+    "text" : "So, sometimes, you know, being in a manual environment is not a, is not as bad as it's purported to be."
+  },
+  {
+    "text" : "Yeah, absolutely.",
+    "timestamp" : "51:19-51:20"
+  },
+  {
+    "text" : "So, I just wanted, and we're about an hour in, so I just wanted to ask you, so you've had a long and very interesting career in the pharmaceutical industry.",
+    "timestamp" : "51:20-51:33"
+  },
+  {
+    "text" : "If you were to, I guess, advise a young person that wanted to come in the industry today, what would you tell them about, you know, what to do, what not to do, where should they focus on and some of your, your string of pearls for being successful in the industry?",
+    "timestamp" : "51:33-51:53"
+  },
+  {
+    "text" : "Absolutely.",
+    "timestamp" : "51:53-51:54"
+  },
+  {
+    "text" : "So, listen, in manufacturing, in operations, the reality is that plants are built not in the nicest place in the world.",
+    "timestamp" : "51:54-52:04"
+  },
+  {
+    "timestamp" : "52:04-52:10",
+    "text" : "Nobody builds a pharmaceutical plant in Manhattan or in San Francisco."
+  },
+  {
+    "timestamp" : "52:10-52:19",
+    "text" : "Usually, the plants are built in industrial areas, sort of outside of the most fashionable living areas."
+  },
+  {
+    "timestamp" : "52:19-52:35",
+    "text" : "And so, a person, a young person who wants to have a career in pharmaceutical operations needs to have some flexibility, needs to be willing to spend some time in a plant because that's where everything happens, right?"
+  },
+  {
+    "text" : "Strategy is built in the headquarter, process design is done in the headquarter.",
+    "timestamp" : "52:35-52:41"
+  },
+  {
+    "text" : "But if the execution in the plant isn't right, everything gets pointless.",
+    "timestamp" : "52:41-52:47"
+  },
+  {
+    "text" : "The plant is what ultimately delivers the product and makes the difference between success and failure.",
+    "timestamp" : "52:47-52:53"
+  },
+  {
+    "text" : "And so, a person who wants to have a career and enjoy their career in operations, at the beginning of their career, they need to be a little flexible and spend time in a plant.",
+    "timestamp" : "52:53-53:06"
+  },
+  {
+    "timestamp" : "53:06-53:17",
+    "text" : "That time spent at the beginning goes a long way to help understanding what the rest of the career will bring, right?"
+  },
+  {
+    "text" : "It's a little bit like the old wisdom, don't ask your people to do things that you wouldn't do yourself.",
+    "timestamp" : "53:17-53:24"
+  },
+  {
+    "timestamp" : "53:24-53:35",
+    "text" : "And so, if you want to get to a leadership position in operations, understanding life and culture in a plant is sort of the first building block."
+  },
+  {
+    "timestamp" : "53:35-53:43",
+    "text" : "I think the other aspect is, as you said, technology is changing and will continue to change at an accelerating pace."
+  },
+  {
+    "timestamp" : "53:43-53:46",
+    "text" : "So, it's really a lifelong learning."
+  },
+  {
+    "timestamp" : "53:46-53:48",
+    "text" : "I've been 40 years in this industry."
+  },
+  {
+    "text" : "I hit the books every other month with something new that I see, I hear and I want to learn more about.",
+    "timestamp" : "53:48-53:57"
+  },
+  {
+    "timestamp" : "53:57-54:01",
+    "text" : "You can never assume that you know this industry."
+  },
+  {
+    "text" : "There is always something new to learn.",
+    "timestamp" : "54:01-54:03"
+  },
+  {
+    "timestamp" : "54:03-54:20",
+    "text" : "So, personal flexibility and family flexibility helps in that and willingness to continuously learn new things, both on the technology side, on the supply chain management side, on the business processes side."
+  },
+  {
+    "text" : "You know, you've managed very large organization with a lot of people.",
+    "timestamp" : "54:20-54:26"
+  },
+  {
+    "timestamp" : "54:26-54:33",
+    "text" : "What advice would you have in terms of leadership on how to, you know, move those organizations in the directions that you want?"
+  },
+  {
+    "text" : "So, it's all about the culture.",
+    "timestamp" : "54:33-54:34"
+  },
+  {
+    "timestamp" : "54:34-54:39",
+    "text" : "The culture is the way things get done."
+  },
+  {
+    "timestamp" : "54:39-54:44",
+    "text" : "And really, that drives, ultimately, what happens."
+  },
+  {
+    "timestamp" : "54:44-54:53",
+    "text" : "And so, in order to be successful in a leadership position in operations, you need to pay attention to the culture you create."
+  },
+  {
+    "timestamp" : "54:53-54:59",
+    "text" : "And the culture happens with what you do, not with what you say."
+  },
+  {
+    "text" : "Mm-hmm .",
+    "timestamp" : "54:59-55:00"
+  },
+  {
+    "text" : "People observe decisions you make.",
+    "timestamp" : "55:00-55:02"
+  },
+  {
+    "text" : "People observe what you do every day, what your team does every day.",
+    "timestamp" : "55:02-55:08"
+  },
+  {
+    "timestamp" : "55:08-55:12",
+    "text" : "And that shapes the culture of the organization."
+  },
+  {
+    "timestamp" : "55:12-55:15",
+    "text" : "And that ultimately drives success or failure."
+  },
+  {
+    "timestamp" : "55:15-55:36",
+    "text" : "So, paying attention to the culture, being consistent and true to yourself, every decision you make, even when it's a difficult decision, explain it and be transparent in order to drive the right culture is absolutely critical in a large global organization."
+  },
+  {
+    "text" : "One person or a small group of person cannot just make an impact on an organization of tens or thousands of people without shaping the culture.",
+    "timestamp" : "55:36-55:47"
+  },
+  {
+    "text" : "Well, Carlos, thank you so much for your time.",
+    "timestamp" : "55:47-55:49"
+  },
+  {
+    "text" : "It was a super interesting conversation.",
+    "timestamp" : "55:49-55:51"
+  },
+  {
+    "text" : "I'm sure we could speak for hours on those topics.",
+    "timestamp" : "55:51-55:55"
+  },
+  {
+    "text" : "There is so much to discover, really, and to discuss.",
+    "timestamp" : "55:55-56:00"
+  },
+  {
+    "timestamp" : "56:00-56:07",
+    "text" : "I mean, I think, like you, I feel blessed to be part of such an interesting industry."
+  },
+  {
+    "timestamp" : "56:07-56:19",
+    "text" : "And I also, and I'm sure you shared this with me, is, you know, one of my pet peeves is that I find the industry to be inefficient in some ways and that there is a lot of money that is wasted on things that it shouldn't be."
+  },
+  {
+    "timestamp" : "56:19-56:27",
+    "text" : "And that we all have a role in making it more efficient and making sure that truly benefits patients all over the world."
+  },
+  {
+    "timestamp" : "56:27-56:29",
+    "text" : "And so, I thank you for your time."
+  },
+  {
+    "timestamp" : "56:29-56:30",
+    "text" : "I really appreciate it."
+  },
+  {
+    "text" : "And I look forward to continuing our discussion and our friendship.",
+    "timestamp" : "56:30-56:34"
+  },
+  {
+    "text" : "Listen, thank you so much for the opportunity to share this few thoughts.",
+    "timestamp" : "56:34-56:37"
+  },
+  {
+    "text" : "It's an exciting industry, as you said.",
+    "timestamp" : "56:37-56:39"
+  },
+  {
+    "timestamp" : "56:39-56:41",
+    "text" : "We have been blessed to be in it."
+  },
+  {
+    "text" : "And I agree with you.",
+    "timestamp" : "56:41-56:42"
+  },
+  {
+    "timestamp" : "56:42-56:44",
+    "text" : "It will continue to change and evolve."
+  },
+  {
+    "timestamp" : "56:44-56:48",
+    "text" : "And I'm sure the next generations will do much better than we did."
+  },
+  {
+    "timestamp" : "56:48-56:49",
+    "text" : "Thank you."
+  },
+  {
+    "text" : "Thank you.",
+    "timestamp" : "56:49-56:50"
+  },
+  {
+    "text" : "Take care.",
+    "timestamp" : "56:50-56:51"
+  },
+  {
+    "text" : "Thank you.",
+    "timestamp" : "56:51-56:52"
+  },
+  {
+    "text" : "Thank you.",
+    "timestamp" : "56:52-56:53"
+  },
+  {
+    "timestamp" : "56:53-56:54",
+    "text" : "Thank you."
+  },
+  {
+    "timestamp" : "56:54-56:55",
+    "text" : "Thank you."
+  },
+  {
+    "text" : "Thank you.",
+    "timestamp" : "56:55-56:56"
+  },
+  {
+    "timestamp" : "56:56-56:57",
+    "text" : "Thank you."
+  },
+  {
+    "timestamp" : "56:57-57:01",
+    "text" : "you Thank you."
+  }
+]

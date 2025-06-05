@@ -12,7 +12,7 @@
         <img src={PIQLogo} alt="PIQ Logo" class="h-8 w-full" />
     
         <div class="text-center py-16">
-            <h1 class="text-5xl font-serif text-slate-100 px-8 mb-6">A Deep Dive <span class="italic">into</span> <br>the APOE4 Experience</h1>
+            <h1 class="text-5xl font-serif text-slate-100 px-8 mb-6">EMERGING FROM DRUG LOSS: <br> A NEW DAWN FOR BIOTECH IN JAPAN</h1>
             <h2 class="text-xl font-base text-slate-50 max-w-2xl mx-auto px-16">
                 What an analysis of more than 350 online posts, conversations, and comments reveal about the needs and hopes of this population.
             </h2>

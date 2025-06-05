@@ -1,0 +1,27 @@
+[
+    {
+      "year": 2016,
+      "products_designated": 5,
+      "products_approved": 4
+    },
+    {
+      "year": 2017,
+      "products_designated": 5,
+      "products_approved": 1
+    },
+    {
+      "year": 2018,
+      "products_designated": 6,
+      "products_approved": 3
+    },
+    {
+      "year": 2019,
+      "products_designated": 5,
+      "products_approved": 0
+    },
+    {
+      "year": 2020,
+      "products_designated": 3,
+      "products_approved": 0
+    }
+  ]

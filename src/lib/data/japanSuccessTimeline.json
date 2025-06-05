@@ -1,0 +1,40 @@
+{
+  "timeline": [
+    {
+      "id": 1,
+      "company": "Gossamer Bio",
+      "location": "San Diego, US",
+      "timeframe": "Q1 2024",
+      "strategy": "Global Phase 3 Inclusion",
+      "sentiment": "Entirely Positive",
+      "description": "First company to take advantage of changes allowing Japanese patients to enter global phase 3 studies without bridging study. Included Japanese patients in PROSPERA study of seralutinib for pulmonary arterial hypertension."
+    },
+    {
+      "id": 2,
+      "company": "Belite Bio",
+      "location": "International",
+      "timeframe": "Early 2024",
+      "strategy": "Sakigake & Orphan Designation",
+      "sentiment": "Entirely Positive",
+      "description": "Received Sakigake designation and orphan drug designation for tinlarebent (vision loss treatment). Benefits from streamlined registration process and potential price premiums."
+    },
+    {
+      "id": 3,
+      "company": "Calliditas",
+      "location": "Sweden",
+      "timeframe": "June 2024",
+      "strategy": "Strategic Partnership & Acquisition",
+      "sentiment": "Entirely Positive",
+      "description": "Partnered with Viatris Japan to bring Nefecon (IgA nephropathy treatment) to market. Successfully acquired by Asahi Kasei for $1.1BN, demonstrating commercial validation."
+    },
+    {
+      "id": 4,
+      "company": "Mannkind Corporation",
+      "location": "US",
+      "timeframe": "September 2024",
+      "strategy": "Global Phase 3 Inclusion",
+      "sentiment": "Entirely Positive",
+      "description": "Received PMDA clearance to include Japanese patients in global phase 3 trial of Clofazimine Inhalation Suspension for NTM lung disease, despite having no previous Japanese data."
+    }
+  ]
+} 

@@ -1,0 +1,82 @@
+[
+    {
+      "drug": "Olipudase Alfa (Genetical Recombination)",
+      "indication": "Acid Sphingomyelinase Deficiency",
+      "company": "Sanofi"
+    },
+    {
+      "drug": "Aducanumab",
+      "indication": "Treatment and Prevention of Alzheimer's Disease",
+      "company": "Biogen"
+    },
+    {
+      "drug": "DS-5141b",
+      "indication": "Duchenne Muscular Dystrophy (with a mutation amenable to exon 45 skipping)",
+      "company": "Daiichi Sankyo"
+    },
+    {
+      "drug": "SPM-011",
+      "indication": "Recurrent Malignant Glioma, unresectable local recurrent head and neck cancer, and advanced non-squamous cell carcinoma",
+      "company": "Stella Pharma"
+    },
+    {
+      "drug": "Viltolarsen",
+      "indication": "New drug with a new indication",
+      "company": "NS Pharma"
+    },
+    {
+      "drug": "Baloxavir Marboxi",
+      "indication": "New drug with a new indication",
+      "company": "Shionogi"
+    },
+    {
+      "drug": "Gilteritinib Fumarat",
+      "indication": "New drug with a new indication",
+      "company": "Astellas Pharma"
+    },
+    {
+      "drug": "Borofalan",
+      "indication": "New drug with a new indication",
+      "company": "Stella Pharma"
+    },
+    {
+      "drug": "Tepotinib Hydrochloride Hydrate",
+      "indication": "New drug with a new indication",
+      "company": "Merck KGaA"
+    },
+    {
+      "drug": "Entrectinib",
+      "indication": "New drug with a new indication",
+      "company": "Roche"
+    },
+    {
+      "drug": "Tafamidis Meglumine",
+      "indication": "New indication/dosage",
+      "company": "Pfizer"
+    },
+    {
+      "drug": "Sirolimus",
+      "indication": "New administration route",
+      "company": "Pfizer"
+    },
+    {
+      "drug": "Pembrolizumab",
+      "indication": "Gastric cancer",
+      "company": "Merck & Co."
+    },
+    {
+      "drug": "RTA402",
+      "indication": "Diabetic kidney disease",
+      "company": "Reata Pharmaceuticals"
+    },
+    {
+      "drug": "JR-141",
+      "indication": "Mucopolysaccharidosis Type II (Hunter syndrome)",
+      "company": "JCR Pharmaceuticals"
+    },
+    {
+      "drug": "MSC2156119J",
+      "indication": "Advanced non-small-cell lung cancers with MET exon 14 skipping mutations",
+      "company": "Merck KGaA"
+    }
+  ]
