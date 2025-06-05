@@ -28,23 +28,32 @@
     });
 </script>
 
-<div class="flex flex-col align-baseline">
-    <div class="bg-slate-800 px-32 flex flex-col justify-around relative">
-        <div class="text-left py-16 relative z-10">
-        <img src={PIQLogo} alt="PIQ Logo" class="h-8 w-8 mb-12" />
-    
-        <h1 class="text-4xl font-serif text-slate-100 mb"><span class="italic">Emerging from Drug Loss:</span> <br>
-            <span class="text-2xl font-bold">A New Dawn for Biotech in Japan</span></h1>
-        </div>
-        <div class="text-left py-16">
-                <h2 class="text-lg font-base text-slate-50 max-w-prose text-left">
-                Recent reforms to pharmaceutical and medical device regulations
-                in Japan are creating greater opportunities for foreign drug
-                developers to market their products in Japan, and deliver the
-                latest medicines to Japanese patients.
-            </h2>
+<div class="w-full">
+    <div class="bg-slate-800 px-8 sm:px-16 lg:px-32 py-16">
+        <div class="max-w-4xl mx-auto">
+            <!-- Logo -->
+            <img src={PIQLogo} alt="PIQ Logo" class="h-8 w-8 mb-12" />
             
+            <!-- Main Title -->
+            <div class="mb-8">
+                <h1 class="text-3xl sm:text-4xl font-serif text-slate-100 leading-tight">
+                    <span class="italic">Emerging from Drug Loss:</span>
+                    <br class="hidden sm:block">
+                    <span class="text-xl sm:text-2xl font-bold block mt-2">
+                        A New Dawn for Biotech in Japan
+                    </span>
+                </h1>
+            </div>
             
+            <!-- Subtitle -->
+            <div class="max-w-3xl">
+                <h2 class="text-base sm:text-lg font-normal text-slate-50 leading-relaxed">
+                    Recent reforms to pharmaceutical and medical device regulations
+                    in Japan are creating greater opportunities for foreign drug
+                    developers to market their products in Japan, and deliver the
+                    latest medicines to Japanese patients.
+                </h2>
+            </div>
         </div>
     </div>
 </div>
