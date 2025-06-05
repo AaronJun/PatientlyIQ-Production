@@ -2,7 +2,7 @@
     import { fly } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
     import { onMount } from 'svelte';
-    import sakigakeListData from '../../routes/KYBORAdemo/sakigakelist.json';
+    import sakigakeListData from '../../routes/kyborajp/sakigakelist.json';
 
     export let isOpen: boolean = false;
     export let onClose: () => void;

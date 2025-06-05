@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
-    import sakigakeData from '../../routes/KYBORAdemo/sakigake.json';
+    import sakigakeData from '../../routes/kyborajp/sakigake.json';
     import SakigakeListDrawer from './SakigakeListDrawer.svelte';
 
     // Transform the data for waffle chart representation
