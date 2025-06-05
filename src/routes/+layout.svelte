@@ -23,6 +23,7 @@
   $: isRPDPRVDashRoute = routeID[1] === "rpdprvdash" || routeID[1] === "prvconstellation";
   $: isAlzapoe4Route = routeID[1] === "alzapoe4";
   $: isKYBORADemoRoute = routeID[1] === "KYBORAdemo";
+  $: isKyborajpRoute = routeID[1] === "kyborajp";
   $: isAtlasRoute = routeID[1] === "atlas";
   $: isPLHDRoute = routeID[1] === "PLHD";
 
@@ -121,7 +122,7 @@ injectSpeedInsights();
 <svelte:window bind:innerWidth={pageWidth} />
 
 <!-- Only render the Header if not on the excluded routes -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute}
   <Header />
 {/if}
 
@@ -130,6 +131,6 @@ injectSpeedInsights();
 </div>  
 
 <!-- Conditionally render Footer based on route if needed -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute  }
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute }
   <Footer />
 {/if}

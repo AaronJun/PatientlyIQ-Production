@@ -119,7 +119,7 @@
 
     <div class="mt-8 md:ml-24">
      <h3 class="section-header text-sky-800 mb-6">Introduction</h3>   
-        <p class="text-left text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
+        <p class="text-left text-base md:text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
             For a number of years, strict regulations and unfavorable market access conditions for new medicines have led to a phenomena in Japan known as drug lag or even drug loss. This is where foreign companies delay (in the case of drug lag) or even abandon (drug loss) developing and launching their products in Japan, as the barriers to market entry are too high. Drug loss presents a serious issue for Japanese patients who are unable to access new medicines that have already been approved in other markets.
             <br><br>
 
@@ -143,7 +143,7 @@
         <div class="flex flex-col bg-slate-50 p-4 outline-dashed outline-1 outline-slate-500">
             <MarketSizeChart />
         </div>
-        <p class="text-left ml-24 text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
+        <p class="text-left ml-24 text-base md:text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
             
             In recent years however, the Japanese government and the
             private sector have begun to address the issue of drug loss and
@@ -187,8 +187,8 @@
  <h3 class="section-header text-sky-800 mt-12 md:ml-24 mb-6">
         Origins of Drug Loss in Japan</h3>
 
-            <h4 class="text-lg font-bold md:ml-24 uppercase text-sky-800">Drug Price Cuts</h4>
-            <p class="prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold md:ml-24 uppercase text-sky-800">Drug Price Cuts</h4>
+            <p class="prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 As with other markets around the world, Japan has faced
                 increasing pressure to reduce spending on healthcare and
                 drugs. This has led to Japan's <span class="font-mono font-bold text-sm text-sky-900">National Health Insurance (NHI)</span>
@@ -199,8 +199,8 @@
             </p>
 
 
-            <h4 class="text-lg font-bold md:ml-24 uppercase text-sky-800">Mandatory Japanese Phase 1 Data</h4>
-            <p class="prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold md:ml-24 uppercase text-sky-800">Mandatory Japanese Phase 1 Data</h4>
+            <p class="prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 Until late 2023, Japan's regulators required phase 1 data from
                 trials conducted in Japanese patients before allowing Japanese
                 patients to enter later phase global, registrational trials.
@@ -216,8 +216,8 @@
 
             <div class="section-divider"></div>
 
-            <h4 class="text-lg font-bold md:ml-24 uppercase text-sky-800">Drug Pricing Reforms</h4>
-            <p class="text-left md:ml-24 text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold md:ml-24 uppercase text-sky-800">Drug Pricing Reforms</h4>
+            <p class="text-left md:ml-24 text-base md:text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
                 <span class="font-mono font-bold text-sm text-sky-900">Price Maintenance Premiums (PMP)</span> were first introduced in
                 2Ca012, with the aim of protecting prices of innovative drugs from
                 frequent price reductions, to encourage investment in new drug
@@ -236,7 +236,7 @@
                 <DrugLagWaffleChart />
                 
                 <div class="flex flex-col">
-                <p class="text-left md:ml-24 text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
+                <p class="text-left md:ml-24 text-base md:text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
                 Recent updates to drug pricing policies, including updating <span class="font-mono font-bold text-sm text-sky-900">PMP</span>
                 eligibility to allow more small and mid-sized life science firms to
                 benefit, have further improved conditions for drug developers
@@ -247,7 +247,7 @@
             </p>
 
             <h5 class="text-sm font-bold md:ml-24 text-sky-800 mb-4">Expanded Eligibility for Premiums for New Drugs</h5>
-            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-lg text-slat-800 font-serif md:ml-24 mb-8">
+            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slat-800 font-serif md:ml-24 mb-8">
                 <li class="mb-4">
                     Previously, new drugs had to apply for marketing approval in
                     Japan within 30 days of filing to US or EU regulatory bodies
@@ -268,7 +268,7 @@
             </ul>
 
             <h5 class="text-sm font-bold text-sky-800 mb-4 md:ml-24">Revisions to Eligibility for Price Maintenance Premiums (PMPs)</h5>
-            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif md:ml-24 mb-8">
+            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif md:ml-24 mb-8">
                 <li class="mb-4">
                     <span class="font-mono font-bold text-sm text-sky-900">PMPs</span> have traditionally been awarded on the basis of a
                     company's level of R&D in Japan, effectively penalizing smaller
@@ -285,7 +285,7 @@
             </ul>
 
             <h5 class="text-sm font-bold md:ml-24 text-sky-800 mb-4">Additional Premiums for Multiple Drug Indications</h5>
-            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif md:ml-24 mb-8">
+            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif md:ml-24 mb-8">
                 <li>
                     Previously, a drug could only qualify for a post-launch price
                     premium for one indication. This limited the incentives for
@@ -298,7 +298,7 @@
             </ul>
 
             <h5 class="text-sm font-bold text-sky-800 mb-4 md:ml-24">Post-listing Upward Price Adjustment for Imported Drugs</h5>
-            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif md:ml-24 mb-8">
+            <ul class="list-disc pl-6 prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif md:ml-24 mb-8">
                 <li>
                     This measure has been introduced to shield imported drugs
                     from drastic price drops during Japan's annual price revisions,
@@ -312,8 +312,8 @@
             </ul>
 
         </div>
-           <h4 class="text-lg font-bold uppercase md:ml-24 text-sky-800">Flexible Clinical Trial Requirements</h4>
-            <p class="prose max-w-prose text-left md:ml-24 text-lg text-slate-800 font-serif mt-8 mb-12">
+           <h4 class="text-base md:text-lg font-bold uppercase md:ml-24 text-sky-800">Flexible Clinical Trial Requirements</h4>
+            <p class="prose max-w-prose text-left md:ml-24 text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 In late 2023, Japan's <span class="font-mono font-bold text-sm text-sky-900">Ministry of Health, Labor, and Welfare
                 (MHLW)</span> announced that it was relaxing the requirement for
                 early-phase clinical data from Japanese subjects before allowing
@@ -336,8 +336,8 @@
             <div class="section-divider"></div>
 
             <div class="flex flex-col md:ml-24">
-            <h4 class="text-lg font-bold uppercase text-sky-800">Sakigake Designation for Breakthrough Drugs</h4>
-            <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold uppercase text-sky-800">Sakigake Designation for Breakthrough Drugs</h4>
+            <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 In an effort to counter drug lag, Japan's <span class="font-mono font-bold text-sm text-sky-900">MHLW</span> launched the
                 <span class="font-mono font-bold text-sm text-sky-900">Sakigake</span> designation system in 2015 <a href="#ref7" class="footnote font-mono underline text-2xs hover:text-blue-500 transition-colors" data-ref="ref7">7</a>. Meaning 'pioneer' or
                 'forerunner', the <span class="font-mono font-bold text-sm text-sky-900">Sakigake</span> program aims to fast-track the
@@ -353,7 +353,7 @@
                 </div>
 
                 <div class="flex flex-col md:ml-24">
-                <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+                <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 To qualify for <span class="font-mono font-bold text-sm text-sky-900">Sakigake</span> designation, a drug must demonstrate
                 strong early clinical data in terms of safety and efficacy, be
                 submitted for market approval first in Japan, or at least
@@ -381,8 +381,8 @@
             <div class="section-divider"></div>
 
             <div class="flex flex-col md:ml-24">    
-            <h4 class="text-lg font-bold uppercase text-sky-800">Investing in Drug Discovery</h4>
-            <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold uppercase text-sky-800">Investing in Drug Discovery</h4>
+            <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 In addition to regulatory reforms to encourage more non-
                 Japanese firms to develop and launch their products in Japan,
                 the Japanese government and some pharmaceutical companies
@@ -401,7 +401,7 @@
                 <AMEDEcosystemFlow />
                 
                 <div class="flex flex-col md:ml-24">
-                <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+                <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 Japanese pharmaceutical companies have also created dedicated
                 research funds to encourage partnerships and invest in new drug
                 development. For instance, <span class="font-mono font-bold text-sm text-sky-900">Astellas</span>, <span class="font-mono font-bold text-sm text-sky-900">Shionogi</span>, and <span class="font-mono font-bold text-sm text-sky-900">Daiichi Sankyo</span>
@@ -427,8 +427,8 @@
             <div class="section-divider"></div>
 
             <div class="flex flex-col md:ml-24">
-            <h4 class="text-lg font-bold uppercase text-sky-800">English Language Registration</h4>
-            <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+            <h4 class="text-base md:text-lg font-bold uppercase text-sky-800">English Language Registration</h4>
+            <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 In another effort to ease the application process for non-Japanese
                 firms seeking marketing approval for their products in Japan, the
                 <span class="font-mono font-bold text-sm text-sky-900">MHLW</span> also announced in September 2024 that, under certain
@@ -448,7 +448,7 @@
 
             <div class="flex flex-col md:ml-24">    
          <h3 class="section-header text-sky-800 mb-6">Impact of the Changes</h3>
-            <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+            <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 Foreign biotech companies are now taking advantage of the
                 recent reforms, with a growing number of firms conducting drug
                 development and launches in Japan in recent years.
@@ -491,7 +491,7 @@
                 </div>
                 
                 <div class="flex flex-col md:ml-24">
-                <p class="text-left text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
+                <p class="text-left text-base md:text-lg max-w-prose text-slate-800 font-serif mt-8 mb-12">
                 Following the introduction of incentives to boost drug development in Japan such as <span class="font-mono font-bold text-sm text-sky-900">Sakigake</span> designation and <span class="font-mono font-bold text-sm text-sky-900">PMPs</span>, the average
                 drug lag has also decreased by approximately three years since
                 new reforms introduced <a href="#ref12" class="footnote font-mono underline text-2xs hover:text-blue-500 transition-colors" data-ref="ref12">12</a>.
@@ -506,7 +506,7 @@
 
             <div class="flex flex-col md:ml-24">
                 <h3 class="section-header text-sky-800 mb-6">Conclusion</h3>   
-                <p class="prose max-w-prose text-left text-lg text-slate-800 font-serif mt-8 mb-12">
+                <p class="prose max-w-prose text-left text-base md:text-lg text-slate-800 font-serif mt-8 mb-12">
                 The Japanese government has clearly recognized the need to
                 address the issues of drug lag and loss. For too long, patients have
                 had to wait for, or simply gone without the latest drugs available
