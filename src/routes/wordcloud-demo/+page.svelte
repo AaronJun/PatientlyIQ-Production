@@ -8,6 +8,30 @@
     group: string;
     sentiment: string;
   }
+
+  interface PompeData {
+    executive_summary: string;
+    drug_sentiment: {
+      positive_drivers: {
+        themes: string[];
+        quotes: string[];
+      };
+      negative_drivers: {
+        themes: string[];
+        quotes: string[];
+      };
+    };
+    infusion_experience: {
+      positive_drivers: {
+        themes: string[];
+        quotes: string[];
+      };
+      negative_drivers: {
+        themes: string[];
+        quotes: string[];
+      };
+    };
+  }
   
   let allData: WordCloudItem[] = [];
   let drugSentimentData: WordCloudItem[] = [];
@@ -15,17 +39,28 @@
   let loading: boolean = true;
   let error: string | null = null;
   
+  // Pompe data
+  let pompeData: PompeData | null = null;
+  let pompeLoading: boolean = true;
+  let pompeError: string | null = null;
+  
   onMount(async () => {
     try {
-      console.log('Starting to fetch data...');
+      // Load original word cloud data
+      console.log('Starting to fetch word cloud data...');
       const response = await fetch('/data/rare-obesity-phrases.json');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      allData = await response.json();
-      console.log('Data loaded successfully:', allData.length, 'items');
+      const rawData = await response.json();
+      // Convert frequency from string to number
+      allData = rawData.map((item: any) => ({
+        ...item,
+        frequency: parseInt(item.frequency, 10) || 1
+      }));
+      console.log('Word cloud data loaded successfully:', allData.length, 'items');
       
       // Filter data by group
       drugSentimentData = allData.filter((item: WordCloudItem) => item.group === 'Drug Sentiment');
@@ -36,18 +71,150 @@
       
       loading = false;
     } catch (err: unknown) {
-      console.error('Error loading data:', err);
+      console.error('Error loading word cloud data:', err);
       error = err instanceof Error ? err.message : 'Unknown error occurred';
       loading = false;
+    }
+
+    // Load Pompe patient sentiment data
+    try {
+      console.log('Starting to fetch Pompe patient data...');
+      const pompeResponse = await fetch('/data/pompe-patient-sentiment-summary.json');
+      
+      if (!pompeResponse.ok) {
+        throw new Error(`HTTP error! status: ${pompeResponse.status}`);
+      }
+      
+      pompeData = await pompeResponse.json();
+      console.log('Pompe data loaded successfully:', pompeData);
+      
+      pompeLoading = false;
+    } catch (err: unknown) {
+      console.error('Error loading Pompe data:', err);
+      pompeError = err instanceof Error ? err.message : 'Unknown error occurred';
+      pompeLoading = false;
     }
   });
 </script>
 
 <div class="container bg-slate-100 text-left align-left justify-start">
   <h1 class="text-2xl font-bold">Pompe Disease Patient Journey Wordclouds</h1>
-  <p class="description">
-    For the Pompe community, treatment  a mix of resilience and exhaustion. While the availability of enzyme therapies offers a critical lifeline, the day-to-day realities—logistical, emotional, and physical—often undermine that sense of progress. What emerges across patient narratives is not just a medical journey, but a sustained negotiation with systems, side effects, and uncertainty. Sentiment runs deeper than satisfaction or dissatisfaction; it reflects the strain of maintaining stability in a landscape where access, response, and relief are never guaranteed.
-  </p>
+  
+  <!-- Pompe Patient Sentiment Summary -->
+  {#if pompeLoading}
+    <div class="pompe-loading">
+      <p>Loading patient sentiment data...</p>
+    </div>
+  {:else if pompeError}
+    <div class="pompe-error">
+      <p>Error loading patient sentiment data: {pompeError}</p>
+    </div>
+  {:else if pompeData}
+    <div class="pompe-summary">
+      <h2>Patient Sentiment Summary</h2>
+      <p class="executive-summary">{pompeData.executive_summary}</p>
+      
+      <div class="sentiment-sections">
+        <div class="sentiment-section">
+          <h3>Drug Sentiment</h3>
+          <div class="sentiment-drivers">
+            <div class="positive-drivers">
+              <h4>Positive Drivers</h4>
+              <div class="themes">
+                <strong>Key Themes:</strong>
+                <ul>
+                  {#each pompeData.drug_sentiment.positive_drivers.themes as theme}
+                    <li>{theme}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="quotes">
+                <strong>Patient Quotes:</strong>
+                <ul>
+                  {#each pompeData.drug_sentiment.positive_drivers.quotes as quote}
+                    <li>"{quote}"</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+            
+            <div class="negative-drivers">
+              <h4>Negative Drivers</h4>
+              <div class="themes">
+                <strong>Key Themes:</strong>
+                <ul>
+                  {#each pompeData.drug_sentiment.negative_drivers.themes as theme}
+                    <li>{theme}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="quotes">
+                <strong>Patient Quotes:</strong>
+                <ul>
+                  {#each pompeData.drug_sentiment.negative_drivers.quotes as quote}
+                    <li>"{quote}"</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sentiment-section">
+          <h3>Infusion Experience</h3>
+          <div class="sentiment-drivers">
+            <div class="positive-drivers">
+              <h4>Positive Drivers</h4>
+              <div class="themes">
+                <strong>Key Themes:</strong>
+                <ul>
+                  {#each pompeData.infusion_experience.positive_drivers.themes as theme}
+                    <li>{theme}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="quotes">
+                <strong>Patient Quotes:</strong>
+                <ul>
+                  {#each pompeData.infusion_experience.positive_drivers.quotes as quote}
+                    <li>"{quote}"</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+            
+            <div class="negative-drivers">
+              <h4>Negative Drivers</h4>
+              <div class="themes">
+                <strong>Key Themes:</strong>
+                <ul>
+                  {#each pompeData.infusion_experience.negative_drivers.themes as theme}
+                    <li>{theme}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="quotes">
+                <strong>Patient Quotes:</strong>
+                <ul>
+                  {#each pompeData.infusion_experience.negative_drivers.quotes as quote}
+                    <li>"{quote}"</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+  
+  <!-- Original Word Clouds -->
+  <div class="wordclouds-header">
+    <h2>Word Cloud Analysis</h2>
+    <p class="description">
+      Interactive word clouds showing patient sentiment patterns and treatment experiences.
+    </p>
+  </div>
   
   {#if loading}
     <div class="loading-container">
@@ -140,6 +307,132 @@
     margin-bottom: 1rem;
     color: #161616;
     text-align: center;
+  }
+  
+  .pompe-summary {
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .pompe-summary h2 {
+    font-size: 1.8rem;
+    color: #161616;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .executive-summary {
+    font-size: 1.1rem;
+    color: #525252;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-style: italic;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+  }
+  
+  .sentiment-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .sentiment-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: #fafafa;
+  }
+  
+  .sentiment-section h3 {
+    font-size: 1.3rem;
+    color: #161616;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+  }
+  
+  .sentiment-drivers {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .positive-drivers, .negative-drivers {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .positive-drivers {
+    background: #f0f9f0;
+    border-left: 4px solid #24a148;
+  }
+  
+  .negative-drivers {
+    background: #fef2f2;
+    border-left: 4px solid #da1e28;
+  }
+  
+  .positive-drivers h4 {
+    color: #0f5132;
+    margin-bottom: 0.75rem;
+  }
+  
+  .negative-drivers h4 {
+    color: #842029;
+    margin-bottom: 0.75rem;
+  }
+  
+  .themes, .quotes {
+    margin-bottom: 1rem;
+  }
+  
+  .themes strong, .quotes strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .themes ul, .quotes ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+  
+  .themes li, .quotes li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .quotes li {
+    font-style: italic;
+    color: #525252;
+  }
+  
+  .pompe-loading, .pompe-error {
+    text-align: center;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .pompe-error {
+    color: #dc2626;
+    background: #fef2f2;
+    border-radius: 8px;
+  }
+  
+  .wordclouds-header {
+    margin: 3rem 0 2rem 0;
+    text-align: center;
+  }
+  
+  .wordclouds-header h2 {
+    font-size: 2rem;
+    color: #161616;
+    margin-bottom: 0.5rem;
   }
   
   .description {
@@ -295,7 +588,7 @@
   }
   
   @media (max-width: 1024px) {
-    .wordclouds-grid {
+    .wordclouds-grid, .sentiment-sections {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
@@ -326,6 +619,14 @@
       flex-direction: column;
       align-items: center;
       gap: 0.75rem;
+    }
+    
+    .sentiment-drivers {
+      gap: 1rem;
+    }
+    
+    .pompe-summary {
+      padding: 1rem;
     }
   }
 </style> 
