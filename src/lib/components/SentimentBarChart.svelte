@@ -24,6 +24,7 @@
   };
 
   // Sort data by frequency descending
+  $: sortedData = [...data].sort((a, b) => b.frequency - a.frequency);
 
   function getColor(sentiment: string): string {
     return sentimentColors[sentiment as keyof typeof sentimentColors] || '#6b7280';
