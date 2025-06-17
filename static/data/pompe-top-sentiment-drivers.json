@@ -1,0 +1,98 @@
+[
+  {
+    "word": "Supported",
+    "frequency": 4,
+    "topic": "supportive staff",
+    "parent topic": "visit experience",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Grateful",
+    "frequency": 5,
+    "topic": "treatment availability",
+    "parent topic": "drug access",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Relieved",
+    "frequency": 4,
+    "topic": "treatment response",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Fatigue",
+    "frequency": 4,
+    "topic": "side effects",
+    "parent topic": "drug impact",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Denied",
+    "frequency": 3,
+    "topic": "insurance blocks",
+    "parent topic": "system barriers",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Pain",
+    "frequency": 4,
+    "topic": "infusion discomfort",
+    "parent topic": "physical experience",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Burden",
+    "frequency": 4,
+    "topic": "treatment burden",
+    "parent topic": "system barriers",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Improvement",
+    "frequency": 3,
+    "topic": "treatment response",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Itching",
+    "frequency": 3,
+    "topic": "infusion reactions",
+    "parent topic": "physical experience",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Travel",
+    "frequency": 4,
+    "topic": "logistical burden",
+    "parent topic": "system barriers",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Appreciation",
+    "frequency": 3,
+    "topic": "care recognition",
+    "parent topic": "visit experience",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Despair",
+    "frequency": 4,
+    "topic": "emotional toll",
+    "parent topic": "mental health",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  }
+]

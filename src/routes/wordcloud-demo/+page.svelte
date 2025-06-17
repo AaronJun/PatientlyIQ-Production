@@ -1,5 +1,6 @@
 <script lang="ts">
   import CarbonWordCloud from '$lib/wordcloud/CarbonWordCloud.svelte';
+  import SentimentBarChart from '$lib/components/SentimentBarChart.svelte';
   import { onMount } from 'svelte';
   
   interface WordCloudItem {
@@ -7,6 +8,8 @@
     frequency: number;
     group: string;
     sentiment: string;
+    topic?: string;
+    "parent topic"?: string;
   }
 
   interface PompeData {
@@ -32,6 +35,16 @@
       };
     };
   }
+
+  interface PatientQuote {
+    quote: string;
+    sentiment: string;
+    topic_1: string;
+    topic_2: string;
+    topic_3: string;
+    topic_4: string;
+    topic_5: string;
+  }
   
   let allData: WordCloudItem[] = [];
   let drugSentimentData: WordCloudItem[] = [];
@@ -39,10 +52,66 @@
   let loading: boolean = true;
   let error: string | null = null;
   
+  // Sentiment drivers data
+  let sentimentDriversData: WordCloudItem[] = [];
+  let drugSentimentDrivers: WordCloudItem[] = [];
+  let infusionExperienceDrivers: WordCloudItem[] = [];
+  let driversLoading: boolean = true;
+  let driversError: string | null = null;
+  
   // Pompe data
   let pompeData: PompeData | null = null;
   let pompeLoading: boolean = true;
   let pompeError: string | null = null;
+
+  // Patient quotes data
+  let patientQuotes: PatientQuote[] = [];
+  let drugSentimentQuotes: PatientQuote[] = [];
+  let infusionExperienceQuotes: PatientQuote[] = [];
+  let quotesLoading: boolean = true;
+  let quotesError: string | null = null;
+
+  // Section expansion state
+  let expandedSection: 'drug' | 'infusion' | null = 'infusion';
+
+  function toggleSection(section: 'drug' | 'infusion') {
+    if (expandedSection === section) {
+      expandedSection = null;
+    } else {
+      expandedSection = section;
+    }
+  }
+
+  // Topics that relate to drug sentiment
+  const drugSentimentTopics = [
+    'treatment efficacy', 'drug availability', 'drug response', 'drug tolerance', 
+    'drug safety', 'drug sustainability', 'treatment burden', 'lab improvement',
+    'clinical response', 'long-term outcome', 'treatment milestone', 'hope',
+    'muscle function', 'stability', 'immunogenicity', 'antibody monitoring',
+    'adverse reactions', 'treatment access', 'decision burden'
+  ];
+
+  // Topics that relate to infusion experience
+  const infusionExperienceTopics = [
+    'infusion duration', 'infusion routine', 'infusion logistics', 'infusion interruption',
+    'caregiver support', 'treatment burden', 'fatigue', 'emotional toll'
+  ];
+
+  function categorizeQuote(quote: PatientQuote): 'drug' | 'infusion' | 'both' | 'neither' {
+    const allTopics = [quote.topic_1, quote.topic_2, quote.topic_3, quote.topic_4, quote.topic_5];
+    
+    const hasDrugTopic = allTopics.some(topic => drugSentimentTopics.includes(topic));
+    const hasInfusionTopic = allTopics.some(topic => infusionExperienceTopics.includes(topic));
+    
+    if (hasDrugTopic && hasInfusionTopic) return 'both';
+    if (hasDrugTopic) return 'drug';
+    if (hasInfusionTopic) return 'infusion';
+    return 'neither';
+  }
+
+  function getTopicTags(quote: PatientQuote): string[] {
+    return [quote.topic_1, quote.topic_2, quote.topic_3, quote.topic_4, quote.topic_5];
+  }
   
   onMount(async () => {
     try {
@@ -76,6 +145,39 @@
       loading = false;
     }
 
+    // Load patient quotes data
+    try {
+      console.log('Starting to fetch patient quotes data...');
+      const quotesResponse = await fetch('/data/pompe-patient-quotes.json');
+      
+      if (!quotesResponse.ok) {
+        throw new Error(`HTTP error! status: ${quotesResponse.status}`);
+      }
+      
+      patientQuotes = await quotesResponse.json();
+      console.log('Patient quotes loaded successfully:', patientQuotes.length, 'quotes');
+      
+      // Categorize quotes
+      drugSentimentQuotes = patientQuotes.filter(quote => {
+        const category = categorizeQuote(quote);
+        return category === 'drug' || category === 'both';
+      });
+      
+      infusionExperienceQuotes = patientQuotes.filter(quote => {
+        const category = categorizeQuote(quote);
+        return category === 'infusion' || category === 'both';
+      });
+      
+      console.log('Drug sentiment quotes:', drugSentimentQuotes.length);
+      console.log('Infusion experience quotes:', infusionExperienceQuotes.length);
+      
+      quotesLoading = false;
+    } catch (err: unknown) {
+      console.error('Error loading patient quotes:', err);
+      quotesError = err instanceof Error ? err.message : 'Unknown error occurred';
+      quotesLoading = false;
+    }
+
     // Load Pompe patient sentiment data
     try {
       console.log('Starting to fetch Pompe patient data...');
@@ -94,12 +196,60 @@
       pompeError = err instanceof Error ? err.message : 'Unknown error occurred';
       pompeLoading = false;
     }
+
+    // Load sentiment drivers data
+    try {
+      console.log('Starting to fetch sentiment drivers data...');
+      const driversResponse = await fetch('/data/pompe-top-sentiment-drivers.json');
+      
+      if (!driversResponse.ok) {
+        throw new Error(`HTTP error! status: ${driversResponse.status}`);
+      }
+      
+      const rawDriversData = await driversResponse.json();
+      sentimentDriversData = rawDriversData.map((item: any) => ({
+        ...item,
+        frequency: parseInt(item.frequency, 10) || item.frequency
+      }));
+      
+      // Filter data by group
+      drugSentimentDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Drug Sentiment');
+      infusionExperienceDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Infusion Experience');
+      
+      console.log('Sentiment drivers data loaded successfully:', sentimentDriversData.length, 'items');
+      console.log('Drug Sentiment drivers:', drugSentimentDrivers.length, 'items');
+      console.log('Infusion Experience drivers:', infusionExperienceDrivers.length, 'items');
+      
+      // Debug sentiment filtering
+      const drugPositive = drugSentimentDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');
+      const drugNegative = drugSentimentDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative');
+      const infusionPositive = infusionExperienceDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');
+      const infusionNegative = infusionExperienceDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative');
+      
+      console.log('Drug Positive drivers:', drugPositive);
+      console.log('Drug Negative drivers:', drugNegative);
+      console.log('Infusion Positive drivers:', infusionPositive);
+      console.log('Infusion Negative drivers:', infusionNegative);
+      
+      // Check all unique sentiment values
+      const allSentiments = [...new Set(sentimentDriversData.map(d => d.sentiment))];
+      console.log('All sentiment values found:', allSentiments);
+      
+      driversLoading = false;
+    } catch (err: unknown) {
+      console.error('Error loading sentiment drivers data:', err);
+      driversError = err instanceof Error ? err.message : 'Unknown error occurred';
+      driversLoading = false;
+    }
   });
 </script>
 
-<div class="container bg-slate-100 text-left align-left justify-start">
-  <h1 class="text-2xl font-bold">Pompe Disease Patient Journey Wordclouds</h1>
-  
+<div class="container flex flex-col text-left align-left justify-start h-full">
+  <div class="flex flex-col">
+    <div class="flex flex-row">
+    <h1 class="text-2xl font-bold">Pompe Disease Patient Journey Wordclouds</h1>
+  </div>
+  </div>
   <!-- Pompe Patient Sentiment Summary -->
   {#if pompeLoading}
     <div class="pompe-loading">
@@ -110,96 +260,203 @@
       <p>Error loading patient sentiment data: {pompeError}</p>
     </div>
   {:else if pompeData}
-    <div class="pompe-summary">
+    <div class="pompe-summary flex flex-col md:flex-row md:justify-between w-full h-full">
       <h2>Patient Sentiment Summary</h2>
-      <p class="executive-summary">{pompeData.executive_summary}</p>
-      
-      <div class="sentiment-sections">
-        <div class="sentiment-section">
-          <h3>Drug Sentiment</h3>
-          <div class="sentiment-drivers">
-            <div class="positive-drivers">
-              <h4>Positive Drivers</h4>
-              <div class="themes">
-                <strong>Key Themes:</strong>
-                <ul>
-                  {#each pompeData.drug_sentiment.positive_drivers.themes as theme}
-                    <li>{theme}</li>
+      <p class="executive-summary max-w-prose">{pompeData.executive_summary}</p>
+      </div>
+      <div class="flex flex-col h-full">
+            <div class="integrated-sections min-h-full">
+        <!-- Infusion Experience Section -->
+        <div class="integrated-section"
+             class:expanded={expandedSection === 'infusion'}
+             class:collapsed={expandedSection !== null && expandedSection !== 'infusion'}
+             on:click={() => toggleSection('infusion')}>
+          <div class="section-title">
+            <h3 class="vertical-title">Infusion Experience</h3>
+          </div>
+          <div class="section-content-wrapper"
+               class:hidden={expandedSection !== null && expandedSection !== 'infusion'}>
+            
+            
+            <!-- Patient Quotes for Infusion Experience -->
+            <div class="quotes-section bg-slate-50">
+              <h4 class="text-left text-base font-semibold">Quotes from Patients & Caregivers</h4>
+              {#if quotesLoading}
+                <div class="loading-mini">Loading patient quotes...</div>
+              {:else if quotesError}
+                <div class="error-mini">Error loading quotes: {quotesError}</div>
+              {:else if infusionExperienceQuotes.length > 0}
+                <div class="quotes-carousel">
+                  {#each infusionExperienceQuotes as quote}
+                    <div class="quote-card w-full md:min-w-[475px]"
+                     class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
+                      <div class="quote-text">"{quote.quote}"</div>
+                      <div class="quote-sentiment">{quote.sentiment}</div>
+                      <div class="quote-topics">
+                        {#each getTopicTags(quote) as topic}
+                          <span class="topic-tag">{topic}</span>
+                        {/each}
+                      </div>
+                    </div>
                   {/each}
-                </ul>
-              </div>
-              <div class="quotes">
-                <strong>Patient Quotes:</strong>
-                <ul>
-                  {#each pompeData.drug_sentiment.positive_drivers.quotes as quote}
-                    <li>"{quote}"</li>
-                  {/each}
-                </ul>
-              </div>
+                </div>
+              {:else}
+                <div class="no-quotes">No infusion experience quotes available</div>
+              {/if}
             </div>
             
-            <div class="negative-drivers">
-              <h4>Negative Drivers</h4>
-              <div class="themes">
-                <strong>Key Themes:</strong>
-                <ul>
-                  {#each pompeData.drug_sentiment.negative_drivers.themes as theme}
-                    <li>{theme}</li>
-                  {/each}
-                </ul>
+            <div class="section-content">
+              <div class="sentiment-summary">
+                <div class="sentiment-drivers">
+                  <div class="positive-drivers">
+                    <h4>Positive Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.infusion_experience.positive_drivers.themes.join(', ')}</p>
+                    {#if driversLoading}
+                      <div class="loading-mini">Loading drivers data...</div>
+                    {:else if driversError}
+                      <div class="error-mini">Error loading drivers: {driversError}</div>
+                    {:else if infusionExperienceDrivers.length > 0}
+                      <SentimentBarChart 
+                        data={infusionExperienceDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive')} 
+                        title="Positive Sentiment Drivers"
+                        height={200}
+                      />
+                    {:else}
+                      <div class="no-data">No positive sentiment drivers data available</div>
+                    {/if}
+                  </div>
+                  
+                  <div class="negative-drivers">
+                    <h4>Negative Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.infusion_experience.negative_drivers.themes.join(', ')}</p>
+                    {#if driversLoading}
+                      <div class="loading-mini">Loading drivers data...</div>
+                    {:else if driversError}
+                      <div class="error-mini">Error loading drivers: {driversError}</div>
+                    {:else if infusionExperienceDrivers.length > 0}
+                      <SentimentBarChart 
+                        data={infusionExperienceDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative')} 
+                        title="Negative Sentiment Drivers"
+                        height={200}
+                      />
+                    {:else}
+                      <div class="no-data">No negative sentiment drivers data available</div>
+                    {/if}
+                  </div>
+                </div>
               </div>
-              <div class="quotes">
-                <strong>Patient Quotes:</strong>
-                <ul>
-                  {#each pompeData.drug_sentiment.negative_drivers.quotes as quote}
-                    <li>"{quote}"</li>
-                  {/each}
-                </ul>
+              
+              <div class="wordcloud-container">
+                {#if loading}
+                  <div class="loading-mini">Loading word cloud...</div>
+                {:else if infusionExperienceData.length > 0}
+                  <div class="chart-container">
+                    <CarbonWordCloud 
+                      dataSource={infusionExperienceData} 
+                      title=""
+                      height="100%"
+                    />
+                  </div>
+                {:else}
+                  <div class="no-data">No Infusion Experience data available</div>
+                {/if}
               </div>
             </div>
           </div>
         </div>
         
-        <div class="sentiment-section">
-          <h3>Infusion Experience</h3>
-          <div class="sentiment-drivers">
-            <div class="positive-drivers">
-              <h4>Positive Drivers</h4>
-              <div class="themes">
-                <strong>Key Themes:</strong>
-                <ul>
-                  {#each pompeData.infusion_experience.positive_drivers.themes as theme}
-                    <li>{theme}</li>
+        <!-- Drug Sentiment Section -->
+        <div class="integrated-section" 
+             class:expanded={expandedSection === 'drug'}
+             class:collapsed={expandedSection !== null && expandedSection !== 'drug'}
+             on:click={() => toggleSection('drug')}>
+          <div class="section-title">
+            <h3 class="vertical-title">Drug Sentiment</h3>
+          </div>
+          <div class="section-content-wrapper"
+               class:hidden={expandedSection !== null && expandedSection !== 'drug'}>
+            
+            <!-- Patient Quotes for Drug Sentiment -->
+            <div class="quotes-section bg-slate-50">
+              {#if quotesLoading}
+                <div class="loading-mini">Loading patient quotes...</div>
+              {:else if quotesError}
+                <div class="error-mini">Error loading quotes: {quotesError}</div>
+              {:else if drugSentimentQuotes.length > 0}
+              <h4 class="text-left text-base font-semibold">Quotes from Patients & Caregivers</h4>
+              <div class="quotes-carousel">
+                  {#each drugSentimentQuotes as quote}
+                    <div class="quote-card w-full md:min-w-[475px]" class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
+                      <div class="quote-text">"{quote.quote}"</div>
+                      <div class="quote-sentiment">{quote.sentiment}</div>
+                      <div class="quote-topics">
+                        {#each getTopicTags(quote) as topic}
+                          <span class="topic-tag">{topic}</span>
+                        {/each}
+                      </div>
+                    </div>
                   {/each}
-                </ul>
-              </div>
-              <div class="quotes">
-                <strong>Patient Quotes:</strong>
-                <ul>
-                  {#each pompeData.infusion_experience.positive_drivers.quotes as quote}
-                    <li>"{quote}"</li>
-                  {/each}
-                </ul>
-              </div>
+                </div>
+              {:else}
+                <div class="no-quotes">No drug sentiment quotes available</div>
+              {/if}
             </div>
             
-            <div class="negative-drivers">
-              <h4>Negative Drivers</h4>
-              <div class="themes">
-                <strong>Key Themes:</strong>
-                <ul>
-                  {#each pompeData.infusion_experience.negative_drivers.themes as theme}
-                    <li>{theme}</li>
-                  {/each}
-                </ul>
+            <div class="section-content">
+              <div class="sentiment-summary">
+                <div class="sentiment-drivers">
+                  <div class="positive-drivers">
+                    <h4>Positive Drivers</h4>
+                    <p class="executdriver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.positive_drivers.themes.join(', ')}</p>
+                    {#if driversLoading}
+                      <div class="loading-mini">Loading drivers data...</div>
+                    {:else if driversError}
+                      <div class="error-mini">Error loading drivers: {driversError}</div>
+                    {:else if drugSentimentDrivers.length > 0}
+                      <SentimentBarChart 
+                        data={drugSentimentDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive')} 
+                        title="Positive Sentiment Drivers"
+                        height={200}
+                      />
+                    {:else}
+                      <div class="no-data">No positive sentiment drivers data available</div>
+                    {/if}
+                  </div>
+                  
+                  <div class="negative-drivers">
+                    <h4>Negative Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.negative_drivers.themes.join(', ')}</p>
+                    {#if driversLoading}
+                      <div class="loading-mini">Loading drivers data...</div>
+                    {:else if driversError}
+                      <div class="error-mini">Error loading drivers: {driversError}</div>
+                    {:else if drugSentimentDrivers.length > 0}
+                      <SentimentBarChart 
+                        data={drugSentimentDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative')} 
+                        title="Negative Sentiment Drivers"
+                        height={200}
+                      />
+                    {:else}
+                      <div class="no-data">No negative sentiment drivers data available</div>
+                    {/if}
+                  </div>
+                </div>
               </div>
-              <div class="quotes">
-                <strong>Patient Quotes:</strong>
-                <ul>
-                  {#each pompeData.infusion_experience.negative_drivers.quotes as quote}
-                    <li>"{quote}"</li>
-                  {/each}
-                </ul>
+              
+              <div class="wordcloud-container">
+                {#if loading}
+                  <div class="loading-mini">Loading word cloud...</div>
+                {:else if drugSentimentData.length > 0}
+                  <div class="chart-container">
+                    <CarbonWordCloud 
+                      dataSource={drugSentimentData} 
+                      title=""
+                      height="100%"
+                    />
+                  </div>
+                {:else}
+                  <div class="no-data">No Drug Sentiment data available</div>
+                {/if}
               </div>
             </div>
           </div>
@@ -208,14 +465,7 @@
     </div>
   {/if}
   
-  <!-- Original Word Clouds -->
-  <div class="wordclouds-header">
-    <h2>Word Cloud Analysis</h2>
-    <p class="description">
-      Interactive word clouds showing patient sentiment patterns and treatment experiences.
-    </p>
-  </div>
-  
+  <!-- Error States for Word Cloud Data -->
   {#if loading}
     <div class="loading-container">
       <div class="loading-spinner"></div>
@@ -232,67 +482,8 @@
       <h3>No Data Available</h3>
       <p>No patient data was found in the expected format.</p>
     </div>
-  {:else}
-    <div class="wordclouds-grid">
-      <div class="wordcloud-section">
-        <h2>Drug Sentiment ({drugSentimentData.length} phrases)</h2>
-        <p class="section-description">Patient feelings and experiences related to medication effectiveness and treatment outcomes.</p>
-        <div class="chart-container">
-          {#if drugSentimentData.length > 0}
-            <CarbonWordCloud 
-              dataSource={drugSentimentData} 
-              title=""
-              height="500px"
-            />
-          {:else}
-            <div class="no-data">No Drug Sentiment data available</div>
-          {/if}
-        </div>
-      </div>
-      
-      <div class="wordcloud-section">
-        <h2>Infusion Experience ({infusionExperienceData.length} phrases)</h2>
-        <p class="section-description">Patient experiences with the infusion process, logistics, and treatment administration.</p>
-        <div class="chart-container">
-          {#if infusionExperienceData.length > 0}
-            <CarbonWordCloud 
-              dataSource={infusionExperienceData} 
-              title=""
-              height="500px"
-            />
-          {:else}
-            <div class="no-data">No Infusion Experience data available</div>
-          {/if}
-        </div>
-      </div>
-    </div>
-    
-    <div class="legend">
-      <h3>Sentiment Legend</h3>
-      <div class="legend-items">
-        <div class="legend-item">
-          <span class="legend-color entirely-negative"></span>
-          <span>Entirely Negative</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color somewhat-negative"></span>
-          <span>Somewhat Negative</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color neutral"></span>
-          <span>Neutral</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color somewhat-positive"></span>
-          <span>Somewhat Positive</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color entirely-positive"></span>
-          <span>Entirely Positive</span>
-        </div>
-      </div>
-    </div>
   {/if}
+  
 </div>
 
 <style>
@@ -300,13 +491,16 @@
     max-width: 2000px;
     margin: 0 auto;
     padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   
   h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: #161616;
-    text-align: center;
+    text-align: left;
   }
   
   .pompe-summary {
@@ -318,41 +512,196 @@
     font-size: 1.8rem;
     color: #161616;
     margin-bottom: 1rem;
-    text-align: center;
+  }
+
+  
+  .integrated-sections {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    min-height: 90vh;
+    height: 100%;
+    border: .5254px solid #e0e0e0;
   }
   
-  .executive-summary {
-    font-size: 1.1rem;
-    color: #525252;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    text-align: center;
+  .integrated-section {
+    position: relative;
+    display: flex;
+    background: white;
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    min-width: 80px;
+  }
+  
+  .integrated-section:not(.expanded):not(.collapsed) {
+    flex: 1;
+  }
+  
+  .integrated-section.expanded {
+    flex: 3;
+    cursor: default;
+  }
+  
+  .integrated-section.collapsed {
+    flex: 0 0 80px;
+  }
+  
+  .section-title {
+    position: relative;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #6b7280;
+    z-index: 2;
+  }
+  
+  .vertical-title {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    font-size: 1.625rem;
+    font-weight: 600;
+    font-family: 'IBM Plex Serif', serif;
     font-style: italic;
-    padding: 1rem;
-    background: #f8fafc;
-    border-radius: 8px;
-  }
-  
-  .sentiment-sections {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-  
-  .sentiment-section {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.5rem;
-    background: #fafafa;
-  }
-  
-  .sentiment-section h3 {
-    font-size: 1.3rem;
-    color: #161616;
-    margin-bottom: 1rem;
+    color: #ffffff;
     text-align: center;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 0.5rem;
+    margin: 0;
+    padding: 1rem 0;
+  }
+  
+  .section-content-wrapper {
+    flex: 1;
+    padding: 1.5rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+  }
+  
+  .section-content-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Quotes Section Styles */
+  .quotes-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+  }
+
+  .quotes-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+  }
+
+  .quotes-carousel::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .quotes-carousel::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+  }
+
+  .quotes-carousel::-webkit-scrollbar-thumb:hover {
+    background: #c1c1c1;
+  }
+
+  .quote-card {
+    padding: 2.125rem;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1.25px solid #e5e7eb;
+    gap: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .quote-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .quote-card.positive {
+    border-left: 4px solid #22c55e;
+  }
+
+  .quote-card.negative {
+    border-left: 4px solid #ef4444;
+  }
+
+  .quote-card.mixed {
+    border-left: 4px solid #f59e0b;
+  }
+
+  .quote-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #374151;
+    flex-grow: 1;
+    min-height: 3rem;
+  }
+
+  .quote-sentiment {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    align-self: flex-start;
+  }
+
+  .quote-card.positive .quote-sentiment {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .quote-card.negative .quote-sentiment {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .quote-card.mixed .quote-sentiment {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .quote-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .topic-tag {
+    font-size: 0.7rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    font-weight: 500;
+  }
+
+  .no-quotes {
+    text-align: left;
+    color: #6b7280;
+    padding: 2rem;
+  }
+  
+  .section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+  }
+  
+  .sentiment-summary {
+    padding: 1rem;
+    background: white;
   }
   
   .sentiment-drivers {
@@ -363,7 +712,6 @@
   
   .positive-drivers, .negative-drivers {
     padding: 1rem;
-    border-radius: 6px;
   }
   
   .positive-drivers {
@@ -408,12 +756,16 @@
   }
   
   .quotes li {
-    font-style: italic;
     color: #525252;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
   }
   
   .pompe-loading, .pompe-error {
-    text-align: center;
+    text-align: left;
     padding: 1rem;
     margin: 1rem 0;
   }
@@ -426,7 +778,7 @@
   
   .wordclouds-header {
     margin: 3rem 0 2rem 0;
-    text-align: center;
+    text-align: left;
   }
   
   .wordclouds-header h2 {
@@ -440,7 +792,7 @@
     color: #525252;
     max-width: 900px;
     margin: 0 auto 3rem auto;
-    text-align: center;
+    text-align: left;
     line-height: 1.6;
   }
   
@@ -473,7 +825,7 @@
     border-radius: 8px;
     padding: 2rem;
     margin: 2rem 0;
-    text-align: center;
+    text-align: left;
   }
   
   .error-container h3 {
@@ -492,7 +844,6 @@
     justify-content: center;
     height: 300px;
     color: #6b7280;
-    font-style: italic;
   }
   
   .wordclouds-grid {
@@ -511,32 +862,55 @@
     font-size: 1.5rem;
     color: #161616;
     margin-bottom: 0.5rem;
-    text-align: center;
+    text-align: left;
   }
   
   .section-description {
     font-size: 0.9rem;
     color: #6f6f6f;
-    text-align: center;
+    text-align: left;
     margin-bottom: 1rem;
     line-height: 1.4;
     min-height: 2.8rem;
   }
   
-  .chart-container {
-    border: 1px solid #e0e0e0;
+  .wordcloud-container {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .wordcloud-container .chart-container {
+    width: 100%;
+    height: 100%;
     border-radius: 8px;
     padding: 1rem;
-    background-color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .loading-mini {
+    color: #6b7280;
+    font-style: italic;
+    text-align: left;
+    padding: 2rem;
+  }
+  
+  .error-mini {
+    color: #dc2626;
+    background: #fef2f2;
+    border-radius: 8px;
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.9rem;
   }
   
   .legend {
     background: #f8fafc;
     border-radius: 8px;
     padding: 1.5rem;
-    text-align: center;
+    text-align: left;
   }
   
   .legend h3 {
@@ -587,10 +961,55 @@
     background-color: #24a148;
   }
   
-  @media (max-width: 1024px) {
-    .wordclouds-grid, .sentiment-sections {
-      grid-template-columns: 1fr;
+  @media (min-width: 1200px) {
+    .section-content {
+      flex-direction: row;
       gap: 2rem;
+    }
+    
+    .sentiment-summary {
+      flex: 1;
+      min-width: 400px;
+    }
+    
+    .wordcloud-container {
+      flex: 1;
+      min-width: 400px;
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .integrated-sections {
+      flex-direction: column;
+      height: auto;
+      gap: 1rem;
+    }
+    
+    .integrated-section {
+      min-height: 200px;
+      flex-direction: column;
+    }
+    
+    .integrated-section.expanded,
+    .integrated-section.collapsed,
+    .integrated-section:not(.expanded):not(.collapsed) {
+      flex: none;
+    }
+    
+    .section-title {
+      width: 100%;
+      height: 60px;
+      border-right: none;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .vertical-title {
+      writing-mode: horizontal-tb;
+      padding: 1rem;
+    }
+    
+    .section-content-wrapper {
+      padding: 1rem;
     }
     
     .container {
@@ -621,7 +1040,7 @@
       gap: 0.75rem;
     }
     
-    .sentiment-drivers {
+    .integrated-sections {
       gap: 1rem;
     }
     

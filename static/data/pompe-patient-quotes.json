@@ -1,0 +1,74 @@
+[
+    {
+      "quote": "That 3 hour infusion lasted 8 hours! Needless to say Brittney and I were completely wiped out!",
+      "sentiment": "entirely negative",
+      "topic_1": "infusion duration",
+      "topic_2": "treatment burden",
+      "topic_3": "fatigue",
+      "topic_4": "infusion logistics",
+      "topic_5": "emotional toll"
+    },
+    {
+      "quote": "Happy 2nd ERT Anniversary! ... Every 2 weeks he gets an infusion in Little Rock that lasts close to 6 hours.",
+      "sentiment": "somewhat positive",
+      "topic_1": "treatment milestone",
+      "topic_2": "drug availability",
+      "topic_3": "infusion routine",
+      "topic_4": "caregiver support",
+      "topic_5": "hope"
+    },
+    {
+      "quote": "By the time I was correctly diagnosed, I had already transitioned to a power wheelchair and was using a non-invasive ventilator.",
+      "sentiment": "entirely negative",
+      "topic_1": "diagnostic delay",
+      "topic_2": "disease progression",
+      "topic_3": "mobility challenges",
+      "topic_4": "ventilation",
+      "topic_5": "misdiagnosis"
+    },
+    {
+      "quote": "I actually experienced an improvement in muscle strength after a few months.",
+      "sentiment": "entirely positive",
+      "topic_1": "treatment efficacy",
+      "topic_2": "muscle function",
+      "topic_3": "hope",
+      "topic_4": "drug response",
+      "topic_5": "stability"
+    },
+    {
+      "quote": "It's wonderful that life-saving treatments are available, but what does that mean to Pompe patients?",
+      "sentiment": "mixed",
+      "topic_1": "drug access",
+      "topic_2": "treatment burden",
+      "topic_3": "health equity",
+      "topic_4": "expectation vs reality",
+      "topic_5": "infusion logistics"
+    },
+    {
+      "quote": "After years of Nexviazyme, I'm getting reactions and surprisingly the antibodies are steady lowish.",
+      "sentiment": "somewhat negative",
+      "topic_1": "adverse reactions",
+      "topic_2": "immunogenicity",
+      "topic_3": "drug tolerance",
+      "topic_4": "antibody monitoring",
+      "topic_5": "drug sustainability"
+    },
+    {
+      "quote": "She has stopped the infusion more than a year ago due to very bad allergic reaction.",
+      "sentiment": "entirely negative",
+      "topic_1": "infusion interruption",
+      "topic_2": "adverse reactions",
+      "topic_3": "treatment access",
+      "topic_4": "drug safety",
+      "topic_5": "decision burden"
+    },
+    {
+      "quote": "This is the first time in 20 years that [my liver enzymes] have been normal! I'm so excited that the infusions are helping.",
+      "sentiment": "entirely positive",
+      "topic_1": "lab improvement",
+      "topic_2": "treatment efficacy",
+      "topic_3": "hope",
+      "topic_4": "clinical response",
+      "topic_5": "long-term outcome"
+    }
+  ] 

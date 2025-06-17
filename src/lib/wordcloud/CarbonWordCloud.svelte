@@ -266,7 +266,7 @@
   .wordcloud-container {
     width: 100%;
     height: 100%;
-    min-height: 400px;
+    min-height: 500px;
   }
   
   .loading {
@@ -282,32 +282,22 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
   }
-  
-  .filter-container {
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-  }
+
   
   .filter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e2e8f0;
   }
   
   .filter-title {
     margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #1e293b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -335,12 +325,11 @@
   }
   
   .action-btn.primary:hover {
-    background: #2563eb;
+    background: #112233;
   }
   
   .action-btn.secondary {
     background: #e2e8f0;
-    color: #475569;
   }
   
   .action-btn.secondary:hover {
