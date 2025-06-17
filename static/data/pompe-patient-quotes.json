@@ -1,74 +1,67 @@
 [
-    {
-      "quote": "That 3 hour infusion lasted 8 hours! Needless to say Brittney and I were completely wiped out!",
-      "sentiment": "entirely negative",
-      "topic_1": "infusion duration",
-      "topic_2": "treatment burden",
-      "topic_3": "fatigue",
-      "topic_4": "infusion logistics",
-      "topic_5": "emotional toll"
-    },
-    {
-      "quote": "Happy 2nd ERT Anniversary! ... Every 2 weeks he gets an infusion in Little Rock that lasts close to 6 hours.",
-      "sentiment": "somewhat positive",
-      "topic_1": "treatment milestone",
-      "topic_2": "drug availability",
-      "topic_3": "infusion routine",
-      "topic_4": "caregiver support",
-      "topic_5": "hope"
-    },
-    {
-      "quote": "By the time I was correctly diagnosed, I had already transitioned to a power wheelchair and was using a non-invasive ventilator.",
-      "sentiment": "entirely negative",
-      "topic_1": "diagnostic delay",
-      "topic_2": "disease progression",
-      "topic_3": "mobility challenges",
-      "topic_4": "ventilation",
-      "topic_5": "misdiagnosis"
-    },
-    {
-      "quote": "I actually experienced an improvement in muscle strength after a few months.",
-      "sentiment": "entirely positive",
-      "topic_1": "treatment efficacy",
-      "topic_2": "muscle function",
-      "topic_3": "hope",
-      "topic_4": "drug response",
-      "topic_5": "stability"
-    },
-    {
-      "quote": "It's wonderful that life-saving treatments are available, but what does that mean to Pompe patients?",
-      "sentiment": "mixed",
-      "topic_1": "drug access",
-      "topic_2": "treatment burden",
-      "topic_3": "health equity",
-      "topic_4": "expectation vs reality",
-      "topic_5": "infusion logistics"
-    },
-    {
-      "quote": "After years of Nexviazyme, I'm getting reactions and surprisingly the antibodies are steady lowish.",
-      "sentiment": "somewhat negative",
-      "topic_1": "adverse reactions",
-      "topic_2": "immunogenicity",
-      "topic_3": "drug tolerance",
-      "topic_4": "antibody monitoring",
-      "topic_5": "drug sustainability"
-    },
-    {
-      "quote": "She has stopped the infusion more than a year ago due to very bad allergic reaction.",
-      "sentiment": "entirely negative",
-      "topic_1": "infusion interruption",
-      "topic_2": "adverse reactions",
-      "topic_3": "treatment access",
-      "topic_4": "drug safety",
-      "topic_5": "decision burden"
-    },
-    {
-      "quote": "This is the first time in 20 years that [my liver enzymes] have been normal! I'm so excited that the infusions are helping.",
-      "sentiment": "entirely positive",
-      "topic_1": "lab improvement",
-      "topic_2": "treatment efficacy",
-      "topic_3": "hope",
-      "topic_4": "clinical response",
-      "topic_5": "long-term outcome"
-    }
-  ] 
+  {
+    "quote": "My infusion are supposed to be four hours but I think they always last at least six for whatever reason.",
+    "sentiment": "somewhat negative",
+    "topic_1": "infusion fatigue",
+    "topic_2": "physical experience",
+    "topic_3": "infusion duration",
+    "group": "Infusion Experience"
+  },
+  {
+    "quote": "I\u2019m grateful for the nurses; they always make me feel cared for during my infusions, even when I'm not having my best day.",
+    "sentiment": "entirely positive",
+    "topic_1": "hospital staff",
+    "topic_2": "physical experience",
+    "topic_3": "infusion duration",
+    "group": "Infusion Experience"
+  },
+  {
+    "quote": "Traveling hours just to sit in a chair for eight hours is taking a toll on my family and my work life.",
+    "sentiment": "entirely negative",
+    "topic_1": "travel logistics",
+    "topic_2": "physical experience",
+    "topic_3": "emotional impact",
+  
+    "group": "Infusion Experience"
+  },
+  {
+    "quote": "I had so many issues with finding veins, and I'm a hard stick, as they say. Finally getting a port, so I hope things change.",
+    "sentiment": "somewhat negative",
+    "topic_1": "infusion discomfort",
+    "topic_2": "physical experience",
+    "topic_3": "infusion duration",
+    "group": "Infusion Experience"
+  },
+  {
+    "quote": "Since switching to the new drug, I\u2019ve actually started to feel stronger and more stable. I can't remember the last time I felt this good.",
+    "sentiment": "entirely positive",
+    "topic_1": "treatment response",
+    "topic_2": "drug impact",
+    "topic_3": "treatment response",
+    "group": "Drug Sentiment"
+  },
+  {
+    "quote": "Even after increasing the dose, it doesn\u2019t seem to be helping much\u2014I feel like I\u2019ve plateaued.",
+    "sentiment": "entirely negative",
+    "topic_1": "treatment response",
+    "topic_2": "drug impact",
+    "topic_3": "treatment plateau",    
+    "group": "Drug Sentiment"
+  },
+  {
+    "quote": "This medication saved my life, and I\u2019m thankful every day it\u2019s available to me.",
+    "sentiment": "entirely positive",
+    "topic_1": "treatment response",
+    "topic_2": "drug impact",
+    "topic_3": "emotional impact",
+    "group": "Drug Sentiment"
+  },
+  {
+    "quote": "After each dose, I get hit hard by nausea, headaches, and I\u2019m always so fatigued the day after. It really messes with my schedule, even after my visits.",
+    "sentiment": "entirely negative",
+    "topic_1": "treatment response",
+    "topic_2": "drug impact",
+    "topic_3": "side effects",
+    "group": "Drug Sentiment"
+  }
+]

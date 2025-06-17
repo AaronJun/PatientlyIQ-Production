@@ -54,6 +54,11 @@
     </div>
   </div>
   {/if}
+  <div class="chart-description">
+    <p class="chart-description-text text-xs max-w-md">
+      This chart shows the percentage of quotes in which key sentiment drivers are mentioned. More than one topic can be mentioned in a single quote. 
+    </p>
+  </div>
 </div>
 
 <style>
@@ -61,7 +66,7 @@
     width: 100%;
     padding: 1rem;
     background: white;
-    border-radius: 8px;
+  
     border: 1px solid #e5e7eb;
   }
   
@@ -80,7 +85,12 @@
     font-weight: 600;
     color: #374151;
     margin: 0 0 1rem 0;
-    text-align: center;
+  }
+
+  .chart-description {
+    margin-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
   }
   
   .chart-wrapper {

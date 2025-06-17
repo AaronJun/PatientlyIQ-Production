@@ -1,8 +1,8 @@
 [
   {
     "word": "Supported",
-    "frequency": 4,
-    "topic": "supportive staff",
+    "frequency": 35,
+    "topic": "Hospital Staff",
     "parent topic": "visit experience",
     "group": "Infusion Experience",
     "sentiment": "entirely positive"
@@ -16,42 +16,34 @@
     "sentiment": "entirely positive"
   },
   {
-    "word": "Relieved",
-    "frequency": 4,
-    "topic": "treatment response",
-    "parent topic": "drug impact",
-    "group": "Drug Sentiment",
-    "sentiment": "entirely positive"
-  },
-  {
     "word": "Fatigue",
-    "frequency": 4,
+    "frequency": 11,
     "topic": "side effects",
     "parent topic": "drug impact",
     "group": "Infusion Experience",
     "sentiment": "entirely negative"
   },
   {
+    "word": "Insurance",
+    "frequency": 45,
+    "topic": "Insurance Issues",
+    "parent topic": "drug impact",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
     "word": "Denied",
-    "frequency": 3,
-    "topic": "insurance blocks",
+    "frequency": 35,
+    "topic": "insurance issues",
     "parent topic": "system barriers",
     "group": "Drug Sentiment",
     "sentiment": "entirely negative"
   },
   {
     "word": "Pain",
-    "frequency": 4,
+    "frequency": 25,
     "topic": "infusion discomfort",
     "parent topic": "physical experience",
-    "group": "Infusion Experience",
-    "sentiment": "entirely negative"
-  },
-  {
-    "word": "Burden",
-    "frequency": 4,
-    "topic": "treatment burden",
-    "parent topic": "system barriers",
     "group": "Infusion Experience",
     "sentiment": "entirely negative"
   },
@@ -65,15 +57,15 @@
   },
   {
     "word": "Itching",
-    "frequency": 3,
-    "topic": "infusion reactions",
+    "frequency": 19,
+    "topic": "Infusion Discomfort",
     "parent topic": "physical experience",
     "group": "Infusion Experience",
     "sentiment": "neutral"
   },
   {
     "word": "Travel",
-    "frequency": 4,
+    "frequency": 29,
     "topic": "logistical burden",
     "parent topic": "system barriers",
     "group": "Infusion Experience",
@@ -81,18 +73,75 @@
   },
   {
     "word": "Appreciation",
-    "frequency": 3,
-    "topic": "care recognition",
+    "frequency": 41,
+    "topic": "Symptom Relief",
+    "parent topic": "visit experience",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Long-term",
+    "frequency": 22,
+    "topic": "Long-term Efficacy",
     "parent topic": "visit experience",
     "group": "Infusion Experience",
     "sentiment": "entirely positive"
   },
   {
     "word": "Despair",
-    "frequency": 4,
-    "topic": "emotional toll",
+    "frequency": 9,
+    "topic": "Standard of Care",
     "parent topic": "mental health",
     "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },  
+  {
+    "word": "Worsening",
+    "frequency": 22,
+    "topic": "Plateauing Impact",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
     "sentiment": "entirely negative"
+  },
+
+  {
+    "word": "Thankful",
+    "frequency": 15,
+    "topic": "treatment response",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Allergic Reaction",
+    "frequency": 7,
+    "topic": "adverse reactions",
+    "parent topic": "side effects",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Improved Energy",
+    "frequency": 8,
+    "topic": "functional status",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Declined",
+    "frequency": 9,
+    "topic": "treatment efficacy",
+    "parent topic": "drug impact",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Hopeful",
+    "frequency": 12,
+    "topic": "future outlook",
+    "parent topic": "mental health",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
   }
 ]
