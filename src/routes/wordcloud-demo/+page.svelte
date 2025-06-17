@@ -403,7 +403,7 @@
             </div>
             
             <div class="section-content">
-              <div class="sentiment-summary">
+              <div class="sentiment-summary flex flex-col">
                 <div class="sentiment-drivers">
                   <div class="positive-drivers">
                     <h4>Positive Drivers</h4>
@@ -491,7 +491,6 @@
     max-width: 2000px;
     margin: 0 auto;
     padding: 2rem;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
@@ -519,8 +518,7 @@
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    min-height: 90vh;
-    height: 100%;
+    height: 80vh;
     border: .5254px solid #e0e0e0;
   }
   
