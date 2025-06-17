@@ -269,9 +269,9 @@
         <!-- Infusion Experience Section -->
         <div class="integrated-section"
              class:expanded={expandedSection === 'infusion'}
-             class:collapsed={expandedSection !== null && expandedSection !== 'infusion'}
-             on:click={() => toggleSection('infusion')}>
-          <div class="section-title">
+             class:collapsed={expandedSection !== null && expandedSection !== 'infusion'}>
+          <div class="section-title"
+               on:click={() => toggleSection('infusion')}>
             <h3 class="vertical-title">Infusion Experience</h3>
           </div>
           <div class="section-content-wrapper"
@@ -305,11 +305,12 @@
               {/if}
             </div>
             
-            <div class="section-content">
-              <div class="sentiment-summary">
-                <div class="sentiment-drivers">
+            <div class="section-content flex flex-col">
+              <div class="sentiment-summary flex flex-col">
+                <div class="sentiment-drivers flex flex-col md:flex-row gap-4">
                   <div class="positive-drivers">
                     <h4>Positive Drivers</h4>
+                    <div class="flex flex-col">
                     <p class="driver-summary text-base py-4 max-w-prose">{pompeData.infusion_experience.positive_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
@@ -324,6 +325,7 @@
                     {:else}
                       <div class="no-data">No positive sentiment drivers data available</div>
                     {/if}
+                  </div>
                   </div>
                   
                   <div class="negative-drivers">
@@ -368,9 +370,9 @@
         <!-- Drug Sentiment Section -->
         <div class="integrated-section" 
              class:expanded={expandedSection === 'drug'}
-             class:collapsed={expandedSection !== null && expandedSection !== 'drug'}
-             on:click={() => toggleSection('drug')}>
-          <div class="section-title">
+             class:collapsed={expandedSection !== null && expandedSection !== 'drug'}>
+          <div class="section-title"
+               on:click={() => toggleSection('drug')}>
             <h3 class="vertical-title">Drug Sentiment</h3>
           </div>
           <div class="section-content-wrapper"
@@ -404,10 +406,10 @@
             
             <div class="section-content">
               <div class="sentiment-summary flex flex-col">
-                <div class="sentiment-drivers">
+                <div class="sentiment-drivers flex flex-col md:flex-row gap-4">
                   <div class="positive-drivers">
                     <h4>Positive Drivers</h4>
-                    <p class="executdriver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.positive_drivers.themes.join(', ')}</p>
+                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.positive_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
                     {:else if driversError}
@@ -526,7 +528,6 @@
     position: relative;
     display: flex;
     background: white;
-    cursor: pointer;
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     min-width: 80px;
@@ -538,7 +539,6 @@
   
   .integrated-section.expanded {
     flex: 3;
-    cursor: default;
   }
   
   .integrated-section.collapsed {
@@ -553,6 +553,7 @@
     justify-content: center;
     background: #6b7280;
     z-index: 2;
+    cursor: pointer;
   }
   
   .vertical-title {
@@ -706,6 +707,17 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .sentiment-drivers {
+      flex-direction: row;
+      gap: 2rem;
+    }
+    
+    .positive-drivers, .negative-drivers {
+      flex: 1;
+    }
   }
   
   .positive-drivers, .negative-drivers {
@@ -961,18 +973,16 @@
   
   @media (min-width: 1200px) {
     .section-content {
-      flex-direction: row;
+      flex-direction: column;
       gap: 2rem;
     }
     
     .sentiment-summary {
-      flex: 1;
-      min-width: 400px;
+      width: 100%;
     }
     
     .wordcloud-container {
-      flex: 1;
-      min-width: 400px;
+      width: 100%;
     }
   }
   
