@@ -1,0 +1,58 @@
+{
+    "executive_summary": "Pompe disease patients navigate treatment with a mix of resilience and exhaustion. While the availability of enzyme therapies offers a critical lifeline, the day-to-day realities\u2014logistical, emotional, and physical\u2014often undermine that sense of progress. What emerges across patient narratives is not just a medical journey, but a sustained negotiation with systems, side effects, and uncertainty. Sentiment runs deeper than satisfaction or dissatisfaction; it reflects the strain of maintaining stability in a landscape where access, response, and relief are never guaranteed.",
+    "drug_sentiment": {
+      "positive_drivers": {
+        "themes": [
+          "gratitude for availability",
+          "perceived stability or improvement",
+          "emotional relief",
+          "supportive care environment"
+        ],
+        "quotes": [
+          "This is the first time in 20 years that [my liver enzymes] have been normal! I\u2019m so excited that the infusions are helping.",
+          "So here\u2019s \u2018cheers\u2019 to seeing the next 300+ infusions, son. Keep up that fight!!",
+          "I\u2019ve actually experienced an improvement in muscle strength after a few months."
+        ]
+      },
+      "negative_drivers": {
+        "themes": [
+          "plateaued progress",
+          "switch denied by insurance",
+          "side effects and reactions",
+          "lifelong treatment fatigue"
+        ],
+        "quotes": [
+          "I plateaued on Lumizyme and the muscle weakness began to creep back in.",
+          "Insurance denied me switching [to Nexviazyme]... They said my lung function \u2018wasn\u2019t bad enough.\u2019",
+          "I had an allergic reaction\u2026 itching head to toe, hives on chest, neck, face."
+        ]
+      }
+    },
+    "infusion_experience": {
+      "positive_drivers": {
+        "themes": [
+          "supportive infusion staff",
+          "routine and predictability",
+          "home-based setup",
+          "emotional reassurance"
+        ],
+        "quotes": [
+          "My nurse was an ex-medic\u2026 she set everything in motion to ward off all the bad vibes!",
+          "I\u2019ve formed genuine friendships with several [infusion nurses], and our conversations help the 4\u20135 hours fly by."
+        ]
+      },
+      "negative_drivers": {
+        "themes": [
+          "lengthy infusions",
+          "insurance and scheduling disruptions",
+          "physical side effects",
+          "travel burden"
+        ],
+        "quotes": [
+          "That 3-hour infusion lasted 8 hours!",
+          "Within a few mins I had an allergic reaction\u2026 itching head to toe, hives on chest, neck, face.",
+          "This will be the second time Desi has missed a dose\u2026 and as of right now we have no med and no pharmacy."
+        ]
+      }
+    }
+  }

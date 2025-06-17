@@ -16,12 +16,12 @@
     value: number;
     group: string;
     sentiment: string;
-    // Add a field for color assignment that won't affect grouping
-    colorGroup: string;
+    originalGroup: string;
+    color: string;
   }
   
   // Props for customization
-  export let height = "400px";
+  export let height = "600px";
   export let width = "100%";
   export let title = "Patient Sentiment Wordcloud";
   export let dataSource: WordCloudItem[] | string | undefined = undefined;
@@ -37,9 +37,15 @@
     "somewhat positive", 
     "entirely positive"
   ];
+
+  // Available group values for filtering
+  let availableGroups: string[] = [];
   
   // Selected sentiments (all selected by default)
   let selectedSentiments: string[] = [...availableSentiments];
+  
+  // Selected groups (all selected by default)
+  let selectedGroups: string[] = [];
   
   let options = {
     title,
@@ -47,7 +53,15 @@
     width,
     resizable: true,
     theme: 'white',
-
+    color: {
+      scale: {
+        'entirely negative': '#da1e28',
+        'somewhat negative': '#fa4d56', 
+        'neutral': '#f59e0b',
+        'somewhat positive': '#42be65',
+        'entirely positive': '#24a148'
+      }
+    },
     wordCloud: {
       fontSizeMapsTo: 'value',
       wordMapsTo: 'word'
@@ -55,18 +69,6 @@
     legend: {
       enabled: true,
       alignment: 'center',
-      // Group the legend items by main category, not by sentiment
-      customGrouping: (items: any[]) => {
-        const groupedItems: { [key: string]: any[] } = {};
-        items.forEach((item: any) => {
-          const group = item.name.split('-')[0]; // Extract main category
-          if (!groupedItems[group]) {
-            groupedItems[group] = [];
-          }
-          groupedItems[group].push(item);
-        });
-        return Object.values(groupedItems);
-      }
     },
     tooltip: {
       enabled: true,
@@ -87,23 +89,53 @@
   function formatData(rawData: WordCloudItem[] | undefined): FormattedWordCloudItem[] {
     if (!rawData || !Array.isArray(rawData)) return [];
     
+    // Extract unique groups for filtering
+    const uniqueGroups = [...new Set(rawData.map(item => item.group))];
+    availableGroups = uniqueGroups;
+    if (selectedGroups.length === 0) {
+      selectedGroups = [...uniqueGroups]; // Initialize with all groups selected
+    }
+    
     return rawData.map(item => ({
       word: item.word,
       value: item.frequency,
-      group: item.group, // Keep original group for filtering
+      group: item.sentiment, // Use sentiment for grouping/coloring
       sentiment: item.sentiment,
-      colorGroup: `${item.group}-${item.sentiment}` // Use combined value for coloring
+      originalGroup: item.group, // Keep original group for filtering
+      color: getSentimentColor(item.sentiment)
     }));
   }
 
-  // Filter data based on selected sentiments
+  // Get color based on sentiment
+  function getSentimentColor(sentiment: string): string {
+    switch (sentiment) {
+      case 'entirely negative':
+        return '#da1e28'; // Dark red
+      case 'somewhat negative':
+        return '#fa4d56'; // Light red
+      case 'neutral':
+        return '#f59e0b'; // Dark Yellow
+      case 'somewhat positive':
+        return '#42be65'; // Light green
+      case 'entirely positive':
+        return '#24a148'; // Dark green
+      default:
+        return '#0f62fe'; // Default blue
+    }
+  }
+
+  // Filter data based on selected sentiments and groups
   function filterData() {
-    if (selectedSentiments.length === availableSentiments.length) {
-      // If all sentiments are selected, show all data
+    if (selectedSentiments.length === availableSentiments.length && 
+        selectedGroups.length === availableGroups.length) {
+      // If all sentiments and groups are selected, show all data
       data = [...originalData];
     } else {
-      // Filter data to only show selected sentiments
-      data = originalData.filter(item => selectedSentiments.includes(item.sentiment));
+      // Filter data to only show selected sentiments and groups
+      data = originalData.filter(item => 
+        selectedSentiments.includes(item.sentiment) && 
+        selectedGroups.includes(item.originalGroup)
+      );
     }
   }
   
@@ -120,9 +152,28 @@
     filterData();
   }
   
+  // Handle group selection changes
+  function handleGroupChange(group: string) {
+    if (selectedGroups.includes(group)) {
+      // Remove group if already selected
+      selectedGroups = selectedGroups.filter(g => g !== group);
+    } else {
+      // Add group if not selected
+      selectedGroups = [...selectedGroups, group];
+    }
+    
+    filterData();
+  }
+  
   // Toggle all sentiments
   function toggleAllSentiments(selectAll: boolean) {
     selectedSentiments = selectAll ? [...availableSentiments] : [];
+    filterData();
+  }
+
+  // Toggle all groups
+  function toggleAllGroups(selectAll: boolean) {
+    selectedGroups = selectAll ? [...availableGroups] : [];
     filterData();
   }
 
@@ -179,25 +230,27 @@
   }
 </script>
 
-<div class="filter-container">
-  <div class="filter-header">
-    <h4>Filter by Sentiment</h4>
-    <div class="filter-actions">
-      <button class="select-all" on:click={() => toggleAllSentiments(true)}>Select All</button>
-      <button class="clear-all" on:click={() => toggleAllSentiments(false)}>Clear All</button>
+<div class="filters-section">
+  <div class="filter-container">
+    <div class="filter-header">
+      <h4 class="filter-title">Filter by Sentiment</h4>
+      <div class="filter-actions">
+        <button class="action-btn primary" on:click={() => toggleAllSentiments(true)}>Select All</button>
+        <button class="action-btn secondary" on:click={() => toggleAllSentiments(false)}>Clear All</button>
+      </div>
     </div>
-  </div>
-  <div class="sentiment-filters">
-    {#each availableSentiments as sentiment}
-      <label class="sentiment-checkbox">
-        <input 
-          type="checkbox" 
-          checked={selectedSentiments.includes(sentiment)} 
-          on:change={() => handleSentimentChange(sentiment)} 
-        />
-        <span class="sentiment-label">{sentiment}</span>
-      </label>
-    {/each}
+    <div class="filter-options">
+      {#each availableSentiments as sentiment}
+        <label class="filter-checkbox">
+          <input 
+            type="checkbox" 
+            checked={selectedSentiments.includes(sentiment)} 
+            on:change={() => handleSentimentChange(sentiment)} 
+          />
+          <span class="filter-label">{sentiment}</span>
+        </label>
+      {/each}
+    </div>
   </div>
 </div>
 
@@ -225,23 +278,38 @@
     font-style: italic;
   }
   
+  .filters-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
   .filter-container {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 4px;
-    background-color: #f4f4f4;
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
   }
   
   .filter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
   }
   
-  .filter-header h4 {
+  .filter-title {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
   
   .filter-actions {
@@ -249,30 +317,89 @@
     gap: 0.5rem;
   }
   
-  .filter-actions button {
-    background: none;
+  .action-btn {
     border: none;
-    color: #0062ff;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    text-decoration: underline;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
   }
   
-  .sentiment-filters {
+  .action-btn.primary {
+    background: #3b82f6;
+    color: #fff;
+  }
+  
+  .action-btn.primary:hover {
+    background: #2563eb;
+  }
+  
+  .action-btn.secondary {
+    background: #e2e8f0;
+    color: #475569;
+  }
+  
+  .action-btn.secondary:hover {
+    background: #cbd5e1;
+  }
+  
+  .filter-options {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
   }
   
-  .sentiment-checkbox {
+  .filter-checkbox {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    padding: 0.25rem 0;
   }
   
-  .sentiment-label {
+  .filter-checkbox input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #3b82f6;
+  }
+  
+  .filter-label {
     font-size: 0.875rem;
+    color: #374151;
+    text-transform: capitalize;
+    font-weight: 500;
+  }
+  
+  .filter-checkbox:hover .filter-label {
+    color: #1f2937;
+  }
+  
+  @media (max-width: 768px) {
+    .filters-section {
+      padding: 1rem;
+    }
+    
+    .filter-container {
+      padding: 1rem;
+    }
+    
+    .filter-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .filter-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+    
+    .filter-options {
+      gap: 0.75rem;
+    }
   }
 </style> 

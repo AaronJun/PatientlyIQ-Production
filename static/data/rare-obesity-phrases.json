@@ -1,332 +1,698 @@
 [
   {
-    "word": "agency",
-    "frequency": 1,
-    "group": "Trial Participation",
+    "word": "Uncertain effect",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Treatment fatigue",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Tolerated",
+    "frequency": "3",
+    "group": "Drug Sentiment",
     "sentiment": "somewhat positive"
   },
   {
-    "word": "appeals",
-    "frequency": 2,
-    "group": "Trial Participation",
+    "word": "Tolerance concerns",
+    "frequency": "1",
+    "group": "Infusion Experience",
     "sentiment": "somewhat negative"
   },
   {
-    "word": "outburst",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "referral",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "visit length",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "burden",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "burnout",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "calmer",
-    "frequency": 2,
-    "group": "Trial Participation",
+    "word": "Teamwork",
+    "frequency": "1",
+    "group": "Drug Sentiment",
     "sentiment": "somewhat positive"
   },
   {
-    "word": "meals",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "clarity",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "confusion",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "consent",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "cost",
-    "frequency": 5,
-    "group": "Trial Participation",
+    "word": "Switch denied",
+    "frequency": "1",
+    "group": "Drug Sentiment",
     "sentiment": "entirely negative"
   },
   {
-    "word": "denied",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "disappointed",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "disruption",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "emotional",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "empowered",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "excluded",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "fatigue",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "access",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "work",
-    "frequency": 1,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "grateful",
-    "frequency": 6,
-    "group": "Trial Participation",
+    "word": "Stronger",
+    "frequency": "3",
+    "group": "Drug Sentiment",
     "sentiment": "entirely positive"
   },
   {
-    "word": "healing",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "hopeful",
-    "frequency": 7,
-    "group": "Trial Participation",
+    "word": "Stable",
+    "frequency": "3",
+    "group": "Drug Sentiment",
     "sentiment": "entirely positive"
   },
   {
-    "word": "improvement",
-    "frequency": 6,
-    "group": "Trial Participation",
+    "word": "Responsive",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Resilient",
+    "frequency": "4",
+    "group": "Drug Sentiment",
     "sentiment": "entirely positive"
   },
   {
-    "word": "included",
-    "frequency": 3,
-    "group": "Trial Participation",
+    "word": "Relieved",
+    "frequency": "4",
+    "group": "Drug Sentiment",
     "sentiment": "somewhat positive"
   },
   {
-    "word": "injections",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
+    "word": "Noticable",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
   },
   {
-    "word": "insurance",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "kindness",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "laugh",
-    "frequency": 1,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "listened",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "logistics",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "miscommunication",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "new drug",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "open label",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "progress",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "relieved",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "respected",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "results",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "rigid",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "sacrifice",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "safe",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "sedation",
-    "frequency": 2,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "side effects",
-    "frequency": 4,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "sleep",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat positive"
-  },
-  {
-    "word": "stress",
-    "frequency": 5,
-    "group": "Trial Participation",
+    "word": "Reaction",
+    "frequency": "2",
+    "group": "Drug Sentiment",
     "sentiment": "entirely negative"
   },
   {
-    "word": "supportive",
-    "frequency": 5,
-    "group": "Trial Participation",
-    "sentiment": "entirely positive"
-  },
-  {
-    "word": "team",
-    "frequency": 5,
-    "group": "Trial Participation",
-    "sentiment": "entirely positive"
-  },
-  {
-    "word": "time",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "trauma",
-    "frequency": 3,
-    "group": "Trial Participation",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "travel",
-    "frequency": 6,
-    "group": "Trial Participation",
-    "sentiment": "entirely negative"
-  },
-  {
-    "word": "trust",
-    "frequency": 3,
-    "group": "Trial Participation",
+    "word": "Progress",
+    "frequency": "2",
+    "group": "Drug Sentiment",
     "sentiment": "somewhat positive"
   },
   {
-    "word": "waitlists",
-    "frequency": 2,
-    "group": "Trial Participation",
+    "word": "Prepared",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Plateaued",
+    "frequency": "2",
+    "group": "Drug Sentiment",
     "sentiment": "somewhat negative"
   },
   {
-    "word": "weight loss",
-    "frequency": 5,
-    "group": "Trial Participation",
+    "word": "Motivated",
+    "frequency": "4",
+    "group": "Drug Sentiment",
     "sentiment": "entirely positive"
+  },
+  {
+    "word": "Monitoring burden",
+    "frequency": "1",
+    "group": "Drug Sentiment",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Long time",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Difference maker",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Options",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Itching",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Coverage",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Insurance hurdles",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Infusion time",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Informed",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Confused",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Included",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Improvement",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Hopeful",
+    "frequency": "5",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Home setup",
+    "frequency": "1",
+    "group": "Drug Sentiment",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Hives",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Grateful",
+    "frequency": "5",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Faith",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Expertise",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Energy",
+    "frequency": "1",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Empowered",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Empowered",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Consistency",
+    "frequency": "1",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Close monitoring",
+    "frequency": "1",
+    "group": "Drug Sentiment",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Cared for",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Calm",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Available",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Appreciation",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Allergic reaction",
+    "frequency": "3",
+    "group": "Drug Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Adapted",
+    "frequency": "2",
+    "group": "Drug Sentiment",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Work",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Wiped out",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Weak",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Travel time",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Hospital",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Thankful",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Supported",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Stuck",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Strain",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Side effects",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Schedule",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Routine",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Responsive",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Reassured",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Rejected",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Reactions",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Progress",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Prepared",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Plateaued",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Pain",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Overwhelmed",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Unclear steps",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Not covered",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "No improvement",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "No hope",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Nausea",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Motivated",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Missed dose",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Long time",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Logistics",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Life-saving",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Itching",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Interruption",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Insurance lag",
+    "frequency": "5",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Infusion",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Informed",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Patience",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Improvement",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Hopeful",
+    "frequency": "5",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Home setup",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Hives",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Headache",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Grateful",
+    "frequency": "5",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Friendship",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Fever",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Fatigue",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Faith",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Expertise",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Exhausted",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Empowered",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Dizzy",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Disruption",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Despair",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Denied",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Delay",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Decline",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Coverage",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Consistency",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Close monitoring",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "neutral"
+  },
+  {
+    "word": "Cared for",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Calm",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Bureaucracy",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Burden",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Barrier",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Available",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Appreciation",
+    "frequency": "3",
+    "group": "Infusion Experience",
+    "sentiment": "entirely positive"
+  },
+  {
+    "word": "Anxiety",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Adapted",
+    "frequency": "2",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat positive"
+  },
+  {
+    "word": "Aches",
+    "frequency": "4",
+    "group": "Infusion Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Access",
+    "frequency": "1",
+    "group": "Infusion Experience",
+    "sentiment": "somewhat negative"
   }
 ]

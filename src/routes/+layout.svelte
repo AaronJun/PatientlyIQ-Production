@@ -25,6 +25,7 @@
   $: isKYBORADemoRoute = routeID[1] === "KYBORAdemo";
   $: isKyborajpRoute = routeID[1] === "kyborajp";
   $: isAtlasRoute = routeID[1] === "atlas";
+  $: isWordcloudDemoRoute = routeID[1] === "wordcloud-demo";
   $: isPLHDRoute = routeID[1] === "PLHD";
 
   import { resetMode, setMode } from "mode-watcher";
@@ -34,13 +35,13 @@
   import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 injectSpeedInsights();
-  let pageWidth = 0;
+    let pageWidth = 0;
 
-  $: metadata = {
-    ...defaultMetadata,
-    ...$page.data.metadata
-  };
-  
+    $: metadata = {
+      ...defaultMetadata,
+      ...$page.data.metadata
+    };
+    
   injectAnalytics({ mode: dev ? 'development' : 'production' });
   injectSpeedInsights();  
 
@@ -122,7 +123,7 @@ injectSpeedInsights();
 <svelte:window bind:innerWidth={pageWidth} />
 
 <!-- Only render the Header if not on the excluded routes -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute}
   <Header />
 {/if}
 
@@ -131,6 +132,6 @@ injectSpeedInsights();
 </div>  
 
 <!-- Conditionally render Footer based on route if needed -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute }
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute}
   <Footer />
 {/if}
