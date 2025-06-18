@@ -32,7 +32,7 @@
 </script>
 
 <div class="bar-chart-container">
-  <h4 class="chart-title">{title}</h4>
+  <h4 class="chart-title text-sm font-semibold">{title}</h4>
   {#if sortedData.length === 0}
     <div class="no-data">No data available</div>
   {:else}
@@ -80,10 +80,7 @@
   }
   
   .chart-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #374151;
-    margin: 0 0 1rem 0;
+        margin: 0 0 1rem 0;
   }
 
   .chart-description {
