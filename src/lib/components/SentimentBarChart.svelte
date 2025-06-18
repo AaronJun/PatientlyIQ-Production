@@ -40,15 +40,15 @@
     <div class="simple-bars">
       {#each sortedData as item, i}
         <div class="bar-row">
-          <div class="bar-label">{item.topic || item.word}</div>
           <div class="bar-container">
             <div 
               class="bar" 
-              style="width: {(item.frequency / Math.max(...sortedData.map(d => d.frequency))) * 100}%; background-color: {getColor(item.sentiment)};"
+              style="width: {(item.frequency / Math.max(...sortedData.map(d => d.frequency))) * 85}%; background-color: {getColor(item.sentiment)};"
               title="{item.word}: {item.frequency} mentions ({item.sentiment})"
             ></div>
             <div class="bar-value">{item.frequency}</div>
           </div>
+          <div class="bar-label capitalize text-xs">{item.topic || item.word}</div>
         </div>
       {/each}
     </div>
@@ -66,7 +66,6 @@
     width: 100%;
     padding: 1rem;
     background: white;
-  
     border: 1px solid #e5e7eb;
   }
   
@@ -101,34 +100,27 @@
   .simple-bars {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     padding: 1rem 0;
   }
   
   .bar-row {
     display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .bar-label {
-    min-width: 120px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #374151;
-    text-align: right;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
   
   .bar-container {
-    flex: 1;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
   }
   
   .bar {
-    height: 20px;
-    border-radius: 4px;
+    height: 25px;
     min-width: 4px;
     transition: opacity 0.2s ease;
   }
@@ -138,9 +130,20 @@
   }
   
   .bar-value {
-    font-size: 11px;
+    font-size: 12px;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 800;
     min-width: 20px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .bar-label {
+    color: #6b7280;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-left: 4px;
   }
 </style> 

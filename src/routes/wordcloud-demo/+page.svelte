@@ -224,44 +224,69 @@
   });
 </script>
 
-<div class="container flex flex-col text-left align-left justify-start h-full">
-  <div class="flex flex-col">
-    <div class="flex flex-col my-8">
-    <h1 class="text-xl font-bold text-slate-600">Pompe Disease</h1>
-    <h2 class="text-base">Patient Journey Data</h2>
-  </div>
-  </div>
-  <!-- Pompe Patient Sentiment Summary -->
-  {#if pompeLoading}
-    <div class="pompe-loading">
-      <p>Loading patient sentiment data...</p>
-    </div>
-  {:else if pompeError}
-    <div class="pompe-error">
-      <p>Error loading patient sentiment data: {pompeError}</p>
-    </div>
-  {:else if pompeData}
-    <div class="pompe-summary flex flex-col md:flex-row md:justify-between w-full h-full mb-8">
-      <h2 class="text-lg text-slate-600">Patient Sentiment Summary</h2>
-      <p class="executive-summary max-w-prose">{pompeData.executive_summary}</p>
-      </div>
-      <div class="flex flex-col h-full">
-            <div class="integrated-sections min-h-full">
-        <!-- Infusion Experience Section -->
-        <div class="integrated-section"
-             class:expanded={expandedSection === 'infusion'}
-             class:collapsed={expandedSection !== null && expandedSection !== 'infusion'}>
-          <div class="section-title"
-               on:click={() => toggleSection('infusion')}>
-            <h3 class="vertical-title">Infusion Experience</h3>
+<div class="min-h-screen bg-slate-100">
+  <!-- Header Section -->
+  <header class="bg-slate-700 text-white py-8 px-4 md:px-8">
+    <div class="container mx-auto max-w-6xl">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
+          <div class="flex flex-col">
+            <h1 class="text-2xl md:text-3xl font-bold">Pompe Disease</h1>
+            <h2 class="text-lg md:text-xl text-slate-300">Patient Journey Data</h2>
           </div>
-          <div class="section-content-wrapper"
-               class:hidden={expandedSection !== null && expandedSection !== 'infusion'}>
-            
-            
+        </div>
+        
+        <!-- Patient Sentiment Summary in Header -->
+        {#if !pompeLoading && !pompeError && pompeData}
+          <div class="max-w-md">
+            <h3 class="text-lg font-semibold mb-2 text-slate-200">Patient Sentiment Summary</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">{pompeData.executive_summary}</p>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto max-w-6xl px-4 md:px-8">
+    <!-- Loading States -->
+    {#if pompeLoading}
+      <div class="pompe-loading py-8">
+        <p>Loading patient sentiment data...</p>
+      </div>
+    {:else if pompeError}
+      <div class="pompe-error py-8">
+        <p>Error loading patient sentiment data: {pompeError}</p>
+      </div>
+    {:else if pompeData}
+      <!-- Sticky Tab Navigation -->
+      <div class="sticky top-0 z-10 bg-white shadow-sm">
+        <div class="tab-navigation">
+          <button 
+            class="tab-button" 
+            class:active={expandedSection === 'infusion'}
+            on:click={() => toggleSection('infusion')}
+          >
+            Infusion Experience
+          </button>
+          <button 
+            class="tab-button" 
+            class:active={expandedSection === 'drug'}
+            on:click={() => toggleSection('drug')}
+          >
+            Drug Sentiment
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content py-6">
+        <!-- Infusion Experience Content -->
+        {#if expandedSection === 'infusion'}
+          <div class="tab-panel">
             <!-- Patient Quotes for Infusion Experience -->
-            <div class="quotes-section bg-slate-50">
-              <h4 class="text-left text-base font-semibold">Quotes from Patients & Caregivers</h4>
+            <div class="quotes-section bg-slate-50 rounded-lg">
+              <h4 class="text-left text-lg font-semibold mb-4">Quotes from Patients & Caregivers</h4>
               {#if quotesLoading}
                 <div class="loading-mini">Loading patient quotes...</div>
               {:else if quotesError}
@@ -269,7 +294,7 @@
               {:else if infusionExperienceQuotes.length > 0}
                 <div class="quotes-carousel">
                   {#each infusionExperienceQuotes as quote}
-                    <div class="quote-card w-full md:min-w-[475px]"
+                    <div class="quote-card w-full md:min-w-[400px] lg:min-w-[475px]"
                      class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
                       <div class="quote-text">"{quote.quote}"</div>
                       <div class="quote-sentiment">{quote.sentiment}</div>
@@ -286,13 +311,13 @@
               {/if}
             </div>
             
-            <div class="section-content flex flex-col">
-              <div class="sentiment-summary flex flex-col">
-                <div class="sentiment-drivers flex flex-col md:flex-row gap-4">
+            <div class="section-content flex flex-col lg:flex-row gap-6">
+              <div class="sentiment-summary flex-1">
+                <div class="sentiment-drivers flex flex-col gap-6">
                   <div class="positive-drivers">
-                    <h4>Commonly-Mentioned Positive Drivers</h4>
+                    <h4 class="text-lg font-semibold mb-3">Commonly-Mentioned Positive Drivers</h4>
                     <div class="flex flex-col">
-                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.infusion_experience.positive_drivers.themes.join(', ')}</p>
+                    <p class="driver-summary text-base py-4 max-w-prose text-slate-600">{pompeData.infusion_experience.positive_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
                     {:else if driversError}
@@ -310,8 +335,8 @@
                   </div>
                   
                   <div class="negative-drivers">
-                    <h4>Commonly-Mentioned Negative Drivers</h4>
-                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.infusion_experience.negative_drivers.themes.join(', ')}</p>
+                    <h4 class="text-lg font-semibold mb-3">Commonly-Mentioned Negative Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose text-slate-600">{pompeData.infusion_experience.negative_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
                     {:else if driversError}
@@ -329,11 +354,11 @@
                 </div>
               </div>
               
-              <div class="wordcloud-container">
+              <div class="wordcloud-container flex-1 min-h-[400px] lg:min-h-[500px]">
                 {#if loading}
                   <div class="loading-mini">Loading word cloud...</div>
                 {:else if infusionExperienceData.length > 0}
-                  <div class="chart-container">
+                  <div class="chart-container h-full">
                     <CarbonWordCloud 
                       dataSource={infusionExperienceData} 
                       title=""
@@ -346,30 +371,22 @@
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Drug Sentiment Section -->
-        <div class="integrated-section" 
-             class:expanded={expandedSection === 'drug'}
-             class:collapsed={expandedSection !== null && expandedSection !== 'drug'}>
-          <div class="section-title"
-               on:click={() => toggleSection('drug')}>
-            <h3 class="vertical-title">Drug Sentiment</h3>
-          </div>
-          <div class="section-content-wrapper"
-               class:hidden={expandedSection !== null && expandedSection !== 'drug'}>
-            
+        {/if}
+
+        <!-- Drug Sentiment Content -->
+        {#if expandedSection === 'drug'}
+          <div class="tab-panel">
             <!-- Patient Quotes for Drug Sentiment -->
-            <div class="quotes-section bg-slate-50">
+            <div class="quotes-section bg-slate-50 rounded-lg">
               {#if quotesLoading}
                 <div class="loading-mini">Loading patient quotes...</div>
               {:else if quotesError}
                 <div class="error-mini">Error loading quotes: {quotesError}</div>
               {:else if drugSentimentQuotes.length > 0}
-              <h4 class="text-left text-base font-semibold">Quotes from Patients & Caregivers</h4>
+              <h4 class="text-left text-lg font-semibold mb-4">Quotes from Patients & Caregivers</h4>
               <div class="quotes-carousel">
                   {#each drugSentimentQuotes as quote}
-                    <div class="quote-card w-full md:min-w-[475px]" class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
+                    <div class="quote-card w-full md:min-w-[400px] lg:min-w-[475px]" class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
                       <div class="quote-text">"{quote.quote}"</div>
                       <div class="quote-sentiment">{quote.sentiment}</div>
                       <div class="quote-topics">
@@ -385,12 +402,12 @@
               {/if}
             </div>
             
-            <div class="section-content">
-              <div class="sentiment-summary flex flex-col">
-                <div class="sentiment-drivers flex flex-col md:flex-row gap-4">
+            <div class="section-content flex flex-col lg:flex-row gap-6">
+              <div class="sentiment-summary flex-1">
+                <div class="sentiment-drivers flex flex-col gap-6">
                   <div class="positive-drivers">
-                    <h4>Commonly-Mentioned Positive Drivers</h4>
-                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.positive_drivers.themes.join(', ')}</p>
+                    <h4 class="text-lg font-semibold mb-3">Commonly-Mentioned Positive Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose text-slate-600">{pompeData.drug_sentiment.positive_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
                     {:else if driversError}
@@ -407,8 +424,8 @@
                   </div>
                   
                   <div class="negative-drivers">
-                    <h4>Commonly-Mentioned Negative Drivers</h4>
-                    <p class="driver-summary text-base py-4 max-w-prose">{pompeData.drug_sentiment.negative_drivers.themes.join(', ')}</p>
+                    <h4 class="text-lg font-semibold mb-3">Commonly-Mentioned Negative Drivers</h4>
+                    <p class="driver-summary text-base py-4 max-w-prose text-slate-600">{pompeData.drug_sentiment.negative_drivers.themes.join(', ')}</p>
                     {#if driversLoading}
                       <div class="loading-mini">Loading drivers data...</div>
                     {:else if driversError}
@@ -426,11 +443,11 @@
                 </div>
               </div>
               
-              <div class="wordcloud-container">
+              <div class="wordcloud-container flex-1 min-h-[400px] lg:min-h-[500px]">
                 {#if loading}
                   <div class="loading-mini">Loading word cloud...</div>
                 {:else if drugSentimentData.length > 0}
-                  <div class="chart-container">
+                  <div class="chart-container h-full">
                     <CarbonWordCloud 
                       dataSource={drugSentimentData} 
                       title=""
@@ -443,110 +460,78 @@
               </div>
             </div>
           </div>
-        </div>
+        {/if}
       </div>
-    </div>
-  {/if}
-  
-  <!-- Error States for Word Cloud Data -->
-  {#if loading}
-    <div class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Loading patient data...</p>
-    </div>
-  {:else if error}
-    <div class="error-container">
-      <h3>Error Loading Data</h3>
-      <p>Unable to load patient data: {error}</p>
-      <p>Please check that the data file is accessible and try refreshing the page.</p>
-    </div>
-  {:else if drugSentimentData.length === 0 && infusionExperienceData.length === 0}
-    <div class="error-container">
-      <h3>No Data Available</h3>
-      <p>No patient data was found in the expected format.</p>
-    </div>
-  {/if}
-  
+    {/if}
+    
+    <!-- Error States for Word Cloud Data -->
+    {#if loading}
+      <div class="loading-container py-8">
+        <div class="loading-spinner"></div>
+        <p>Loading patient data...</p>
+      </div>
+    {:else if error}
+      <div class="error-container">
+        <h3>Error Loading Data</h3>
+        <p>Unable to load patient data: {error}</p>
+        <p>Please check that the data file is accessible and try refreshing the page.</p>
+      </div>
+    {:else if drugSentimentData.length === 0 && infusionExperienceData.length === 0}
+      <div class="error-container">
+        <h3>No Data Available</h3>
+        <p>No patient data was found in the expected format.</p>
+      </div>
+    {/if}
+  </main>
 </div>
 
 <style>
-  .container {
-    max-width: 2000px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .pompe-summary h2 {
-    font-size: 1.8rem;
-    color: #161616;
-    margin-bottom: 1rem;
+  /* Header Styles */
+  header {
+    position: relative;
   }
 
-  
-  .integrated-sections {
+  /* Tab Navigation Styles */
+  .tab-navigation {
     display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    height: 80vh;
-    border: .5254px solid #e0e0e0;
-  }
-  
-  .integrated-section {
-    position: relative;
-    display: flex;
+    border-bottom: 2px solid #e0e0e0;
     background: white;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-    min-width: 80px;
+    padding: 0 1rem;
   }
   
-  .integrated-section:not(.expanded):not(.collapsed) {
-    flex: 1;
-  }
-  
-  .integrated-section.expanded {
-    flex: 3;
-  }
-  
-  .integrated-section.collapsed {
-    flex: 0 0 80px;
-  }
-  
-  .section-title {
-    position: relative;
-    width: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #6b7280;
-    z-index: 2;
+  .tab-button {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
     cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
   }
   
-  .vertical-title {
-    writing-mode: vertical-lr;
-    text-orientation: mixed;
-    font-size: 1.625rem;
-    font-weight: 600;
-    font-family: 'IBM Plex Serif', serif;
-    font-style: italic;
-    color: #ffffff;
-    text-align: center;
-    margin: 0;
-    padding: 1rem 0;
+  .tab-button:hover {
+    color: #374151;
+    background: #f9fafb;
   }
   
-  .section-content-wrapper {
+  .tab-button.active {
+    color: #161616;
+    border-bottom-color: #6b7280;
+    background: #f9fafb;
+  }
+  
+  .tab-content {
     flex: 1;
-  
-    opacity: 1;
-    transition: opacity 0.3s ease;
     overflow-y: auto;
   }
   
-  .section-content-wrapper.hidden {
-    opacity: 0;
-    pointer-events: none;
+  .tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
   }
 
   /* Quotes Section Styles */
@@ -938,66 +923,38 @@
     background-color: #24a148;
   }
   
-  @media (min-width: 1200px) {
-    .section-content {
-      flex-direction: column;
-      gap: 2rem;
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .tab-navigation {
+      padding: 0 0.5rem;
     }
     
-    .sentiment-summary {
-      width: 100%;
+    .tab-button {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .quotes-carousel {
+      padding: 0.5rem 0;
+    }
+    
+    .quote-card {
+      min-width: 280px;
+      padding: 1.5rem;
+    }
+    
+    .section-content {
+      flex-direction: column;
+    }
+    
+    .sentiment-drivers {
+      gap: 1rem;
     }
     
     .wordcloud-container {
-      width: 100%;
-    }
-  }
-  
-  @media (max-width: 1024px) {
-    .integrated-sections {
-      flex-direction: column;
-      height: auto;
-      gap: 1rem;
-    }
-    
-    .integrated-section {
-      min-height: 200px;
-      flex-direction: column;
-    }
-    
-    .integrated-section.expanded,
-    .integrated-section.collapsed,
-    .integrated-section:not(.expanded):not(.collapsed) {
-      flex: none;
-    }
-    
-    .section-title {
-      width: 100%;
-      height: 60px;
-      border-right: none;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    
-    .vertical-title {
-      writing-mode: horizontal-tb;
-      padding: 1rem;
-    }
-    
-    .section-content-wrapper {
-      padding: 1rem;
-    }
-    
-    
-    .legend-items {
-      gap: 1rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-
-    
-    .section-description {
-      min-height: auto;
+      min-height: 300px;
     }
     
     .legend-items {
@@ -1005,13 +962,17 @@
       align-items: center;
       gap: 0.75rem;
     }
-    
-    .integrated-sections {
-      gap: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    .quote-card {
+      min-width: 250px;
+      padding: 1rem;
     }
     
-    .pompe-summary {
-      padding: 1rem;
+    .tab-button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
     }
   }
 </style> 
