@@ -2,7 +2,8 @@
   import CarbonWordCloud from '$lib/wordcloud/CarbonWordCloud.svelte';
   import SentimentBarChart from '$lib/components/SentimentBarChart.svelte';
   import { onMount } from 'svelte';
-  
+  import PIQlogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
+
   interface WordCloudItem {
     word: string;
     frequency: number;
@@ -224,9 +225,10 @@
   });
 </script>
 
-<div class="container flex flex-col text-left align-left justify-start h-full">
+<div class="container flex flex-col text-left align-left justify-start h-full bg-slate-100">
   <div class="flex flex-col">
     <div class="flex flex-col my-8">
+      <img src={PIQlogo} alt="PatientlyIQ Logo" class="w-8 h-12" />
     <h1 class="text-xl font-bold text-slate-600">Pompe Disease</h1>
     <h2 class="text-base">Patient Journey Data</h2>
   </div>
@@ -241,8 +243,8 @@
       <p>Error loading patient sentiment data: {pompeError}</p>
     </div>
   {:else if pompeData}
-    <div class="pompe-summary flex flex-col md:flex-row md:justify-between w-full h-full mb-8">
-      <h2 class="text-lg text-slate-600">Patient Sentiment Summary</h2>
+    <div class="pompe-summary flex flex-col md:flex-row md:justify-between w-full h-full mb-24">
+      <h2 class="text-lg font-semibold text-slate-600">Patient Sentiment Summary</h2>
       <p class="executive-summary max-w-prose">{pompeData.executive_summary}</p>
       </div>
       <div class="flex flex-col h-full">

@@ -25,7 +25,7 @@
   $: isKYBORADemoRoute = routeID[1] === "KYBORAdemo";
   $: isKyborajpRoute = routeID[1] === "kyborajp";
   $: isAtlasRoute = routeID[1] === "atlas";
-  $: isWordcloudDemoRoute = routeID[1] === "wordcloud-demo";
+  $: isWordcloudDemoRoute = routeID[1] === "pompe-sentiment";
   $: isPLHDRoute = routeID[1] === "PLHD";
 
   import { resetMode, setMode } from "mode-watcher";
