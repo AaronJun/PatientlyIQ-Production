@@ -565,6 +565,7 @@
   .quotes-carousel::-webkit-scrollbar {
     height: 8px;
     border-radius: 100px;
+    background: #ffd69c;
   }
 
   .quotes-carousel::-webkit-scrollbar-thumb {
