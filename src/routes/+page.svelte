@@ -58,9 +58,9 @@
 		<HeroSection />
 	</section>
 
-	<section id="data-sources">
+	<!-- <section id="data-sources">
 		<DataSourcesSection />
-	</section>
+	</section> -->
 
 <!-- 	
 		<BentoGridCombo />

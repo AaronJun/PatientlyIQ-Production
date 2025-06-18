@@ -496,10 +496,10 @@
     {/if}
   </main>
 <div class="footer min-h-96 bg-slate-700 flex flex-col align-center justify-center pt-8">
-  <div class="footer-content flex flex-col md:flex-row gap-4 items-center justify-center">
-      <img src={PIQlogo} alt="PatientlyIQ Logo" class="w-8 h-12" onclick={() => window.location.href = 'https://patientlyiq.com'}/>
+  <div class="footer-content flex flex-col gap-4 items-center justify-center">
+      <img src={PIQlogo} alt="PatientlyIQ Logo" class="w-8 h-12 cursor-pointer" on:click={() => window.open('https://patientlyiq.com/contact', '_blank')} />
 
-
+      <p class="text-sm text-slate-200">© 2025 Patiently</p>
   </div>
 </div>
 </div>
