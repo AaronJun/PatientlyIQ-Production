@@ -65,7 +65,6 @@
   .bar-chart-container {
     width: 100%;
     padding: 1rem;
-    background: white;
     border: 1px solid #e5e7eb;
   }
   

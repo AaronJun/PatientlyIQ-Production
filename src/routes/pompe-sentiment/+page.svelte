@@ -162,7 +162,7 @@
     // Load Pompe patient sentiment data
     try {
       console.log('Starting to fetch Pompe patient data...');
-      const pompeResponse = await fetch('/data/pompe-patient-sentiment-summary.json');
+    const pompeResponse = await fetch('/data/pompe-patient-sentiment-summary.json');
       
       if (!pompeResponse.ok) {
         throw new Error(`HTTP error! status: ${pompeResponse.status}`);
@@ -181,7 +181,7 @@
     // Load sentiment drivers data
     try {
       console.log('Starting to fetch sentiment drivers data...');
-      const driversResponse = await fetch('/data/pompe-top-sentiment-drivers.json');
+    const driversResponse = await fetch('/data/pompe-top-sentiment-drivers.json');
       
       if (!driversResponse.ok) {
         throw new Error(`HTTP error! status: ${driversResponse.status}`);
