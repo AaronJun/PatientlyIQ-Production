@@ -1,0 +1,47 @@
+{
+  "PK Blood Samples": {
+    "patients_overall": 8.2,
+    "caregivers_overall": 7.5,
+    "all_personas": 7.9
+  },
+  "Pregnancy Test": {
+    "patients_overall": 6.7,
+    "caregivers_overall": 6.0,
+    "all_personas": 6.4
+  },
+  "C-SSRS": {
+    "patients_overall": 6.1,
+    "caregivers_overall": 6.5,
+    "all_personas": 6.3
+  },
+  "QOLIE-31": {
+    "patients_overall": 7.3,
+    "caregivers_overall": 6.8,
+    "all_personas": 7.1
+  },
+  "QOLIE-AD-48": {
+    "patients_overall": 7.0,
+    "caregivers_overall": 6.2,
+    "all_personas": 6.6
+  },
+  "Diary Training": {
+    "patients_overall": 6.9,
+    "caregivers_overall": 7.3,
+    "all_personas": 7.0
+  },
+  "ECG": {
+    "patients_overall": 6.5,
+    "caregivers_overall": 5.7,
+    "all_personas": 6.2
+  },
+  "Physical and Neurologic Exam": {
+    "patients_overall": 5.9,
+    "caregivers_overall": 5.3,
+    "all_personas": 5.6
+  },
+  "Clinical Laboratory Tests": {
+    "patients_overall": 6.4,
+    "caregivers_overall": 6.8,
+    "all_personas": 6.6
+  }
+}

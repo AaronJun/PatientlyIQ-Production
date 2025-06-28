@@ -1,0 +1,27 @@
+{
+  "study_id": "STU-D-302",
+  "study_name": "STUDY-302",
+  "sponsor": "SPONSOR Pharmaceuticals Inc.",
+  "title": "A Phase 3, Randomized, Double-blind, Placebo-controlled, Multicenter Study to Evaluate the Efficacy and Safety of STU101 Administered as Adjunctive Therapy in Focal Onset Seizures in Pediatric and Adolescent Subjects Aged 2 to <18 Years",
+  "phase": "3",
+  "indication": "Focal Onset Seizures (Epilepsy)",
+  "population": {
+    "age_range": "2 to <18 years",
+    "condition": "Focal onset seizures",
+    "inclusion_highlights": [
+      "Diagnosis of focal epilepsy",
+      "History of uncontrolled focal onset seizures despite at least one prior ASM",
+      "Stable dose of current ASMs",
+      "Body weight \u2265 10 kg"
+    ]
+  },
+  "design": {
+    "randomization": "Yes",
+    "control": "Placebo-controlled",
+    "blinding": "Double-blind",
+    "arms": 2,
+    "multicenter": true
+  },
+  "total_visits": 9,
+  "visit_schedule_json": "patient_burden_mapper_visit_schedule_FULL.json"
+}

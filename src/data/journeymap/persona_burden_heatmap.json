@@ -1,0 +1,88 @@
+[
+  {
+    "persona_type": "Caregiver",
+    "persona": "Caregiver (Parent)",
+    "burden_scores": {
+      "Travel Time": 8,
+      "Missed Work/School": 7,
+      "School Disruption": 9,
+      "Emotional Fatigue": 8,
+      "Appointment Length": 6,
+      "Child Anxiety": 7,
+      "Scheduling Complexity": 6,
+      "Waiting Room Time": 5,
+      "Number of Procedures": 7,
+      "Paperwork / Consent": 6,
+      "Communication with Site": 5,
+      "Overnight Stay Needed": 4,
+      "Transport Logistics": 7,
+      "Multiple Children at Home": 9
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 8,
+      "Pregnancy Test": 6,
+      "C-SSRS": 5,
+      "QOLIE-31": 6,
+      "Diary Training": 1,
+      "ECG": 5,
+      "Physical and Neurologic Exam": 4
+    }
+  },
+  {
+    "persona_type": "Patient",
+    "persona": "Teen Patient",
+    "burden_scores": {
+      "Travel Time": 6,
+      "Missed Work/School": 8,
+      "Emotional Fatigue": 7,
+      "Procedure Discomfort": 9,
+      "Social Isolation": 6,
+      "Appointment Length": 7,
+      "Needle Fear": 8,
+      "Body Image Concern": 6,
+      "Waiting Room Time": 5,
+      "Number of Procedures": 8,
+      "Invasive Tests": 9,
+      "Survey Fatigue": 7,
+      "Medication Side Effects": 6,
+      "Digital Diary Burden": 5
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 9,
+      "Pregnancy Test": 7,
+      "C-SSRS": 4,
+      "QOLIE-AD-48": 6,
+      "Diary Training": 6,
+      "ECG": 6,
+      "Physical and Neurologic Exam": 5
+    }
+  },
+  {
+    "persona": "Rural Working Mother",
+    "burden_scores": {
+      "Travel Time": 10,
+      "Missed Work/School": 9,
+      "Childcare Arrangements": 10,
+      "Transport Costs": 8,
+      "Scheduling Flexibility": 7,
+      "Appointment Rescheduling": 6,
+      "Procedure Discomfort": 6,
+      "Phone/Internet Access": 5,
+      "Trust in Providers": 6,
+      "Health Literacy Demands": 7,
+      "Forms and Portals": 7,
+      "Follow-up Complexity": 8,
+      "Visit Frequency": 9,
+      "Time Away from Family": 8
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 8,
+      "Pregnancy Test": 6,
+      "C-SSRS": 5,
+      "QOLIE-31": 6,
+      "Diary Training": 7,
+      "ECG": 6,
+      "Clinical Laboratory Tests": 7
+    }
+  }
+]

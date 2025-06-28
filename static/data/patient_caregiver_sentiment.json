@@ -1,0 +1,172 @@
+{
+  "study_title": "Patient and Caregiver Sentiment Analysis Across Clinical Trial Visits",
+  "data_collection_methodology": "Sentiment analysis based on visit burden, assessment types, and clinical milestones",
+  "sentiment_scale": {
+    "description": "5-point Likert scale",
+    "1": "Very Negative",
+    "2": "Negative", 
+    "3": "Neutral",
+    "4": "Positive",
+    "5": "Very Positive"
+  },
+  "visit_sentiments": [
+    {
+      "visit_number": 1,
+      "visit_name": "Screening",
+      "study_day_range": "-66 to -56",
+      "study_week": "-9.5 to -8",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 4,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Initial screening visit generates mixed emotions. High anxiety due to uncertainty about eligibility and extensive testing battery (26 assessments). However, hope is elevated as this represents potential access to new treatment. Physical burden is moderate with travel required and invasive procedures like blood draws and ECG."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 4,
+        "hope_level": 4,
+        "burden_perception": 4,
+        "reasoning": "Caregivers experience significant anxiety about the screening process and whether their loved one will qualify. High logistical burden with travel coordination and time investment. Hope is tempered by uncertainty, but the possibility of new treatment options maintains optimism."
+      }
+    },
+    {
+      "visit_number": 2,
+      "visit_name": "Randomization", 
+      "study_day": "0",
+      "study_week": "0",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 3,
+        "hope_level": 5,
+        "burden_perception": 2,
+        "reasoning": "Randomization visit marks official study entry, creating high hope and optimism. Anxiety decreases as eligibility is confirmed. Burden perception is lower with fewer assessments (14 vs 26 in screening). Receiving study drug represents tangible progress toward potential improvement."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 5,
+        "burden_perception": 2,
+        "reasoning": "Relief and hope dominate as randomization confirms study participation. Anxiety significantly reduced with eligibility confirmed. Logistical burden feels more manageable knowing the commitment is worthwhile. Optimism peaks with treatment initiation."
+      }
+    },
+    {
+      "visit_number": 3,
+      "visit_name": "Treatment Week 2",
+      "study_day": "14 ±3",
+      "study_week": "2", 
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Early treatment phase brings cautious optimism balanced with uncertainty about drug effects. Introduction of CGI-S and PGI-S assessments allows self-reporting of perceived improvement. Moderate burden with 17 assessments including continued invasive procedures. Hope remains elevated but tempered by realistic expectations."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Caregivers closely monitor for any signs of improvement or side effects. Moderate anxiety about drug effects and compliance. Hope maintained but realistic about timeline for seeing results. Burden is manageable but requires continued vigilance and travel coordination."
+      }
+    },
+    {
+      "visit_number": 4,
+      "visit_name": "Treatment Week 4",
+      "study_day": "28 ±5",
+      "study_week": "4",
+      "patient_sentiment": {
+        "overall_score": 2,
+        "anxiety_level": 4,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Month mark introduces significant stress with surgical biopsy procedure added to visit protocol. Highest assessment burden (22 assessments) creates fatigue and frustration. Anxiety peaks due to invasive biopsy. Hope begins to wane if no clear improvements are perceived. TSQM-9 treatment satisfaction questionnaire may reflect growing concerns."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 2,
+        "anxiety_level": 5,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Surgical biopsy creates highest anxiety levels for caregivers. Concern about additional invasive procedures and their necessity. Burden peaks with most comprehensive visit requirements. Hope starts to fluctuate based on observed patient response and tolerance of procedures."
+      }
+    },
+    {
+      "visit_number": 5,
+      "visit_name": "Treatment Week 6",
+      "study_day": "42 ±5", 
+      "study_week": "6",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Mid-treatment visit shows stabilization of emotions. Reduced assessment burden (18 assessments) compared to previous visit provides relief. No major new procedures. Sentiment becomes more neutral as routine sets in. Hope may increase if positive trends emerge in patient-reported outcomes."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Return to more manageable visit structure reduces caregiver anxiety. Routine establishment helps with logistical planning. Neutral hope as caregivers await clearer signs of treatment efficacy. Burden feels more sustainable in established routine."
+      }
+    },
+    {
+      "visit_number": 6,
+      "visit_name": "Treatment Week 8",
+      "study_day": "56 ±5",
+      "study_week": "8",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "First visit without required travel significantly improves patient sentiment. Remote/virtual visit reduces physical and logistical burden while maintaining comprehensive assessment (21 assessments). Lower anxiety with familiar routine. Hope may increase as 2-month treatment milestone approached with reduced visit burden."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 1,
+        "hope_level": 4,
+        "burden_perception": 1,
+        "reasoning": "No-travel requirement dramatically reduces caregiver burden and anxiety. Ability to participate from home environment increases comfort and reduces logistical stress. Hope increases with treatment continuation and reduced visit complexity. Most positive caregiver experience to date."
+      }
+    },
+    {
+      "visit_number": 7,
+      "visit_name": "Follow-up Visit 1",
+      "study_day": "70 ±7",
+      "study_week": "10",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "Transition to follow-up phase brings optimism about treatment completion. Surgical assessment may create mild anxiety but represents important safety monitoring. Generally positive sentiment as active treatment phase nears completion. Reduced burden perception with clear end in sight."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "Relief at reaching follow-up phase with treatment completion in sight. Surgical assessment creates some concern but overall positive trajectory. Burden feels manageable knowing study participation is nearing end. Hope maintained for treatment benefits."
+      }
+    }
+  ],
+  "overall_patterns": {
+    "patient_trends": {
+      "highest_sentiment": "Visit 2 (Randomization) and Visit 6 (Treatment Week 8 - no travel)",
+      "lowest_sentiment": "Visit 4 (Treatment Week 4 - surgical biopsy)",
+      "key_factors": ["Travel requirements", "Invasive procedures", "Assessment burden", "Treatment milestones"]
+    },
+    "caregiver_trends": {
+      "highest_sentiment": "Visit 6 (Treatment Week 8 - no travel required)",
+      "lowest_sentiment": "Visit 4 (Treatment Week 4 - surgical biopsy anxiety)",
+      "key_factors": ["Logistical burden", "Invasive procedure anxiety", "Routine establishment", "Treatment progress visibility"]
+    },
+    "recommendations": {
+      "burden_reduction": "Consider virtual/remote options where clinically appropriate",
+      "communication": "Increase communication around invasive procedures like biopsies",
+      "support": "Provide additional caregiver support during high-burden visits",
+      "milestone_recognition": "Celebrate treatment milestones to maintain hope and engagement"
+    }
+  }
+} 

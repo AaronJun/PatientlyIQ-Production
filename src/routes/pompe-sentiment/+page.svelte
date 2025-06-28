@@ -227,7 +227,7 @@
 
 <div class="min-h-screen bg-slate-100">
   <!-- Header Section -->
-  <header class="flex flex-col w-full bg-slate-700 text-white py-8">
+  <header class="flex flex-col  w-full bg-slate-700 text-white py-8">
     <div class="container px-2 md:px-8">
       <div class="flex flex-col md:justify-start gap-4">
         <img src={PIQlogo} alt="PatientlyIQ Logo" class="w-8 h-12" />

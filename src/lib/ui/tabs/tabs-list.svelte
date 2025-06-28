@@ -10,7 +10,7 @@
 
 <TabsPrimitive.List
 	class={cn(
-		"inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+		"flex flex-row items-center w-fit px-8 gap-2 bg-sky-50 p-2 hover:bg-gray-100 transition-all duration-300 rounded-full",
 		className
 	)}
 	{...$$restProps}

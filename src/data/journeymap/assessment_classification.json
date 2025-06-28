@@ -1,0 +1,110 @@
+[
+  {
+    "assessment": "Blood Draw",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "PK Blood Samples",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "Pregnancy Test",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "FSH",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "ECG",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "Clinical Laboratory Tests",
+    "category": "Invasive"
+  },
+  {
+    "assessment": "Physical and Neurologic Exam",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Vital Signs",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Height, Weight, BMI",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Tanner Staging",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Ophthalmologic Exam",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Eligibility Assessment",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Adverse Events",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Concomitant Medications",
+    "category": "Observational"
+  },
+  {
+    "assessment": "C-SSRS",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "HRUA",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "QOLIE-31",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "QOLIE-AD-48",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "BRIEF-SR",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "LGPT",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "NDDI-E",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "BDI-II",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "GAD-7",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "AUA-SI",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "MIDAS",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "PGI-S",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "TSQM-9",
+    "category": "Patient-Reported"
+  }
+]

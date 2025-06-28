@@ -1,0 +1,155 @@
+[
+  {
+    "persona": "Caregiver (Parent)",
+    "burden_scores": {
+      "Travel Time": 8,
+      "Missed Work": 7,
+      "School Disruption": 9,
+      "Emotional Fatigue": 8,
+      "Appointment Length": 6,
+      "Child Anxiety": 7,
+      "Scheduling Complexity": 6,
+      "Waiting Room Time": 5,
+      "Number of Procedures": 7,
+      "Paperwork / Consent": 6,
+      "Communication with Site": 5,
+      "Overnight Stay Needed": 4,
+      "Transport Logistics": 7,
+      "Multiple Children at Home": 9
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 8,
+      "Pregnancy Test": 6,
+      "C-SSRS": 5,
+      "QOLIE-31": 6,
+      "Diary Training": 7,
+      "ECG": 5,
+      "Physical and Neurologic Exam": 4
+    },
+    "dropout_risk_by_visit": {
+      "Visit 1": {
+        "likelihood": 0.1,
+        "primary_drivers": [
+          "Travel Time",
+          "Paperwork / Consent"
+        ]
+      },
+      "Visit 2": {
+        "likelihood": 0.25,
+        "primary_drivers": [
+          "School Disruption",
+          "Child Anxiety"
+        ]
+      },
+      "Visit 6": {
+        "likelihood": 0.4,
+        "primary_drivers": [
+          "Emotional Fatigue",
+          "Multiple Children at Home"
+        ]
+      }
+    }
+  },
+  {
+    "persona": "Teen Patient",
+    "burden_scores": {
+      "Travel Time": 6,
+      "Missed School": 8,
+      "Emotional Fatigue": 7,
+      "Procedure Discomfort": 9,
+      "Social Isolation": 6,
+      "Appointment Length": 7,
+      "Needle Fear": 8,
+      "Body Image Concern": 6,
+      "Waiting Room Time": 5,
+      "Number of Procedures": 8,
+      "Invasive Tests": 9,
+      "Survey Fatigue": 7,
+      "Medication Side Effects": 6,
+      "Digital Diary Burden": 5
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 9,
+      "Pregnancy Test": 7,
+      "C-SSRS": 4,
+      "QOLIE-AD-48": 6,
+      "Diary Training": 6,
+      "ECG": 6,
+      "Physical and Neurologic Exam": 5
+    },
+    "dropout_risk_by_visit": {
+      "Visit 1": {
+        "likelihood": 0.15,
+        "primary_drivers": [
+          "Needle Fear",
+          "Missed School"
+        ]
+      },
+      "Visit 2": {
+        "likelihood": 0.3,
+        "primary_drivers": [
+          "Procedure Discomfort",
+          "Survey Fatigue"
+        ]
+      },
+      "Visit 13": {
+        "likelihood": 0.45,
+        "primary_drivers": [
+          "Emotional Fatigue",
+          "Invasive Tests"
+        ]
+      }
+    }
+  },
+  {
+    "persona": "Rural Working Mother",
+    "burden_scores": {
+      "Travel Time": 10,
+      "Lost Wages": 9,
+      "Childcare Arrangements": 10,
+      "Transport Costs": 8,
+      "Scheduling Flexibility": 7,
+      "Appointment Rescheduling": 6,
+      "Procedure Discomfort": 6,
+      "Phone/Internet Access": 5,
+      "Trust in Providers": 6,
+      "Health Literacy Demands": 7,
+      "Forms and Portals": 7,
+      "Follow-up Complexity": 8,
+      "Visit Frequency": 9,
+      "Time Away from Family": 8
+    },
+    "assessment_burden": {
+      "PK Blood Samples": 8,
+      "Pregnancy Test": 6,
+      "C-SSRS": 5,
+      "QOLIE-31": 6,
+      "Diary Training": 7,
+      "ECG": 6,
+      "Clinical Laboratory Tests": 7
+    },
+    "dropout_risk_by_visit": {
+      "Visit 1": {
+        "likelihood": 0.2,
+        "primary_drivers": [
+          "Travel Time",
+          "Lost Wages"
+        ]
+      },
+      "Visit 3": {
+        "likelihood": 0.35,
+        "primary_drivers": [
+          "Childcare Arrangements",
+          "Scheduling Flexibility"
+        ]
+      },
+      "Visit 10": {
+        "likelihood": 0.5,
+        "primary_drivers": [
+          "Visit Frequency",
+          "Time Away from Family"
+        ]
+      }
+    }
+  }
+]

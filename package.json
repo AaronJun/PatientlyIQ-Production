@@ -43,6 +43,7 @@
 		"@carbon/charts-react": "^1.23.5",
 		"@carbon/charts-svelte": "^1.22.15",
 		"@internationalized/date": "^3.5.4",
+		"@melt-ui/svelte": "^0.86.6",
 		"@sendgrid/mail": "^8.1.4",
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@tailwindcss/forms": "^0.5.9",

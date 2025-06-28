@@ -1,0 +1,150 @@
+{
+  "PK Blood Samples": [
+    {
+      "term": "painful",
+      "frequency": 8
+    },
+    {
+      "term": "bruising",
+      "frequency": 6
+    },
+    {
+      "term": "anxious",
+      "frequency": 7
+    },
+    {
+      "term": "repetitive",
+      "frequency": 5
+    },
+    {
+      "term": "dizzy",
+      "frequency": 3
+    }
+  ],
+  "Pregnancy Test": [
+    {
+      "term": "awkward",
+      "frequency": 6
+    },
+    {
+      "term": "embarrassing",
+      "frequency": 7
+    },
+    {
+      "term": "necessary",
+      "frequency": 4
+    },
+    {
+      "term": "uncomfortable",
+      "frequency": 5
+    }
+  ],
+  "C-SSRS": [
+    {
+      "term": "invasive",
+      "frequency": 6
+    },
+    {
+      "term": "personal",
+      "frequency": 7
+    },
+    {
+      "term": "repetitive",
+      "frequency": 4
+    },
+    {
+      "term": "triggering",
+      "frequency": 5
+    }
+  ],
+  "QOLIE-31": [
+    {
+      "term": "long",
+      "frequency": 8
+    },
+    {
+      "term": "repetitive",
+      "frequency": 6
+    },
+    {
+      "term": "thoughtful",
+      "frequency": 5
+    },
+    {
+      "term": "hard to focus",
+      "frequency": 6
+    }
+  ],
+  "Diary Training": [
+    {
+      "term": "confusing",
+      "frequency": 7
+    },
+    {
+      "term": "tech issues",
+      "frequency": 5
+    },
+    {
+      "term": "overwhelming",
+      "frequency": 6
+    },
+    {
+      "term": "tedious",
+      "frequency": 4
+    }
+  ],
+  "ECG": [
+    {
+      "term": "cold",
+      "frequency": 5
+    },
+    {
+      "term": "fast",
+      "frequency": 4
+    },
+    {
+      "term": "uncomfortable",
+      "frequency": 6
+    },
+    {
+      "term": "routine",
+      "frequency": 3
+    }
+  ],
+  "Physical and Neurologic Exam": [
+    {
+      "term": "standard",
+      "frequency": 3
+    },
+    {
+      "term": "awkward",
+      "frequency": 5
+    },
+    {
+      "term": "reassuring",
+      "frequency": 4
+    },
+    {
+      "term": "exhausting",
+      "frequency": 5
+    }
+  ],
+  "Clinical Laboratory Tests": [
+    {
+      "term": "waiting",
+      "frequency": 6
+    },
+    {
+      "term": "slow",
+      "frequency": 5
+    },
+    {
+      "term": "annoying",
+      "frequency": 4
+    },
+    {
+      "term": "unclear results",
+      "frequency": 3
+    }
+  ]
+}

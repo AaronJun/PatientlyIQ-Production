@@ -25,6 +25,7 @@
   $: isKYBORADemoRoute = routeID[1] === "KYBORAdemo";
   $: isKyborajpRoute = routeID[1] === "kyborajp";
   $: isAtlasRoute = routeID[1] === "atlas";
+  $: isJourneymapRoute = routeID[1] === "journeymapper";
   $: isWordcloudDemoRoute = routeID[1] === "pompe-sentiment";
   $: isPLHDRoute = routeID[1] === "PLHD";
 
@@ -123,7 +124,7 @@ injectSpeedInsights();
 <svelte:window bind:innerWidth={pageWidth} />
 
 <!-- Only render the Header if not on the excluded routes -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute && !isJourneymapRoute}
   <Header />
 {/if}
 
