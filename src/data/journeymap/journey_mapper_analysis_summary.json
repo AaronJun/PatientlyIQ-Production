@@ -3,6 +3,7 @@
     "summary": {
       "title": "Journey Mapper Analysis Summary",
       "description": "Comprehensive analysis of key hurdles, dropout risks, and interventions based on journey mapper data",
+      "summary_text": "The key hurdles for this community are the following: for the rural working mother, the key hurdle is the travel time to the study site. For the teen patient, the key hurdle is the procedure discomfort. For the caregiver (parent), the key hurdle is the emotional fatigue. The key interventions for this community are the following: for the rural working mother, the key intervention is the flexible scheduling. For the teen patient, the key intervention is the emotional support. For the caregiver (parent), the key intervention is the flexible scheduling.",
       "analysis_date": "2024"
     },
     "key_hurdles_by_persona": {

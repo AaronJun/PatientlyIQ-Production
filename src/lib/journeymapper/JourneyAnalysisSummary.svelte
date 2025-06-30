@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { ArrowDown, ArrowRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
+	import hurdleQuotesData from '../../data/journeymap/hurdle_quotes.json';
+	import HurdleQuotesDrawer from './HurdleQuotesDrawer.svelte';
 
 	const analysis = analysisData.journey_mapper_analysis;
+	const hurdleQuotes = hurdleQuotesData.hurdle_quotes;
 
 	// State for expandable sections
 	let expandedSections = {
@@ -12,8 +15,25 @@
 		priorities: false
 	};
 
+	// State for quotes drawer
+	let isQuotesDrawerOpen = false;
+	let selectedHurdle = '';
+	let selectedQuotes: Array<{quote: string, persona_descriptor: string}> = [];
+
 	function toggleSection(section: keyof typeof expandedSections) {
 		expandedSections[section] = !expandedSections[section];
+	}
+
+	function handleHurdleClick(hurdleName: string) {
+		selectedHurdle = hurdleName;
+		selectedQuotes = (hurdleQuotes as any)[hurdleName] || [];
+		isQuotesDrawerOpen = true;
+	}
+
+	function closeQuotesDrawer() {
+		isQuotesDrawerOpen = false;
+		selectedHurdle = '';
+		selectedQuotes = [];
 	}
 
 	// Get risk level styling
@@ -54,9 +74,9 @@
 </script>
 
 <div class="analysis-summary">
-	<div class="summary-header">
-		<h2 class="summary-title">Journey Analysis Summary</h2>
-		<p class="summary-description">Key insights from participant burden and dropout risk analysis</p>
+	<div class="flex flex-col lg:flex-row lg:justify-between w-full gap-2 mb-4">
+		<h2 class="text-lg font-bold">Study Journey Summary</h2>
+		<p class="text-sm text-slate-700 max-w-prose">{analysis.summary.summary_text}</p>
 	</div>
 
 	<div class="summary-sections">
@@ -86,7 +106,7 @@
 							<h4 class="persona-name">{persona.persona_name}</h4>
 							<div class="burden-grid">
 								{#each persona.top_burden_areas.slice(0, 3) as hurdle}
-									<div class="burden-item">
+									<div class="burden-item clickable-hurdle" on:click={() => handleHurdleClick(hurdle.hurdle)} on:keydown={(e) => e.key === 'Enter' && handleHurdleClick(hurdle.hurdle)} role="button" tabindex="0">
 										<div class="burden-header">
 											<span class="burden-name">{hurdle.hurdle}</span>
 											<div class="burden-score {getBurdenStyling(hurdle.burden_score)}">
@@ -94,6 +114,7 @@
 											</div>
 										</div>
 										<p class="burden-description">{hurdle.description}</p>
+										<div class="click-hint">Click to see participant quotes</div>
 									</div>
 								{/each}
 							</div>
@@ -236,6 +257,14 @@
 	</div>
 </div>
 
+<!-- Quotes Drawer -->
+<HurdleQuotesDrawer 
+	bind:isOpen={isQuotesDrawerOpen}
+	{selectedHurdle}
+	quotes={selectedQuotes}
+	on:close={closeQuotesDrawer}
+/>
+
 <style>
 	.analysis-summary {
 		width: 100%;
@@ -366,6 +395,7 @@
 		font-size: 0.8rem;
 		font-weight: 600;
 		color: #1e293b;
+		transition: color 0.2s ease;
 	}
 
 	.burden-score {
@@ -600,5 +630,55 @@
 			align-items: flex-start;
 			gap: 0.5rem;
 		}
+	}
+
+	.clickable-hurdle {
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+		border: 2px solid #e2e8f0;
+		background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+	}
+
+	.clickable-hurdle:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+		border-color: #3b82f6;
+		background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+	}
+
+	.clickable-hurdle:focus {
+		outline: 3px solid #3b82f6;
+		outline-offset: 2px;
+	}
+
+	.clickable-hurdle:active {
+		transform: translateY(0px);
+	}
+
+	.click-hint {
+		font-size: 0.75rem;
+		color: #3b82f6;
+		margin-top: 0.75rem;
+		font-weight: 600;
+		opacity: 0;
+		transition: all 0.2s ease;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.click-hint::before {
+		content: "👆";
+		font-size: 0.875rem;
+	}
+
+	.clickable-hurdle:hover .click-hint {
+		opacity: 1;
+		transform: translateY(-2px);
+	}
+
+	.clickable-hurdle:hover .burden-name {
+		color: #3b82f6;
 	}
 </style> 

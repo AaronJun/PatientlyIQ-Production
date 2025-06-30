@@ -1,0 +1,414 @@
+{
+  "study_schedule": [
+    {
+      "visit": "Screening",
+      "week": "Up to 8 weeks before W1",
+      "assessments": [
+        "Informed consent/child assent",
+        "Inclusion/exclusion criteria",
+        "Medical and PID history",
+        "Physical exam and vital signs",
+        "Height and weight",
+        "Infection assessment",
+        "Adverse event assessment",
+        "Concomitant medications",
+        "Pregnancy and drug screen",
+        "CBC and blood tests",
+        "Biochemistry panel",
+        "Immunoglobulin levels",
+        "Direct Antiglobulin Test",
+        "IgA and IgM assay"
+      ]
+    },
+    {
+      "visit": "Visit 1",
+      "week": "W1",
+      "assessments": [
+        "IgG administration",
+        "SCIG20% administration",
+        "Physical exam and vital signs",
+        "CBC and biochemistry",
+        "Pregnancy test",
+        "Patient diary check"
+      ]
+    },
+    {
+      "visit": "Visit 2",
+      "week": "W2",
+      "assessments": [
+        "SCIG20% administration",
+        "CBC and biochemistry",
+        "Vital signs",
+        "Urine dipstick"
+      ]
+    },
+    {
+      "visit": "Visit 4",
+      "week": "W4",
+      "assessments": [
+        "SCIG20% administration",
+        "IgG trough level",
+        "IgG subclass analysis",
+        "Immunogenicity",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 5",
+      "week": "W5",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 6",
+      "week": "W6",
+      "assessments": [
+        "Homecare or clinic visit",
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 7",
+      "week": "W7",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 8",
+      "week": "W8",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 9",
+      "week": "W9",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 10",
+      "week": "W10",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 11",
+      "week": "W11",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 12",
+      "week": "W12",
+      "assessments": [
+        "IgG administration",
+        "SCIG20% administration",
+        "IgG trough and subclasses",
+        "Adverse event assessment"
+      ]
+    },
+    {
+      "visit": "Visit 13",
+      "week": "W13",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 14",
+      "week": "W14",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 15",
+      "week": "W15",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 16",
+      "week": "W16",
+      "assessments": [
+        "Follow-up after dose adjustment",
+        "CBC and biochemistry",
+        "Physical exam and vitals"
+      ]
+    },
+    {
+      "visit": "Visit 17",
+      "week": "W17",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 18",
+      "week": "W18",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 19",
+      "week": "W19",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 20",
+      "week": "W20",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 21",
+      "week": "W21",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 22",
+      "week": "W22",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 23",
+      "week": "W23",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 24",
+      "week": "W24",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 25",
+      "week": "W25",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 26",
+      "week": "W26",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 27",
+      "week": "W27",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 28",
+      "week": "W28",
+      "assessments": [
+        "Follow-up visit",
+        "CBC and biochemistry",
+        "Serum reference sample"
+      ]
+    },
+    {
+      "visit": "Visit 29",
+      "week": "W29",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 30",
+      "week": "W30",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 31",
+      "week": "W31",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 32",
+      "week": "W32",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 33",
+      "week": "W33",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 34",
+      "week": "W34",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 35",
+      "week": "W35",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 36",
+      "week": "W36",
+      "assessments": [
+        "Follow-up visit",
+        "CBC and biochemistry"
+      ]
+    },
+    {
+      "visit": "Visit 37",
+      "week": "W37",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 38",
+      "week": "W38",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 39",
+      "week": "W39",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 40",
+      "week": "W40",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 41",
+      "week": "W41",
+      "assessments": [
+        "Follow-up visit",
+        "IgG concentrations and titers"
+      ]
+    },
+    {
+      "visit": "Visit 42",
+      "week": "W42",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 43",
+      "week": "W43",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 45",
+      "week": "W45",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 46",
+      "week": "W46",
+      "assessments": [
+        "SCIG20% administration",
+        "Vital signs"
+      ]
+    },
+    {
+      "visit": "Visit 44",
+      "week": "W47",
+      "assessments": [
+        "Follow-up visit"
+      ]
+    },
+    {
+      "visit": "Visit 48",
+      "week": "W48",
+      "assessments": [
+        "Follow-up visit"
+      ]
+    },
+    {
+      "visit": "Visit 52 / EOS",
+      "week": "W52 \u00b12 days",
+      "assessments": [
+        "End of study assessments",
+        "PK sampling for IgG",
+        "Immunogenicity",
+        "QOL questionnaire"
+      ]
+    }
+  ]
+}

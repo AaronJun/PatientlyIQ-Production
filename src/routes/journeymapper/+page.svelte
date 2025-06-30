@@ -6,8 +6,7 @@
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
 	import JourneyAnalysisSummary from '$lib/journeymapper/JourneyAnalysisSummary.svelte';
 	import * as Tabs from "$lib/ui/tabs";
-	import { Calendar, ClipboardText, IdentificationCard } from 'phosphor-svelte';
-	
+	import { Calendar, ClipboardText, IdentificationCard, ChartLine } from 'phosphor-svelte';
 	import visitScheduleData from '../../data/journeymap/patient_burden_mapper_visit_schedule.json';
 	import studyMetadata from '../../data/journeymap/study_metadata_xackt.json';
 
@@ -27,7 +26,7 @@
 	$: totalVisits = visitScheduleData.visits.length;
 	$: travelVisits = visitScheduleData.visits.filter(visit => visit.travel_required).length;
 	$: invasiveVisits = visitScheduleData.visits.filter(visit => 
-		visit.assessments.some(assessment => 
+	visit.assessments.some(assessment => 
 			assessment.includes('Blood') || 
 			assessment.includes('Laboratory') || 
 			assessment.includes('ECG') ||
@@ -57,15 +56,26 @@
 		<div class="study-overview">
 			<div class="study-info">
 				<div class="info-item">
-					<span class="info-label">Study
+					<span class="info-label">Study</span>
 					<span class="info-value">{studyMetadata.study_name}</span>
 				</div>
+
 				<div class="info-item">
-					<span class="info-label">Phase
+					<span class="info-label">Indication</span>
+					<span class="info-value">{studyMetadata.indication}</span>
+				</div>
+
+				<div class="info-item">
+					<span class="info-label">Therapeutic Area</span>
+					<span class="info-value">{studyMetadata.therapeutic_area}</span>
+				</div>
+
+				<div class="info-item">
+					<span class="info-label">Phase</span>
 					<span class="info-value">{studyMetadata.phase}</span>
 				</div>
 				<div class="info-item">
-					<span class="info-label">Overall Score
+					<span class="info-label">Overall Score</span>
 					<span class="info-value">{overallScore}</span>
 				</div>
 				<button class="more-info-btn" on:click={toggleDrawer} aria-label="View study details">
@@ -73,9 +83,6 @@
 				</button>
 			</div>
 		</div>
-
-		<!-- Journey Analysis Summary -->
-		<JourneyAnalysisSummary />
 			
 			<div class="visit-statistics bg-slate-100 py-2 px-4 align-middle  rounded-lg flex flex-row justify-between">
 				<VisitSquares 
@@ -108,12 +115,18 @@
 
 	<!-- Tab Implementation -->
 	<div class="tabs-container">
-		<Tabs.Root value="schedule" class="w-full">
+		
+		<Tabs.Root value="summary" class="w-full">
 			<Tabs.List class="tabs-list">
+				
+				<Tabs.Trigger value="summary" class="tab-trigger">
+					<ChartLine size={18} class="mr-2" />
+					Summary
+				</Tabs.Trigger>
 				<Tabs.Trigger value="schedule" class="tab-trigger">
 					<Calendar size={18} class="mr-2" />
 					Schedule
-				</Tabs.Trigger>
+				</Tabs.Trigger>	
 				<Tabs.Trigger value="assessments" class="tab-trigger">
 					<ClipboardText size={18} class="mr-2" />
 					Assessments
@@ -124,6 +137,10 @@
 				</Tabs.Trigger>
 			</Tabs.List>
 			
+			<Tabs.Content value="summary" class="tab-content">
+				<JourneyAnalysisSummary />
+			</Tabs.Content>
+
 			<Tabs.Content value="schedule" class="tab-content">
 				<div class="content-wrapper">
 					<JourneyContainer visits={visitScheduleData.visits} {timelineWidth} />
@@ -188,7 +205,6 @@
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-evenly;
 		background-color: #fafbfc;
 		align-items: flex-start;
 	}
@@ -211,15 +227,14 @@
 		width: 100%;
 		margin-top: 1rem;
 		padding: 0.5rem;
-		justify-content: space-evenly;
 	}
 
 	.study-info {
 		display: flex;
 		flex-direction: row;
         width: 100%;
-		justify-content: space-evenly;
 		gap: 1rem;
+		justify-content: space-between;
 	}
 
 	.info-item {
@@ -234,14 +249,14 @@
 	.info-label {
 		font-weight: 600;
 		color: #374151;
-		font-size: 0.8275rem;
+		font-size: 0.725rem;
 		white-space: nowrap;
 	}
 
 	.info-value {
 		color: #1f2937;
 		font-weight: 800;
-		font-size: 1.25rem;
+		font-size: .925rem;
 	}
 
 	.more-info-btn {

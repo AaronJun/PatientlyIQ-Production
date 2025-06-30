@@ -5,6 +5,7 @@
 	import Drawer from './Drawer.svelte';
 	import VisitDetails from './VisitDetails.svelte';
 	import AssessmentBurdenHeatmap from '../components/AssessmentBurdenHeatmap.svelte';
+	import PersonaTooltip from './PersonaTooltip.svelte';
 
 	// Type definitions
 	interface Visit {
@@ -27,8 +28,20 @@
 		id: string;
 		name: string;
 		type: 'Patient' | 'Caregiver';
+		category?: string;
 		color: string;
 		avatar: string;
+		age?: number;
+		location?: string;
+		background?: string;
+		key_challenges?: string[];
+		quotes_by_phase?: {
+			pre_study_screening: string[];
+			early_visits: string[];
+			mid_study: string[];
+			late_study: string[];
+			post_study_reflection: string[];
+		};
 		expanded: boolean;
 	}
 
@@ -54,25 +67,8 @@
 	export let headerHeight: number = 80;
 	export let dynamicCellWidth: number = 80;
 
-	// Personas data with expanded state
-	let personas: Persona[] = [
-		{
-			id: 'patient-1',
-			name: 'Emma Johnson',
-			type: 'Patient',
-			color: '#059669', // emerald-600
-			avatar: '👩‍🦱',
-			expanded: false
-		},
-		{
-			id: 'caregiver-1',
-			name: 'Michael Johnson',
-			type: 'Caregiver',
-			color: '#0369a1', // sky-700
-			avatar: '👨‍🦰',
-			expanded: false
-		}
-	];
+	// Personas data with expanded state - will be loaded from JSON
+	let personas: Persona[] = [];
 
 	// Constants
 	const PERSONA_HEIGHT = 100;
@@ -84,6 +80,7 @@
 	let mounted = false;
 	let sentimentData: VisitSentiment[] = [];
 	let dropoutData: any[] = [];
+	let personasData: Persona[] = [];
 	
 	// Visit Details Drawer state
 	let drawerOpen = false;
@@ -95,6 +92,21 @@
 	// Persona Details Drawer state
 	let personaDrawerOpen = false;
 	let selectedPersonaForDrawer: Persona | null = null;
+
+	// Tooltip state
+	let tooltipVisible = false;
+	let tooltipX = 0;
+	let tooltipY = 0;
+	let tooltipPersona: Persona | null = null;
+	let tooltipVisit: ProcessedVisit | null = null;
+	let tooltipQuotes: string[] = [];
+	let tooltipDropoutRisk = 0;
+	let tooltipPrimaryDrivers: string[] = [];
+	let tooltipBurdenScore = 0;
+	let tooltipStudyPhase = '';
+	let tooltipProcedureDiscomfort = 0;
+	
+	let hoverTimeout: ReturnType<typeof setTimeout>;
 
 	// Calculate dynamic grid height based on expanded states
 	$: gridHeight = personas.reduce((total, persona) => {
@@ -112,6 +124,57 @@
 
 	onMount(async () => {
 		mounted = true;
+		
+		try {
+			// Load personas data
+			const personasResponse = await fetch('/data/journeymap/personas_with_quotes.json');
+			if (personasResponse.ok) {
+				personasData = await personasResponse.json();
+				personas = personasData.map(p => ({ ...p, expanded: false }));
+			} else {
+				// Fallback to original personas if file not found
+				personas = [
+					{
+						id: 'patient-1',
+						name: 'Emma Johnson',
+						type: 'Patient',
+						color: '#059669',
+						avatar: '👩‍🦱',
+						expanded: false
+					},
+					{
+						id: 'caregiver-1',
+						name: 'Michael Johnson',
+						type: 'Caregiver',
+						color: '#0369a1',
+						avatar: '👨‍🦰',
+						expanded: false
+					}
+				];
+			}
+		} catch (error) {
+			console.error('Failed to load personas data:', error);
+			// Use fallback personas
+			personas = [
+				{
+					id: 'patient-1',
+					name: 'Emma Johnson',
+					type: 'Patient',
+					color: '#059669',
+					avatar: '👩‍🦱',
+					expanded: false
+				},
+				{
+					id: 'caregiver-1',
+					name: 'Michael Johnson',
+					type: 'Caregiver',
+					color: '#0369a1',
+					avatar: '👨‍🦰',
+					expanded: false
+				}
+			];
+		}
+
 		// Load sentiment data from static directory
 		try {
 			const response = await fetch('/data/patient_caregiver_sentiment.json');
@@ -122,7 +185,6 @@
 			sentimentData = data.visit_sentiments || [];
 		} catch (error) {
 			console.error('Failed to load sentiment data:', error);
-			// Fallback with sample data for demonstration
 			sentimentData = [
 				{
 					visit_number: 1,
@@ -355,6 +417,118 @@
 			};
 		});
 	});
+
+	// Determine study phase based on visit number
+	function getStudyPhase(visitNumber: number): string {
+		if (visitNumber <= 2) return 'early_visits';
+		if (visitNumber <= 6) return 'mid_study';
+		if (visitNumber <= 10) return 'late_study';
+		return 'post_study_reflection';
+	}
+
+	// Get quotes for a specific persona and phase
+	function getQuotesForPhase(persona: Persona, phase: string): string[] {
+		if (!persona.quotes_by_phase) return [];
+		return persona.quotes_by_phase[phase as keyof typeof persona.quotes_by_phase] || [];
+	}
+
+	// Get dropout risk for a specific persona and visit
+	function getDropoutRisk(persona: Persona, visitNumber: number): { risk: number, drivers: string[] } {
+		const personaTypeMap: Record<string, string> = {
+			'Patient': persona.category || 'Teen Patient',
+			'Caregiver': persona.category || 'Caregiver (Parent)'
+		};
+		
+		const dropoutPersonaType = personaTypeMap[persona.type] || persona.category || persona.type;
+		const personaDropoutData = dropoutData.find(d => d.persona === dropoutPersonaType);
+		
+		if (!personaDropoutData) return { risk: 0, drivers: [] };
+		
+		// Find the closest visit in dropout data
+		const visitKey = `Visit ${visitNumber}`;
+		const dropoutVisit = personaDropoutData.dropout_risk_by_visit[visitKey];
+		
+		if (dropoutVisit) {
+			return {
+				risk: dropoutVisit.likelihood || 0,
+				drivers: dropoutVisit.primary_drivers || []
+			};
+		}
+		
+		// If exact visit not found, estimate based on nearby visits
+		const allVisits = Object.keys(personaDropoutData.dropout_risk_by_visit);
+		const visitNumbers = allVisits.map(v => parseInt(v.replace('Visit ', '')));
+		const closestVisit = visitNumbers.reduce((prev, curr) => 
+			Math.abs(curr - visitNumber) < Math.abs(prev - visitNumber) ? curr : prev
+		);
+		
+		const closestVisitData = personaDropoutData.dropout_risk_by_visit[`Visit ${closestVisit}`];
+		return {
+			risk: closestVisitData?.likelihood || 0,
+			drivers: closestVisitData?.primary_drivers || []
+		};
+	}
+
+	// Calculate procedure discomfort based on assessments and persona type
+	function getProcedureDiscomfort(persona: Persona, visit: ProcessedVisit): number {
+		const personaTypeMap: Record<string, string> = {
+			'Patient': persona.category || 'Teen Patient',
+			'Caregiver': persona.category || 'Caregiver (Parent)'
+		};
+		
+		const dropoutPersonaType = personaTypeMap[persona.type] || persona.category || persona.type;
+		const personaDropoutData = dropoutData.find(d => d.persona === dropoutPersonaType);
+		
+		if (!personaDropoutData || !personaDropoutData.assessment_burden) return 0;
+		
+		// Calculate average discomfort based on assessments in the visit
+		let totalDiscomfort = 0;
+		let assessmentCount = 0;
+		
+		visit.assessments.forEach(assessment => {
+			if (personaDropoutData.assessment_burden[assessment]) {
+				totalDiscomfort += personaDropoutData.assessment_burden[assessment];
+				assessmentCount++;
+			}
+		});
+		
+		return assessmentCount > 0 ? Math.round(totalDiscomfort / assessmentCount) : 0;
+	}
+
+	// Handle tooltip show
+	function showTooltip(event: MouseEvent, persona: Persona, visit: ProcessedVisit) {
+		clearTimeout(hoverTimeout);
+		
+		const studyPhase = getStudyPhase(visit.visit_number);
+		const quotes = getQuotesForPhase(persona, studyPhase);
+		const dropoutInfo = getDropoutRisk(persona, visit.visit_number);
+		const procedureDiscomfort = getProcedureDiscomfort(persona, visit);
+		
+		tooltipX = event.clientX;
+		tooltipY = event.clientY;
+		tooltipPersona = persona;
+		tooltipVisit = visit;
+		tooltipQuotes = quotes.slice(0, 2); // Limit to 2 quotes for tooltip
+		tooltipDropoutRisk = dropoutInfo.risk;
+		tooltipPrimaryDrivers = dropoutInfo.drivers;
+		tooltipBurdenScore = visit.burdenScore;
+		tooltipProcedureDiscomfort = procedureDiscomfort;
+		tooltipStudyPhase = studyPhase.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+		
+		// Show tooltip with slight delay for smoother UX
+		hoverTimeout = setTimeout(() => {
+			tooltipVisible = true;
+		}, 200);
+	}
+
+	// Handle tooltip hide
+	function hideTooltip() {
+		clearTimeout(hoverTimeout);
+		// Hide tooltip with minimal delay to allow for mouse movement between elements
+		hoverTimeout = setTimeout(() => {
+			tooltipVisible = false;
+		}, 50);
+	}
 </script>
 
 {#if mounted}
@@ -506,9 +680,10 @@
 							width: {dynamicCellWidth}px;
 							height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px;
 						"
-						title="{persona.name} - {visit.name} (Click for details)"
 						on:click={() => openVisitDetails(visit, persona)}
 						on:keydown={(e) => e.key === 'Enter' && openVisitDetails(visit, persona)}
+						on:mouseenter={(e) => showTooltip(e, persona, visit)}
+						on:mouseleave={hideTooltip}
 						role="button"
 						tabindex="0"
 					>
@@ -581,6 +756,23 @@
 			</div>
 		{/if}
 	</Drawer>
+
+	<!-- Persona Tooltip -->
+	<PersonaTooltip 
+		visible={tooltipVisible}
+		x={tooltipX}
+		y={tooltipY}
+		personaName={tooltipPersona?.name || ''}
+		personaColor={tooltipPersona?.color || '#059669'}
+		visitName={tooltipVisit?.name || ''}
+		visitNumber={tooltipVisit?.visit_number || 1}
+		quotes={tooltipQuotes}
+		dropoutRisk={tooltipDropoutRisk}
+		primaryDrivers={tooltipPrimaryDrivers}
+		procedureDiscomfort={tooltipProcedureDiscomfort}
+		burdenScore={tooltipBurdenScore}
+		studyPhase={tooltipStudyPhase}
+	/>
 {/if}
 
 <style>

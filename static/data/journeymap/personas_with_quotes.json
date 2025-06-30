@@ -1,0 +1,182 @@
+[
+  {
+    "id": "patient-1",
+    "name": "Emma Johnson",
+    "type": "Patient",
+    "category": "Teen Patient",
+    "color": "#059669",
+    "avatar": "👩‍🦱",
+    "age": 16,
+    "location": "Urban",
+    "expanded": false,
+    "background": "A 16-year-old high school student who was recently diagnosed with a rare neurological condition. Lives with supportive parents in a suburban area with good access to healthcare facilities.",
+    "key_challenges": [
+      "Missing school for appointments",
+      "Needle anxiety and procedure discomfort",
+      "Social isolation from peers",
+      "Body image concerns"
+    ],
+    "quotes_by_phase": {
+      "pre_study_screening": [
+        "I'm scared but also hopeful this could help me feel normal again. My friends don't really understand what I'm going through.",
+        "The blood draws make me really anxious, but if it means getting better treatment, I'll try to be brave about it.",
+        "Mom says this study could change everything for people like me. I just hope it doesn't take over my whole life."
+      ],
+      "early_visits": [
+        "Missing school is the worst part. Everyone asks where I was and I don't know how to explain without making it sound scary.",
+        "The nurses are really nice, but I still hate the needles. At least they let me bring my headphones.",
+        "I'm starting to understand what all these tests are for. It makes me feel like I'm doing something important."
+      ],
+      "mid_study": [
+        "Some days I feel like the treatment is working, other days I'm not sure. It's hard to tell what's different.",
+        "I've gotten used to the routine, but I miss hanging out with friends after school. They're starting to make plans without me.",
+        "The diary thing is actually kind of helpful. It makes me pay attention to how I'm feeling each day."
+      ],
+      "late_study": [
+        "I'm so tired of all the appointments. I just want to be a normal teenager for once.",
+        "Sometimes I wonder if all this is worth it. The side effects are getting harder to deal with.",
+        "I know I'm helping future patients, but some days I just want to quit and pretend I'm fine."
+      ],
+      "post_study_reflection": [
+        "Looking back, I'm glad I stuck with it even when it was hard. I learned a lot about myself.",
+        "I hope the data I provided helps other kids like me get better treatments sooner.",
+        "The experience taught me I'm stronger than I thought, but I'm ready to focus on just being a teenager again."
+      ]
+    }
+  },
+  {
+    "id": "caregiver-1",
+    "name": "Michael Johnson",
+    "type": "Caregiver",
+    "category": "Caregiver (Parent)",
+    "color": "#0369a1",
+    "avatar": "👨‍🦰",
+    "age": 45,
+    "location": "Urban",
+    "expanded": false,
+    "background": "Father of Emma, works in IT which allows some flexibility for appointments. Married with one other child. Lives in a suburban area with good healthcare access.",
+    "key_challenges": [
+      "Balancing work and care responsibilities",
+      "Managing child's anxiety and emotional needs",
+      "Coordinating multiple healthcare appointments",
+      "Financial strain from time off work"
+    ],
+    "quotes_by_phase": {
+      "pre_study_screening": [
+        "When they first told us about Emma's condition, I felt helpless. This study gives us hope for the first time in months.",
+        "The paperwork is overwhelming, but if this could help Emma and other kids, we have to try.",
+        "I worry about putting Emma through all these tests, but the doctors say it's necessary to understand her condition better."
+      ],
+      "early_visits": [
+        "Watching Emma be so brave during the blood draws breaks my heart. I wish I could take her place.",
+        "My boss is understanding about the time off, but I'm burning through my PTO faster than expected.",
+        "Emma tries to act tough, but I can see this is affecting her social life. Her friends don't really get it."
+      ],
+      "mid_study": [
+        "The study coordinators are great at keeping us informed, but sometimes I feel like we're living appointment to appointment.",
+        "Emma's mood has improved since starting the treatment. Whether that's the medication or just feeling hopeful, I'll take it.",
+        "Juggling Emma's appointments with my work and her brother's activities is like a constant puzzle."
+      ],
+      "late_study": [
+        "Emma's getting tired of all this, and honestly, so am I. But we've come too far to quit now.",
+        "The side effects seem to be getting worse. I hate seeing her struggle, but the doctors say this is normal.",
+        "I worry about the long-term impact of all this stress on our family, but I know we're doing the right thing."
+      ],
+      "post_study_reflection": [
+        "I'm proud of Emma for sticking with it. She showed incredible maturity throughout this whole process.",
+        "The experience brought our family closer together. We learned to advocate for ourselves in ways we never had to before.",
+        "Knowing that Emma's participation might help other families facing this diagnosis makes all the sacrifice worthwhile."
+      ]
+    }
+  },
+  {
+    "id": "rural-mother-1",
+    "name": "Sarah Martinez",
+    "type": "Patient",
+    "category": "Rural Working Mother",
+    "color": "#dc2626",
+    "avatar": "👩‍💼",
+    "age": 34,
+    "location": "Rural",
+    "expanded": false,
+    "background": "A working mother of three living in a rural area, recently diagnosed with a rare metabolic disorder. Works two part-time jobs to support her family and faces significant travel challenges to reach the study site.",
+    "key_challenges": [
+      "Long travel distances to study site",
+      "Childcare arrangements for multiple children",
+      "Lost wages from time off work",
+      "Limited transportation options"
+    ],
+    "quotes_by_phase": {
+      "pre_study_screening": [
+        "The drive to the hospital is three hours each way. I'm not sure how we'll manage this with my work schedule and the kids.",
+        "My mother-in-law can watch the kids sometimes, but I can't ask her to do this every two weeks for months.",
+        "The gas money alone is going to strain our budget, but if this treatment could help me be there for my kids longer..."
+      ],
+      "early_visits": [
+        "I had to take unpaid time off again today. My boss is understanding, but there's only so much flexibility at a small business.",
+        "The 6 AM drive means leaving the kids with my neighbor. I hate disrupting their routine so much.",
+        "The study coordinators are trying to schedule around my availability, but sometimes there just aren't good options."
+      ],
+      "mid_study": [
+        "I'm exhausted from all the driving, but I think the treatment is actually helping. I have more energy on good days.",
+        "My oldest is starting to resent all the times I'm gone. She says I care more about my doctor appointments than her soccer games.",
+        "The travel vouchers help, but they don't cover everything. We've had to cut back on other things."
+      ],
+      "late_study": [
+        "I'm behind on bills because of all the time off work. Sometimes I wonder if I should have never started this study.",
+        "The kids are acting out more. I think they're stressed about mommy being sick and gone so much.",
+        "My car broke down last week and I almost missed my appointment. This is getting unsustainable."
+      ],
+      "post_study_reflection": [
+        "Despite all the challenges, I'm grateful I participated. I feel stronger now than I have in years.",
+        "I hope they can make future studies more accessible for rural patients. The burden on families is enormous.",
+        "My kids learned to be more independent, but I wish it hadn't been necessary. They shouldn't have had to grow up so fast."
+      ]
+    }
+  },
+  {
+    "id": "urban-professional-1",
+    "name": "David Chen",
+    "type": "Patient",
+    "category": "Urban Professional",
+    "color": "#7c3aed",
+    "avatar": "👨‍💻",
+    "age": 28,
+    "location": "Urban",
+    "expanded": false,
+    "background": "A young professional working in finance, diagnosed with a rare autoimmune condition. Lives alone in the city with good healthcare access but demanding work schedule.",
+    "key_challenges": [
+      "High-pressure work environment",
+      "Disclosure concerns at workplace",
+      "Side effects affecting work performance",
+      "Social isolation due to fatigue"
+    ],
+    "quotes_by_phase": {
+      "pre_study_screening": [
+        "I haven't told my boss about my diagnosis yet. I'm hoping this study can help me manage symptoms better so work doesn't suffer.",
+        "The appointment times during business hours are tough. I'm running out of excuses for leaving early.",
+        "My friends think I'm just stressed from work, but this is so much more than that."
+      ],
+      "early_visits": [
+        "I had to reschedule two client meetings for today's appointment. I can't keep doing this without explaining what's going on.",
+        "The blood draws make me dizzy sometimes, and I have to go straight back to work. It's not ideal.",
+        "I'm grateful the study site is downtown. At least I don't have to travel far."
+      ],
+      "mid_study": [
+        "I finally told my manager about my condition. She's been more understanding than I expected about flexible hours.",
+        "Some days the treatment makes me feel great, other days I can barely function. It's hard to predict.",
+        "Dating has become complicated. How do you explain all these medical appointments to someone new?"
+      ],
+      "late_study": [
+        "The fatigue is getting worse, not better. I'm worried this treatment isn't working for me.",
+        "I've become the person who always cancels social plans. My friends are starting to give up on inviting me.",
+        "Work is suffering despite everyone's understanding. I'm not performing at my usual level."
+      ],
+      "post_study_reflection": [
+        "The study taught me to prioritize my health over work achievements. That's a lesson I'll carry forward.",
+        "I built relationships with other patients in the waiting room. Having that support network was invaluable.",
+        "Even though my symptoms aren't completely resolved, I have a better understanding of my condition and how to manage it."
+      ]
+    }
+  }
+] 

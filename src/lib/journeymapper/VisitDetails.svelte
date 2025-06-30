@@ -232,6 +232,36 @@
 		return dropoutData.burden_scores?.[driver] || 0;
 	}
 
+	// Get burden score for a specific metric
+	function getBurdenMetricScore(metric: string): number {
+		if (!dropoutData) return 0;
+		return dropoutData.burden_scores?.[metric] || 0;
+	}
+
+	// Convert burden score (1-10) to sentiment-like score (1-5) for display consistency
+	function convertBurdenToSentiment(burdenScore: number): number {
+		// Map 1-10 scale to 1-5 scale
+		return Math.max(1, Math.min(5, Math.round(burdenScore / 2)));
+	}
+
+	// Get burden metric color (inverted from sentiment - higher burden = more red)
+	function getBurdenMetricColor(score: number): string {
+		if (score <= 2) return '#22c55e'; // green (very low burden)
+		if (score <= 4) return '#84cc16'; // light green (low burden)
+		if (score <= 6) return '#f59e0b'; // amber (medium burden)
+		if (score <= 8) return '#f97316'; // orange (high burden)
+		return '#ef4444'; // red (very high burden)
+	}
+
+	// Get burden level label based on score (1-10 scale)
+	function getBurdenLabel(score: number): string {
+		if (score <= 2) return 'Very Low';
+		if (score <= 4) return 'Low';
+		if (score <= 6) return 'Medium';
+		if (score <= 8) return 'High';
+		return 'Very High';
+	}
+
 	// Calculate burden score for current visit
 	$: burdenScore = visit ? calculateBurdenScore(visit.assessments) : 0;
 	$: groupedAssessments = visit ? groupAssessmentsByCategory(visit.assessments) : {};
@@ -356,67 +386,74 @@
 		<!-- Sentiment Data -->
 		{#if selectedSentiment && personaName}
 			<div class="sentiment-section">
-				<h4 class="section-title">{personaName} Sentiment</h4>
 				
-				<div class="sentiment-overview">
-					<div class="sentiment-score-display">
-						<SentimentCircle 
-							sentiment={selectedSentiment.overall_score}
-							size={32}
-							x={16}
-							y={16}
-							showTooltip={false}
-						/>
-						<div class="sentiment-score-text">
-							<div class="score-number">{selectedSentiment.overall_score}/5</div>
-							<div class="score-label">{getSentimentLabel(selectedSentiment.overall_score)}</div>
-						</div>
-					</div>
-				</div>
+				<h5 class="subsection-title">Participant Burden</h5>
+				<!-- Additional Burden Metrics -->
+				{#if dropoutData}
+					{@const procedureDiscomfort = getBurdenMetricScore('Procedure Discomfort')}
+					{@const emotionalBurden = getBurdenMetricScore('Emotional Burden')}
+					{@const logisticalChallenges = getBurdenMetricScore('Logistical Challenges')}
+					{@const financialChallenges = getBurdenMetricScore('Financial Challenges')}
+					{@const disruptionsToDailyLife = getBurdenMetricScore('Disruptions to Daily Life')}
+					{@const informationOverload = getBurdenMetricScore('Information Overload')}
 
-				<div class="sentiment-breakdown">
-					<div class="sentiment-metric">
-						<span class="metric-label">Anxiety Level:</span>
-						<div class="metric-value">
-							<SentimentCircle 
-								sentiment={selectedSentiment.anxiety_level}
-								size={16}
-								x={8}
-								y={8}
-								showTooltip={false}
-							/>
-							<span>{selectedSentiment.anxiety_level}/5</span>
+						<div class="burden-metrics-grid">
+							
+							<div class="burden-metric">
+								<span class="metric-label">Procedure Discomfort:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(procedureDiscomfort)};">
+										{getBurdenLabel(procedureDiscomfort)}
+									</div>
+								</div>
+							</div>
+							
+							<div class="burden-metric">
+								<span class="metric-label">Emotional Burden:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(emotionalBurden)};">
+										{getBurdenLabel(emotionalBurden)}
+									</div>
+								</div>
+							</div>
+							
+							<div class="burden-metric">
+								<span class="metric-label">Logistical Challenges:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(logisticalChallenges)};">
+										{getBurdenLabel(logisticalChallenges)}
+									</div>
+								</div>
+							</div>
+							
+							<div class="burden-metric">
+								<span class="metric-label">Financial Challenges:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(financialChallenges)};">
+										{getBurdenLabel(financialChallenges)}
+									</div>
+								</div>
+							</div>
+							
+							<div class="burden-metric">
+								<span class="metric-label">Disruptions to Daily Life:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(disruptionsToDailyLife)};">
+										{getBurdenLabel(disruptionsToDailyLife)}
+									</div>
+								</div>
+							</div>
+							
+							<div class="burden-metric">
+								<span class="metric-label">Information Overload:</span>
+								<div class="metric-value burden">
+									<div class="burden-category-indicator" style="background-color: {getBurdenMetricColor(informationOverload)};">
+										{getBurdenLabel(informationOverload)}
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
-					
-					<div class="sentiment-metric">
-						<span class="metric-label">Hope Level:</span>
-						<div class="metric-value">
-							<SentimentCircle 
-								sentiment={selectedSentiment.hope_level}
-								size={16}
-								x={8}
-								y={8}
-								showTooltip={false}
-							/>
-							<span>{selectedSentiment.hope_level}/5</span>
-						</div>
-					</div>
-					
-					<div class="sentiment-metric">
-						<span class="metric-label">Burden Perception:</span>
-						<div class="metric-value">
-							<SentimentCircle 
-								sentiment={selectedSentiment.burden_perception}
-								size={16}
-								x={8}
-								y={8}
-								showTooltip={false}
-							/>
-							<span>{selectedSentiment.burden_perception}/5</span>
-						</div>
-					</div>
-				</div>
+				{/if}
 
 				{#if selectedSentiment.reasoning}
 					<div class="sentiment-reasoning">
@@ -944,5 +981,91 @@
 		padding: 2rem;
 		color: #6b7280;
 		font-style: italic;
+	}
+
+	/* === BURDEN METRICS SECTION === */
+	.burden-metrics-section {
+		margin-top: 1rem;
+		padding: 1rem;
+		background: #f8fafc;
+		border-radius: 8px;
+		border: 1px solid #e2e8f0;
+	}
+
+	.subsection-title {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: #374151;
+		margin: 0 0 1rem 0;
+	}
+
+	.burden-metrics-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.75rem;
+	}
+
+	.burden-metric {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding: 0.75rem;
+		background: white;
+		border: 1px solid #e5e7eb;
+		border-radius: 6px;
+	}
+
+	.metric-value.burden {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.burden-indicator {
+		width: 32px;
+		height: 20px;
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 0.75rem;
+		font-weight: 600;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.burden-category-indicator {
+		padding: 0.25rem 0.75rem;
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 0.75rem;
+		font-weight: 600;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		white-space: nowrap;
+		min-width: fit-content;
+	}
+
+	.burden-scale {
+		font-size: 0.75rem;
+		color: #6b7280;
+		font-weight: 500;
+	}
+
+	.burden-score {
+		font-size: 0.75rem;
+		color: #6b7280;
+		font-weight: 500;
+		margin-left: 0.5rem;
+	}
+
+	/* Responsive grid for smaller screens */
+	@media (max-width: 640px) {
+		.burden-metrics-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style> 

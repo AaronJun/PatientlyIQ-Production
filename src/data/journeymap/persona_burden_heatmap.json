@@ -16,7 +16,15 @@
       "Communication with Site": 5,
       "Overnight Stay Needed": 4,
       "Transport Logistics": 7,
-      "Multiple Children at Home": 9
+      "Multiple Children at Home": 9,
+      "Anxiety Level": 8,
+      "Hope Level": 7,
+      "Procedure Discomfort": 5,
+      "Emotional Burden": 9,
+      "Logistical Challenges": 8,
+      "Financial Challenges": 7,
+      "Disruptions to Daily Life": 8,
+      "Information Overload": 6
     },
     "assessment_burden": {
       "PK Blood Samples": 8,
@@ -45,7 +53,14 @@
       "Invasive Tests": 9,
       "Survey Fatigue": 7,
       "Medication Side Effects": 6,
-      "Digital Diary Burden": 5
+      "Digital Diary Burden": 5,
+      "Anxiety Level": 9,
+      "Hope Level": 6,
+      "Emotional Burden": 8,
+      "Logistical Challenges": 5,
+      "Financial Challenges": 4,
+      "Disruptions to Daily Life": 7,
+      "Information Overload": 8
     },
     "assessment_burden": {
       "PK Blood Samples": 9,
@@ -73,7 +88,14 @@
       "Forms and Portals": 7,
       "Follow-up Complexity": 8,
       "Visit Frequency": 9,
-      "Time Away from Family": 8
+      "Time Away from Family": 8,
+      "Anxiety Level": 7,
+      "Hope Level": 8,
+      "Emotional Burden": 7,
+      "Logistical Challenges": 9,
+      "Financial Challenges": 9,
+      "Disruptions to Daily Life": 9,
+      "Information Overload": 7
     },
     "assessment_burden": {
       "PK Blood Samples": 8,

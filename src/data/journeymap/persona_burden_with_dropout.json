@@ -15,7 +15,15 @@
       "Communication with Site": 5,
       "Overnight Stay Needed": 4,
       "Transport Logistics": 7,
-      "Multiple Children at Home": 9
+      "Multiple Children at Home": 9,
+      "Anxiety Level": 8,
+      "Hope Level": 7,
+      "Procedure Discomfort": 5,
+      "Emotional Burden": 9,
+      "Logistical Challenges": 8,
+      "Financial Challenges": 7,
+      "Disruptions to Daily Life": 8,
+      "Information Overload": 6
     },
     "assessment_burden": {
       "PK Blood Samples": 8,
@@ -31,21 +39,25 @@
         "likelihood": 0.1,
         "primary_drivers": [
           "Travel Time",
-          "Paperwork / Consent"
+          "Paperwork / Consent",
+          "Information Overload"
         ]
       },
       "Visit 2": {
         "likelihood": 0.25,
         "primary_drivers": [
           "School Disruption",
-          "Child Anxiety"
+          "Child Anxiety",
+          "Anxiety Level"
         ]
       },
       "Visit 6": {
         "likelihood": 0.4,
         "primary_drivers": [
           "Emotional Fatigue",
-          "Multiple Children at Home"
+          "Multiple Children at Home",
+          "Emotional Burden",
+          "Disruptions to Daily Life"
         ]
       }
     }
@@ -66,7 +78,14 @@
       "Invasive Tests": 9,
       "Survey Fatigue": 7,
       "Medication Side Effects": 6,
-      "Digital Diary Burden": 5
+      "Digital Diary Burden": 5,
+      "Anxiety Level": 9,
+      "Hope Level": 6,
+      "Emotional Burden": 8,
+      "Logistical Challenges": 5,
+      "Financial Challenges": 4,
+      "Disruptions to Daily Life": 7,
+      "Information Overload": 8
     },
     "assessment_burden": {
       "PK Blood Samples": 9,
@@ -82,21 +101,25 @@
         "likelihood": 0.15,
         "primary_drivers": [
           "Needle Fear",
-          "Missed School"
+          "Missed School",
+          "Anxiety Level"
         ]
       },
       "Visit 2": {
         "likelihood": 0.3,
         "primary_drivers": [
           "Procedure Discomfort",
-          "Survey Fatigue"
+          "Survey Fatigue",
+          "Information Overload"
         ]
       },
       "Visit 13": {
         "likelihood": 0.45,
         "primary_drivers": [
           "Emotional Fatigue",
-          "Invasive Tests"
+          "Invasive Tests",
+          "Emotional Burden",
+          "Hope Level"
         ]
       }
     }
@@ -117,7 +140,14 @@
       "Forms and Portals": 7,
       "Follow-up Complexity": 8,
       "Visit Frequency": 9,
-      "Time Away from Family": 8
+      "Time Away from Family": 8,
+      "Anxiety Level": 7,
+      "Hope Level": 8,
+      "Emotional Burden": 7,
+      "Logistical Challenges": 9,
+      "Financial Challenges": 9,
+      "Disruptions to Daily Life": 9,
+      "Information Overload": 7
     },
     "assessment_burden": {
       "PK Blood Samples": 8,
@@ -133,21 +163,25 @@
         "likelihood": 0.2,
         "primary_drivers": [
           "Travel Time",
-          "Lost Wages"
+          "Lost Wages",
+          "Financial Challenges"
         ]
       },
       "Visit 3": {
         "likelihood": 0.35,
         "primary_drivers": [
           "Childcare Arrangements",
-          "Scheduling Flexibility"
+          "Scheduling Flexibility",
+          "Logistical Challenges"
         ]
       },
       "Visit 10": {
         "likelihood": 0.5,
         "primary_drivers": [
           "Visit Frequency",
-          "Time Away from Family"
+          "Time Away from Family",
+          "Disruptions to Daily Life",
+          "Emotional Burden"
         ]
       }
     }
