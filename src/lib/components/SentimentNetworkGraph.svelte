@@ -30,8 +30,8 @@
 	}
 
 	// Props
-	export let width = 800;
-	export let height = 800;
+	export let width = 1200;
+	export let height = 1200;
 
 	// State
 	let hoveredAssessment: string | null = null;

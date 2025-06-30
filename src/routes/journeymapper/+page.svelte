@@ -4,8 +4,9 @@
 	import VisitSquares from '$lib/journeymapper/VisitSquares.svelte';
 	import AssessmentBurdenHeatmap from '$lib/components/AssessmentBurdenHeatmap.svelte';
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
+	import JourneyAnalysisSummary from '$lib/journeymapper/JourneyAnalysisSummary.svelte';
 	import * as Tabs from "$lib/ui/tabs";
-	import { Calendar, Document, IdManagement } from 'carbon-icons-svelte';
+	import { Calendar, ClipboardText, IdentificationCard } from 'phosphor-svelte';
 	
 	import visitScheduleData from '../../data/journeymap/patient_burden_mapper_visit_schedule.json';
 	import studyMetadata from '../../data/journeymap/study_metadata_xackt.json';
@@ -72,6 +73,9 @@
 				</button>
 			</div>
 		</div>
+
+		<!-- Journey Analysis Summary -->
+		<JourneyAnalysisSummary />
 			
 			<div class="visit-statistics bg-slate-100 py-2 px-4 align-middle  rounded-lg flex flex-row justify-between">
 				<VisitSquares 
@@ -107,15 +111,15 @@
 		<Tabs.Root value="schedule" class="w-full">
 			<Tabs.List class="tabs-list">
 				<Tabs.Trigger value="schedule" class="tab-trigger">
-					<Calendar size={20} class="mr-2" />
+					<Calendar size={18} class="mr-2" />
 					Schedule
 				</Tabs.Trigger>
 				<Tabs.Trigger value="assessments" class="tab-trigger">
-					<Document size={20} class="mr-2" />
+					<ClipboardText size={18} class="mr-2" />
 					Assessments
 				</Tabs.Trigger>
 				<Tabs.Trigger value="cards" class="tab-trigger">
-					<IdManagement size={20} class="mr-2" />
+					<IdentificationCard size={18} class="mr-2" />
 					Patient Cards
 				</Tabs.Trigger>
 			</Tabs.List>
@@ -153,8 +157,8 @@
 								Hover or click on assessment names to see related sentiment terms.
 							</p>
 							<SentimentNetworkGraph 
-								width={800}
-								height={800}
+								width={1200}
+								height={1200}
 							/>
 						</div>
 					</div>
@@ -185,11 +189,12 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-evenly;
+		background-color: #fafbfc;
 		align-items: flex-start;
 	}
 
 	.mapper-header h1 {     
-        font-size: 1.25rem;
+        font-size: .825rem;
 		color: #1f2937;
 		margin-bottom: 0.5rem;
 	}
@@ -330,7 +335,7 @@
 		}
 
 		.mapper-header h1 {
-			font-size: .825rem;
+			font-size: .725rem;
 		}
 
 		.study-overview {

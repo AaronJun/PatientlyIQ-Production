@@ -148,30 +148,12 @@
 
 	// Toggle persona expansion - ensures all row elements expand together
 	function togglePersonaExpansion(personaId: string) {
-		// Update persona expansion state
+		// Update persona expansion state - this will trigger all reactive updates
 		personas = personas.map(persona => 
 			persona.id === personaId 
 				? { ...persona, expanded: !persona.expanded }
 				: persona
 		);
-		
-		// Force reactive updates for all dependent elements
-		// This ensures circles, lines, and grid elements all update together
-		setTimeout(() => {
-			// Trigger recalculation of sentiment line points
-			sentimentLinePoints = personas.map((persona, personaIndex) => {
-				if (!persona.expanded) return [];
-				
-				return processedVisits.map(visit => {
-					const sentiment = getSentimentScore(persona.type, visit.visit_number);
-					const yPosition = getSentimentCircleY(sentiment, personaIndex);
-					return {
-						x: visit.timelinePosition * timelineWidth,
-						y: getPersonaTop(personaIndex) + yPosition
-					};
-				});
-			});
-		}, 0);
 	}
 
 	// Open drawer with visit details
@@ -301,9 +283,10 @@
 		}
 	}
 
-	// Calculate sentiment circle position relative to its grid cell
+	// Calculate sentiment circle position relative to its grid cell (reactive function)
 	function getSentimentCircleY(sentiment: number, personaIndex: number): number {
-		if (!personas[personaIndex].expanded) {
+		const persona = personas[personaIndex];
+		if (!persona || !persona.expanded) {
 			// When collapsed, center the circle in the persona row
 			return PERSONA_HEIGHT / 2;
 		}
@@ -359,6 +342,19 @@
 	function getSentimentLinePoints(personaIndex: number): Array<{x: number, y: number}> {
 		return sentimentLinePoints[personaIndex] || [];
 	}
+
+	// Reactive calculation of all sentiment circle positions to ensure they update when personas expand/collapse
+	$: sentimentCirclePositions = personas.map((persona, personaIndex) => {
+		return processedVisits.map((visit, visitIndex) => {
+			const sentiment = getSentimentScore(persona.type, visit.visit_number);
+			return {
+				personaIndex,
+				visitIndex,
+				sentiment,
+				y: getSentimentCircleY(sentiment, personaIndex)
+			};
+		});
+	});
 </script>
 
 {#if mounted}
@@ -498,8 +494,9 @@
 			<!-- Grid cells and sentiment circles -->
 			{#each personas as persona, personaIndex}
 				{#each processedVisits as visit, visitIndex}
-					{@const sentiment = getSentimentScore(persona.type, visit.visit_number)}
-					{@const sentimentY = getSentimentCircleY(sentiment, personaIndex)}
+					{@const circleData = sentimentCirclePositions[personaIndex]?.[visitIndex]}
+					{@const sentiment = circleData?.sentiment || getSentimentScore(persona.type, visit.visit_number)}
+					{@const sentimentY = circleData?.y || getSentimentCircleY(sentiment, personaIndex)}
 					
 					<div 
 						class="grid-cell"
@@ -521,6 +518,8 @@
 							size={persona.expanded ? 16 : 12}
 							x={dynamicCellWidth / 2}
 							y={sentimentY}
+							personaColor={persona.color}
+							isExpanded={persona.expanded}
 							tooltipText="{persona.name} - {visit.name}: Sentiment {sentiment}/5 (Click for details)"
 						/>
 					</div>

@@ -1,0 +1,242 @@
+{
+  "hurdle_quotes": {
+    "Travel Time": [
+      {
+        "quote": "It's a 3-hour drive each way to the clinic. By the time we get there and back, the whole day is shot.",
+        "persona_descriptor": "Rural Working Mother, 34, lives 180 miles from study site"
+      },
+      {
+        "quote": "The gas money alone is killing us. We're spending more on travel than we expected when we signed up.",
+        "persona_descriptor": "Single Parent Caregiver, 42, limited income"
+      },
+      {
+        "quote": "I have to leave work early just to make the appointment time, and that's if traffic cooperates.",
+        "persona_descriptor": "Urban Caregiver Parent, 38, corporate job"
+      },
+      {
+        "quote": "My daughter gets carsick on long drives, so she's already stressed before we even get to the clinic.",
+        "persona_descriptor": "Suburban Caregiver Mother, 45, two children"
+      }
+    ],
+    "Multiple Children at Home": [
+      {
+        "quote": "Finding someone to watch my other two kids during appointments is a nightmare. My usual babysitter isn't always available.",
+        "persona_descriptor": "Stay-at-home Mother, 36, three children ages 8, 12, and 15"
+      },
+      {
+        "quote": "My 6-year-old doesn't understand why his sister gets to leave school for 'adventures' while he has to stay.",
+        "persona_descriptor": "Working Mother, 41, two children"
+      },
+      {
+        "quote": "I feel guilty leaving my youngest with grandma so often. She's 82 and it's a lot to ask.",
+        "persona_descriptor": "Single Mother, 33, relies on extended family"
+      },
+      {
+        "quote": "The other kids are starting to resent all the attention their sibling gets. It's affecting our whole family dynamic.",
+        "persona_descriptor": "Full-time Caregiver, 39, four children"
+      },
+      {
+        "quote": "Coordinating three different school schedules plus appointments is like running a small business.",
+        "persona_descriptor": "Organized Parent, 44, former project manager"
+      }
+    ],
+    "School Disruption": [
+      {
+        "quote": "She's missing so much school that her grades are starting to slip. Her teachers are understanding, but she's falling behind.",
+        "persona_descriptor": "Academic-focused Parent, 43, high-achieving student"
+      },
+      {
+        "quote": "The other kids ask why he gets to skip school so much. It's hard to explain without making it sound fun.",
+        "persona_descriptor": "Elementary School Parent, 37, socially-conscious child"
+      },
+      {
+        "quote": "We're constantly doing makeup work and trying to catch up. It feels like we're always one step behind.",
+        "persona_descriptor": "Homework-stressed Parent, 40, perfectionist child"
+      },
+      {
+        "quote": "The school nurse has to coordinate with the study team, and sometimes communication gets mixed up.",
+        "persona_descriptor": "Advocate Parent, 46, deals with school administration"
+      }
+    ],
+    "Childcare Arrangements": [
+      {
+        "quote": "Daycare charges me even when my daughter isn't there for appointments. I'm paying double some days.",
+        "persona_descriptor": "Working Single Mother, 32, retail manager"
+      },
+      {
+        "quote": "My mom can watch the kids, but she lives an hour away and doesn't drive anymore.",
+        "persona_descriptor": "Rural Mother, 35, limited family support"
+      },
+      {
+        "quote": "Finding a babysitter who can handle my son's medical needs while I'm gone with his sister is nearly impossible.",
+        "persona_descriptor": "Special Needs Parent, 41, multiple children with health issues"
+      },
+      {
+        "quote": "The neighbor who usually helps had to stop because her own schedule changed. Now I'm scrambling.",
+        "persona_descriptor": "Community-reliant Parent, 38, informal support network"
+      }
+    ],
+    "Lost Wages": [
+      {
+        "quote": "I'm burning through my sick days and vacation time. After that, it's unpaid leave and we can't afford it.",
+        "persona_descriptor": "Hourly Worker, 29, manufacturing job"
+      },
+      {
+        "quote": "My boss is getting frustrated with all the time off requests. I'm worried about my job security.",
+        "persona_descriptor": "Office Worker, 34, performance-based role"
+      },
+      {
+        "quote": "We had to cancel our family vacation because I used all my PTO for study visits.",
+        "persona_descriptor": "Blue-collar Father, 42, union job"
+      },
+      {
+        "quote": "The unpaid hours are adding up. We're behind on bills and it's stressing our marriage.",
+        "persona_descriptor": "Service Industry Mother, 31, restaurant manager"
+      }
+    ],
+    "Emotional Fatigue": [
+      {
+        "quote": "I'm emotionally drained. Every appointment brings new anxiety about what they might find.",
+        "persona_descriptor": "Anxious Caregiver, 37, first-time dealing with medical studies"
+      },
+      {
+        "quote": "I have to be strong for my daughter, but sometimes I just want to break down and cry.",
+        "persona_descriptor": "Overwhelmed Mother, 35, single parent"
+      },
+      {
+        "quote": "The constant worry about whether we're doing the right thing keeps me up at night.",
+        "persona_descriptor": "Concerned Parent, 42, naturally anxious personality"
+      },
+      {
+        "quote": "I feel like I'm failing as a parent when I see how stressed these appointments make my child.",
+        "persona_descriptor": "Self-critical Mother, 39, high expectations for herself"
+      },
+      {
+        "quote": "The emotional rollercoaster of hope and fear is exhausting. Some days I don't know how to keep going.",
+        "persona_descriptor": "Fatigued Caregiver, 45, long-term medical journey"
+      }
+    ],
+    "Procedure Discomfort": [
+      {
+        "quote": "The blood draws hurt more than they said they would. I dread going back.",
+        "persona_descriptor": "Teen Patient, 16, low pain tolerance"
+      },
+      {
+        "quote": "My arm is always sore for days after. It affects my basketball practice.",
+        "persona_descriptor": "Athletic Teen, 17, varsity sports player"
+      },
+      {
+        "quote": "They stick me multiple times sometimes because my veins are hard to find. It's awful.",
+        "persona_descriptor": "Anxious Teen, 15, difficult blood draws"
+      },
+      {
+        "quote": "The ECG patches irritate my skin and leave marks. People at school ask what happened.",
+        "persona_descriptor": "Self-conscious Teen, 16, concerned about appearance"
+      }
+    ],
+    "Needle Fear": [
+      {
+        "quote": "I've been afraid of needles since I was little. Even thinking about the appointment makes me panic.",
+        "persona_descriptor": "Phobic Teen, 14, childhood trauma with medical procedures"
+      },
+      {
+        "quote": "I can't watch when they do the blood draw. I get dizzy and feel like I'm going to pass out.",
+        "persona_descriptor": "Vasovagal Teen, 17, physiological response to needles"
+      },
+      {
+        "quote": "My friends don't understand why I'm so scared. They think I'm being a baby.",
+        "persona_descriptor": "Embarrassed Teen, 16, peer pressure concerns"
+      },
+      {
+        "quote": "I tried to quit the study because of the needles, but my parents convinced me to stay.",
+        "persona_descriptor": "Reluctant Teen, 15, family pressure to continue"
+      }
+    ],
+    "Missed School": [
+      {
+        "quote": "I'm missing my favorite classes and falling behind in AP Biology. It's stressing me out.",
+        "persona_descriptor": "Academic Teen, 17, college-bound student"
+      },
+      {
+        "quote": "My friends are hanging out without me because I'm always at appointments. I feel left out.",
+        "persona_descriptor": "Social Teen, 16, values friendships highly"
+      },
+      {
+        "quote": "I had to quit the drama club because I keep missing rehearsals for study visits.",
+        "persona_descriptor": "Artistic Teen, 15, extracurricular activities important"
+      },
+      {
+        "quote": "The teachers are understanding, but making up tests and assignments is overwhelming.",
+        "persona_descriptor": "Overwhelmed Teen, 16, perfectionist tendencies"
+      }
+    ],
+    "Visit Frequency": [
+      {
+        "quote": "It feels like we just got home and we're already planning the next trip. There's no break.",
+        "persona_descriptor": "Exhausted Mother, 38, rural location"
+      },
+      {
+        "quote": "Every week there's something. I can't plan anything because of all these appointments.",
+        "persona_descriptor": "Frustrated Parent, 41, values routine and predictability"
+      },
+      {
+        "quote": "My work schedule is completely disrupted. I feel like I'm always asking for time off.",
+        "persona_descriptor": "Guilty Employee, 36, dedicated worker"
+      },
+      {
+        "quote": "The frequency is overwhelming. I didn't realize how much it would take over our lives.",
+        "persona_descriptor": "Unprepared Parent, 33, didn't fully understand commitment"
+      }
+    ],
+    "Child Anxiety": [
+      {
+        "quote": "She starts crying the night before appointments. She knows what's coming and she's terrified.",
+        "persona_descriptor": "Protective Mother, 39, sensitive child"
+      },
+      {
+        "quote": "He has nightmares about the procedures. I don't know how to help him cope.",
+        "persona_descriptor": "Concerned Father, 44, child experiencing PTSD symptoms"
+      },
+      {
+        "quote": "She refuses to get in the car on appointment days. We have to physically carry her sometimes.",
+        "persona_descriptor": "Struggling Parent, 36, defiant child response"
+      },
+      {
+        "quote": "My daughter asks if she did something wrong to deserve this. It breaks my heart.",
+        "persona_descriptor": "Heartbroken Mother, 42, child internalizing experience"
+      }
+    ],
+    "Invasive Tests": [
+      {
+        "quote": "The biopsy was way worse than I expected. They said it would be 'uncomfortable' but it was agony.",
+        "persona_descriptor": "Teen Patient, 16, underwent surgical procedure"
+      },
+      {
+        "quote": "Having strangers examine my body makes me feel violated, even though I know it's medical.",
+        "persona_descriptor": "Self-conscious Teen, 15, body image concerns"
+      },
+      {
+        "quote": "I feel like a lab rat sometimes. Poke this, test that, examine here. I'm not a person to them.",
+        "persona_descriptor": "Frustrated Teen, 17, feeling dehumanized"
+      }
+    ],
+    "Time Away from Family": [
+      {
+        "quote": "I'm missing my other kids' soccer games and school events. They're growing up without me there.",
+        "persona_descriptor": "Guilty Mother, 40, trying to balance multiple children's needs"
+      },
+      {
+        "quote": "My husband is doing everything at home while I'm at appointments. It's not fair to him.",
+        "persona_descriptor": "Concerned Wife, 37, worried about marriage strain"
+      },
+      {
+        "quote": "We never have family time anymore. Everything revolves around these appointments.",
+        "persona_descriptor": "Family-focused Father, 43, values togetherness"
+      },
+      {
+        "quote": "I feel like I'm neglecting my elderly parents who also need care and attention.",
+        "persona_descriptor": "Sandwich Generation Mother, 46, caring for multiple generations"
+      }
+    ]
+  }
+} 

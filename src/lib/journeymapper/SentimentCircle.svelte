@@ -5,6 +5,8 @@
 	export let y: number = 0; // Position Y
 	export let showTooltip: boolean = true;
 	export let tooltipText: string = '';
+	export let personaColor: string = ''; // Persona color for collapsed state
+	export let isExpanded: boolean = false; // Whether the persona row is expanded
 
 	// Color mapping for sentiment scores
 	const sentimentColors: Record<number, string> = {
@@ -15,7 +17,8 @@
 		5: '#15803d'  // dark green (Very Positive)
 	};
 
-	$: circleColor = sentimentColors[Math.round(sentiment)] || sentimentColors[3];
+	$: sentimentColor = sentimentColors[Math.round(sentiment)] || sentimentColors[3];
+	$: circleColor = isExpanded ? sentimentColor : (personaColor || sentimentColor);
 </script>
 
 <div 
