@@ -12,15 +12,15 @@
 		</p>
 		<div class="features-grid">
 			<div class="feature-item">
-				<h3>📊 Burden Assessment</h3>
+				<h3>Burden Assessment</h3>
 				<p>Quantify and visualize patient burden across study visits</p>
 			</div>
 			<div class="feature-item">
-				<h3>📅 Schedule Optimization</h3>
+				<h3>Schedule Optimization</h3>
 				<p>Optimize visit timing and reduce participant dropout</p>
 			</div>
 			<div class="feature-item">
-				<h3>📈 Journey Analysis</h3>
+				<h3>Journey Analysis</h3>
 				<p>Generate comprehensive insights and recommendations</p>
 			</div>
 		</div>
@@ -127,7 +127,6 @@
 		<p>Contact our team to learn how PIQ Journey Mapper can optimize your study design and improve patient outcomes.</p>
 		<div class="cta-buttons">
 			<a href="/contact" class="cta-button primary">Get Started</a>
-			<a href="/journeymapper" class="cta-button secondary">Try Interactive Demo</a>
 		</div>
 	</div>
 </main>
@@ -171,7 +170,6 @@
 	.feature-item {
 		padding: 1.5rem;
 		background: #f8fafc;
-		border-radius: 8px;
 		text-align: left;
 	}
 
@@ -202,7 +200,7 @@
 	.tab-description {
 		background: #f8fafc;
 		padding: 1.5rem;
-		border-radius: 8px;
+		
 		border-left: 4px solid #3b82f6;
 	}
 
@@ -245,14 +243,14 @@
 		width: 100%;
 		max-width: 1080px;
 		height: auto;
-		border-radius: 8px;
+		
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
 
 	.cta-section {
 		text-align: center;
 		padding: 3rem 2rem;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background-color: #667eea;
 		border-radius: 12px;
 		color: white;
 		margin-top: 2rem;
