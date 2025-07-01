@@ -2,11 +2,6 @@
   "installCommand": "npm install --no-save zwitch && npm ci",
   "buildCommand": "npm run build",
   "framework": "sveltekit",
-  "functions": {
-    "src/routes/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
   "headers": [
     {
       "source": "/static/(.*)",
