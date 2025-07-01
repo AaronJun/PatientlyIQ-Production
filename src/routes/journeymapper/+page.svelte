@@ -11,9 +11,13 @@
 	// Icon imports
 	import { Calendar, ClipboardText, IdentificationCard, ChartLine, List, X, FolderOpen } from 'phosphor-svelte';
 	
-	// Data imports
-	import visitScheduleData from '../../data/journeymap/patient_burden_mapper_visit_schedule.json';
-	import studyMetadata from '../../data/journeymap/study_metadata_xackt.json';
+	// Load data from page load function
+	import type { PageData } from './$types';
+	
+	export let data: PageData;
+	
+	$: visitScheduleData = data.visitScheduleData;
+	$: studyMetadata = data.studyMetadata;
 
 	// State variables
 	let isDrawerOpen = false;
