@@ -4,32 +4,18 @@
 
 <main class="container">
 	<!-- Header Section -->
-	<div class="header-section">
+	<div class="header-section bg-slate-800 px-4 py-6 rounded-xl">
 		<h1 class="main-title">PIQ Journey Mapper Demo</h1>
 		<p class="main-description">
 			Explore how PatientlyIQ's Journey Mapper transforms clinical trial design by visualizing patient burden, 
 			optimizing visit schedules, and providing actionable insights to improve participant experience and retention.
 		</p>
-		<div class="features-grid">
-			<div class="feature-item">
-				<h3>Burden Assessment</h3>
-				<p>Quantify and visualize patient burden across study visits</p>
-			</div>
-			<div class="feature-item">
-				<h3>Schedule Optimization</h3>
-				<p>Optimize visit timing and reduce participant dropout</p>
-			</div>
-			<div class="feature-item">
-				<h3>Journey Analysis</h3>
-				<p>Generate comprehensive insights and recommendations</p>
-			</div>
-		</div>
 	</div>
 
 	<!-- Demo Videos -->
-	<div class="demo-tabs">
+	<div class="demo-tabsp-4">
 		<Tabs.Root value="burden-assessment" class="w-full">
-			<Tabs.List class="grid w-full grid-cols-3">
+			<Tabs.List class="grid w-full grid-cols-4 bg-slate-200 p-4">
 				<Tabs.Trigger value="burden-assessment">Burden Assessment</Tabs.Trigger>
 				<Tabs.Trigger value="journey-schedule">Journey Schedule</Tabs.Trigger>
 				<Tabs.Trigger value="journey-summary">Journey Summary</Tabs.Trigger>
@@ -39,7 +25,7 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Patient Burden Assessment</h2>
-						<p>
+						<p class="text-sm max-w-prose">
 							Discover how our platform quantifies patient burden across clinical trial visits. This demo showcases 
 							the interactive heatmap visualization that helps researchers identify high-burden timepoints and 
 							optimize study protocols to improve patient experience and retention rates.
@@ -67,7 +53,7 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Journey Schedule Optimization</h2>
-						<p>
+						<p class="text-sm max-w-prose">
 							See how Journey Mapper visualizes the complete patient journey through interactive timeline views. 
 							This demo highlights visit scheduling optimization, assessment distribution analysis, and tools for 
 							reducing protocol complexity while maintaining scientific rigor.
@@ -95,7 +81,7 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Journey Analysis & Insights</h2>
-						<p>
+						<p class="text-sm max-w-prose">
 							Explore comprehensive journey analytics that provide actionable insights for protocol optimization. 
 							This demo shows how our platform generates detailed reports, identifies improvement opportunities, 
 							and provides data-driven recommendations for enhancing patient experience.
@@ -118,6 +104,7 @@
 					</div>
 				</div>
 			</Tabs.Content>
+			
 		</Tabs.Root>
 	</div>
 
@@ -139,24 +126,22 @@
 	}
 
 	.header-section {
-		text-align: center;
+		text-align: left;
 		margin-bottom: 3rem;
 		padding-bottom: 2rem;
 		border-bottom: 1px solid #e2e8f0;
 	}
 
 	.main-title {
-		font-size: 2.5rem;
+		font-size: 2.125rem;
 		font-weight: 700;
-		color: #1e293b;
+		color: #f8fafc;
 		margin-bottom: 1rem;
 	}
 
 	.main-description {
-		font-size: 1.125rem;
-		color: #64748b;
+		color: #f8fafc;
 		max-width: 800px;
-		margin: 0 auto 2rem;
 		line-height: 1.6;
 	}
 
@@ -200,12 +185,11 @@
 	.tab-description {
 		background: #f8fafc;
 		padding: 1.5rem;
-		
 		border-left: 4px solid #3b82f6;
 	}
 
 	.tab-description h2 {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 600;
 		color: #1e293b;
 		margin-bottom: 1rem;
@@ -213,7 +197,7 @@
 
 	.tab-description p {
 		color: #64748b;
-		line-height: 1.6;
+		line-height: 1.525;
 		margin-bottom: 1rem;
 	}
 
@@ -235,15 +219,20 @@
 	.video-container {
 		width: 100%;
 		display: flex;
-		justify-content: center;
-		align-items: center;
+		justify-content: left;
+		align-items: left;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		border-radius: 12px;
+		padding: .525rem;
+		background-color: #f8fafc;
+		border: 1px solid #dbeafe;
 	}
 
 	.demo-video {
 		width: 100%;
 		max-width: 1080px;
 		height: auto;
-		
+		border-radius: 15px;
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
 
@@ -257,7 +246,7 @@
 	}
 
 	.cta-section h3 {
-		font-size: 1.8rem;
+		font-size: 1.25rem;
 		font-weight: 600;
 		margin-bottom: 1rem;
 	}
