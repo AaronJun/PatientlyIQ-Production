@@ -2,7 +2,11 @@
 	import * as Card from "$lib/ui/card";
 	import { Button } from "$lib/ui/button";
 	import { onMount } from 'svelte';
-
+	import { Upload } from 'phosphor-svelte';
+	
+	// Props
+	export let addStudy: (study: { name: string; indication: string; phase: string; status: string }) => void;
+	
 	// Demo states
 	let currentStep = 0;
 	let uploadProgress = 0;
@@ -17,12 +21,12 @@
 
 	// Processing steps with realistic descriptions
 	const processingSteps = [
-		"Extracting text content from PDF...",
-		"Analyzing document structure...",
-		"Identifying key sections and data points...",
+		"Extracting protocol text...",
+		"Formatting schedule and assessments...",
+		"Identifying PIQ datapoints...",
 		"Processing clinical terminology...",
 		"Mapping patient journey touchpoints...",
-		"Calculating burden assessments...",
+		"Building relevant participant personas...",
 		"Generating insights and recommendations..."
 	];
 
@@ -112,6 +116,14 @@
 				isComplete = true;
 				currentStep = 4;
 				clearInterval(analysisInterval);
+				
+				// Add the new study when analysis completes
+				addStudy({
+					name: 'STUDY-302',
+					indication: 'Focal Onset Seizures',
+					phase: 'Phase III',
+					status: 'active'
+				});
 			}
 		}, 250);
 	}
@@ -135,10 +147,9 @@
 <div class="pdf-upload-demo">
 	<Card.Root class="max-w-4xl mx-auto">
 		<Card.Header>
-			<Card.Title class="text-2xl font-bold text-center">PDF Upload & Processing Demo</Card.Title>
+			<Card.Title class="text-2xl font-bold text-center">Protocol Upload</Card.Title>
 			<Card.Description class="text-center">
-				Experience how our platform processes clinical trial documents to extract insights and optimize patient journeys
-			</Card.Description>
+Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments as CSV or XLSX, to get started.			</Card.Description>
 		</Card.Header>
 		
 		<Card.Content>
@@ -150,13 +161,9 @@
 					 role="button"
 					 tabindex="0">
 					<div class="upload-content">
-						<div class="upload-icon">📄</div>
+						<Upload size={24} />
 						<h3>Upload Your Clinical Protocol</h3>
-						<p>Drag and drop your PDF file here, or click to browse</p>
-						<div class="upload-specs">
-							<span>Supported formats: PDF</span>
-							<span>Max file size: 50MB</span>
-						</div>
+						<p>Drag and drop your PDF or DOCX protocol draft, or a schedule of assessments in CSV or XLSX.</p>
 						<input
 							type="file"
 							accept=".pdf"
@@ -256,28 +263,24 @@
 						{#if currentStep >= 4}
 							<div class="results-section">
 								<div class="results-header">
-									<h3>🎉 Processing Complete!</h3>
+									<h3>Processing Complete!</h3>
 									<p>Your clinical protocol has been successfully analyzed</p>
 								</div>
 								
 								<div class="results-grid">
 									<div class="result-item">
-										<div class="result-icon">📊</div>
 										<div class="result-title">Burden Assessment</div>
 										<div class="result-description">Identified 23 patient touchpoints across 8 study visits</div>
 									</div>
 									<div class="result-item">
-										<div class="result-icon">📅</div>
 										<div class="result-title">Schedule Optimization</div>
 										<div class="result-description">Recommendations to reduce burden by 31%</div>
 									</div>
 									<div class="result-item">
-										<div class="result-icon">💡</div>
 										<div class="result-title">Key Insights</div>
 										<div class="result-description">15 actionable recommendations generated</div>
 									</div>
 									<div class="result-item">
-										<div class="result-icon">📈</div>
 										<div class="result-title">Predicted Impact</div>
 										<div class="result-description">18% improvement in retention rate</div>
 									</div>
@@ -299,7 +302,7 @@
 <style>
 	.pdf-upload-demo {
 		width: 100%;
-		max-width: 1000px;
+		max-width: 500px;
 		margin: 0 auto;
 	}
 
@@ -325,13 +328,8 @@
 		gap: 1rem;
 	}
 
-	.upload-icon {
-		font-size: 3rem;
-		margin-bottom: 0.5rem;
-	}
-
 	.upload-content h3 {
-		font-size: 1.5rem;
+		font-size: 1rem;
 		font-weight: 600;
 		color: #1e293b;
 		margin: 0;
@@ -339,15 +337,8 @@
 
 	.upload-content p {
 		color: #64748b;
+		font-size: 0.8rem;
 		margin: 0;
-	}
-
-	.upload-specs {
-		display: flex;
-		gap: 1rem;
-		font-size: 0.9rem;
-		color: #64748b;
-		margin-top: 0.5rem;
 	}
 
 	.file-input {
@@ -525,11 +516,6 @@
 		border-radius: 8px;
 		border: 1px solid #d1fae5;
 		text-align: center;
-	}
-
-	.result-icon {
-		font-size: 2rem;
-		margin-bottom: 0.5rem;
 	}
 
 	.result-title {

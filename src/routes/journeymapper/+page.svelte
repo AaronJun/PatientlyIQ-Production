@@ -7,7 +7,7 @@
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
 	import JourneyAnalysisSummary from '$lib/journeymapper/JourneyAnalysisSummary.svelte';
 	import * as Tabs from "$lib/ui/tabs";
-	
+	import DemoPDFUpload from "$lib/components/PDFUploadDemo.svelte";
 	// Icon imports
 	import { Calendar, ClipboardText, IdentificationCard, ChartLine, List, X, FolderOpen } from 'phosphor-svelte';
 	
@@ -27,12 +27,20 @@
 	const timelineWidth = 1200;
 
 	// Placeholder analyzed studies data
-	const analyzedStudies = [
-		{ name: 'STUDY-302', indication: 'Focal Onset Seizures', phase: 'Phase III', status: 'active' },
+	let analyzedStudies = [
 		{ name: 'GXF-203-E', indication: 'Amyotrophic Lateral Sclerosis', phase: 'Phase II', status: 'active' },
 		{ name: 'BNX-451-A', indication: 'Major Depressive Disorder', phase: 'Phase III', status: 'completed' },
 		{ name: 'PFZ-738-D', indication: 'Parkinson\'s Disease', phase: 'Phase III', status: 'active' }
 	];
+
+	// Function to add a new study to the analyzed studies list
+	function addStudy(study: { name: string; indication: string; phase: string; status: string }) {
+		// Check if study already exists to avoid duplicates
+		const exists = analyzedStudies.find(s => s.name === study.name);
+		if (!exists) {
+			analyzedStudies = [...analyzedStudies, study];
+		}
+	}
 
 	// Event handlers
 	function handleDrawerToggle(event: CustomEvent) {
@@ -97,7 +105,7 @@
 			<div class="sidebar-content">
 				<!-- File Upload Section -->
 				<div class="sidebar-section">
-					<FileUpload />
+					<DemoPDFUpload {addStudy} />
 				</div>
 
 				<!-- Analyzed Studies Section -->
