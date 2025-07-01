@@ -132,41 +132,274 @@
     },
     {
       "visit_number": 7,
-      "visit_name": "Follow-up Visit 1",
+      "visit_name": "Treatment Week 10",
       "study_day": "70 ±7",
       "study_week": "10",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Return to travel-required visit after positive remote experience creates mild disappointment. Routine treatment visit with standard assessments. Neutral sentiment as treatment effects may be becoming more apparent but not yet definitive. Assessment burden manageable but travel requirement resurfaces logistics challenges."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Back to travel requirements creates moderate burden increase from previous visit. However, established routine and familiarity with process reduces anxiety. Hope remains steady as treatment progresses past 2-month mark. Logistics manageable with experience."
+      }
+    },
+    {
+      "visit_number": 8,
+      "visit_name": "Treatment Week 12",
+      "study_day": "84 ±7",
+      "study_week": "12",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Three-month treatment milestone brings cautious optimism. Comprehensive assessment battery (21 assessments) includes TSQM-9 for treatment satisfaction evaluation. Hope increases as 3-month mark represents significant treatment exposure. Moderate burden with travel required but routine is well-established."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Three-month milestone provides sense of progress and accomplishment. Hope increases with treatment duration. Burden is predictable and manageable within established routine. Anxiety remains low with familiar procedures and expectations."
+      }
+    },
+    {
+      "visit_number": 9,
+      "visit_name": "Treatment Week 14",
+      "study_day": "98 ±7",
+      "study_week": "14",
       "patient_sentiment": {
         "overall_score": 4,
         "anxiety_level": 2,
         "hope_level": 4,
         "burden_perception": 2,
-        "reasoning": "Transition to follow-up phase brings optimism about treatment completion. Surgical assessment may create mild anxiety but represents important safety monitoring. Generally positive sentiment as active treatment phase nears completion. Reduced burden perception with clear end in sight."
+        "reasoning": "No travel required provides significant burden relief. Standard treatment assessments without additional procedures. Positive sentiment with reduced logistics burden. Hope maintained as treatment progresses past 3.5 months. Established routine with minimal physical burden creates favorable experience."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 1,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "Remote visit again provides optimal caregiver experience. Low burden and anxiety with familiar procedures. Hope remains strong as treatment duration demonstrates commitment and potential efficacy. Logistics relief appreciated after travel-heavy visits."
+      }
+    },
+    {
+      "visit_number": 10,
+      "visit_name": "Treatment Week 16",
+      "study_day": "112 ±7",
+      "study_week": "16",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Four-month treatment mark with comprehensive assessments (21 assessments) and travel requirement. Sentiment begins to plateau as treatment routine is fully established. Some fatigue with ongoing commitment may be emerging. Hope stable but realistic expectations developing about timeline for benefits."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Four-month commitment creates some fatigue but hope remains. Travel requirement manageable within established routine. Burden perception stable with predictable visit structure. Some impatience for clear treatment benefits may be developing."
+      }
+    },
+    {
+      "visit_number": 11,
+      "visit_name": "Treatment Week 18",
+      "study_day": "126 ±7",
+      "study_week": "18",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "Remote visit provides relief from travel burden. Treatment approaching 5-month mark may show clearer efficacy signals. Positive sentiment with reduced logistics. Hope increases as substantial treatment exposure may be yielding benefits. Lower burden perception maintains engagement."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 1,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "No-travel visit creates positive experience. Five-month treatment duration provides sense of accomplishment. Hope increases with extended treatment exposure. Low burden facilitates continued engagement and optimism about potential benefits."
+      }
+    },
+    {
+      "visit_number": 12,
+      "visit_name": "Treatment Week 20",
+      "study_day": "140 ±7",
+      "study_week": "20",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Five-month treatment milestone with full assessment battery (21 assessments) and travel requirement. Some treatment fatigue may be emerging. Burden perception increases with comprehensive visit requirements. Hope stabilizes but may fluctuate based on perceived treatment effects."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Extended treatment duration creates some fatigue. Travel and comprehensive assessments increase burden perception. Hope remains but may be tempered by timeline expectations. Routine manageable but commitment weight is noticeable."
+      }
+    },
+    {
+      "visit_number": 13,
+      "visit_name": "Treatment Week 22",
+      "study_day": "154 ±7",
+      "study_week": "22",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "Approaching end-of-treatment phase creates mixed emotions. No travel required provides burden relief. Treatment nearing 6-month completion brings anticipation about results. Neutral sentiment as participants prepare for treatment conclusion and outcome evaluation."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 2,
+        "hope_level": 3,
+        "burden_perception": 2,
+        "reasoning": "Relief that treatment phase is nearing completion. Remote visit reduces burden. Hope tempered by uncertainty about treatment outcomes and post-study plans. Anticipation about treatment efficacy evaluation."
+      }
+    },
+    {
+      "visit_number": 14,
+      "visit_name": "Treatment Week 24",
+      "study_day": "168 ±7",
+      "study_week": "24",
+      "patient_sentiment": {
+        "overall_score": 2,
+        "anxiety_level": 4,
+        "hope_level": 2,
+        "burden_perception": 4,
+        "reasoning": "Pre-treatment completion visit creates anxiety about ending medication access. Comprehensive assessment battery (21 assessments) with travel requirement increases burden perception. Anxiety about post-study treatment options. Hope decreases with uncertainty about continued access to study drug."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 2,
+        "anxiety_level": 4,
+        "hope_level": 2,
+        "burden_perception": 4,
+        "reasoning": "Anxiety peaks about treatment discontinuation and future options. Comprehensive visit requirements feel burdensome with treatment ending. Concern about maintaining any treatment benefits achieved. Hope decreases with uncertainty about long-term care options."
+      }
+    },
+    {
+      "visit_number": 15,
+      "visit_name": "End of Treatment",
+      "study_day": "182 ±7",
+      "study_week": "26",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Treatment completion brings mixed emotions. Comprehensive final assessments (27 assessments) create high burden with travel required. Surgical assessment adds anxiety. Relief about study completion balanced by uncertainty about post-study outcomes. Hope focuses on results analysis and future treatment options."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 4,
+        "reasoning": "Treatment completion creates bittersweet emotions. High burden with comprehensive final evaluations. Surgical assessment creates concern. Relief about study commitment completion balanced by anxiety about next steps and maintaining any benefits achieved."
+      }
+    },
+    {
+      "visit_number": 16,
+      "visit_name": "Follow-up Visit 1",
+      "study_day": "196 ±7",
+      "study_week": "28",
+      "patient_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "First post-treatment follow-up monitors for drug washout effects and sustained benefits. Surgical assessment continues safety monitoring. Neutral sentiment as participants adjust to post-treatment phase. Hope centers on maintaining any treatment benefits without ongoing medication."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 3,
+        "anxiety_level": 3,
+        "hope_level": 3,
+        "burden_perception": 3,
+        "reasoning": "First follow-up visit brings concern about losing treatment benefits. Continued travel and assessment requirements feel burdensome without active treatment. Hope focuses on sustained improvement. Anxiety about symptom return without medication."
+      }
+    },
+    {
+      "visit_number": 17,
+      "visit_name": "Follow-up Visit 2",
+      "study_day": "210 ±7",
+      "study_week": "30",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 2,
+        "reasoning": "Follow-up visit with reduced assessment burden (18 assessments) feels manageable. Travel required but visit purpose is clear monitoring. Hope increases if treatment benefits are sustained without ongoing medication. Lower anxiety as post-treatment phase becomes routine."
       },
       "caregiver_sentiment": {
         "overall_score": 4,
         "anxiety_level": 2,
         "hope_level": 4,
         "burden_perception": 2,
-        "reasoning": "Relief at reaching follow-up phase with treatment completion in sight. Surgical assessment creates some concern but overall positive trajectory. Burden feels manageable knowing study participation is nearing end. Hope maintained for treatment benefits."
+        "reasoning": "Reduced assessment burden appreciated in follow-up phase. Hope increases if sustained benefits are observed. Lower anxiety with clear monitoring purpose. Burden feels justified for safety and efficacy evaluation."
+      }
+    },
+    {
+      "visit_number": 18,
+      "visit_name": "Follow-up Visit 3",
+      "study_day": "224 ±7",
+      "study_week": "32",
+      "patient_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Final study visit brings closure and relief about completing participation. Comprehensive final assessments (23 assessments) provide complete data for analysis. Hope remains strong for treatment development and future access. Lower anxiety with study completion in sight. Sense of accomplishment for completing demanding protocol."
+      },
+      "caregiver_sentiment": {
+        "overall_score": 4,
+        "anxiety_level": 2,
+        "hope_level": 4,
+        "burden_perception": 3,
+        "reasoning": "Final visit brings relief and pride in study completion. Hope strong for treatment advancement and potential future access. Lower anxiety with end of intensive monitoring period. Gratitude for contribution to research while managing moderate burden of final comprehensive assessments."
       }
     }
   ],
   "overall_patterns": {
     "patient_trends": {
-      "highest_sentiment": "Visit 2 (Randomization) and Visit 6 (Treatment Week 8 - no travel)",
-      "lowest_sentiment": "Visit 4 (Treatment Week 4 - surgical biopsy)",
-      "key_factors": ["Travel requirements", "Invasive procedures", "Assessment burden", "Treatment milestones"]
+      "highest_sentiment": "Visit 2 (Randomization) and remote visits (6, 9, 11)",
+      "lowest_sentiment": "Visit 4 (Surgical biopsy) and Visit 14 (Pre-treatment end anxiety)",
+      "key_factors": ["Travel requirements", "Invasive procedures", "Assessment burden", "Treatment milestones", "Drug discontinuation anxiety"],
+      "sentiment_phases": {
+        "early_treatment": "High hope with moderate anxiety",
+        "mid_treatment": "Stabilized sentiment with routine establishment", 
+        "late_treatment": "Treatment fatigue with discontinuation anxiety",
+        "follow_up": "Relief and hope for sustained benefits"
+      }
     },
     "caregiver_trends": {
-      "highest_sentiment": "Visit 6 (Treatment Week 8 - no travel required)",
-      "lowest_sentiment": "Visit 4 (Treatment Week 4 - surgical biopsy anxiety)",
-      "key_factors": ["Logistical burden", "Invasive procedure anxiety", "Routine establishment", "Treatment progress visibility"]
+      "highest_sentiment": "Remote visits (6, 9, 11) and final visit completion",
+      "lowest_sentiment": "Visit 4 (Surgical biopsy anxiety) and Visit 14 (Treatment ending anxiety)",
+      "key_factors": ["Logistical burden", "Invasive procedure anxiety", "Routine establishment", "Treatment progress visibility", "Post-study care concerns"],
+      "burden_factors": {
+        "travel_required": "Significantly increases burden perception",
+        "comprehensive_assessments": "Higher burden with 20+ assessments",
+        "invasive_procedures": "Peaks anxiety regardless of other factors",
+        "treatment_milestones": "Generally positive impact on sentiment"
+      }
     },
     "recommendations": {
-      "burden_reduction": "Consider virtual/remote options where clinically appropriate",
-      "communication": "Increase communication around invasive procedures like biopsies",
-      "support": "Provide additional caregiver support during high-burden visits",
-      "milestone_recognition": "Celebrate treatment milestones to maintain hope and engagement"
+      "burden_reduction": "Maximize virtual/remote options where clinically appropriate, especially mid-treatment",
+      "communication": "Enhance communication around invasive procedures and treatment discontinuation planning",
+      "support": "Provide additional support during high-burden visits and treatment transition periods",
+      "milestone_recognition": "Celebrate treatment milestones and study completion to maintain engagement",
+      "post_study_planning": "Early discussion of post-study care options to reduce discontinuation anxiety"
     }
   }
 } 

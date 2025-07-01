@@ -1,7 +1,11 @@
 <script lang="ts">
 	import SentimentCircle from './SentimentCircle.svelte';
 	import Accordion from './Accordion.svelte';
+	import Drawer from './Drawer.svelte';
 	import assessmentClassification from '../../data/journeymap/assessment_classification.json';
+	import personaMotivatorsConcerns from '../../data/journeymap/persona_motivators_and_concerns.json';
+
+	import { Person, Users } from 'phosphor-svelte';
 
 	interface Visit {
 		visit_number: number;
@@ -32,7 +36,7 @@
 
 	interface GroupedAssessment {
 		name: string;
-		category: 'Invasive' | 'Observational' | 'Patient-Reported';
+		category: 'Invasive' | 'Observational' | 'Patient-Reported' | 'Surgical';
 		color: string;
 	}
 
@@ -42,6 +46,12 @@
 	export let personaName: string = '';
 	export let personaType: 'Patient' | 'Caregiver' = 'Patient';
 	export let personaColor: string = '#059669';
+
+	// Second drawer state for concern quotes
+	let quotesDrawerOpen = false;
+	let selectedConcernName = '';
+	let selectedConcernQuotes: string[] = [];
+	let selectedConcernPersonaType: 'Patient' | 'Caregiver' = 'Patient';
 
 	// Create assessment classification lookup
 	const assessmentClassificationMap = new Map<string, string>();
@@ -110,9 +120,11 @@
 
 	// Get burden level text
 	function getBurdenLevel(score: number): string {
-		if (score < 30) return 'Low';
-		if (score < 60) return 'Medium';
-		return 'High';
+		if (score <= 20) return 'Very Low';
+		if (score <= 40) return 'Low';
+		if (score <= 60) return 'Moderate';
+		if (score <= 80) return 'High';
+		return 'Very High';
 	}
 
 	// Get assessment category
@@ -257,7 +269,7 @@
 	function getBurdenLabel(score: number): string {
 		if (score <= 2) return 'Very Low';
 		if (score <= 4) return 'Low';
-		if (score <= 6) return 'Medium';
+		if (score <= 6) return 'Moderate';
 		if (score <= 8) return 'High';
 		return 'Very High';
 	}
@@ -281,6 +293,27 @@
 		backgroundColor: getCategoryBgColor(category),
 		count: assessments.length
 	}));
+
+	// Handle concern/motivator click to open quotes drawer
+	function handleItemClick(itemName: string, personaType: 'Patient' | 'Caregiver', itemType: 'motivator' | 'concern'): void {
+		selectedConcernName = itemName;
+		selectedConcernPersonaType = personaType;
+		
+		if (itemType === 'motivator') {
+			selectedConcernQuotes = (personaMotivatorsConcerns[personaType].motivators as any)[itemName] || [];
+		} else {
+			selectedConcernQuotes = (personaMotivatorsConcerns[personaType].concerns as any)[itemName] || [];
+		}
+		
+		quotesDrawerOpen = true;
+	}
+
+	// Close quotes drawer
+	function closeQuotesDrawer(): void {
+		quotesDrawerOpen = false;
+		selectedConcernName = '';
+		selectedConcernQuotes = [];
+	}
 
 	// Debug logging
 	$: {
@@ -319,69 +352,19 @@
 		<!-- Visit Overview Stats -->
 		<div class="visit-stats">
 			<div class="visit-info-item">
-				<span class="info-label">Burden Score:</span>
-				<span class="info-value" style="background-color: {getBurdenColor(burdenScore)}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-					{getBurdenLevel(burdenScore)} ({burdenScore})
+				<span class="info-label">Overall Burden</span>
+				<span class="info-value" style="background-color: {getBurdenColor(burdenScore)}; color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem;">
+					{getBurdenLevel(burdenScore)}
 				</span>
 			</div>
-			{#if visit.travel_required !== undefined}
-				<div class="visit-info-item">
-					<span class="info-label">Travel Required:</span>
-					<span class="info-value" class:travel-required={visit.travel_required} class:no-travel={!visit.travel_required}>
-						{visit.travel_required ? 'Yes' : 'No'}
-					</span>
-				</div>
-			{/if}
-		</div>
-
-		<!-- Visit Indicators -->
-		<div class="visit-indicators">
-			{#if visit.travel_required}
-				<div class="indicator-item travel">
-					<span class="indicator-icon">✈</span>
-					<span class="indicator-text">Travel Required</span>
-				</div>
-			{/if}
-			{#if hasInvasiveAssessments(visit)}
-				<div class="indicator-item invasive">
-					<span class="indicator-icon">💉</span>
-					<span class="indicator-text">Invasive Procedures</span>
-				</div>
-			{/if}
-			{#if hasSurgicalAssessments(visit)}
-				<div class="indicator-item surgical">
-					<span class="indicator-icon">🔪</span>
-					<span class="indicator-text">Surgical Procedures</span>
-				</div>
-			{/if}
-		</div>
-
-		<!-- Enhanced Assessments Section with Accordion -->
-		<div class="assessments-section">
-			<div class="assessments-header">
-				<h4 class="section-title">Assessments ({visit.assessments.length})</h4>
-				<div class="category-legend">
-					{#each Object.entries(groupedAssessments) as [category, assessments]}
-						<div class="legend-item">
-							<span class="legend-dot" style="background-color: {getCategoryColor(category)};"></span>
-							<span class="legend-text">{category} ({assessments.length})</span>
-						</div>
-					{/each}
-				</div>
+			<div class="visit-info-item">
+				<span class="info-label">Dropout Likelihood</span>
+				<span class="info-value" style="background-color: {getDropoutRiskColor(dropoutLikelihood)}; color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem;">
+					{getDropoutRiskLevel(dropoutLikelihood)}
+				</span>
 			</div>
-			
-			<Accordion items={accordionItems}>
-				<svelte:fragment slot="content" let:item>
-					<div class="assessments-grid">
-						{#each item.content as assessment}
-							<div class="assessment-item categorized">
-								{assessment.name}
-							</div>
-						{/each}
-					</div>
-				</svelte:fragment>
-			</Accordion>
 		</div>
+
 
 		<!-- Sentiment Data -->
 		{#if selectedSentiment && personaName}
@@ -464,24 +447,183 @@
 			</div>
 		{/if}
 
+		<!-- V1 Participant Motivators and Concerns -->
+		{#if visit.visit_number === 1}
+			<div class="v1-motivators-concerns-section">
+				<h4 class="section-title">Motivators and Concerns</h4>
+			
+				<div class="persona-insights">
+					<!-- Patient Insights -->
+					<div class="persona-insight-card patient">
+						<div class="persona-header">
+							<Person size={24} />
+							<h5 class="persona-title">Patient Perspective</h5>
+						</div>
+						
+						<div class="motivators-section">
+							<h6 class="subsection-header motivators">✨ Key Motivators</h6>
+							<div class="clickable-items-list">
+								{#each Object.keys(personaMotivatorsConcerns.Patient.motivators) as motivatorName}
+									<button 
+										class="item-button motivator patient"
+										on:click={() => handleItemClick(motivatorName, 'Patient', 'motivator')}
+									>
+										<span class="item-name">{motivatorName}</span>
+										<span class="item-count">({(personaMotivatorsConcerns.Patient.motivators as any)[motivatorName].length} quotes)</span>
+									</button>
+								{/each}
+							</div>
+						</div>
+
+						<div class="concerns-section">
+							<h6 class="subsection-header concerns">⚠️ Key Concerns</h6>
+							<div class="clickable-items-list">
+								{#each Object.keys(personaMotivatorsConcerns.Patient.concerns) as concernName}
+									<button 
+										class="item-button concern patient"
+										on:click={() => handleItemClick(concernName, 'Patient', 'concern')}
+									>
+										<span class="item-name">{concernName}</span>
+										<span class="item-count">({(personaMotivatorsConcerns.Patient.concerns as any)[concernName].length} quotes)</span>
+									</button>
+								{/each}
+							</div>
+						</div>
+					</div>	
+
+					<!-- Caregiver Insights -->
+					<div class="persona-insight-card caregiver">
+						<div class="persona-header">
+							<Users size={24} />
+							<h5 class="persona-title">Caregiver Perspective</h5>
+						</div>
+						
+						<div class="motivators-section">
+							<h6 class="subsection-header motivators">✨ Key Motivators</h6>
+							<div class="clickable-items-list">
+								{#each Object.keys(personaMotivatorsConcerns.Caregiver.motivators) as motivatorName}
+									<button 
+										class="item-button motivator caregiver"
+										on:click={() => handleItemClick(motivatorName, 'Caregiver', 'motivator')}
+									>
+										<span class="item-name">{motivatorName}</span>
+										<span class="item-count">({(personaMotivatorsConcerns.Caregiver.motivators as any)[motivatorName].length} quotes)</span>
+									</button>
+								{/each}
+							</div>
+						</div>
+
+						<div class="concerns-section">
+							<h6 class="subsection-header concerns">⚠️ Key Concerns</h6>
+							<div class="clickable-items-list">
+								{#each Object.keys(personaMotivatorsConcerns.Caregiver.concerns) as concernName}
+									<button 
+										class="item-button concern caregiver"
+										on:click={() => handleItemClick(concernName, 'Caregiver', 'concern')}
+									>
+										<span class="item-name">{concernName}</span>
+										<span class="item-count">({(personaMotivatorsConcerns.Caregiver.concerns as any)[concernName].length} quotes)</span>
+									</button>
+								{/each}
+							</div>
+						</div>
+					</div>
+
+					<!-- Clickable Items Section -->
+					<div class="concerns-quick-access">
+						<h4 class="section-title">Explore Motivators & Concerns</h4>
+						<p class="section-description">Click on any motivator or concern to see related participant quotes</p>
+						
+						<div class="concerns-grid">
+							<!-- Patient Items -->
+							<div class="concern-category-section">
+								<h5 class="concern-category-title patient">👤 Patient</h5>
+								
+								<!-- Patient Motivators -->
+								<div class="item-subsection">
+									<h6 class="item-subsection-title motivators">✨ Motivators</h6>
+									<div class="concern-buttons">
+										{#each Object.keys(personaMotivatorsConcerns.Patient.motivators) as motivatorName}
+											<button 
+												class="concern-button patient motivator"
+												on:click={() => handleItemClick(motivatorName, 'Patient', 'motivator')}
+											>
+												<span class="concern-name">{motivatorName}</span>
+												<span class="concern-count">({(personaMotivatorsConcerns.Patient.motivators as any)[motivatorName].length} quotes)</span>
+											</button>
+										{/each}
+									</div>
+								</div>
+
+								<!-- Patient Concerns -->
+								<div class="item-subsection">
+									<h6 class="item-subsection-title concerns">⚠️ Concerns</h6>
+									<div class="concern-buttons">
+										{#each Object.keys(personaMotivatorsConcerns.Patient.concerns) as concernName}
+											<button 
+												class="concern-button patient concern"
+												on:click={() => handleItemClick(concernName, 'Patient', 'concern')}
+											>
+												<span class="concern-name">{concernName}</span>
+												<span class="concern-count">({(personaMotivatorsConcerns.Patient.concerns as any)[concernName].length} quotes)</span>
+											</button>
+										{/each}
+									</div>
+								</div>
+							</div>
+
+							<!-- Caregiver Items -->
+							<div class="concern-category-section">
+								<h5 class="concern-category-title caregiver">👥 Caregiver</h5>
+								
+								<!-- Caregiver Motivators -->
+								<div class="item-subsection">
+									<h6 class="item-subsection-title motivators">✨ Motivators</h6>
+									<div class="concern-buttons">
+										{#each Object.keys(personaMotivatorsConcerns.Caregiver.motivators) as motivatorName}
+											<button 
+												class="concern-button caregiver motivator"
+												on:click={() => handleItemClick(motivatorName, 'Caregiver', 'motivator')}
+											>
+												<span class="concern-name">{motivatorName}</span>
+												<span class="concern-count">({(personaMotivatorsConcerns.Caregiver.motivators as any)[motivatorName].length} quotes)</span>
+											</button>
+										{/each}
+									</div>
+								</div>
+
+								<!-- Caregiver Concerns -->
+								<div class="item-subsection">
+									<h6 class="item-subsection-title concerns">⚠️ Concerns</h6>
+									<div class="concern-buttons">
+										{#each Object.keys(personaMotivatorsConcerns.Caregiver.concerns) as concernName}
+											<button 
+												class="concern-button caregiver concern"
+												on:click={() => handleItemClick(concernName, 'Caregiver', 'concern')}
+											>
+												<span class="concern-name">{concernName}</span>
+												<span class="concern-count">({(personaMotivatorsConcerns.Caregiver.concerns as any)[concernName].length} quotes)</span>
+											</button>
+										{/each}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
+
 		<!-- Dropout Risk Analysis -->
 		{#if dropoutData && dropoutLikelihood > 0}
 			<div class="dropout-section">
 				<h4 class="section-title">Dropout Risk Analysis</h4>
 				
 				<div class="dropout-overview">
-					<div class="dropout-risk-display">
-						<div class="risk-indicator" style="background-color: {dropoutRiskColor};">
-							<span class="risk-percentage">{Math.round(dropoutLikelihood * 100)}%</span>
-						</div>
 						<div class="risk-text">
 							<div class="risk-level" style="color: {dropoutRiskColor};">
 								{dropoutRiskLevel} Risk
 							</div>
-							<div class="risk-description">
-								Likelihood of dropout at this visit
-							</div>
-						</div>
 					</div>
 				</div>
 
@@ -494,11 +636,7 @@
 								<div class="driver-item">
 									<div class="driver-content">
 										<span class="driver-name">{driver}</span>
-										{#if driverScore > 0}
-											<span class="driver-score" style="background-color: {getBurdenColor(driverScore)};">
-												{driverScore}
-											</span>
-										{/if}
+										
 									</div>
 									<div class="driver-impact">
 										{#if driverScore >= 8}
@@ -547,6 +685,43 @@
 	</div>
 {/if}
 
+<!-- Second Drawer for Item Quotes -->
+<Drawer 
+	bind:isOpen={quotesDrawerOpen}
+	title="{selectedConcernPersonaType} Quotes: {selectedConcernName}"
+	width="540px"
+	on:close={closeQuotesDrawer}
+>
+	<div class="quotes-drawer-content">
+		<div class="quotes-header">
+			<h4 class="quotes-title">Participant Quotes</h4>
+					<p class="quotes-description">
+			Real feedback from {selectedConcernPersonaType.toLowerCase()}s about "{selectedConcernName}"
+		</p>
+		</div>
+		
+		<div class="quotes-list">
+			{#each selectedConcernQuotes as quote, index}
+				<div class="quote-item" class:patient={selectedConcernPersonaType === 'Patient'} class:caregiver={selectedConcernPersonaType === 'Caregiver'}>
+					<div class="quote-indicator">
+						<span class="quote-number">{index + 1}</span>
+					</div>
+					<div class="quote-content">
+						<p class="quote-text">"{quote}"</p>
+						<span class="quote-attribution">— {selectedConcernPersonaType}</span>
+					</div>
+				</div>
+			{/each}
+		</div>
+
+		{#if selectedConcernQuotes.length === 0}
+			<div class="no-quotes">
+				<p>No quotes available for this concern.</p>
+			</div>
+		{/if}
+	</div>
+</Drawer>
+
 <style>
 	.visit-details {
 		display: flex;
@@ -563,7 +738,6 @@
 	.visit-number {
 		display: inline-block;
 		padding: 0.25rem 0.75rem;
-		border-radius: 12px;
 		font-size: 0.75rem;
 		font-weight: 600;
 		text-transform: uppercase;
@@ -602,9 +776,9 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: 0.5rem;
 		padding: 0.75rem;
 		background: #f9fafb;
-		border-radius: 6px;
 	}
 
 	.info-label {
@@ -635,7 +809,6 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.5rem 0.75rem;
-		border-radius: 6px;
 		font-size: 0.875rem;
 		font-weight: 500;
 	}
@@ -692,7 +865,6 @@
 	.legend-dot {
 		width: 8px;
 		height: 8px;
-		border-radius: 50%;
 	}
 
 	.assessments-grid {
@@ -703,7 +875,6 @@
 	.assessment-item {
 		padding: 0.5rem 0.75rem;
 		background: #f3f4f6;
-		border-radius: 4px;
 		font-size: 0.875rem;
 		color: #374151;
 		border-left: 3px solid #d1d5db;
@@ -715,7 +886,6 @@
 		gap: 1rem;
 		padding: 1rem;
 		background: #f8fafc;
-		border-radius: 8px;
 		border: 1px solid #e2e8f0;
 	}
 
@@ -760,7 +930,6 @@
 		align-items: center;
 		padding: 0.5rem;
 		background: white;
-		border-radius: 4px;
 	}
 
 	.metric-label {
@@ -804,14 +973,9 @@
 		gap: 1rem;
 		padding: 1rem;
 		background: #fef7f7;
-		border-radius: 8px;
 		border: 1px solid #fecaca;
 	}
 
-	.dropout-overview {
-		display: flex;
-		justify-content: center;
-	}
 
 	.dropout-risk-display {
 		display: flex;
@@ -822,7 +986,6 @@
 	.risk-indicator {
 		width: 60px;
 		height: 60px;
-		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -873,7 +1036,6 @@
 	.driver-item {
 		background: white;
 		border: 1px solid #e5e7eb;
-		border-radius: 6px;
 		padding: 0.75rem;
 		display: flex;
 		justify-content: space-between;
@@ -895,7 +1057,6 @@
 
 	.driver-score {
 		padding: 0.25rem 0.5rem;
-		border-radius: 12px;
 		font-size: 0.75rem;
 		font-weight: 600;
 		color: white;
@@ -912,35 +1073,30 @@
 		color: #dc2626;
 		background: #fef2f2;
 		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
 	}
 
 	.impact-medium {
 		color: #d97706;
 		background: #fef3c7;
 		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
 	}
 
 	.impact-low {
 		color: #059669;
 		background: #f0fdf4;
 		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
 	}
 
 	.impact-unknown {
 		color: #6b7280;
 		background: #f9fafb;
 		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
 	}
 
 	.dropout-insights {
 		margin-top: 1rem;
 		padding: 1rem;
 		background: white;
-		border-radius: 6px;
 		border: 1px solid #e5e7eb;
 	}
 
@@ -953,7 +1109,6 @@
 		font-size: 0.875rem;
 		line-height: 1.5;
 		padding: 0.75rem;
-		border-radius: 6px;
 	}
 
 	.insight-text.high-risk {
@@ -988,7 +1143,6 @@
 		margin-top: 1rem;
 		padding: 1rem;
 		background: #f8fafc;
-		border-radius: 8px;
 		border: 1px solid #e2e8f0;
 	}
 
@@ -1013,7 +1167,6 @@
 		padding: 0.75rem;
 		background: white;
 		border: 1px solid #e5e7eb;
-		border-radius: 6px;
 	}
 
 	.metric-value.burden {
@@ -1025,19 +1178,17 @@
 	.burden-indicator {
 		width: 32px;
 		height: 20px;
-		border-radius: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		color: white;
 		font-size: 0.75rem;
-		font-weight: 600;
+	font-weight: 600;	
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	}
 
 	.burden-category-indicator {
 		padding: 0.25rem 0.75rem;
-		border-radius: 12px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1066,6 +1217,519 @@
 	@media (max-width: 640px) {
 		.burden-metrics-grid {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	/* === V1 MOTIVATORS AND CONCERNS SECTION === */
+
+	.section-description {
+		font-size: 0.875rem;
+		color: #64748b;
+		margin-bottom: 1.5rem;
+		text-align: center;
+		font-style: italic;
+	}
+
+
+	.persona-header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid #f1f5f9;
+	}
+
+	.persona-icon {
+		font-size: 1.5rem;
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #f8fafc;
+		border: 2px solid #e2e8f0;
+	}
+
+	.persona-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #1e293b;
+		margin: 0;
+	}
+
+	.motivators-section,
+	.concerns-section {
+		margin-bottom: 1.25rem;
+	}
+
+	.motivators-section:last-child,
+	.concerns-section:last-child {
+		margin-bottom: 0;
+	}
+
+	.subsection-header {
+		font-size: 0.95rem;
+		font-weight: 600;
+		margin-bottom: 0.75rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.subsection-header.motivators {
+		color: #059669;
+	}
+
+	.subsection-header.concerns {
+		color: #dc2626;
+	}
+
+	.insights-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.insight-item {
+		padding: 0.75rem;
+		border-left: 3px solid;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		transition: all 0.2s ease;
+	}
+
+	.insight-item:hover {
+		transform: translateX(2px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.insight-item.motivator {
+		background: #f0fdf4;
+		border-left-color: #059669;
+		color: #14532d;
+	}
+
+	.insight-item.concern {
+		background: #fef2f2;
+		border-left-color: #dc2626;
+		color: #7f1d1d;
+	}
+
+	.insight-text {
+		font-style: italic;
+		font-weight: 500;
+	}
+
+	/* Responsive design for smaller screens */
+	@media (max-width: 768px) {
+		.persona-insights {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+		
+		.v1-motivators-concerns-section {
+			padding: 1rem;
+		}
+		
+		.persona-insight-card {
+			padding: 1rem;
+		}
+	}
+
+	/* === CLICKABLE CONCERNS SECTION === */
+	.concerns-quick-access {
+		margin-top: 2rem;
+		padding: 1.5rem;
+		background: linear-gradient(135deg, #fef7f0 0%, #fef3c7 100%);
+		border: 2px solid #f59e0b;
+		box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);
+	}
+	
+	.concerns-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+		margin-top: 1rem;
+	}
+
+	.concern-category-section {
+		background: white;
+		padding: 1.25rem;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border: 1px solid #e5e7eb;
+	}
+
+	.concern-category-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		margin: 0 0 1rem 0;
+		padding-bottom: 0.75rem;
+		border-bottom: 2px solid #f1f5f9;
+	}
+
+	.concern-category-title.patient {
+		color: #3b82f6;
+	}
+
+	.concern-category-title.caregiver {
+		color: #8b5cf6;
+	}
+
+	.concern-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.concern-button {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
+		padding: 1rem;
+		border: 2px solid transparent;
+		background: #f8fafc;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: left;
+		width: 100%;
+	}
+
+	.concern-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.concern-button.patient {
+		border-left: 4px solid #3b82f6;
+	}
+
+	.concern-button.patient:hover {
+		background: #eff6ff;
+		border-color: #3b82f6;
+	}
+
+	.concern-button.caregiver {
+		border-left: 4px solid #8b5cf6;
+	}
+
+	.concern-button.caregiver:hover {
+		background: #f5f3ff;
+		border-color: #8b5cf6;
+	}
+
+	.concern-name {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: #1e293b;
+		line-height: 1.3;
+	}
+
+	.concern-count {
+		font-size: 0.8rem;
+		color: #64748b;
+		font-weight: 500;
+		font-style: italic;
+	}
+
+	/* === QUOTES DRAWER === */
+	.quotes-drawer-content {
+		padding: 0;
+	}
+
+	.quotes-header {
+		padding: 1.5rem 1.5rem 1rem 1.5rem;
+		border-bottom: 2px solid #f1f5f9;
+		margin-bottom: 1rem;
+	}
+
+	.quotes-title {
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: #1e293b;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.quotes-description {
+		font-size: 0.875rem;
+		color: #64748b;
+		margin: 0;
+		font-style: italic;
+	}
+
+	.quotes-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding: 0 1.5rem 1.5rem 1.5rem;
+	}
+
+	.quote-item {
+		display: flex;
+		gap: 1rem;
+		padding: 1.25rem;
+		border-left: 4px solid;
+		background: white;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		transition: all 0.2s ease;
+	}
+
+	.quote-item:hover {
+		transform: translateX(4px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.quote-item.patient {
+		border-left-color: #3b82f6;
+		background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+	}
+
+	.quote-item.caregiver {
+		border-left-color: #8b5cf6;
+		background: linear-gradient(135deg, #f5f3ff 0%, #f8fafc 100%);
+	}
+
+	.quote-indicator {
+		flex-shrink: 0;
+		width: 2rem;
+		height: 2rem;
+		background: #e2e8f0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 700;
+		font-size: 0.8rem;
+		color: #475569;
+	}
+
+	.quote-item.patient .quote-indicator {
+		background: #3b82f6;
+		color: white;
+	}
+
+	.quote-item.caregiver .quote-indicator {
+		background: #8b5cf6;
+		color: white;
+	}
+
+	.quote-content {
+		flex: 1;
+	}
+
+	.quote-text {
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: #1e293b;
+		margin: 0 0 0.5rem 0;
+		font-style: italic;
+		font-weight: 500;
+	}
+
+	.quote-attribution {
+		font-size: 0.8rem;
+		color: #64748b;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.no-quotes {
+		text-align: center;
+		padding: 2rem;
+		color: #6b7280;
+		font-style: italic;
+	}
+
+	/* Responsive design for concerns section */
+	@media (max-width: 768px) {
+		.concerns-grid {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+		
+		.concerns-quick-access {
+			padding: 1rem;
+		}
+		
+		.concern-category-section {
+			padding: 1rem;
+		}
+		
+		.concern-button {
+			padding: 0.75rem;
+		}
+		
+		.quotes-list {
+			padding: 0 1rem 1rem 1rem;
+		}
+		
+		.quote-item {
+			padding: 1rem;
+		}
+	}
+
+	/* === CLICKABLE ITEMS IN MAIN PERSONA CARDS === */
+	.clickable-items-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.item-button {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem;
+		border: 2px solid transparent;
+		background: #f8fafc;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: left;
+		width: 100%;
+		font-size: 0.875rem;
+	}
+
+	.item-button:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.item-button.motivator.patient {
+		border-left: 3px solid #059669;
+		background: #f0fdf4;
+	}
+
+	.item-button.motivator.patient:hover {
+		background: #dcfce7;
+		border-color: #059669;
+	}
+
+	.item-button.motivator.caregiver {
+		border-left: 3px solid #059669;
+		background: #f0fdf4;
+	}
+
+	.item-button.motivator.caregiver:hover {
+		background: #dcfce7;
+		border-color: #059669;
+	}
+
+	.item-button.concern.patient {
+		border-left: 3px solid #dc2626;
+		background: #fef2f2;
+	}
+
+	.item-button.concern.patient:hover {
+		background: #fee2e2;
+		border-color: #dc2626;
+	}
+
+	.item-button.concern.caregiver {
+		border-left: 3px solid #dc2626;
+		background: #fef2f2;
+	}
+
+	.item-button.concern.caregiver:hover {
+		background: #fee2e2;
+		border-color: #dc2626;
+	}
+
+	.item-name {
+		font-weight: 600;
+		color: #1e293b;
+		line-height: 1.3;
+	}
+
+	.item-count {
+		font-size: 0.75rem;
+		color: #64748b;
+		font-weight: 500;
+		font-style: italic;
+	}
+
+	/* === EXPLORE SECTION SUBSECTIONS === */
+	.item-subsection {
+		margin-bottom: 1rem;
+	}
+
+	.item-subsection:last-child {
+		margin-bottom: 0;
+	}
+
+	.item-subsection-title {
+		font-size: 0.9rem;
+		font-weight: 600;
+		margin: 0 0 0.75rem 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid #f1f5f9;
+	}
+
+	.item-subsection-title.motivators {
+		color: #059669;
+	}
+
+	.item-subsection-title.concerns {
+		color: #dc2626;
+	}
+
+	/* === ENHANCED CONCERN BUTTON STYLES === */
+	.concern-button.motivator.patient {
+		background: #f0fdf4;
+		border-left: 4px solid #059669;
+	}
+
+	.concern-button.motivator.patient:hover {
+		background: #dcfce7;
+		border-color: #059669;
+	}
+
+	.concern-button.motivator.caregiver {
+		background: #f0fdf4;
+		border-left: 4px solid #059669;
+	}
+
+	.concern-button.motivator.caregiver:hover {
+		background: #dcfce7;
+		border-color: #059669;
+	}
+
+	.concern-button.concern.patient {
+		background: #fef2f2;
+		border-left: 4px solid #dc2626;
+	}
+
+	.concern-button.concern.patient:hover {
+		background: #fee2e2;
+		border-color: #dc2626;
+	}
+
+	.concern-button.concern.caregiver {
+		background: #fef2f2;
+		border-left: 4px solid #dc2626;
+	}
+
+	.concern-button.concern.caregiver:hover {
+		background: #fee2e2;
+		border-color: #dc2626;
+	}
+
+	/* Responsive design for new structure */
+	@media (max-width: 768px) {
+		.item-button {
+			padding: 0.5rem;
+			font-size: 0.8rem;
+		}
+		
+		.item-name {
+			font-size: 0.85rem;
+		}
+		
+		.item-count {
+			font-size: 0.7rem;
 		}
 	}
 </style> 

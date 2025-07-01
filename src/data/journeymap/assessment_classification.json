@@ -24,6 +24,14 @@
     "category": "Invasive"
   },
   {
+    "assessment": "Surgical Biopsy Procedure",
+    "category": "Surgical"
+  },
+  {
+    "assessment": "Surgical Assessment",
+    "category": "Surgical"
+  },
+  {
     "assessment": "Physical and Neurologic Exam",
     "category": "Observational"
   },
@@ -53,6 +61,34 @@
   },
   {
     "assessment": "Concomitant Medications",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Medical and Psychiatric History",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Informed Consent/Assent",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Randomization",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Dispense Study Drug",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Study Drug Compliance Check",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Study Drug Return",
+    "category": "Observational"
+  },
+  {
+    "assessment": "Diary Training",
     "category": "Observational"
   },
   {
@@ -101,6 +137,10 @@
   },
   {
     "assessment": "PGI-S",
+    "category": "Patient-Reported"
+  },
+  {
+    "assessment": "CGI-S",
     "category": "Patient-Reported"
   },
   {

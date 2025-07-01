@@ -44,19 +44,138 @@
         ]
       },
       "Visit 2": {
-        "likelihood": 0.25,
+        "likelihood": 0.15,
         "primary_drivers": [
           "School Disruption",
           "Child Anxiety",
           "Anxiety Level"
         ]
       },
-      "Visit 6": {
-        "likelihood": 0.4,
+      "Visit 3": {
+        "likelihood": 0.18,
+        "primary_drivers": [
+          "Missed Work",
+          "Transport Logistics",
+          "Scheduling Complexity"
+        ]
+      },
+      "Visit 4": {
+        "likelihood": 0.22,
+        "primary_drivers": [
+          "Multiple Children at Home",
+          "Disruptions to Daily Life",
+          "Financial Challenges"
+        ]
+      },
+      "Visit 5": {
+        "likelihood": 0.25,
         "primary_drivers": [
           "Emotional Fatigue",
-          "Multiple Children at Home",
+          "Logistical Challenges",
+          "School Disruption"
+        ]
+      },
+      "Visit 6": {
+        "likelihood": 0.28,
+        "primary_drivers": [
           "Emotional Burden",
+          "Multiple Children at Home",
+          "Disruptions to Daily Life"
+        ]
+      },
+      "Visit 7": {
+        "likelihood": 0.32,
+        "primary_drivers": [
+          "Travel Time",
+          "Emotional Fatigue",
+          "Missed Work"
+        ]
+      },
+      "Visit 8": {
+        "likelihood": 0.35,
+        "primary_drivers": [
+          "Child Anxiety",
+          "Anxiety Level",
+          "Emotional Burden"
+        ]
+      },
+      "Visit 9": {
+        "likelihood": 0.38,
+        "primary_drivers": [
+          "Logistical Challenges",
+          "Financial Challenges",
+          "Hope Level"
+        ]
+      },
+      "Visit 10": {
+        "likelihood": 0.42,
+        "primary_drivers": [
+          "Multiple Children at Home",
+          "Disruptions to Daily Life",
+          "Emotional Fatigue"
+        ]
+      },
+      "Visit 11": {
+        "likelihood": 0.45,
+        "primary_drivers": [
+          "Emotional Burden",
+          "School Disruption",
+          "Travel Time"
+        ]
+      },
+      "Visit 12": {
+        "likelihood": 0.48,
+        "primary_drivers": [
+          "Hope Level",
+          "Anxiety Level",
+          "Missed Work"
+        ]
+      },
+      "Visit 13": {
+        "likelihood": 0.52,
+        "primary_drivers": [
+          "Emotional Fatigue",
+          "Logistical Challenges",
+          "Financial Challenges"
+        ]
+      },
+      "Visit 14": {
+        "likelihood": 0.55,
+        "primary_drivers": [
+          "Emotional Burden",
+          "Multiple Children at Home",
+          "Hope Level"
+        ]
+      },
+      "Visit 15": {
+        "likelihood": 0.58,
+        "primary_drivers": [
+          "Disruptions to Daily Life",
+          "Child Anxiety",
+          "Travel Time"
+        ]
+      },
+      "Visit 16": {
+        "likelihood": 0.62,
+        "primary_drivers": [
+          "Hope Level",
+          "Emotional Fatigue",
+          "School Disruption"
+        ]
+      },
+      "Visit 17": {
+        "likelihood": 0.65,
+        "primary_drivers": [
+          "Emotional Burden",
+          "Anxiety Level",
+          "Logistical Challenges"
+        ]
+      },
+      "Visit 18": {
+        "likelihood": 0.68,
+        "primary_drivers": [
+          "Hope Level",
+          "Multiple Children at Home",
           "Disruptions to Daily Life"
         ]
       }
@@ -98,26 +217,145 @@
     },
     "dropout_risk_by_visit": {
       "Visit 1": {
-        "likelihood": 0.15,
+        "likelihood": 0.12,
         "primary_drivers": [
           "Needle Fear",
-          "Missed School",
-          "Anxiety Level"
-        ]
-      },
-      "Visit 2": {
-        "likelihood": 0.3,
-        "primary_drivers": [
-          "Procedure Discomfort",
-          "Survey Fatigue",
+          "Anxiety Level",
           "Information Overload"
         ]
       },
-      "Visit 13": {
-        "likelihood": 0.45,
+      "Visit 2": {
+        "likelihood": 0.18,
+        "primary_drivers": [
+          "Procedure Discomfort",
+          "Missed School",
+          "Invasive Tests"
+        ]
+      },
+      "Visit 3": {
+        "likelihood": 0.22,
+        "primary_drivers": [
+          "Survey Fatigue",
+          "Emotional Burden",
+          "Anxiety Level"
+        ]
+      },
+      "Visit 4": {
+        "likelihood": 0.26,
+        "primary_drivers": [
+          "Number of Procedures",
+          "Social Isolation",
+          "Disruptions to Daily Life"
+        ]
+      },
+      "Visit 5": {
+        "likelihood": 0.30,
         "primary_drivers": [
           "Emotional Fatigue",
+          "Missed School",
+          "Needle Fear"
+        ]
+      },
+      "Visit 6": {
+        "likelihood": 0.33,
+        "primary_drivers": [
+          "Procedure Discomfort",
+          "Emotional Burden",
+          "Body Image Concern"
+        ]
+      },
+      "Visit 7": {
+        "likelihood": 0.36,
+        "primary_drivers": [
           "Invasive Tests",
+          "Anxiety Level",
+          "Hope Level"
+        ]
+      },
+      "Visit 8": {
+        "likelihood": 0.39,
+        "primary_drivers": [
+          "Survey Fatigue",
+          "Social Isolation",
+          "Emotional Fatigue"
+        ]
+      },
+      "Visit 9": {
+        "likelihood": 0.42,
+        "primary_drivers": [
+          "Number of Procedures",
+          "Missed School",
+          "Disruptions to Daily Life"
+        ]
+      },
+      "Visit 10": {
+        "likelihood": 0.45,
+        "primary_drivers": [
+          "Emotional Burden",
+          "Needle Fear",
+          "Information Overload"
+        ]
+      },
+      "Visit 11": {
+        "likelihood": 0.48,
+        "primary_drivers": [
+          "Procedure Discomfort",
+          "Anxiety Level",
+          "Hope Level"
+        ]
+      },
+      "Visit 12": {
+        "likelihood": 0.51,
+        "primary_drivers": [
+          "Invasive Tests",
+          "Emotional Fatigue",
+          "Social Isolation"
+        ]
+      },
+      "Visit 13": {
+        "likelihood": 0.54,
+        "primary_drivers": [
+          "Hope Level",
+          "Survey Fatigue",
+          "Emotional Burden"
+        ]
+      },
+      "Visit 14": {
+        "likelihood": 0.57,
+        "primary_drivers": [
+          "Number of Procedures",
+          "Anxiety Level",
+          "Missed School"
+        ]
+      },
+      "Visit 15": {
+        "likelihood": 0.60,
+        "primary_drivers": [
+          "Emotional Fatigue",
+          "Procedure Discomfort",
+          "Hope Level"
+        ]
+      },
+      "Visit 16": {
+        "likelihood": 0.63,
+        "primary_drivers": [
+          "Invasive Tests",
+          "Emotional Burden",
+          "Social Isolation"
+        ]
+      },
+      "Visit 17": {
+        "likelihood": 0.66,
+        "primary_drivers": [
+          "Hope Level",
+          "Anxiety Level",
+          "Disruptions to Daily Life"
+        ]
+      },
+      "Visit 18": {
+        "likelihood": 0.70,
+        "primary_drivers": [
+          "Emotional Fatigue",
           "Emotional Burden",
           "Hope Level"
         ]
@@ -160,28 +398,147 @@
     },
     "dropout_risk_by_visit": {
       "Visit 1": {
-        "likelihood": 0.2,
+        "likelihood": 0.15,
         "primary_drivers": [
           "Travel Time",
-          "Lost Wages",
-          "Financial Challenges"
+          "Financial Challenges",
+          "Childcare Arrangements"
         ]
       },
-      "Visit 3": {
-        "likelihood": 0.35,
+      "Visit 2": {
+        "likelihood": 0.20,
         "primary_drivers": [
-          "Childcare Arrangements",
-          "Scheduling Flexibility",
+          "Lost Wages",
+          "Transport Costs",
           "Logistical Challenges"
         ]
       },
-      "Visit 10": {
-        "likelihood": 0.5,
+      "Visit 3": {
+        "likelihood": 0.25,
         "primary_drivers": [
+          "Scheduling Flexibility",
+          "Disruptions to Daily Life",
+          "Time Away from Family"
+        ]
+      },
+      "Visit 4": {
+        "likelihood": 0.30,
+        "primary_drivers": [
+          "Childcare Arrangements",
           "Visit Frequency",
-          "Time Away from Family",
+          "Financial Challenges"
+        ]
+      },
+      "Visit 5": {
+        "likelihood": 0.34,
+        "primary_drivers": [
+          "Travel Time",
+          "Lost Wages",
+          "Follow-up Complexity"
+        ]
+      },
+      "Visit 6": {
+        "likelihood": 0.38,
+        "primary_drivers": [
+          "Logistical Challenges",
           "Disruptions to Daily Life",
           "Emotional Burden"
+        ]
+      },
+      "Visit 7": {
+        "likelihood": 0.42,
+        "primary_drivers": [
+          "Transport Costs",
+          "Time Away from Family",
+          "Scheduling Flexibility"
+        ]
+      },
+      "Visit 8": {
+        "likelihood": 0.45,
+        "primary_drivers": [
+          "Visit Frequency",
+          "Financial Challenges",
+          "Childcare Arrangements"
+        ]
+      },
+      "Visit 9": {
+        "likelihood": 0.48,
+        "primary_drivers": [
+          "Travel Time",
+          "Lost Wages",
+          "Hope Level"
+        ]
+      },
+      "Visit 10": {
+        "likelihood": 0.52,
+        "primary_drivers": [
+          "Disruptions to Daily Life",
+          "Logistical Challenges",
+          "Emotional Burden"
+        ]
+      },
+      "Visit 11": {
+        "likelihood": 0.55,
+        "primary_drivers": [
+          "Time Away from Family",
+          "Follow-up Complexity",
+          "Anxiety Level"
+        ]
+      },
+      "Visit 12": {
+        "likelihood": 0.58,
+        "primary_drivers": [
+          "Financial Challenges",
+          "Visit Frequency",
+          "Hope Level"
+        ]
+      },
+      "Visit 13": {
+        "likelihood": 0.61,
+        "primary_drivers": [
+          "Travel Time",
+          "Childcare Arrangements",
+          "Emotional Burden"
+        ]
+      },
+      "Visit 14": {
+        "likelihood": 0.64,
+        "primary_drivers": [
+          "Lost Wages",
+          "Disruptions to Daily Life",
+          "Hope Level"
+        ]
+      },
+      "Visit 15": {
+        "likelihood": 0.67,
+        "primary_drivers": [
+          "Logistical Challenges",
+          "Time Away from Family",
+          "Scheduling Flexibility"
+        ]
+      },
+      "Visit 16": {
+        "likelihood": 0.70,
+        "primary_drivers": [
+          "Financial Challenges",
+          "Visit Frequency",
+          "Emotional Burden"
+        ]
+      },
+      "Visit 17": {
+        "likelihood": 0.73,
+        "primary_drivers": [
+          "Hope Level",
+          "Travel Time",
+          "Disruptions to Daily Life"
+        ]
+      },
+      "Visit 18": {
+        "likelihood": 0.75,
+        "primary_drivers": [
+          "Hope Level",
+          "Childcare Arrangements",
+          "Financial Challenges"
         ]
       }
     }

@@ -30,11 +30,25 @@
 
 	let mounted = false;
 
-	// Dynamic cell dimensions based on timeline width and number of visits
-	$: dynamicCellWidth = visits.length > 0 
-		? Math.max(60, Math.min(120, timelineWidth / (visits.length * 1.2))) 
-		: 80;
-	$: cellPadding = Math.max(4, dynamicCellWidth * 0.1);
+	// Calculate dynamic cell width based on actual visit spacing (same logic as PersonaGrid)
+	$: calculatedCellWidth = (() => {
+		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
+		
+		// Calculate the minimum spacing between consecutive visits
+		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
+		let minSpacing = Infinity;
+		
+		for (let i = 1; i < visitPositions.length; i++) {
+			const spacing = visitPositions[i] - visitPositions[i - 1];
+			minSpacing = Math.min(minSpacing, spacing);
+		}
+		
+		// Cell width should be slightly smaller than minimum spacing to avoid overlap
+		// but wide enough for visit names (minimum 80px, maximum 200px)
+		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
+		
+		return cellWidth;
+	})();
 
 	// Timeline positioning logic (shared between components)
 	function parseStudyDay(visit: Visit): number {
@@ -88,34 +102,11 @@
 						<div 
 							class="header-cell visit-number-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
-								width: {dynamicCellWidth}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+								width: {calculatedCellWidth}px;
 							"
 						>
 							<span class="visit-number">V{visit.visit_number}</span>
-						</div>
-					{/each}
-				</div>
-
-				<!-- Study days row -->
-				<div class="header-row study-days-row">
-					{#each processedVisits as visit}
-						<div 
-							class="header-cell study-day-cell"
-							style="
-								left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth * 0.8 / 2)}px;
-								width: {dynamicCellWidth * 0.8}px;
-							"
-						>
-							<span class="study-day text-2xs font-semibold text-slate-500">
-								{#if visit.study_day}
-									Day {visit.study_day}
-								{:else if visit.study_day_range}
-									{visit.study_day_range}
-								{:else}
-									Day {visit.studyDay}
-								{/if}
-							</span>
 						</div>
 					{/each}
 				</div>
@@ -126,8 +117,8 @@
 						<div 
 							class="header-cell study-week-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth * 0.8 / 2)}px;
-								width: {dynamicCellWidth * 0.8}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+								width: {calculatedCellWidth}px;
 							"
 						>
 							<span class="study-week">
@@ -143,10 +134,10 @@
 						<div 
 							class="header-cell visit-name-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth * 0.8 / 2)}px;
-								width: {dynamicCellWidth * 0.8}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+								width: {calculatedCellWidth}px;
 							"
-							title="{visit.name} - Study Day {visit.studyDay}"
+							title="{visit.name}"
 						>
 							<span class="visit-name">{visit.name}</span>
 						</div>
@@ -157,12 +148,12 @@
 
 		<!-- Journey Timeline (Visit Details) -->
 		<div class="timeline-section">
-			<JourneyTimeline {visits} {timelineWidth} hideHeader={true} {dynamicCellWidth} />
+			<JourneyTimeline {visits} {timelineWidth} hideHeader={true} />
 		</div>
 
 		<!-- Persona Grid -->
 		<div class="persona-section">
-			<PersonaGrid {visits} {timelineWidth} hideHeader={true} headerHeight={TIMELINE_HEADER_HEIGHT} {dynamicCellWidth} />
+			<PersonaGrid {visits} {timelineWidth} hideHeader={true}  />
 		</div>
 	</div>
 {/if}

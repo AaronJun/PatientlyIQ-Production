@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { X, Quotes } from 'phosphor-svelte';
+	import { X, Quotes as Quote } from 'phosphor-svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	export let isOpen = false;

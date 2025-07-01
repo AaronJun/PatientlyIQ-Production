@@ -91,9 +91,11 @@
 
 	// Get burden level text
 	function getBurdenLevel(score: number): string {
-		if (score < 30) return 'Low';
-		if (score < 60) return 'Medium';
-		return 'High';
+		if (score <= 20) return 'Very Low';
+		if (score <= 40) return 'Low';
+		if (score <= 60) return 'Moderate';
+		if (score <= 80) return 'High';
+		return 'Very High';
 	}
 
 	// Process visits with calculated data

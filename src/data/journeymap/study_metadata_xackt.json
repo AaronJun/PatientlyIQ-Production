@@ -6,6 +6,8 @@
   "phase": "3",
   "indication": "Focal Onset Seizures (Epilepsy)",
   "therapeutic_area": "Neurology",
+  "indication_level_quotes": "1320",
+  "therapeutic_area_quotes": "12295",
   "population": {
     "age_range": "2 to <18 years",
     "condition": "Focal onset seizures",
@@ -23,6 +25,6 @@
     "arms": 2,
     "multicenter": true
   },
-  "total_visits": 9,
+  "total_visits": 18,
   "visit_schedule_json": "patient_burden_mapper_visit_schedule_FULL.json"
 }

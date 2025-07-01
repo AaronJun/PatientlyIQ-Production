@@ -2,7 +2,7 @@
 	export let label: string;
 	export let count: number;
 	export let color: string = '#3b82f6'; // Default blue color
-	export let size: string = '12px';
+	export let size: string = '8px';
 </script>
 
 <div class="visit-squares">
@@ -12,7 +12,7 @@
 	</div>
 	<div class="squares-container">
 		{#each Array(count) as _, i}
-			<div 
+			<div 	
 				class="square" 
 				style="background-color: {color}; width: {size}; height: {size};"
 			></div>

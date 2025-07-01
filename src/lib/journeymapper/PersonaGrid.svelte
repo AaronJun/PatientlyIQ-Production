@@ -4,7 +4,6 @@
 	import SentimentLine from './SentimentLine.svelte';
 	import Drawer from './Drawer.svelte';
 	import VisitDetails from './VisitDetails.svelte';
-	import AssessmentBurdenHeatmap from '../components/AssessmentBurdenHeatmap.svelte';
 	import PersonaTooltip from './PersonaTooltip.svelte';
 
 	// Type definitions
@@ -62,10 +61,9 @@
 
 	// Props
 	export let visits: Visit[] = [];
-	export let timelineWidth: number = 1000;
+	export let timelineWidth: number = 2400;
 	export let hideHeader: boolean = false;
 	export let headerHeight: number = 80;
-	export let dynamicCellWidth: number = 80;
 
 	// Personas data with expanded state - will be loaded from JSON
 	let personas: Persona[] = [];
@@ -75,12 +73,14 @@
 	const EXPANDED_HEIGHT = 250;
 	const LEFT_PANEL_WIDTH = 250;
 	const SENTIMENT_SCALE_HEIGHT = 100; // Height for sentiment scale when expanded
-	const TIMELINE_HEADER_HEIGHT = 80; // Height for the timeline header
+	const TIMELINE_HEADER_HEIGHT = 120; // Height for the timeline header (increased for multi-row header)
 
 	let mounted = false;
 	let sentimentData: VisitSentiment[] = [];
 	let dropoutData: any[] = [];
 	let personasData: Persona[] = [];
+	let individualPersonaData: any = null;
+	let personaBurdenData: any[] = [];
 	
 	// Visit Details Drawer state
 	let drawerOpen = false;
@@ -130,7 +130,7 @@
 			const personasResponse = await fetch('/data/journeymap/personas_with_quotes.json');
 			if (personasResponse.ok) {
 				personasData = await personasResponse.json();
-				personas = personasData.map(p => ({ ...p, expanded: false }));
+				personas = personasData.map((p, index) => ({ ...p, expanded: index < 2 })); // Expand first two personas
 			} else {
 				// Fallback to original personas if file not found
 				personas = [
@@ -139,16 +139,16 @@
 						name: 'Emma Johnson',
 						type: 'Patient',
 						color: '#059669',
-						avatar: '👩‍🦱',
-						expanded: false
+						avatar: '/assets/TEENPATIENT.svg',
+						expanded: true // First persona expanded
 					},
 					{
 						id: 'caregiver-1',
-						name: 'Michael Johnson',
+						name: 'Michele Johnson',
 						type: 'Caregiver',
 						color: '#0369a1',
-						avatar: '👨‍🦰',
-						expanded: false
+						avatar: '/assets/RURALMOTHER.svg',
+						expanded: true // Second persona expanded
 					}
 				];
 			}
@@ -161,8 +161,8 @@
 					name: 'Emma Johnson',
 					type: 'Patient',
 					color: '#059669',
-					avatar: '👩‍🦱',
-					expanded: false
+					avatar: '/assets/TEENPATIENT.svg',
+					expanded: true // First persona expanded
 				},
 				{
 					id: 'caregiver-1',
@@ -170,7 +170,7 @@
 					type: 'Caregiver',
 					color: '#0369a1',
 					avatar: '👨‍🦰',
-					expanded: false
+					expanded: true // Second persona expanded
 				}
 			];
 		}
@@ -206,6 +206,30 @@
 			console.error('Failed to load dropout data:', error);
 			dropoutData = [];
 		}
+
+		// Load individual persona visit data for Emma and Michael
+		try {
+			const individualResponse = await fetch('/data/journeymap/emma_michael_visit_data.json');
+			if (individualResponse.ok) {
+				individualPersonaData = await individualResponse.json();
+			}
+		} catch (error) {
+			console.error('Failed to load individual persona data:', error);
+		}
+
+		// Load persona burden data
+		try {
+			const burdenResponse = await fetch('/data/journeymap/persona_burden_heatmap.json');
+			if (burdenResponse.ok) {
+				personaBurdenData = await burdenResponse.json();
+			}
+		} catch (error) {
+			console.error('Failed to load persona burden data:', error);
+			personaBurdenData = [];
+		}
+
+		// Force recalculation of sentiment after all data is loaded
+		personas = [...personas]; // Trigger reactivity
 	});
 
 	// Toggle persona expansion - ensures all row elements expand together
@@ -222,6 +246,40 @@
 	function openVisitDetails(visit: ProcessedVisit, persona: Persona) {
 		selectedVisit = visit;
 		selectedPersona = persona;
+		
+		// Check if we have individual persona data first
+		if (individualPersonaData?.personas) {
+			const individualPersona = individualPersonaData.personas.find((p: any) => p.name === persona.name);
+			if (individualPersona?.visit_data) {
+				const visitData = individualPersona.visit_data.find((v: any) => v.visit_number === visit.visit_number);
+				if (visitData) {
+					// Create synthetic sentiment data from individual persona data
+					const defaultSentiment = { overall_score: 3, anxiety_level: 3, hope_level: 3, burden_perception: 3, reasoning: "" };
+					selectedSentimentData = {
+						visit_number: visit.visit_number,
+						visit_name: visit.name,
+						patient_sentiment: visitData.sentiment || defaultSentiment,
+						caregiver_sentiment: visitData.sentiment || defaultSentiment
+					};
+					
+					// Create synthetic dropout data from individual persona data
+					selectedDropoutData = {
+						persona: persona.name,
+						dropout_risk_by_visit: {
+							[`Visit ${visit.visit_number}`]: {
+								likelihood: visitData.dropout_risk || 0,
+								primary_drivers: visitData.primary_drivers || []
+							}
+						}
+					};
+					
+					drawerOpen = true;
+					return;
+				}
+			}
+		}
+		
+		// Fall back to generic data
 		selectedSentimentData = sentimentData.find(s => s.visit_number === visit.visit_number) || null;
 		
 		// Find matching dropout data based on persona type
@@ -248,6 +306,12 @@
 	function openPersonaDrawer(persona: Persona) {
 		selectedPersonaForDrawer = persona;
 		personaDrawerOpen = true;
+		
+		// Debug logging to verify data loading
+		const burdenData = getPersonaBurdenData(persona);
+		console.log('Opening drawer for persona:', persona.name, persona.type, persona.category);
+		console.log('Found burden data:', burdenData);
+		console.log('Available personas in burden data:', personaBurdenData.map(p => p.persona));
 	}
 
 	// Close persona details drawer
@@ -327,22 +391,285 @@
 		studyDay: parseStudyDay(visit)
 	})).sort((a, b) => a.studyDay - b.studyDay);
 
-	// Calculate visit positions for grid lines
-	function getVisitPositions(): number[] {
-		if (!processedVisits.length) return [];
-		return processedVisits.map(visit => visit.timelinePosition * timelineWidth);
+	// Calculate dynamic cell width based on actual visit spacing (same logic as JourneyContainer)
+	$: calculatedCellWidth = (() => {
+		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
+		
+		// Calculate the minimum spacing between consecutive visits
+		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
+		let minSpacing = Infinity;
+		
+		for (let i = 1; i < visitPositions.length; i++) {
+			const spacing = visitPositions[i] - visitPositions[i - 1];
+			minSpacing = Math.min(minSpacing, spacing);
+		}
+		
+		// Cell width should be slightly smaller than minimum spacing to avoid overlap
+		// but wide enough for visit names (minimum 80px, maximum 200px)
+		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
+		
+		return cellWidth;
+	})();
+
+	// Get burden color based on score
+	function getBurdenColor(score: number): string {
+		if (score < 30) return '#22c55e'; // green - low burden
+		if (score < 50) return '#84cc16'; // lime - moderate-low burden  
+		if (score < 70) return '#eab308'; // yellow - moderate burden
+		if (score < 85) return '#f97316'; // orange - high burden
+		return '#ef4444'; // red - very high burden
 	}
 
-	// Get sentiment score for a specific persona type and visit
-	function getSentimentScore(personaType: string, visitNumber: number): number {
-		const visitSentiment = sentimentData.find(v => v.visit_number === visitNumber);
-		if (!visitSentiment) return 3;
+	// Get sentiment color based on 1-10 score
+	function getSentimentColor(sentiment: number): string {
+		if (sentiment >= 8) return '#22c55e';      // High positive (8-10) - green
+		if (sentiment >= 6) return '#84cc16';      // Moderate positive (6-7) - lime
+		if (sentiment >= 5) return '#eab308';      // Neutral (5) - yellow
+		if (sentiment >= 3) return '#f97316';      // Moderate negative (3-4) - orange
+		return '#ef4444';                          // High negative (1-2) - red
+	}
 
-		if (personaType === 'Patient') {
-			return visitSentiment.patient_sentiment.overall_score;
-		} else {
-			return visitSentiment.caregiver_sentiment.overall_score;
+	// Calculate weighted sentiment score (1-10 scale) based on multiple factors
+	function calculateWeightedSentiment(sentimentData: any, visitNumber?: number): number {
+		if (!sentimentData) return 5; // Default neutral score
+		
+		// Extract individual scores (assuming 1-5 scale from source data)
+		const overall = sentimentData.overall_score || 3;
+		const anxiety = sentimentData.anxiety_level || 3;
+		const hope = sentimentData.hope_level || 3;
+		const burden = sentimentData.burden_perception || 3;
+		
+		// Define weights for each factor with enhanced variance
+		const weights = {
+			overall: 0.35,   // 35% weight to overall sentiment
+			anxiety: 0.30,   // 30% weight to anxiety (inverted - lower anxiety = better sentiment)
+			hope: 0.25,      // 25% weight to hope level
+			burden: 0.10     // 10% weight to burden perception (inverted - lower burden = better sentiment)
+		};
+		
+		// Convert 1-5 scale to 1-10 scale with enhanced variance
+		// Apply exponential scaling to create more dramatic differences
+		const scaleConversion = (value: number, invert: boolean = false) => {
+			const normalizedValue = invert ? (6 - value) : value;
+			// Use exponential scaling to enhance variance: 1->1, 2->3, 3->5, 4->7, 5->10
+			const scaledValue = Math.pow((normalizedValue - 1) / 4, 0.8) * 9 + 1;
+			return scaledValue;
+		};
+		
+		// Calculate component scores with enhanced variance
+		const overallScore = scaleConversion(overall) * weights.overall;
+		const anxietyScore = scaleConversion(anxiety, true) * weights.anxiety; // Inverted
+		const hopeScore = scaleConversion(hope) * weights.hope;
+		const burdenScore = scaleConversion(burden, true) * weights.burden; // Inverted
+		
+		let weightedScore = overallScore + anxietyScore + hopeScore + burdenScore;
+		
+		// Apply stage-based variance modifiers if visit number is available
+		if (visitNumber) {
+			let stageModifier = 1.0;
+			if (visitNumber <= 2) {
+				// Early visits: Amplify positive sentiment more
+				stageModifier = weightedScore > 6 ? 1.2 : 1.1;
+			} else if (visitNumber <= 6) {
+				// Mid-early: Slight amplification
+				stageModifier = 1.05;
+			} else if (visitNumber <= 12) {
+				// Mid-late: Begin dampening positive sentiment
+				stageModifier = weightedScore > 5 ? 0.95 : 0.9;
+			} else {
+				// Late stage: Significant dampening and amplification of negative sentiment
+				stageModifier = weightedScore > 5 ? 0.85 : 0.8;
+			}
+			
+			weightedScore *= stageModifier;
+			
+			// Additional late-stage sentiment decline
+			if (visitNumber > 10) {
+				const lateStageDecline = (visitNumber - 10) * 0.3;
+				weightedScore -= lateStageDecline;
+			}
 		}
+		
+		// Apply variance enhancement based on sentiment extremes
+		if (weightedScore > 7) {
+			// Amplify high positive sentiment
+			weightedScore = 7 + (weightedScore - 7) * 1.3;
+		} else if (weightedScore < 4) {
+			// Amplify low negative sentiment
+			weightedScore = 4 - (4 - weightedScore) * 1.3;
+		}
+		
+		// Ensure the result is within 1-10 range
+		return Math.max(1, Math.min(10, Math.round(weightedScore * 10) / 10));
+	}
+
+	// Get sentiment score for a specific persona and visit (1-10 scale)
+	function getSentimentScore(persona: Persona, visitNumber: number): number {
+		// First, check if we have individual data for this specific persona
+		if (individualPersonaData?.personas) {
+			const individualPersona = individualPersonaData.personas.find((p: any) => p.name === persona.name);
+			if (individualPersona?.visit_data) {
+				const visitData = individualPersona.visit_data.find((v: any) => v.visit_number === visitNumber);
+				if (visitData?.sentiment) {
+					return calculateWeightedSentiment(visitData.sentiment, visitNumber);
+				}
+			}
+		}
+
+		// Fall back to generic sentiment data
+		const visitSentiment = sentimentData.find(v => v.visit_number === visitNumber);
+		if (visitSentiment) {
+			if (persona.type === 'Patient') {
+				return calculateWeightedSentiment(visitSentiment.patient_sentiment, visitNumber);
+			} else {
+				return calculateWeightedSentiment(visitSentiment.caregiver_sentiment, visitNumber);
+			}
+		}
+
+		// If no sentiment data available, create realistic sentiment based on journey progression
+		return calculateRealisticSentiment(persona, visitNumber);
+	}
+
+	// Calculate realistic sentiment variation based on persona and visit characteristics
+	function calculateRealisticSentiment(persona: Persona, visitNumber: number): number {
+		// Get dropout risk to inform sentiment calculation
+		const dropoutInfo = getDropoutRisk(persona, visitNumber);
+		const dropoutRisk = dropoutInfo.risk;
+		
+		// Base sentiment calculation using dropout risk as primary driver
+		// Higher dropout risk should correlate with lower sentiment
+		// Transform dropout risk (0-1) to sentiment impact (10-1)
+		let baseSentiment = 10 - (dropoutRisk * 9); // 0% risk = 10, 100% risk = 1
+		
+		// Create more dramatic stage-based variance
+		let stageMultiplier = 1.0;
+		if (visitNumber <= 2) {
+			// Early stage: Higher baseline optimism but still affected by dropout risk
+			stageMultiplier = 1.3;
+			baseSentiment = Math.min(10, baseSentiment + 2);
+		} else if (visitNumber <= 6) {
+			// Mid-early stage: Reality setting in, moderate decline
+			stageMultiplier = 1.1;
+			baseSentiment = baseSentiment + 0.5;
+		} else if (visitNumber <= 12) {
+			// Mid-late stage: Significant burden accumulation
+			stageMultiplier = 0.9;
+			baseSentiment = baseSentiment - 0.5;
+		} else {
+			// Late stage: Severe sentiment decline, dropout risk dominates
+			stageMultiplier = 0.7;
+			baseSentiment = baseSentiment - 2;
+		}
+		
+		// Apply stage multiplier to enhance variance
+		baseSentiment = baseSentiment * stageMultiplier;
+
+		// Persona-specific adjustments for different sentiment patterns
+		if (persona.type === 'Patient') {
+			// Patients have more volatile sentiment - higher highs and lower lows
+			if (visitNumber <= 3) {
+				baseSentiment += 1.5; // More optimistic early
+			} else if (visitNumber > 10) {
+				baseSentiment -= 2.5; // More dramatic decline later
+			}
+			
+			// Teen patients are especially volatile
+			if (persona.category === 'Teen Patient' || persona.name.toLowerCase().includes('teen')) {
+
+				if (visitNumber <= 2) {
+					baseSentiment += 1; // Extra optimism early
+				} else if (visitNumber >= 14 && visitNumber <= 18) {
+					// Teen recovery - dramatic improvement with completion hope
+					const recoveryBoost = (visitNumber - 13) * 1.2; // Stronger boost for teens 14-18
+
+					baseSentiment += recoveryBoost;
+					// Additional boost for school/social life anticipation
+					baseSentiment += 0.5;
+				} else if (visitNumber > 8) {
+					baseSentiment -= 3; // Dramatic frustration later
+				}
+			}
+		} else {
+			// Caregivers have more sustained stress patterns
+			if (visitNumber <= 2) {
+				baseSentiment += 0.5; // Cautious optimism
+			} else if (visitNumber > 6) {
+				baseSentiment -= 1.5; // Steady decline with accumulated stress
+			}
+			
+			// Rural caregivers face additional logistical challenges
+			if (persona.category === 'Rural Working Mother' || persona.name.toLowerCase().includes('rural')) {
+
+				baseSentiment -= 1.5; // Consistent logistical burden
+				if (visitNumber >= 14 && visitNumber <= 18) {
+					// Gradual relief as end approaches - logistics become more manageable
+					const reliefBoost = (visitNumber - 13) * 0.9; // Different slope than teens
+
+					baseSentiment += reliefBoost;
+					// Additional relief from reduced travel anticipation
+					if (visitNumber >= 16) {
+						baseSentiment += 0.8; // Extra boost for later visits
+					}
+				} else if (visitNumber > 8) {
+					baseSentiment -= 2; // Compounding challenges in later stages
+				}
+			}
+		}
+
+		// Add variation based on visit characteristics with enhanced impact
+		const visit = processedVisits.find(v => v.visit_number === visitNumber);
+		if (visit) {
+			// High burden visits have more dramatic impact
+			if (visit.burdenScore > 80) baseSentiment -= 2.5;
+			else if (visit.burdenScore > 60) baseSentiment -= 1.5;
+			else if (visit.burdenScore > 40) baseSentiment -= 0.5;
+			
+			// Travel required has cumulative impact (worse in later visits)
+			if (visit.travel_required) {
+				const travelImpact = visitNumber <= 6 ? -0.5 : -1.5;
+				baseSentiment += travelImpact;
+			}
+			
+			// Assessment burden has increasing impact over time
+			const assessmentImpact = visit.assessments.length > 8 ? -2 : 
+			                       visit.assessments.length > 5 ? -1 : 0;
+			const fatigueMultiplier = visitNumber <= 6 ? 1 : 1.5;
+			baseSentiment += assessmentImpact * fatigueMultiplier;
+		}
+
+		// Add controlled variation based on dropout risk drivers
+		if (dropoutInfo.drivers.length > 0) {
+			// More drivers = more sentiment impact
+			const driverImpact = -0.3 * dropoutInfo.drivers.length;
+			baseSentiment += driverImpact;
+			
+			// Specific high-impact drivers
+			const highImpactDrivers = [
+				'Hope Level', 'Emotional Burden', 'Emotional Fatigue', 
+				'Anxiety Level', 'Multiple Children at Home', 'Financial Challenges'
+			];
+			const highImpactCount = dropoutInfo.drivers.filter(d => 
+				highImpactDrivers.includes(d)).length;
+			if (highImpactCount > 0) {
+				baseSentiment -= highImpactCount * 0.8;
+			}
+		}
+
+		// Create more dramatic sentiment swings for key transition points
+		if (dropoutRisk > 0.4 && dropoutRisk <= 0.5) {
+			// Critical transition point - sentiment drops more dramatically
+			baseSentiment -= 1.5;
+		} else if (dropoutRisk > 0.6) {
+			// High risk zone - severe sentiment decline
+			baseSentiment -= 2.5;
+		}
+
+		// Ensure result is within 1-10 range but allow for more extreme values
+		const finalSentiment = Math.max(1, Math.min(10, Math.round(baseSentiment * 10) / 10));
+		
+
+		
+		return finalSentiment;
 	}
 
 	// Calculate sentiment circle position relative to its grid cell (reactive function)
@@ -359,8 +686,9 @@
 		const sentimentAreaStart = PERSONA_HEIGHT;
 		const sentimentAreaHeight = SENTIMENT_SCALE_HEIGHT;
 		
-		// Map sentiment (1-5) to position within sentiment area (higher sentiment = higher on scale)
-		const sentimentPosition = ((5 - sentiment) / 4) * sentimentAreaHeight;
+		// Map sentiment (1-10) to position within sentiment area (higher sentiment = higher on scale)
+		// 10 = top of scale (lowest Y), 1 = bottom of scale (highest Y)
+		const sentimentPosition = ((10 - sentiment) / 9) * sentimentAreaHeight;
 		
 		return sentimentAreaStart + sentimentPosition;
 	}
@@ -382,23 +710,27 @@
 	// Calculate all grid positions reactively to ensure synchronized updates
 	$: gridPositions = {
 		personaTops: personaTopPositions,
-		totalHeight: gridHeight,
-		visitPositions: getVisitPositions()
+		totalHeight: gridHeight
 	};
 
+	// Force sentiment recalculation when data is loaded
+	$: if (personas.length > 0 && processedVisits.length > 0 && mounted) {
+		// This reactive block ensures sentiment calculations update when both data sources are available
+	}
+
 	// Get sentiment line points for a persona (reactive) - updates when personas or grid positions change
-	$: sentimentLinePoints = personas.map((persona, personaIndex) => {
+	$: sentimentLinePoints = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
 		if (!persona.expanded) return [];
 		
 		return processedVisits.map(visit => {
-			const sentiment = getSentimentScore(persona.type, visit.visit_number);
+			const sentiment = getSentimentScore(persona, visit.visit_number);
 			const yPosition = getSentimentCircleY(sentiment, personaIndex);
 			return {
 				x: visit.timelinePosition * timelineWidth,
 				y: gridPositions.personaTops[personaIndex] + yPosition
 			};
 		});
-	});
+	}) : [];
 
 	// Get sentiment line points for a persona (function for backward compatibility)
 	function getSentimentLinePoints(personaIndex: number): Array<{x: number, y: number}> {
@@ -406,9 +738,9 @@
 	}
 
 	// Reactive calculation of all sentiment circle positions to ensure they update when personas expand/collapse
-	$: sentimentCirclePositions = personas.map((persona, personaIndex) => {
+	$: sentimentCirclePositions = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
 		return processedVisits.map((visit, visitIndex) => {
-			const sentiment = getSentimentScore(persona.type, visit.visit_number);
+			const sentiment = getSentimentScore(persona, visit.visit_number);
 			return {
 				personaIndex,
 				visitIndex,
@@ -416,7 +748,7 @@
 				y: getSentimentCircleY(sentiment, personaIndex)
 			};
 		});
-	});
+	}) : [];
 
 	// Determine study phase based on visit number
 	function getStudyPhase(visitNumber: number): string {
@@ -432,8 +764,41 @@
 		return persona.quotes_by_phase[phase as keyof typeof persona.quotes_by_phase] || [];
 	}
 
+	// Get visit-specific quotes for a persona
+	function getVisitQuotes(persona: Persona, visitNumber: number): string[] {
+		// First, check if we have individual visit data for this specific persona
+		if (individualPersonaData?.personas) {
+			const individualPersona = individualPersonaData.personas.find((p: any) => p.name === persona.name);
+			if (individualPersona?.visit_data) {
+				const visitData = individualPersona.visit_data.find((v: any) => v.visit_number === visitNumber);
+				if (visitData?.quotes) {
+					return visitData.quotes;
+				}
+			}
+		}
+
+		// Fall back to phase-based quotes
+		const studyPhase = getStudyPhase(visitNumber);
+		return getQuotesForPhase(persona, studyPhase);
+	}
+
 	// Get dropout risk for a specific persona and visit
 	function getDropoutRisk(persona: Persona, visitNumber: number): { risk: number, drivers: string[] } {
+		// First, check if we have individual data for this specific persona
+		if (individualPersonaData?.personas) {
+			const individualPersona = individualPersonaData.personas.find((p: any) => p.name === persona.name);
+			if (individualPersona?.visit_data) {
+				const visitData = individualPersona.visit_data.find((v: any) => v.visit_number === visitNumber);
+				if (visitData) {
+					return {
+						risk: visitData.dropout_risk || 0,
+						drivers: visitData.primary_drivers || []
+					};
+				}
+			}
+		}
+
+		// Fall back to generic dropout data
 		const personaTypeMap: Record<string, string> = {
 			'Patient': persona.category || 'Teen Patient',
 			'Caregiver': persona.category || 'Caregiver (Parent)'
@@ -500,7 +865,7 @@
 		clearTimeout(hoverTimeout);
 		
 		const studyPhase = getStudyPhase(visit.visit_number);
-		const quotes = getQuotesForPhase(persona, studyPhase);
+		const quotes = getVisitQuotes(persona, visit.visit_number);
 		const dropoutInfo = getDropoutRisk(persona, visit.visit_number);
 		const procedureDiscomfort = getProcedureDiscomfort(persona, visit);
 		
@@ -529,111 +894,224 @@
 			tooltipVisible = false;
 		}, 50);
 	}
+
+	// Get persona burden data for the selected persona
+	function getPersonaBurdenData(persona: Persona) {
+		// Map persona types and names to burden data personas
+		const personaTypeMap: Record<string, string> = {
+			'Patient': 'Teen Patient',
+			'Caregiver': 'Caregiver (Parent)'
+		};
+		
+		// Check for specific persona mappings first
+		const personaNameMap: Record<string, string> = {
+			'Emma Johnson': 'Teen Patient',
+			'Michele Johnson': 'Caregiver (Parent)',
+			'Michael Johnson': 'Caregiver (Parent)',
+			'Rural Working Mother': 'Rural Working Mother'
+		};
+		
+		// Try to find exact match by persona name first
+		if (personaNameMap[persona.name]) {
+			const exactMatch = personaBurdenData.find(p => p.persona === personaNameMap[persona.name]);
+			if (exactMatch) return exactMatch;
+		}
+		
+		// Fall back to category or type mapping
+		const burdenPersonaType = persona.category || personaTypeMap[persona.type] || persona.type;
+		const fallbackMatch = personaBurdenData.find(p => p.persona === burdenPersonaType);
+		
+		// If still no match, try to find by similar persona type
+		if (!fallbackMatch && persona.type === 'Caregiver') {
+			// For caregivers, try to find any caregiver data
+			return personaBurdenData.find(p => 
+				p.persona.toLowerCase().includes('caregiver') || 
+				p.persona.toLowerCase().includes('parent') ||
+				p.persona.toLowerCase().includes('mother')
+			) || null;
+		}
+		
+		return fallbackMatch || null;
+	}
+
+	// Convert numerical score to categorical label
+	function getBurdenCategory(score: number): string {
+		if (score <= 2) return 'Very Low';
+		if (score <= 4) return 'Low';
+		if (score <= 6) return 'Moderate';
+		if (score <= 8) return 'High';
+		return 'Very High';
+	}
 </script>
 
-{#if mounted}
-	<div class="persona-grid-container" style="width: {timelineWidth + LEFT_PANEL_WIDTH}px; height: {containerHeight}px; overflow: hidden;">
-		<!-- Timeline Header -->
-		{#if !hideHeader}
-			<div class="timeline-header" style="width: {timelineWidth + LEFT_PANEL_WIDTH}px; height: {headerHeight}px;">
-				<!-- Left panel spacer -->
-				<div class="timeline-header-spacer" style="width: {LEFT_PANEL_WIDTH}px;"></div>
+	{#if mounted}
+	<div class="persona-grid-container" style="height: {containerHeight}px;">
+		<!-- Main content area with fixed left panel and scrollable content -->
+		<div class="main-content-area" style="height: {hideHeader ? gridHeight : containerHeight}px;">
+			<!-- Fixed left panel with personas -->
+			<div class="personas-panel" style="width: {LEFT_PANEL_WIDTH}px; height: {hideHeader ? gridHeight : containerHeight}px;">
+				<!-- Persona header spacer (if timeline header is shown) -->
+				{#if !hideHeader}
+					<div class="persona-header-spacer" style="height: {headerHeight}px; background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+						<div class="persona-header-title">Personas</div>
+					</div>
+				{/if}
 				
-				<!-- Timeline labels -->
-				<div class="timeline-labels" style="width: {timelineWidth}px; height: {headerHeight}px;">
-					{#each processedVisits as visit, index}
+				<!-- Personas content -->
+				<div class="personas-content" style="height: {gridHeight}px; position: relative;">
+					{#each personas as persona, index}
 						<div 
-							class="visit-label"
+							class="persona-row" 
+							class:expanded={persona.expanded}
 							style="
-								left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
-								width: {dynamicCellWidth}px;
+								position: absolute;
+								top: {gridPositions.personaTops[index]}px;
+								width: 100%;
+								height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px; 
 							"
-							title="{visit.name} - Study Day {visit.studyDay}"
+							on:click={(e) => handlePersonaClick(persona, e)}
+							on:keydown={(e) => e.key === 'Enter' && handlePersonaClick(persona, e)}
+							role="button"
+							tabindex="0"
 						>
-							<div class="visit-number">V{visit.visit_number}</div>
-							<div class="study-day">
-								{#if visit.study_day}
-									Day {visit.study_day}
-								{:else if visit.study_day_range}
-									{visit.study_day_range}
-								{:else}
-									Day {visit.studyDay}
-								{/if}
+							<div class="persona-content">
+								<div class="persona-avatar" style="background-color: {persona.color}20;">
+									{#if persona.avatar.startsWith('/') || persona.avatar.includes('.svg')}
+										<img src={persona.avatar} alt="{persona.name} avatar" class="avatar-svg" />
+									{:else}
+										<span class="avatar-emoji">{persona.avatar}</span>
+									{/if}
+								</div>
+								<div class="persona-info">
+									<div class="persona-name" style="color: {persona.color};">
+										{persona.name}
+									</div>
+									<div class="persona-type" style="color: {persona.color}80;">
+										{persona.type}
+									</div>
+								</div>
+								<button 
+									class="expand-button"
+									on:click={() => togglePersonaExpansion(persona.id)}
+									style="color: {persona.color};"
+								>
+									{persona.expanded ? '−' : '+'}
+								</button>
 							</div>
-							<div class="visit-name">{visit.name}</div>
+							
+							{#if persona.expanded}
+								<div class="sentiment-scale">
+									<div class="sentiment-scale-labels">
+										<div class="sentiment-scale-item high">
+											<span class="scale-number">10</span>
+											<span class="scale-label">Very Positive</span>
+											<div class="scale-color-bar" style="background: #22c55e;"></div>
+										</div>
+										<div class="sentiment-scale-item medium-high">
+											<span class="scale-number">7</span>
+											<span class="scale-label">Positive</span>
+											<div class="scale-color-bar" style="background: #84cc16;"></div>
+										</div>
+										<div class="sentiment-scale-item neutral">
+											<span class="scale-number">5</span>
+											<span class="scale-label">Neutral</span>
+											<div class="scale-color-bar" style="background: #eab308;"></div>
+										</div>
+										<div class="sentiment-scale-item medium-low">
+											<span class="scale-number">3</span>
+											<span class="scale-label">Strained</span>
+											<div class="scale-color-bar" style="background: #f97316;"></div>
+										</div>
+										<div class="sentiment-scale-item low">
+											<span class="scale-number">1</span>
+											<span class="scale-label">Very Negative</span>
+											<div class="scale-color-bar" style="background: #ef4444;"></div>
+										</div>
+									</div>
+								</div>
+							{/if}
 						</div>
+						
+						<!-- Add separator line between persona rows -->
+						{#if index < personas.length - 1}
+							<div 
+								class="persona-separator" 
+								style="
+									position: absolute;
+									top: {gridPositions.personaTops[index + 1]}px;
+									width: 100%;
+									height: 1px;
+									background: #e5e7eb;
+									z-index: 5;
+								"
+							></div>
+						{/if}
 					{/each}
 				</div>
 			</div>
-		{/if}
 
-		<!-- Left panel with personas -->
-		<div class="personas-panel" style="width: {LEFT_PANEL_WIDTH}px; height: {gridHeight}px; top: {panelTop}px;">
-			{#each personas as persona, index}
-				<div 
-					class="persona-row" 
-					class:expanded={persona.expanded}
-					style="
-						position: absolute;
-						top: {gridPositions.personaTops[index]}px;
-						width: 100%;
-						height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px; 
-					"
-					on:click={(e) => handlePersonaClick(persona, e)}
-					on:keydown={(e) => e.key === 'Enter' && handlePersonaClick(persona, e)}
-					role="button"
-					tabindex="0"
-				>
-					<div class="persona-content">
-						<div class="persona-avatar" style="background-color: {persona.color}20;">
-							<span class="avatar-emoji">{persona.avatar}</span>
-						</div>
-						<div class="persona-info">
-							<div class="persona-name" style="color: {persona.color};">
-								{persona.name}
+			<!-- Scrollable content area (timeline + grid) -->
+			<div class="scrollable-content-area">
+				<!-- Combined timeline header and grid in one scrollable container -->
+				<div class="timeline-and-grid-container" style="width: {timelineWidth}px; height: {(hideHeader ? 0 : headerHeight) + gridHeight}px;">
+					<!-- Unified Timeline Header -->
+					{#if !hideHeader}
+						<div class="unified-timeline-header-fixed" style="height: {headerHeight}px; width: {timelineWidth}px;">
+							<!-- Visit numbers row -->
+							<div class="header-row visit-numbers-row">
+								{#each processedVisits as visit}
+									<div 
+										class="header-cell visit-number-cell"
+										style="
+											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+											width: {calculatedCellWidth}px;
+										"
+									>
+										<span class="visit-number">V{visit.visit_number}</span>
+									</div>
+								{/each}
 							</div>
-							<div class="persona-type" style="color: {persona.color}80;">
-								{persona.type}
+
+							<!-- Study weeks row -->
+							<div class="header-row study-weeks-row">
+								{#each processedVisits as visit}
+									<div 
+										class="header-cell study-week-cell"
+										style="
+											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+											width: {calculatedCellWidth}px;
+										"
+									>
+										<span class="study-week">
+											{visit.study_week || 'Week ' + Math.abs(Math.floor(visit.studyDay / 7))}
+										</span>
+									</div>
+								{/each}
 							</div>
-						</div>
-						<button 
-							class="expand-button"
-							on:click={() => togglePersonaExpansion(persona.id)}
-							style="color: {persona.color};"
-						>
-							{persona.expanded ? '−' : '+'}
-						</button>
-					</div>
-					
-					{#if persona.expanded}
-						<div class="sentiment-scale">
-							
+
+							<!-- Visit names row -->
+							<div class="header-row visit-names-row">
+								{#each processedVisits as visit}
+									<div 
+										class="header-cell visit-name-cell"
+										style="
+											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+											width: {calculatedCellWidth}px;
+										"
+										title="{visit.name}"
+									>
+										<span class="visit-name">{visit.name}</span>
+									</div>
+								{/each}
+							</div>
 						</div>
 					{/if}
-				</div>
-				
-				<!-- Add separator line between persona rows -->
-				{#if index < personas.length - 1}
-					<div 
-						class="persona-separator" 
-						style="
-							position: absolute;
-							top: {gridPositions.personaTops[index + 1]}px;
-							width: 100%;
-							height: 1px;
-							background: #e5e7eb;
-							z-index: 5;
-						"
-					></div>
-				{/if}
-			{/each}
-		</div>
 
-		<!-- Grid area with visit lines and sentiment visualization -->
-		<div 
-			class="grid-area" 
-			style="width: {timelineWidth}px; height: {gridHeight}px; margin-left: {LEFT_PANEL_WIDTH}px; top: {panelTop}px;"
-		>
+					<!-- Grid area with visit lines and sentiment visualization -->
+					<div 
+						class="grid-area" 
+						style="width: {timelineWidth}px; height: {gridHeight}px; top: {hideHeader ? 0 : headerHeight}px;"
+					>
 			<!-- Horizontal grid lines between personas -->
 			{#each personas as persona, index}
 				{#if index < personas.length - 1}
@@ -645,12 +1123,32 @@
 			{/each}
 
 			<!-- Vertical grid lines for each visit -->
-			{#each gridPositions.visitPositions as position, index}
+			{#each processedVisits as visit, index}
 				<div 
 					class="vertical-grid-line visit-line" 
-					style="left: {position}px; height: {gridPositions.totalHeight}px;"
-					title="Visit {processedVisits[index]?.visit_number}: {processedVisits[index]?.name}"
+					style="left: {visit.timelinePosition * timelineWidth}px; height: {gridPositions.totalHeight}px;"
+					title="Visit {visit.visit_number}: {visit.name}"
 				></div>
+			{/each}
+
+			<!-- Sentiment grid lines (when expanded) -->
+			{#each personas as persona, personaIndex}
+				{#if persona.expanded}
+					<!-- Horizontal grid lines for sentiment scale (1-10) -->
+					{#each Array(10) as _, scaleIndex}
+						{@const sentimentLevel = scaleIndex + 1}
+						{@const lineY = gridPositions.personaTops[personaIndex] + getSentimentCircleY(sentimentLevel, personaIndex)}
+						<div 
+							class="sentiment-grid-line"
+							style="
+								top: {lineY}px;
+								left: {LEFT_PANEL_WIDTH}px;
+								width: {timelineWidth}px;
+							"
+							title="Sentiment Level {sentimentLevel}"
+						></div>
+					{/each}
+				{/if}
 			{/each}
 
 			<!-- Sentiment lines (when expanded) -->
@@ -669,15 +1167,15 @@
 			{#each personas as persona, personaIndex}
 				{#each processedVisits as visit, visitIndex}
 					{@const circleData = sentimentCirclePositions[personaIndex]?.[visitIndex]}
-					{@const sentiment = circleData?.sentiment || getSentimentScore(persona.type, visit.visit_number)}
+					{@const sentiment = circleData?.sentiment || getSentimentScore(persona, visit.visit_number)}
 					{@const sentimentY = circleData?.y || getSentimentCircleY(sentiment, personaIndex)}
 					
 					<div 
 						class="grid-cell"
 						style="
-							left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
+							left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
 							top: {gridPositions.personaTops[personaIndex]}px;
-							width: {dynamicCellWidth}px;
+							width: {calculatedCellWidth}px;
 							height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px;
 						"
 						on:click={() => openVisitDetails(visit, persona)}
@@ -691,15 +1189,18 @@
 						<SentimentCircle 
 							sentiment={sentiment}
 							size={persona.expanded ? 16 : 12}
-							x={dynamicCellWidth / 2}
+							x={calculatedCellWidth / 2}
 							y={sentimentY}
-							personaColor={persona.color}
+							personaColor={getBurdenColor(visit.burdenScore)}
 							isExpanded={persona.expanded}
-							tooltipText="{persona.name} - {visit.name}: Sentiment {sentiment}/5 (Click for details)"
+							tooltipText="{persona.name} - {visit.name}: Sentiment {sentiment}/10, Burden {visit.burdenScore}/100 (Click for details)"
 						/>
 					</div>
 				{/each}
 			{/each}
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -732,7 +1233,11 @@
 				<!-- Persona Header -->
 				<div class="persona-drawer-header" style="border-color: {selectedPersonaForDrawer.color};">
 					<div class="persona-drawer-avatar" style="background-color: {selectedPersonaForDrawer.color}20;">
-						<span class="avatar-emoji-large">{selectedPersonaForDrawer.avatar}</span>
+						{#if selectedPersonaForDrawer.avatar.startsWith('/') || selectedPersonaForDrawer.avatar.includes('.svg')}
+							<img src={selectedPersonaForDrawer.avatar} alt="{selectedPersonaForDrawer.name} avatar" class="avatar-svg-large" />
+						{:else}
+							<span class="avatar-emoji-large">{selectedPersonaForDrawer.avatar}</span>
+						{/if}
 					</div>
 					<div class="persona-drawer-info">
 						<h3 class="persona-drawer-name" style="color: {selectedPersonaForDrawer.color};">
@@ -744,14 +1249,102 @@
 					</div>
 				</div>
 
-				<!-- Assessment Burden Heatmap -->
-				<div class="heatmap-section">
+				<!-- Assessment Burden Analysis -->
+				<div class="burden-analysis-section">
 					<h4 class="section-title">Assessment Burden Analysis</h4>
-					<AssessmentBurdenHeatmap 
-						showBurdenScores={false}
-						maxSquares={10}
-						squareSize="10px"
-					/>
+										{#if selectedPersonaForDrawer}
+						{@const personaBurden = getPersonaBurdenData(selectedPersonaForDrawer)}
+						{#if personaBurden}
+							<div class="persona-burden-content">
+								<!-- Debug Info -->
+								<div class="debug-info">
+									<p><strong>Persona:</strong> {selectedPersonaForDrawer.name} ({selectedPersonaForDrawer.type})</p>
+									<p><strong>Mapped to:</strong> {personaBurden.persona}</p>
+									<p><strong>Data Source:</strong> persona_burden_heatmap.json</p>
+								</div>
+
+								<!-- Assessment Burden -->
+								{#if personaBurden.assessment_burden && Object.keys(personaBurden.assessment_burden).length > 0}
+									<div class="burden-category">
+										<h5 class="category-title">Assessment-Specific Burden</h5>
+										<div class="assessments-grid">
+											{#each Object.entries(personaBurden.assessment_burden).filter(([_, score]) => score !== undefined && score !== null) as [assessment, score]}
+												{@const scoreValue = Number(score) || 0}
+												<div class="assessment-item">
+													<div class="assessment-label">
+														<span class="label-text">{assessment}</span>
+														<span class="score-badge" style="background-color: {getBurdenColor(scoreValue)};">
+															{scoreValue}/10 - {getBurdenCategory(scoreValue)}
+														</span>
+													</div>
+													<div class="squares-container">
+														{#each Array(10) as _, i}
+															<div 
+																class="burden-square" 
+																class:filled={i < scoreValue}
+																style="
+																	width: 12px; 
+																	height: 12px;
+																	background-color: {i < scoreValue ? getBurdenColor(scoreValue) : 'transparent'};
+																	border-color: {getBurdenColor(scoreValue)};
+																"
+															></div>
+														{/each}
+													</div>
+												</div>
+											{/each}
+										</div>
+									</div>
+								{/if}
+
+								<!-- General Burden Scores -->
+								{#if personaBurden.burden_scores && Object.keys(personaBurden.burden_scores).length > 0}
+									<div class="burden-category">
+										<h5 class="category-title">General Burden Areas</h5>
+										<div class="assessments-grid">
+											{#each Object.entries(personaBurden.burden_scores).filter(([_, score]) => score !== undefined && score !== null) as [area, score]}
+												{@const scoreValue = Number(score) || 0}
+												<div class="assessment-item">
+													<div class="assessment-label">
+														<span class="label-text">{area}</span>
+														<span class="score-badge" style="background-color: {getBurdenColor(scoreValue)};">
+															{scoreValue}/10 - {getBurdenCategory(scoreValue)}
+														</span>
+													</div>
+													<div class="squares-container">
+														{#each Array(10) as _, i}
+															<div 
+																class="burden-square" 
+																class:filled={i < scoreValue}
+																style="
+																	width: 12px; 
+																	height: 12px;
+																	background-color: {i < scoreValue ? getBurdenColor(scoreValue) : 'transparent'};
+																	border-color: {getBurdenColor(scoreValue)};
+																"
+															></div>
+														{/each}
+													</div>
+												</div>
+											{/each}
+										</div>
+									</div>
+								{/if}
+							</div>
+						{:else}
+							<div class="no-data">
+								<p>No burden data available for this persona.</p>
+								<p><strong>Persona:</strong> {selectedPersonaForDrawer.name} ({selectedPersonaForDrawer.type})</p>
+								<p><strong>Category:</strong> {selectedPersonaForDrawer.category || 'None'}</p>
+								<p><strong>Available personas in data:</strong></p>
+								<ul>
+									{#each personaBurdenData as item}
+										<li>{item.persona}</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+					{/if}
 				</div>
 			</div>
 		{/if}
@@ -773,6 +1366,7 @@
 		burdenScore={tooltipBurdenScore}
 		studyPhase={tooltipStudyPhase}
 	/>
+
 {/if}
 
 <style>
@@ -787,71 +1381,116 @@
 		height: 100%;
 		width: 100%;
 		border-radius: 8px;
-		overflow: hidden;
+		overflow: hidden; /* No scrolling at main container level */
 		background: #f9fafb;
 		min-height: 200px; /* Ensure minimum height */
 	}
 
-	/* === TIMELINE HEADER === */
-	.timeline-header {
+	/* === PERSONA HEADER === */
+	.persona-header-spacer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 600;
+		color: #374151;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-size: 0.875rem;
+	}
+
+	.persona-header-title {
+		opacity: 0.8;
+	}
+
+	.personas-content {
+		overflow: hidden;
+	}
+
+	/* === SCROLLABLE CONTENT AREA === */
+	.scrollable-content-area {
+		flex: 1;
+		overflow-x: auto;
+		overflow-y: hidden;
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* === TIMELINE AND GRID CONTAINER === */
+	.timeline-and-grid-container {
+		position: relative;
+		min-width: fit-content;
+	}
+
+	/* === UNIFIED TIMELINE HEADER (FIXED) === */
+	.unified-timeline-header-fixed {
 		position: absolute;
 		top: 0;
 		left: 0;
-		display: flex;
 		background: white;
 		border-bottom: 2px solid #e5e7eb;
-		z-index: 15;
+		z-index: 10;
 	}
 
-	.timeline-header-spacer {
-		background: #f9fafb;
-		border-right: 2px solid #e5e7eb;
+	.header-row {
+		position: absolute;
+		width: 100%;
+		height: 40px;
+		display: flex;
+		align-items: center;
 	}
 
-	.timeline-labels {
-		position: relative;
-		background: white;
+	.visit-numbers-row {
+		top: 0;
+		background: rgba(59, 130, 246, 0.05);
 	}
 
-	.visit-label {
+	.study-weeks-row {
+		top: 40px;
+		background: rgba(245, 158, 11, 0.05);
+	}
+
+	.visit-names-row {
+		top: 80px;
+		background: rgba(139, 92, 246, 0.05);
+	}
+
+	.header-cell {
 		position: absolute;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		height: 100%;
 		text-align: center;
-		padding: 0.5rem 0.25rem;
+		padding: 0.25rem;
+		box-sizing: border-box;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		border-radius: 4px;
 	}
 
-	.visit-label:hover {
+	.header-cell:hover {
 		background: rgba(59, 130, 246, 0.1);
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 	}
 
 	.visit-number {
 		font-weight: 700;
 		font-size: 0.9rem;
 		color: #1f2937;
-		margin-bottom: 0.25rem;
 	}
 
-	.study-day {
-		font-size: 0.7rem;
-		color: #6b7280;
+	.study-week {
+		font-size: 0.75rem;
+		color: #d97706;
 		font-weight: 500;
-		margin-bottom: 0.25rem;
 	}
 
 	.visit-name {
 		font-size: 0.65rem;
-		color: #9ca3af;
-		font-weight: 400;
+		color: #7c3aed;
+		font-weight: 500;
 		line-height: 1.2;
-		max-width: 100%;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		display: -webkit-box;
@@ -859,9 +1498,16 @@
 		-webkit-box-orient: vertical;
 	}
 
+	/* === MAIN CONTENT AREA === */
+	.main-content-area {
+		position: relative;
+		display: flex;
+		width: 100%;
+	}
+
 	/* === LEFT PANEL === */
 	.personas-panel {
-		position: absolute;
+		position: sticky;
 		left: 0;
 		top: 0;
 		display: flex;
@@ -870,6 +1516,7 @@
 		border-right: 2px solid #e5e7eb;
 		z-index: 10;
 		min-height: 200px; /* Ensure minimum height for visibility */
+		flex-shrink: 0; /* Prevent the panel from shrinking */
 	}
 
 	/* === PERSONA ROWS === */
@@ -926,6 +1573,12 @@
 		font-size: 1rem;
 	}
 
+	.avatar-svg {
+		width: 28px;
+		height: 28px;
+		object-fit: contain;
+	}
+
 	.persona-info {
 		flex: 1;
 		min-width: 0;
@@ -980,6 +1633,44 @@
 		align-items: center;
 	}
 
+	.sentiment-scale-labels {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		width: 100%;
+		height: 100%;
+		justify-content: space-between;
+		padding: 0.5rem 0;
+	}
+
+	.sentiment-scale-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.7rem;
+	}
+
+	.scale-number {
+		font-weight: 700;
+		color: #374151;
+		min-width: 20px;
+		text-align: center;
+	}
+
+	.scale-label {
+		font-weight: 500;
+		color: #6b7280;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.scale-color-bar {
+		width: 12px;
+		height: 4px;
+		border-radius: 2px;
+		flex-shrink: 0;
+	}
+
 	.scale-labels {
 		display: flex;
 		flex-direction: column;
@@ -994,9 +1685,30 @@
 
 	/* === GRID AREA === */
 	.grid-area {
-		position: relative;
+		position: absolute;
+		left: 0;
 		background: white;
 		border-radius: 0 8px 8px 0;
+		min-width: fit-content; /* Ensure grid area doesn't shrink */
+	}
+
+	/* === SCROLLBAR STYLING === */
+	.scrollable-content-area::-webkit-scrollbar {
+		height: 8px;
+	}
+
+	.scrollable-content-area::-webkit-scrollbar-track {
+		background: #f1f5f9;
+		border-radius: 4px;
+	}
+
+	.scrollable-content-area::-webkit-scrollbar-thumb {
+		background: #cbd5e1;
+		border-radius: 4px;
+	}
+
+	.scrollable-content-area::-webkit-scrollbar-thumb:hover {
+		background: #94a3b8;
 	}
 
 	/* === GRID LINES === */
@@ -1029,10 +1741,27 @@
 		width: 3px;
 	}
 
+	/* === SENTIMENT GRID LINES === */
+	.sentiment-grid-line {
+		position: absolute;
+		height: 1px;
+		background: #e5e7eb;
+		opacity: 0.4;
+		z-index: 2;
+		transition: all 0.3s ease-in-out;
+		pointer-events: none;
+	}
+
+	.sentiment-grid-line:hover {
+		opacity: 0.8;
+		background: #9ca3af;
+	}
+
 	/* === GRID CELLS === */
 	.grid-cell {
 		position: absolute;
 		border: 1px solid transparent;
+		width: 100%;
 		display: flex;
 		align-items: flex-start;
 		justify-content: center;
@@ -1083,6 +1812,12 @@
 		font-size: 2.25rem;
 	}
 
+	.avatar-svg-large {
+		width: 56px;
+		height: 56px;
+		object-fit: contain;
+	}
+
 	.persona-drawer-info {
 		flex: 1;
 	}
@@ -1103,7 +1838,7 @@
 		opacity: 0.8;
 	}
 
-	.heatmap-section {
+	.burden-analysis-section {
 		padding: 0 2rem 2rem 2rem;
 	}
 
@@ -1114,29 +1849,149 @@
 		color: #374151;
 	}
 
+	.persona-burden-content {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.debug-info {
+		background: #f0f9ff;
+		border: 1px solid #0ea5e9;
+		border-radius: 6px;
+		padding: 1rem;
+		font-size: 0.875rem;
+		color: #0c4a6e;
+	}
+
+	.debug-info p {
+		margin: 0.25rem 0;
+	}
+
+	.burden-category {
+		background: #f9fafb;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.category-title {
+		margin: 0;
+		padding: 1rem;
+		background: #374151;
+		color: white;
+		font-size: 1rem;
+		font-weight: 600;
+		border-bottom: 2px solid #6b7280;
+	}
+
+	.assessments-grid {
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.assessment-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.75rem;
+		background: white;
+		border-radius: 6px;
+		border: 1px solid #e5e7eb;
+		transition: all 0.2s ease;
+	}
+
+	.assessment-item:hover {
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		border-color: #d1d5db;
+	}
+
+	.assessment-label {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.label-text {
+		font-weight: 500;
+		color: #374151;
+		font-size: 0.875rem;
+	}
+
+	.score-badge {
+		color: white;
+		padding: 0.25rem 0.5rem;
+		border-radius: 12px;
+		font-size: 0.75rem;
+		font-weight: 600;
+		min-width: 1.5rem;
+		text-align: center;
+	}
+
+	.squares-container {
+		display: flex;
+		gap: 3px;
+		flex-wrap: wrap;
+	}
+
+	.burden-square {
+		border: 1px solid;
+		border-radius: 2px;
+		transition: all 0.2s ease;
+	}
+
+	.burden-square.filled {
+		opacity: 1;
+	}
+
+	.burden-square:not(.filled) {
+		opacity: 0.3;
+	}
+
+	.burden-square:hover {
+		transform: scale(1.1);
+	}
+
+	.no-data {
+		text-align: left;
+		color: #6b7280;
+		font-style: italic;
+		padding: 2rem;
+		background: #fef3c7;
+		border: 1px solid #f59e0b;
+		border-radius: 6px;
+	}
+
+	.no-data p {
+		margin: 0.5rem 0;
+	}
+
+	.no-data ul {
+		margin: 0.5rem 0;
+		padding-left: 1.5rem;
+	}
+
+	.no-data li {
+		margin: 0.25rem 0;
+	}
+
 	/* === RESPONSIVE DESIGN === */
 	@media (max-width: 768px) {
-		.persona-grid-container {
+		.main-content-area {
 			flex-direction: column;
-			width: 100% !important;
 		}
 
-		.timeline-header {
-			position: static;
-			width: 100% !important;
+		.scrollable-content-area {
+			width: 100%;
 		}
 
-		.timeline-header-spacer {
-			display: none;
-		}
-
-		.timeline-labels {
-			width: 100% !important;
-			overflow-x: auto;
+		.unified-timeline-header-fixed {
 			padding: 0 1rem;
 		}
 
-		.visit-label {
+		.header-cell {
 			padding: 0.375rem 0.25rem;
 		}
 
@@ -1144,7 +1999,7 @@
 			font-size: 0.8rem;
 		}
 
-		.study-day {
+		.study-week {
 			font-size: 0.65rem;
 		}
 
@@ -1152,18 +2007,43 @@
 			font-size: 0.6rem;
 		}
 
-		.personas-panel {
+		.unified-timeline-header-fixed {
+			height: auto !important;
 			position: static;
-			width: 100% !important;
-			border-right: none;
-			border-bottom: 2px solid #e5e7eb;
-			top: 0 !important;
+		}
+
+		.timeline-and-grid-container {
+			height: auto !important;
 		}
 
 		.grid-area {
-			margin-left: 0 !important;
-			top: 0 !important;
-			overflow-x: auto;
+			position: static;
+		}
+
+		.header-row {
+			position: static;
+			height: 35px;
+			border-bottom: 1px solid #e5e7eb;
+		}
+
+		.header-cell {
+			position: relative;
+			min-width: 60px;
+			padding: 0.5rem 0.25rem;
+		}
+
+		.personas-panel {
+			position: static;
+			width: 100%;
+			border-right: none;
+			border-bottom: 2px solid #e5e7eb;
+		}
+
+		.grid-area-container {
+			width: 100%;
+		}
+
+		.grid-area {
 			border-radius: 0 0 8px 8px;
 		}
 
@@ -1176,6 +2056,11 @@
 		.persona-avatar {
 			width: 28px;
 			height: 28px;
+		}
+
+		.avatar-svg {
+			width: 24px;
+			height: 24px;
 		}
 
 		.persona-name {
@@ -1211,21 +2096,26 @@
 			font-size: 1.75rem;
 		}
 
+		.avatar-svg-large {
+			width: 44px;
+			height: 44px;
+		}
+
 		.persona-drawer-name {
 			font-size: 1.5rem;
 		}
 
-		.heatmap-section {
+		.burden-analysis-section {
 			padding: 0 1.5rem 1.5rem 1.5rem;
 		}
 	}
 
 	@media (max-width: 480px) {
-		.timeline-labels {
+		.unified-timeline-header-fixed {
 			padding: 0 0.5rem;
 		}
 
-		.visit-label {
+		.header-cell {
 			padding: 0.25rem 0.125rem;
 		}
 
@@ -1233,12 +2123,17 @@
 			font-size: 0.75rem;
 		}
 
-		.study-day {
+		.study-week {
 			font-size: 0.6rem;
 		}
 
 		.visit-name {
 			font-size: 0.55rem;
+		}
+
+		.header-cell {
+			min-width: 100px;
+			padding: 0.25rem 0.125rem;
 		}
 
 		.persona-content {

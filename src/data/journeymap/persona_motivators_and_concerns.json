@@ -1,0 +1,98 @@
+{
+  "Caregiver": {
+    "motivators": {
+      "Access to new treatment": [
+        "We\u2019ve tried everything else\u2014this could be our best shot.",
+        "I just want to know we\u2019ve done all we can.",
+        "If it helps him feel better, I\u2019d do it in a heartbeat.",
+        "A new treatment gives us hope when nothing else has.",
+        "Maybe this trial has something that works better."
+      ],
+      "Close monitoring by specialists": [
+        "Having experts check on her more often is reassuring.",
+        "I like that someone will really be watching her progress.",
+        "They said the team includes pediatric specialists, which matters to us.",
+        "It\u2019s hard to get appointments normally\u2014this trial offers more support.",
+        "It\u2019s comforting knowing she\u2019ll be in a structured care plan."
+      ],
+      "Support with logistics": [
+        "They offered help with travel\u2014that made a difference.",
+        "It\u2019s huge that they\u2019ll cover hotel and transportation.",
+        "Having someone coordinate everything lifts a huge weight.",
+        "If they help manage the visits, it becomes doable.",
+        "I wouldn\u2019t consider it if they didn\u2019t provide support for logistics."
+      ]
+    },
+    "concerns": {
+      "Time away from school/work": [
+        "He\u2019s already missing so much school\u2014how can we do more?",
+        "I\u2019d have to take time off work again, and it\u2019s not paid.",
+        "We can\u2019t afford the lost hours every week.",
+        "This would mean asking the school for more leniency, again.",
+        "The appointments are during school hours\u2014it\u2019s a problem."
+      ],
+      "Procedural stress for child": [
+        "She hates needles\u2014it turns into a trauma every time.",
+        "Another scan? She\u2019s terrified of those machines.",
+        "He shuts down when things get too medical.",
+        "It\u2019s hard watching her go through these tests again and again.",
+        "The tests are exhausting for both of us."
+      ],
+      "Uncertainty about outcomes": [
+        "What if it doesn\u2019t work? Then what?",
+        "I\u2019m scared we\u2019ll regret putting him through all this.",
+        "They said it\u2019s experimental. That makes me nervous.",
+        "We\u2019re not sure what the long-term effects are.",
+        "I just wish there were more guarantees."
+      ]
+    }
+  },
+  "Patient": {
+    "motivators": {
+      "Hope for improvement": [
+        "I just want to feel better again.",
+        "What if this actually helps?",
+        "I\u2019m tired of being tired\u2014maybe this is a step forward.",
+        "If this means fewer seizures, it\u2019s worth a try.",
+        "They said it might make a difference\u2014I\u2019m holding onto that."
+      ],
+      "Being part of something bigger": [
+        "Even if it doesn\u2019t help me, it might help someone else.",
+        "I like the idea of contributing to something that matters.",
+        "Maybe what they learn from me can help others like me.",
+        "It feels good to be useful in some way.",
+        "I know they need people like me to move things forward."
+      ],
+      "More attention and care": [
+        "It\u2019s nice to have people checking in on me regularly.",
+        "I feel like I\u2019ll be more than just a number here.",
+        "They seem like they really care.",
+        "This feels more personal than my usual appointments.",
+        "It\u2019s like having a team behind me."
+      ]
+    },
+    "concerns": {
+      "Side effects": [
+        "What if the side effects are worse than my symptoms?",
+        "I\u2019ve had bad reactions before\u2014what if it happens again?",
+        "They said nausea was common, and that scares me.",
+        "What if it makes me feel worse?",
+        "I don\u2019t want to deal with new problems on top of everything else."
+      ],
+      "Feeling like a test subject": [
+        "I don\u2019t want to feel like a guinea pig.",
+        "Are they really doing this for me\u2014or just the data?",
+        "It sounds a bit like being experimented on.",
+        "What if I get the placebo?",
+        "I\u2019m not sure I trust the process fully."
+      ],
+      "Disruption to daily life": [
+        "It\u2019s hard to plan my week around so many appointments.",
+        "This could mess up my school schedule.",
+        "I don\u2019t want to rearrange everything for this.",
+        "It\u2019s already hard enough without adding more.",
+        "The travel time alone is draining."
+      ]
+    }
+  }
+}

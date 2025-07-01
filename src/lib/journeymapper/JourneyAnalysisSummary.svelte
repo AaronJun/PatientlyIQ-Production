@@ -1,8 +1,16 @@
 <script lang="ts">
 	import { ArrowDown, ArrowRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
+	import VisitSquares from './VisitSquares.svelte';
+	import FileUpload from '$lib/components/ui/file-upload/FileUpload.svelte';
 	import hurdleQuotesData from '../../data/journeymap/hurdle_quotes.json';
 	import HurdleQuotesDrawer from './HurdleQuotesDrawer.svelte';
+
+	// Props for visit statistics
+	export let totalVisits: number = 0;
+	export let travelVisits: number = 0;
+	export let invasiveVisits: number = 0;
+	export let surgicalVisits: number = 0;
 
 	const analysis = analysisData.journey_mapper_analysis;
 	const hurdleQuotes = hurdleQuotesData.hurdle_quotes;
@@ -45,6 +53,8 @@
 		return 'bg-green-100 text-green-800 border-green-200';
 	}
 
+		
+
 	// Get risk level text
 	function getRiskLevel(risk: number) {
 		if (risk >= 0.45) return 'Very High';
@@ -74,9 +84,36 @@
 </script>
 
 <div class="analysis-summary">
-	<div class="flex flex-col lg:flex-row lg:justify-between w-full gap-2 mb-4">
-		<h2 class="text-lg font-bold">Study Journey Summary</h2>
-		<p class="text-sm text-slate-700 max-w-prose">{analysis.summary.summary_text}</p>
+	<div class="flex flex-col w-full gap-2 mb-4">
+		<h2 class="text-lg font-bold">Participant Journey Summary</h2>
+	</div>
+
+	<!-- Visit Statistics -->
+	<div class="visit-statistics mb-6">
+		<VisitSquares 
+			label="Total Visits" 
+			count={totalVisits} 
+			color="#1f2937" 
+			size="20px"
+		/>
+		<VisitSquares 
+			label="Travel Required" 
+			count={travelVisits} 
+			color="#dc2626" 
+			size="18px"
+		/>
+		<VisitSquares 
+			label="Invasive Procedures" 
+			count={invasiveVisits} 
+			color="#ea580c" 
+			size="18px"
+		/>
+		<VisitSquares 
+			label="Surgical Procedures" 
+			count={surgicalVisits} 
+			color="#7c2d12" 
+			size="18px"
+		/>
 	</div>
 
 	<div class="summary-sections">
@@ -268,11 +305,18 @@
 <style>
 	.analysis-summary {
 		width: 100%;
-		margin: 1rem 0;
+		padding-top: 1rem;
+	}
+
+	/* Visit Statistics */
+	.visit-statistics {
+		display: flex;
+		gap: 1.5rem;
+		flex-wrap: wrap;
 		padding: 1rem;
-		background: #fafbfc;
-		border: 1px solid #e2e8f0;
+		background: white;
 		border-radius: 8px;
+		border: 1px solid #e2e8f0;
 	}
 
 	.summary-header {

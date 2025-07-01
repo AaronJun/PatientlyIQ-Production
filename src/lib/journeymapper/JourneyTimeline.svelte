@@ -42,7 +42,6 @@
 	export let visits: Visit[] = [];
 	export let timelineWidth: number = 1000;
 	export let hideHeader: boolean = false;
-	export let dynamicCellWidth: number = 80;
 
 	// Constants
 	const LEFT_PANEL_WIDTH = 250;
@@ -62,9 +61,11 @@
 
 	// Get burden level text (needed for tooltip)
 	function getBurdenLevel(score: number): string {
-		if (score < 30) return 'Low';
-		if (score < 60) return 'Medium';
-		return 'High';
+		if (score <= 20) return 'Very Low';
+		if (score <= 40) return 'Low';
+		if (score <= 60) return 'Moderate';
+		if (score <= 80) return 'High';
+		return 'Very High';
 	}
 
 	// Get assessment burden score from consolidated data
@@ -226,6 +227,26 @@
 		studyDay: parseStudyDay(visit)
 	})).sort((a, b) => a.studyDay - b.studyDay);
 
+	// Calculate dynamic cell width based on actual visit spacing (same logic as JourneyContainer)
+	$: calculatedCellWidth = (() => {
+		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
+		
+		// Calculate the minimum spacing between consecutive visits
+		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
+		let minSpacing = Infinity;
+		
+		for (let i = 1; i < visitPositions.length; i++) {
+			const spacing = visitPositions[i] - visitPositions[i - 1];
+			minSpacing = Math.min(minSpacing, spacing);
+		}
+		
+		// Cell width should be slightly smaller than minimum spacing to avoid overlap
+		// but wide enough for visit names (minimum 80px, maximum 200px)
+		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
+		
+		return cellWidth;
+	})();
+
 	onMount(() => {
 		mounted = true;
 	});
@@ -262,31 +283,17 @@
 							<div 
 								class="visit-number-cell"
 								style="
-									left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
-									width: {dynamicCellWidth}px;
+									left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+									width: {calculatedCellWidth}px;
 								"
+								on:mouseenter={() => handleVisitHover(visit)}
+								on:mouseleave={handleVisitLeave}
+								on:click={() => handleVisitClick(visit)}
+								on:keydown={(e) => e.key === 'Enter' && handleVisitClick(visit)}
+								role="button"
+								tabindex="0"
 							>
 								<span class="visit-number">V{visit.visit_number}</span>
-							</div>
-						{/each}
-					</div>
-				</div>
-				
-				<!-- Phase information row -->
-				<div class="phase-info-row">
-					<div class="left-spacer phase-label">
-						<span>Study Phase</span>
-					</div>
-					<div class="phase-info-container" style="width: {timelineWidth}px;">
-						{#each processedVisits as visit}
-							<div 
-								class="phase-cell"
-								style="
-									left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
-									width: {dynamicCellWidth}px;
-								"
-							>
-								<span class="phase-text">{visit.study_week || 'Week ' + Math.abs(Math.floor(visit.studyDay / 7))}</span>
 							</div>
 						{/each}
 					</div>
@@ -294,54 +301,7 @@
 			</div>
 		{/if}
 
-		<!-- Visit details grid -->
-		<div class="visit-details-grid" class:no-header={hideHeader}>
-			<div class="visit-details-label">
-				<span>Visit Details</span>
-			</div>
-			<div class="visit-details-container" style="width: {timelineWidth}px;">
-				{#each processedVisits as visit}
-					<div 
-						class="visit-detail-cell" 
-						class:selected={selectedVisit?.visit_number === visit.visit_number}
-						class:hovered={hoveredVisit?.visit_number === visit.visit_number}
-						style="
-							left: {visit.timelinePosition * timelineWidth - (dynamicCellWidth / 2)}px;
-							width: {dynamicCellWidth}px;
-						"
-						on:click={() => handleVisitClick(visit)}
-						on:mouseenter={() => handleVisitHover(visit)}
-						on:mouseleave={handleVisitLeave}
-						role="button"
-						tabindex="0"
-						on:keydown={(e) => e.key === 'Enter' && handleVisitClick(visit)}
-					>
-						<!-- Burden score -->
-						<div class="burden-score-badge" style="background-color: {getBurdenColor(visit.burdenScore)};">
-							{visit.burdenScore}
-						</div>
-						
-						<!-- Icon indicators -->
-						<div class="icon-indicators-grid">
-							{#if visit.travel_required}
-								<div class="icon-indicator travel" title="Travel Required">✈</div>
-							{/if}
-							{#if hasInvasiveAssessments(visit)}
-								<div class="icon-indicator invasive" title="Invasive Procedures">💉</div>
-							{/if}
-							{#if hasSurgicalAssessments(visit)}
-								<div class="icon-indicator surgical" title="Surgical Procedures">🔪</div>
-							{/if}
-						</div>
-						
-						<!-- Assessment count -->
-						<div class="assessment-count">
-							{visit.assessments.length} items
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
+	
 	</div>
 
 	<!-- Hover tooltip -->
@@ -349,6 +309,7 @@
 		<div class="tooltip">
 			<h3>{hoveredVisit.name}</h3>
 			<p><strong>Study Day:</strong> {hoveredVisit.study_day || hoveredVisit.study_day_range}</p>
+			<p><strong>Study Week:</strong> {hoveredVisit.study_week || 'Week ' + Math.abs(Math.floor(hoveredVisit.studyDay / 7))}</p>
 			<p><strong>Burden Level:</strong> 
 				<span style="color: {getBurdenColor(hoveredVisit.burdenScore)};">
 					{getBurdenLevel(hoveredVisit.burdenScore)} ({hoveredVisit.burdenScore})
@@ -491,7 +452,7 @@
 		border-bottom: none;
 	}
 
-	.visit-numbers-container,
+	.visit-	numbers-container,
 	.phase-info-container,
 	.visit-details-container {
 		position: relative;
@@ -512,7 +473,19 @@
 		flex-shrink: 0;
 	}
 
-	.visit-number-cell,
+	.visit-number-cell {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		height: 100%;
+		box-sizing: border-box;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		border-radius: 4px;
+	}
+
 	.phase-cell {
 		position: absolute;
 		display: flex;
@@ -521,6 +494,17 @@
 		padding: 0.5rem;
 		height: 100%;
 		box-sizing: border-box;
+	}
+
+	.visit-number-cell:hover {
+		background-color: #f0f9ff;
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+	}
+
+	.visit-number-cell:focus-visible {
+		outline: 2px solid #3b82f6;
+		outline-offset: 2px;
 	}
 
 	.visit-number {
@@ -547,7 +531,6 @@
 	}
 
 	.visit-details-label {
-		width: 250px;
 		padding: 1rem;
 		background: #f8fafc;
 		border-right: 2px solid #e5e7eb;
@@ -877,7 +860,7 @@
 
 		.left-spacer,
 		.visit-details-label {
-			width: 200px;
+
 			padding: 0.5rem;
 			font-size: 0.8rem;
 		}

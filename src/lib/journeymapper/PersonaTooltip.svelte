@@ -35,7 +35,7 @@
 			
 			// Adjust vertical position
 			if (y + rect.height > windowHeight - 20) {
-				adjustedY = y - rect.height - 10;
+				adjustedY = y - rect.height + 200;
 			}
 		}
 	}
@@ -77,8 +77,8 @@
 		class="persona-tooltip"
 		class:visible
 		style="
-			left: {adjustedX}px; 
-			top: {adjustedY}px;
+			left: {adjustedX + 50}px; 
+			top: {adjustedY + 100}px;
 			border-top: 3px solid {personaColor};
 			transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		"

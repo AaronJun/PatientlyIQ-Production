@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let sentiment: number = 3; // 1-5 scale
+	export let sentiment: number = 5; // 1-10 scale (default neutral)
 	export let size: number = 12; // Circle size in pixels
 	export let x: number = 0; // Position X
 	export let y: number = 0; // Position Y
@@ -8,16 +8,16 @@
 	export let personaColor: string = ''; // Persona color for collapsed state
 	export let isExpanded: boolean = false; // Whether the persona row is expanded
 
-	// Color mapping for sentiment scores
-	const sentimentColors: Record<number, string> = {
-		1: '#7f1d1d', // dark red (Very Negative)
-		2: '#dc2626', // moderate red (Negative)
-		3: '#ea580c', // orange (Neutral)
-		4: '#16a34a', // moderate green (Positive)
-		5: '#15803d'  // dark green (Very Positive)
-	};
+	// Get sentiment color based on 1-10 score
+	function getSentimentColor(sentiment: number): string {
+		if (sentiment >= 8) return '#22c55e';      // High positive (8-10) - green
+		if (sentiment >= 6) return '#84cc16';      // Moderate positive (6-7) - lime
+		if (sentiment >= 5) return '#eab308';      // Neutral (5) - yellow
+		if (sentiment >= 3) return '#f97316';      // Moderate negative (3-4) - orange
+		return '#ef4444';                          // High negative (1-2) - red
+	}
 
-	$: sentimentColor = sentimentColors[Math.round(sentiment)] || sentimentColors[3];
+	$: sentimentColor = getSentimentColor(sentiment);
 	$: circleColor = isExpanded ? sentimentColor : (personaColor || sentimentColor);
 </script>
 
@@ -30,7 +30,7 @@
 		height: {size}px; 
 		background-color: {circleColor};
 	"
-	title={showTooltip ? (tooltipText || `Sentiment: ${sentiment}/5`) : ''}
+	title={showTooltip ? (tooltipText || `Sentiment: ${sentiment}/10`) : ''}
 >
 </div>
 

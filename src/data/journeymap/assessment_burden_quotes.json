@@ -1,0 +1,117 @@
+[
+  {
+    "persona": "Caregiver (Parent)",
+    "assessment_quotes": {
+      "PK Blood Samples": [
+        "Having to hold my child down for blood draws is heartbreaking. They cry and I feel like I'm betraying their trust.",
+        "The multiple blood draws throughout the study are really wearing on both of us. My child has developed a real fear of needles.",
+        "I wish there was a way to make the blood samples less frequent or less traumatic for my little one."
+      ],
+      "Pregnancy Test": [
+        "Even though my daughter is only 12, having to discuss and do pregnancy tests feels so uncomfortable and premature.",
+        "The pregnancy testing requirement feels invasive for such a young child, but I understand the medical necessity."
+      ],
+      "C-SSRS": [
+        "The suicide screening questions are scary to hear, but I'm glad they're checking on my child's mental health.",
+        "Some of the C-SSRS questions feel too intense for my child's age, but I know they need to ask.",
+        "It's reassuring that they take mental health seriously, even though the questions can be uncomfortable."
+      ],
+      "QOLIE-31": [
+        "The quality of life questionnaire really makes me reflect on how much epilepsy has changed our family's life.",
+        "Filling out these forms about my child's daily struggles is emotional - it forces me to confront how much they're dealing with.",
+        "The QOLIE questions help me articulate things I've been feeling but couldn't put into words."
+      ],
+      "Diary Training": [
+        "Learning to track seizures and medications in the diary feels overwhelming at first, but becomes routine.",
+        "The diary training takes time I don't have, but I know accurate tracking is crucial for my child's care.",
+        "I appreciate having a systematic way to document everything, though it's another task on my already full plate."
+      ],
+      "ECG": [
+        "The ECG is quick and painless, which is a relief compared to some other procedures.",
+        "My child doesn't mind the ECG much - it's one of the easier parts of the study visits."
+      ],
+      "Physical and Neurologic Exam": [
+        "The physical exam is thorough but my child feels comfortable with the study doctor now.",
+        "I appreciate how gentle and patient the medical team is during the neurologic testing.",
+        "The comprehensive exam gives me confidence that they're monitoring everything carefully."
+      ]
+    }
+  },
+  {
+    "persona": "Teen Patient",
+    "assessment_quotes": {
+      "PK Blood Samples": [
+        "I hate needles and having blood drawn multiple times throughout the study is the worst part for me.",
+        "The blood draws make me dizzy and anxious. I try to look away but it still freaks me out.",
+        "I've gotten a little better with the blood samples over time, but I still dread them before every visit."
+      ],
+      "Pregnancy Test": [
+        "The pregnancy tests are embarrassing even though I know they have to do them for safety.",
+        "Having to pee in a cup every visit feels awkward, especially when male staff are involved in the process.",
+        "I understand why they need to test, but it's still uncomfortable to discuss with my parents there."
+      ],
+      "C-SSRS": [
+        "Some of the suicide questions feel really heavy and make me think about dark things I don't want to focus on.",
+        "I'm honest about my feelings, but talking about self-harm thoughts is hard even with a caring doctor.",
+        "The mental health screening is important, but some questions make me feel worse about myself."
+      ],
+      "QOLIE-AD-48": [
+        "The quality of life questions make me realize how much epilepsy has taken away from my normal teenage experience.",
+        "Answering questions about what I can't do because of seizures is depressing but necessary.",
+        "The questionnaire helps me think about what I want to improve in my life beyond just seizure control."
+      ],
+      "Diary Training": [
+        "Keeping the seizure diary on my phone is actually pretty easy once I got used to it.",
+        "I like having the digital diary because I can track things privately without my parents hovering.",
+        "The diary training was straightforward, though I sometimes forget to enter things right away."
+      ],
+      "ECG": [
+        "The ECG is fine - it doesn't hurt and only takes a few minutes.",
+        "I don't mind the heart monitoring. It's one of the easier tests they do."
+      ],
+      "Physical and Neurologic Exam": [
+        "The physical exam can be awkward because of body image stuff, but the staff is professional.",
+        "I don't love having to do coordination tests because they sometimes make me feel clumsy.",
+        "The neurologic testing is interesting sometimes - like puzzles that show how my brain works."
+      ]
+    }
+  },
+  {
+    "persona": "Rural Working Mother",
+    "assessment_quotes": {
+      "PK Blood Samples": [
+        "The blood draws are hard because I have trouble with needles myself, but I push through for my child.",
+        "Having to hold my child still for blood samples while trying to stay calm myself is really challenging.",
+        "The frequent blood draws feel like a lot, especially when we have to drive so far for each one."
+      ],
+      "Pregnancy Test": [
+        "The pregnancy testing feels unnecessary for my young daughter, but I understand the liability issues.",
+        "It's awkward discussing reproductive health when my child is so young, but the staff handles it professionally."
+      ],
+      "C-SSRS": [
+        "The suicide screening questions scare me, but I'm glad they're watching out for my child's mental health.",
+        "Mental health resources are limited where we live, so I appreciate that they check on emotional well-being.",
+        "Some of the C-SSRS questions feel intense, but depression runs in our family so I take it seriously."
+      ],
+      "QOLIE-31": [
+        "The quality of life questionnaire really shows how epilepsy affects our whole family, not just my child.",
+        "Filling out forms about daily limitations is hard because it highlights everything we can't do normally.",
+        "The QOLIE questions help me advocate better for my child because they organize my thoughts about our struggles."
+      ],
+      "Diary Training": [
+        "Learning the diary system was intimidating at first, but now it helps me feel more in control of my child's care.",
+        "The electronic diary is convenient, though I worry about technology issues when we have poor cell service.",
+        "Keeping detailed records feels overwhelming sometimes, but I know it's important for the doctors."
+      ],
+      "ECG": [
+        "The ECG is quick and easy - one of the simpler parts of our study visits.",
+        "My child doesn't mind the heart monitoring, which is nice since so many other procedures are stressful."
+      ],
+      "Clinical Laboratory Tests": [
+        "The lab work is necessary but adds time to our already long clinic days.",
+        "I appreciate getting comprehensive lab results, though I don't always understand what they all mean.",
+        "The additional blood work means more needle sticks, which is hard on my child who already struggles with medical procedures."
+      ]
+    }
+  }
+] 

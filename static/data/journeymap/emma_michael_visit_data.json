@@ -1,0 +1,596 @@
+{
+  "personas": [
+    {
+      "id": "patient-1",
+      "name": "Emma Johnson",
+      "type": "Patient",
+      "category": "Teen Patient",
+      "visit_data": [
+        {
+          "visit_number": 1,
+          "visit_name": "Screening",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 4,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.12,
+          "primary_drivers": ["Needle Fear", "Anxiety Level", "Information Overload"],
+          "quotes": [
+            "I'm really nervous about all these tests, but Mom says this could help me feel normal again.",
+            "The needles scare me, but I'm trying to be brave for my family."
+          ]
+        },
+        {
+          "visit_number": 2,
+          "visit_name": "Randomization",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 3,
+            "hope_level": 5,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.18,
+          "primary_drivers": ["Procedure Discomfort", "Missed School", "Invasive Tests"],
+          "quotes": [
+            "I got accepted! I'm excited but also scared about what comes next.",
+            "Missing school today wasn't so bad since I felt like I was doing something important."
+          ]
+        },
+        {
+          "visit_number": 3,
+          "visit_name": "Treatment Week 2",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.22,
+          "primary_drivers": ["Survey Fatigue", "Emotional Burden", "Anxiety Level"],
+          "quotes": [
+            "The treatment is starting to feel real now. I have to remember to take my medication every day.",
+            "Some of these questionnaires are really personal. It's weird talking about my feelings so much."
+          ]
+        },
+        {
+          "visit_number": 4,
+          "visit_name": "Treatment Week 4",
+          "sentiment": {
+            "overall_score": 2,
+            "anxiety_level": 4,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.26,
+          "primary_drivers": ["Number of Procedures", "Social Isolation", "Disruptions to Daily Life"],
+          "quotes": [
+            "The surgical biopsy was really scary. I didn't expect that to be part of this.",
+            "I'm missing so much school. My friends are starting to hang out without me."
+          ]
+        },
+        {
+          "visit_number": 5,
+          "visit_name": "Treatment Week 6",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.30,
+          "primary_drivers": ["Emotional Fatigue", "Missed School", "Needle Fear"],
+          "quotes": [
+            "I'm getting used to the routine, but I still hate the blood draws.",
+            "Dad says I'm being brave, but some days I just want to give up."
+          ]
+        },
+        {
+          "visit_number": 6,
+          "visit_name": "Treatment Week 8",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.33,
+          "primary_drivers": ["Procedure Discomfort", "Emotional Burden", "Body Image Concern"],
+          "quotes": [
+            "Finally, a visit I can do from home! This is so much easier.",
+            "I think the medication might actually be helping. I had more energy this week."
+          ]
+        },
+        {
+          "visit_number": 7,
+          "visit_name": "Treatment Week 10",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.36,
+          "primary_drivers": ["Invasive Tests", "Anxiety Level", "Hope Level"],
+          "quotes": [
+            "Back to traveling for appointments. I was getting used to the remote visits.",
+            "Two and a half months in - I'm proud of myself for sticking with it this long."
+          ]
+        },
+        {
+          "visit_number": 8,
+          "visit_name": "Treatment Week 12",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.39,
+          "primary_drivers": ["Survey Fatigue", "Social Isolation", "Emotional Fatigue"],
+          "quotes": [
+            "Three months of treatment! The doctors seem happy with my progress.",
+            "I'm starting to feel different - in a good way. Maybe this is actually working."
+          ]
+        },
+        {
+          "visit_number": 9,
+          "visit_name": "Treatment Week 14",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.42,
+          "primary_drivers": ["Number of Procedures", "Missed School", "Disruptions to Daily Life"],
+          "quotes": [
+            "Another remote visit - these are definitely my favorite appointments.",
+            "My friends are starting to understand better. I told them more about what I'm going through."
+          ]
+        },
+        {
+          "visit_number": 10,
+          "visit_name": "Treatment Week 16",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.45,
+          "primary_drivers": ["Emotional Burden", "Needle Fear", "Information Overload"],
+          "quotes": [
+            "Four months down. Sometimes it feels like forever, sometimes it feels like it went by quickly.",
+            "The needles still bother me, but I'm definitely braver than I used to be."
+          ]
+        },
+        {
+          "visit_number": 11,
+          "visit_name": "Treatment Week 18",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.48,
+          "primary_drivers": ["Procedure Discomfort", "Anxiety Level", "Hope Level"],
+          "quotes": [
+            "Remote visit again - I can do these questionnaires in my pajamas!",
+            "I think I'm actually feeling better overall. My energy is more consistent now."
+          ]
+        },
+        {
+          "visit_number": 12,
+          "visit_name": "Treatment Week 20",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.51,
+          "primary_drivers": ["Invasive Tests", "Emotional Fatigue", "Social Isolation"],
+          "quotes": [
+            "Five months of this. The travel is getting old, but I know we're getting close to the end.",
+            "Sometimes I wonder what I would have been like without this condition. But I'm proud of doing this study."
+          ]
+        },
+        {
+          "visit_number": 13,
+          "visit_name": "Treatment Week 22",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.54,
+          "primary_drivers": ["Hope Level", "Survey Fatigue", "Emotional Burden"],
+          "quotes": [
+            "Getting close to the end of treatment. I'm nervous about what happens next.",
+            "The diary has become such a habit. I wonder if I'll keep doing it after the study."
+          ]
+        },
+        {
+          "visit_number": 14,
+          "visit_name": "Treatment Week 24",
+          "sentiment": {
+            "overall_score": 2,
+            "anxiety_level": 4,
+            "hope_level": 2,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.57,
+          "primary_drivers": ["Number of Procedures", "Anxiety Level", "Missed School"],
+          "quotes": [
+            "They're talking about stopping my medication soon. That scares me - what if I go back to how I was?",
+            "I'm worried about losing all the progress I've made. This medication has become part of who I am."
+          ]
+        },
+        {
+          "visit_number": 15,
+          "visit_name": "End of Treatment",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.60,
+          "primary_drivers": ["Emotional Fatigue", "Procedure Discomfort", "Hope Level"],
+          "quotes": [
+            "Last day of taking the study medication. I'm scared but also proud that I made it this far.",
+            "The surgical assessment was intense, but I know it's important for the research."
+          ]
+        },
+        {
+          "visit_number": 16,
+          "visit_name": "Follow-up Visit 1",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.35,
+          "primary_drivers": ["Hope Level", "Anxiety Level"],
+          "quotes": [
+            "Two weeks without the medication and I'm actually feeling great! I was so worried for nothing.",
+            "The doctors say my progress looks really good. I think the treatment made lasting changes."
+          ]
+        },
+        {
+          "visit_number": 17,
+          "visit_name": "Follow-up Visit 2",
+          "sentiment": {
+            "overall_score": 5,
+            "anxiety_level": 1,
+            "hope_level": 5,
+            "burden_perception": 1
+          },
+          "dropout_risk": 0.20,
+          "primary_drivers": ["Information Overload"],
+          "quotes": [
+            "A month off medication and I feel better than I have in years! This treatment was life-changing.",
+            "I'm back to my normal routine at school and with friends. I almost forgot how good it feels to be myself again."
+          ]
+        },
+        {
+          "visit_number": 18,
+          "visit_name": "Follow-up Visit 3",
+          "sentiment": {
+            "overall_score": 5,
+            "anxiety_level": 1,
+            "hope_level": 5,
+            "burden_perception": 1
+          },
+          "dropout_risk": 0.10,
+          "primary_drivers": ["Emotional Gratitude"],
+          "quotes": [
+            "Final visit! I can't believe how much my life has changed. I feel like I got my future back.",
+            "This study didn't just help me - it taught me how strong I am. I want to help other kids going through this too."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caregiver-1",
+      "name": "Michael Johnson",
+      "type": "Caregiver",
+      "category": "Caregiver (Parent)",
+      "visit_data": [
+        {
+          "visit_number": 1,
+          "visit_name": "Screening",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 4,
+            "hope_level": 4,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.15,
+          "primary_drivers": ["Travel Time", "Paperwork / Consent", "Information Overload"],
+          "quotes": [
+            "Watching Emma go through all these tests is heartbreaking, but this study gives us hope.",
+            "The paperwork is overwhelming, but if this helps Emma, it's worth every form."
+          ]
+        },
+        {
+          "visit_number": 2,
+          "visit_name": "Randomization",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 5,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.15,
+          "primary_drivers": ["School Disruption", "Child Anxiety", "Anxiety Level"],
+          "quotes": [
+            "Emma got accepted! I've never seen her so excited and nervous at the same time.",
+            "Finally, we're starting treatment. This feels like the first step toward getting our daughter back."
+          ]
+        },
+        {
+          "visit_number": 3,
+          "visit_name": "Treatment Week 2",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.18,
+          "primary_drivers": ["Missed Work", "Transport Logistics", "Scheduling Complexity"],
+          "quotes": [
+            "Emma seems to be adjusting to the medication well. We're all watching for any side effects.",
+            "Coordinating these appointments with work is challenging, but my boss is understanding."
+          ]
+        },
+        {
+          "visit_number": 4,
+          "visit_name": "Treatment Week 4",
+          "sentiment": {
+            "overall_score": 2,
+            "anxiety_level": 5,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.22,
+          "primary_drivers": ["Multiple Children at Home", "Disruptions to Daily Life", "Financial Challenges"],
+          "quotes": [
+            "The surgical biopsy scared me more than it scared Emma. I hate seeing her go through painful procedures.",
+            "Emma's brother is acting out because we've been so focused on the study. I need to find better balance."
+          ]
+        },
+        {
+          "visit_number": 5,
+          "visit_name": "Treatment Week 6",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.25,
+          "primary_drivers": ["Emotional Fatigue", "Logistical Challenges", "School Disruption"],
+          "quotes": [
+            "Emma's getting used to the routine, which makes my life easier too.",
+            "I'm burning through PTO faster than expected, but Emma's health is worth it."
+          ]
+        },
+        {
+          "visit_number": 6,
+          "visit_name": "Treatment Week 8",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 1,
+            "hope_level": 4,
+            "burden_perception": 1
+          },
+          "dropout_risk": 0.28,
+          "primary_drivers": ["Emotional Burden", "Multiple Children at Home", "Disruptions to Daily Life"],
+          "quotes": [
+            "Remote visit day! This is so much easier for our whole family schedule.",
+            "Emma seems happier this week. Whether it's the medication or just having an easier visit, I'll take it."
+          ]
+        },
+        {
+          "visit_number": 7,
+          "visit_name": "Treatment Week 10",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.32,
+          "primary_drivers": ["Travel Time", "Emotional Fatigue", "Missed Work"],
+          "quotes": [
+            "Back to in-person visits. The remote ones spoiled us a bit.",
+            "Emma's been on treatment for over two months now. I'm starting to see small improvements in her energy."
+          ]
+        },
+        {
+          "visit_number": 8,
+          "visit_name": "Treatment Week 12",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.35,
+          "primary_drivers": ["Child Anxiety", "Anxiety Level", "Emotional Burden"],
+          "quotes": [
+            "Three months in! The study coordinators say Emma's doing really well with compliance.",
+            "Emma's teacher mentioned she seems more focused in class lately. Maybe the treatment is working."
+          ]
+        },
+        {
+          "visit_number": 9,
+          "visit_name": "Treatment Week 14",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 1,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.38,
+          "primary_drivers": ["Logistical Challenges", "Financial Challenges", "Hope Level"],
+          "quotes": [
+            "Another remote visit - these definitely work better for our family rhythm.",
+            "Emma's been more social lately. She's even making plans with friends again."
+          ]
+        },
+        {
+          "visit_number": 10,
+          "visit_name": "Treatment Week 16",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.42,
+          "primary_drivers": ["Multiple Children at Home", "Disruptions to Daily Life", "Emotional Fatigue"],
+          "quotes": [
+            "Four months of this routine. Some days it feels completely normal, other days I'm amazed we've come this far.",
+            "Emma's brother is finally adjusting to all the extra attention Emma needs. Family dynamics are stabilizing."
+          ]
+        },
+        {
+          "visit_number": 11,
+          "visit_name": "Treatment Week 18",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 1,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.45,
+          "primary_drivers": ["Emotional Burden", "School Disruption", "Travel Time"],
+          "quotes": [
+            "Remote visit again - I love that Emma can participate from her comfortable environment.",
+            "Emma's been talking about her future more. She seems to have hope again, which means everything to me."
+          ]
+        },
+        {
+          "visit_number": 12,
+          "visit_name": "Treatment Week 20",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.48,
+          "primary_drivers": ["Hope Level", "Anxiety Level", "Missed Work"],
+          "quotes": [
+            "Five months in. I'm starting to get anxious about what happens when the study ends.",
+            "The comprehensive assessments today felt extra long. Emma was tired afterward."
+          ]
+        },
+        {
+          "visit_number": 13,
+          "visit_name": "Treatment Week 22",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 2,
+            "hope_level": 3,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.52,
+          "primary_drivers": ["Emotional Fatigue", "Logistical Challenges", "Financial Challenges"],
+          "quotes": [
+            "Treatment is almost over. I'm nervous about Emma losing access to the medication.",
+            "Remote visit made today easier, but I'm already worrying about the transition period."
+          ]
+        },
+        {
+          "visit_number": 14,
+          "visit_name": "Treatment Week 24",
+          "sentiment": {
+            "overall_score": 2,
+            "anxiety_level": 4,
+            "hope_level": 2,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.55,
+          "primary_drivers": ["Emotional Burden", "Multiple Children at Home", "Hope Level"],
+          "quotes": [
+            "Emma's anxious about stopping the medication, and honestly, so am I. What if she relapses?",
+            "The comprehensive visit today felt overwhelming. Emma was emotionally drained afterward."
+          ]
+        },
+        {
+          "visit_number": 15,
+          "visit_name": "End of Treatment",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 4
+          },
+          "dropout_risk": 0.58,
+          "primary_drivers": ["Disruptions to Daily Life", "Child Anxiety", "Travel Time"],
+          "quotes": [
+            "Last day of active treatment. I'm proud of Emma for completing the full protocol.",
+            "The surgical assessment was stressful, but I know it's important for tracking Emma's progress."
+          ]
+        },
+        {
+          "visit_number": 16,
+          "visit_name": "Follow-up Visit 1",
+          "sentiment": {
+            "overall_score": 3,
+            "anxiety_level": 3,
+            "hope_level": 3,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.62,
+          "primary_drivers": ["Hope Level", "Emotional Fatigue", "School Disruption"],
+          "quotes": [
+            "Two weeks post-medication. We're all watching Emma carefully for any changes.",
+            "I'm nervous about whether the benefits will last, but Emma seems to be holding steady."
+          ]
+        },
+        {
+          "visit_number": 17,
+          "visit_name": "Follow-up Visit 2",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 2
+          },
+          "dropout_risk": 0.65,
+          "primary_drivers": ["Emotional Burden", "Anxiety Level", "Logistical Challenges"],
+          "quotes": [
+            "A month off medication and Emma's still doing well! I'm cautiously optimistic.",
+            "This visit felt lighter somehow. Maybe because we're seeing sustained improvement."
+          ]
+        },
+        {
+          "visit_number": 18,
+          "visit_name": "Follow-up Visit 3",
+          "sentiment": {
+            "overall_score": 4,
+            "anxiety_level": 2,
+            "hope_level": 4,
+            "burden_perception": 3
+          },
+          "dropout_risk": 0.68,
+          "primary_drivers": ["Hope Level", "Multiple Children at Home", "Disruptions to Daily Life"],
+          "quotes": [
+            "Final visit! Emma completed the entire study. I'm so proud of her courage and determination.",
+            "This journey brought our family closer together. Emma learned she's stronger than she ever imagined."
+          ]
+        }
+      ]
+    }
+  ]
+} 

@@ -43,5 +43,65 @@
     "patients_overall": 6.4,
     "caregivers_overall": 6.8,
     "all_personas": 6.6
+  },
+  "Travel Time": {
+    "patients_overall": 10,
+    "caregivers_overall": 9,
+    "all_personas": 9.5
+  },
+  "Lost Wages": {
+    "patients_overall": 9,
+    "caregivers_overall": 8,
+    "all_personas": 8.5
+  },
+  "Childcare Arrangements": {
+    "patients_overall": 10,
+    "caregivers_overall": 9,
+    "all_personas": 9.5
+  },
+  "Transport Costs": {
+    "patients_overall": 7,
+    "caregivers_overall": 6,
+    "all_personas": 6.5
+  },
+  "Scheduling Flexibility": {
+    "patients_overall": 7,
+    "caregivers_overall": 6,
+    "all_personas": 6.5
+  },
+  "Appointment Rescheduling": {
+    "patients_overall": 6,
+    "caregivers_overall": 5,
+    "all_personas": 5.5
+  },
+  "Procedure Discomfort": {
+    "patients_overall": 6,
+    "caregivers_overall": 5,
+    "all_personas": 5.5
+  },
+  "Follow-up Complexity": {
+    "patients_overall": 8,
+    "caregivers_overall": 7,
+    "all_personas": 7.5
+  },
+  "Visit Frequency": {
+    "patients_overall": 9,
+    "caregivers_overall": 8,
+    "all_personas": 8.5
+  },
+  "Time Away from Family": {
+    "patients_overall": 8,
+    "caregivers_overall": 7,
+    "all_personas": 7.5
+  },
+  "Anxiety Level": {
+    "patients_overall": 7,
+    "caregivers_overall": 6,
+    "all_personas": 6.5
+  },
+  "Emotional Burden": {
+    "patients_overall": 7,
+    "caregivers_overall": 6,
+    "all_personas": 6.5
   }
 }

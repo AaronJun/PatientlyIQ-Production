@@ -3,7 +3,7 @@
 
 	export let isOpen: boolean = false;
 	export let title: string = '';
-	export let width: string = '400px';
+	export let width: string = '800px';
 	export let showBackdrop: boolean = true;
 	export let closeOnBackdropClick: boolean = true;
 	export let closeOnEsc: boolean = true;
@@ -122,6 +122,7 @@
 		right: 0;
 		height: 100vh;
 		background: white;
+		min-width: 800px;
 		box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
 		transform: translateX(100%);
 		transition: transform 0.3s ease;
