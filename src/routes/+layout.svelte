@@ -28,6 +28,7 @@
   $: isJourneymapRoute = routeID[1] === "journeymapper";
   $: isWordcloudDemoRoute = routeID[1] === "pompe-sentiment";
   $: isPLHDRoute = routeID[1] === "PLHD";
+  $: isJourneymapperDemoRoute = routeID[1] === "journeymapper-demo";
 
   import { resetMode, setMode } from "mode-watcher";
   import Header from '$lib/layouts/Header.svelte';
@@ -124,7 +125,7 @@ injectSpeedInsights();
 <svelte:window bind:innerWidth={pageWidth} />
 
 <!-- Only render the Header if not on the excluded routes -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute && !isJourneymapRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute && !isJourneymapRoute && !isJourneymapperDemoRoute}
   <Header />
 {/if}
 
@@ -133,6 +134,6 @@ injectSpeedInsights();
 </div>  
 
 <!-- Conditionally render Footer based on route if needed -->
-{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute}
+{#if !isRPDPRVDashRoute && !isAlzapoe4Route && !isAtlasRoute && !isPLHDRoute && !isKYBORADemoRoute && !isKyborajpRoute && !isWordcloudDemoRoute && !isJourneymapperDemoRoute}
   <Footer />
 {/if}

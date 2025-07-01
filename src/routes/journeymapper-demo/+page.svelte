@@ -1,18 +1,55 @@
 <script lang="ts">
-
+	import * as Tabs from "$lib/ui/tabs";
 </script>
 
 <main class="container">
-	<div class="video-container">
-		<video
-			controls
-			preload="metadata"
-			class="demo-video"
-			poster="/PIQDemoHero1080p.mp4#t=0.5"
-		>
-			<source src="/PIQDemoHero1080p.mp4" type="video/mp4" />
-			<p>Your browser doesn't support HTML video. Here is a <a href="/PIQDemoHero1080p.mp4">link to the video</a> instead.</p>
-		</video>
+	<div class="demo-tabs">
+		<Tabs.Root value="burden-assessment" class="w-full">
+			<Tabs.List class="grid w-full grid-cols-3">
+				<Tabs.Trigger value="burden-assessment">Burden Assessment</Tabs.Trigger>
+				<Tabs.Trigger value="journey-schedule">Journey Schedule</Tabs.Trigger>
+				<Tabs.Trigger value="journey-summary">Journey Summary</Tabs.Trigger>
+			</Tabs.List>
+			
+			<Tabs.Content value="burden-assessment" class="mt-6">
+				<div class="video-container">
+					<video
+						controls
+						preload="metadata"
+						class="demo-video"
+					>
+						<source src="/PIQBurdenAssessmentDemo.mp4" type="video/mp4" />
+						<p>Your browser doesn't support HTML video. Here is a <a href="/PIQBurdenAssessmentDemo.mp4">link to the video</a> instead.</p>
+					</video>
+				</div>
+			</Tabs.Content>
+			
+			<Tabs.Content value="journey-schedule" class="mt-6">
+				<div class="video-container">
+					<video
+						controls
+						preload="metadata"
+						class="demo-video"
+					>
+						<source src="/PIQJourneyScheduleDemo.mp4" type="video/mp4" />
+						<p>Your browser doesn't support HTML video. Here is a <a href="/PIQJourneyScheduleDemo.mp4">link to the video</a> instead.</p>
+					</video>
+				</div>
+			</Tabs.Content>
+			
+			<Tabs.Content value="journey-summary" class="mt-6">
+				<div class="video-container">
+					<video
+						controls
+						preload="metadata"
+						class="demo-video"
+					>
+						<source src="/PIQJourneySummaryDemo.mp4" type="video/mp4" />
+						<p>Your browser doesn't support HTML video. Here is a <a href="/PIQJourneySummaryDemo.mp4">link to the video</a> instead.</p>
+					</video>
+				</div>
+			</Tabs.Content>
+		</Tabs.Root>
 	</div>
 </main>
 
@@ -21,6 +58,10 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 2rem;
+	}
+
+	.demo-tabs {
+		width: 100%;
 	}
 
 	.video-container {
