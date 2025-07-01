@@ -9,7 +9,7 @@
   import RpdprvSearch from '../RPDPRVSearch.svelte';
   import RPDRadialLegend from '../RPDRadialLegend.svelte';
   import SponsorSidebar from '../sidebarComponents/SponsorSidebar.svelte';
-  import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte'; 
+ 
   
   import InfiniteCanvasWrapper from '../InfiniteCanvasWrapper.svelte';
   import CanvasNavControls from '../sidebarComponents/CanvasNavControls.svelte';

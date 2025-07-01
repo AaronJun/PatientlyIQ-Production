@@ -247,18 +247,18 @@
                 { label: 'Indication', icon: Stethoscope, value: displayData.id }
               ] as { label, icon, value }}
                 <tr class="fitems-end align-middle">
-                  <div class="flex flex-none w-3/12 gap-2">                    
+                  <td class="flex flex-none w-3/12 gap-2">                    
                     <svelte:component this={icon} size={16} />
                     <p class="text-xs text-gray-600 font-medium">{label}</p>
-                  </div>
+                  </td>
                   
-                  <div class="flex flex-none w-7/12 gap-2">                    
+                  <td class="flex flex-none w-7/12 gap-2">                    
                     <p class="text-ellipsis text-sm capitalize overflow-hidden">
                       {value}
                     </p>
-                  </div>
+                  </td>
                   
-                  <div class="flex flex-none w-1/12 gap-2">                    
+                  <td class="flex flex-none w-1/12 gap-2">                    
                     <button class="flex gap-4 pr-2 pl-2 py-1 align-center items-stretch justify-self-start  bg-[#37587e] col-span-1 rounded-full text-xs font-semibold text-gray-100 hover:bg-green-800" 
                       on:click|stopPropagation={() => handleLearnMore(() => 
                         label === 'Therapeutic Area' 
@@ -268,7 +268,7 @@
                     >
                       All <ArrowUpRight size={16} />
                     </button>
-                  </div>
+                  </td>
                 </tr>
               {/each}
             </tbody>
@@ -289,25 +289,25 @@
                 { label: 'Mechanism of Action', icon: WatsonHealthDna, value: displayData["MOA"] || 'N/A', onClick: () => showTreatmentDetail(displayData["MOA"]) }
               ] as { label, icon, value, onClick }}
                 <tr class="h-12">
-                  <div class="flex flex-none w-3/12 gap-2">                    
+                  <td class="flex flex-none w-3/12 gap-2">                    
                     <svelte:component this={icon} size={16} />
                     <p class="text-xs text-gray-600 font-medium">{label}</p>
-                  </div>
+                  </td>
                    
-                  <div class="flex flex-none w-7/12 text-left justify-start">
+                  <td class="flex flex-none w-7/12 text-left justify-start">
                     <p class="text-ellipsis text-sm capitalize leading-4 overflow-hidden">
                       {value}
                     </p>
-                  </div>
+                  </td>
         
-                  <div class="flex flex-none w-1/12 text-left justify-start">
+                  <td class="flex flex-none w-1/12 text-left justify-start">
                     {#if value !== 'N/A' && label !== 'Previously Approved Therapies' && onClick}
                       <button class="flex gap-4 pr-3 pl-3 py-1 align-middle items-stretch justify-start bg-[#37587e] col-span-1 rounded-full text-xs font-semibold text-gray-100 hover:bg-green-800" 
                         on:click|stopPropagation={() => handleLearnMore(onClick)}>
                         All <ArrowUpRight size={16} />
                       </button>
                     {/if}
-                  </div>
+                  </td>
                 </tr>
               {/each}
             </tbody>
@@ -324,11 +324,11 @@
             <tbody>
               {#each ['Purchased', 'Purchaser', 'Sale Price', 'Purchase Date'] as field}
                 <tr class="h-12">
-                  <div class="flex flex-none w-3/12 gap-2">                    
+                  <td class="flex flex-none w-3/12 gap-2">                    
                     <p class="text-xs text-gray-600 font-medium">{field}</p>
-                  </div>
+                  </td>
                   
-                  <div class="flex flex-none w-9/12 gap-2">                    
+                  <td class="flex flex-none w-9/12 gap-2">                    
                     <p class="text-ellipsis text-sm capitalize leading-4 overflow-hidden"
                        in:fade={{duration: TEXT_ANIMATION_DURATION}}>
                       {#if field === 'Purchased'}
@@ -343,7 +343,7 @@
                           : 'N/A'}
                       {/if}
                     </p>
-                  </div>
+                  </td>
                 </tr>
               {/each}
             </tbody>
@@ -384,7 +384,7 @@
                      class:active={isCurrentEntry(row)}
                      on:click={() => handleClick(() => showEntryData(yearData.find(e => e["Drug Name"] === row.id)))}>
                   {cell.value} 
-                  <ArrowUpRight size={12} />
+                  <ArrowUpRight size={16} />
                 </div>
               {:else}
                 {cell.value}
@@ -460,7 +460,7 @@
                          .find(e => e["Drug Name"] === row.id)
                      ))}>
                   {cell.value}
-                  <ArrowUpRight size={12} />
+                  <ArrowUpRight size={16} />
                 </div>
               {:else}
                 {cell.value}

@@ -1,7 +1,7 @@
 <!-- TransactionsWrapper.svelte -->
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
-    import TransactionsIntroduction from '../transactionsUI/TransactionsIntroduction.svelte';
+    
     import TransactionAnalytics from '../transactionsUI/TransactionAnalytics.svelte';
     import SareptaCaseStudyHtml from '../transactionsUI/SareptaCaseStudyHtml.svelte';
     import { Money, CicsTransactionServerZos, Catalog, ChevronRight, TextLinkAnalysis, Table, Calculator } from 'carbon-icons-svelte';

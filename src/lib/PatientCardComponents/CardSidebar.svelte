@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import { selectedQuote, selectedPatient, selectedImage } from './patientCardStore';
     import { tweened } from 'svelte/motion';
