@@ -776,7 +776,7 @@
                 {@const activeStudyCount = entries.filter(e => 
                   ['active', 'recruiting', 'initiating', 'active, not recruiting']
                     .some(s => e.CurrentStudyStatus?.toLowerCase().includes(s))
-                ).length}`
+                ).length}
                 {@const unknownStudyCount = entries.filter(e => 
                   e.CurrentStudyStatus?.toLowerCase().includes('unknown')
                 ).length}
