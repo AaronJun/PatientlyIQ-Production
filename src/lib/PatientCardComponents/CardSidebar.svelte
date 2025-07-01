@@ -186,7 +186,7 @@ $: patientTag = $selectedPatient?.persona.toLowerCase() === 'patient' ? 'Patient
     }
 
     .patient-info {
-        margin-bottom: 1rem;;
+        margin-bottom: 1rem;
         }
 
     .tag {
