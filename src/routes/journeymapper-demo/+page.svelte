@@ -1,21 +1,25 @@
 <script lang="ts">
 	import * as Tabs from "$lib/ui/tabs";
+	import { Path } from 'phosphor-svelte';
 </script>
 
 <main class="container">
 	<!-- Header Section -->
-	<div class="header-section bg-slate-800 px-4 py-6 rounded-xl">
-		<h1 class="main-title">PIQ Journey Mapper Demo</h1>
-		<p class="main-description">
-			Explore how PatientlyIQ's Journey Mapper transforms clinical trial design by visualizing patient burden, 
-			optimizing visit schedules, and providing actionable insights to improve participant experience and retention.
+	<div class="header-section px-4 py-6 rounded-xl gap-4">
+		<Path size={48} class="bg-slate-50 border-1 border-[#ff1616] rounded-full text-[#ff1616] p-2" weight="fill" />
+		<h2 class="text-slate-500 text-center text-sm md:text-base font-mono uppercase mt-2">Demo</h2>
+		<h1 class="text-slate-800 text-center text-3xl md:text-5xl mb-4">PIQ Journey Mapper</h1>
+		<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+			PatientlyIQ's Journey Mapper brings the patient and caregiver voice to clinical trial design.
+			<br><br>
+			Using an AI-powered engine, Journey Mapper builds datasets from online activity, quantifies patient burden, models patient journeys, and provides actionable insights to improve study design and participant experience.
 		</p>
 	</div>
 
 	<!-- Demo Videos -->
-	<div class="demo-tabsp-4">
-		<Tabs.Root value="burden-assessment" class="w-full">
-			<Tabs.List class="grid w-full grid-cols-4 bg-slate-200 p-4">
+	<div class="demo-tabs p-4 flex flex-col w-full justify-center align-middle items-center">
+		<Tabs.Root value="burden-assessment" class="w-full justify-center align-middle items-center">
+			<Tabs.List class="w-3/5 mx-auto flex flex-row justify-evenly align-middle items-center">
 				<Tabs.Trigger value="burden-assessment">Burden Assessment</Tabs.Trigger>
 				<Tabs.Trigger value="journey-schedule">Journey Schedule</Tabs.Trigger>
 				<Tabs.Trigger value="journey-summary">Journey Summary</Tabs.Trigger>
@@ -25,10 +29,8 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Patient Burden Assessment</h2>
-						<p class="text-sm max-w-prose">
-							Discover how our platform quantifies patient burden across clinical trial visits. This demo showcases 
-							the interactive heatmap visualization that helps researchers identify high-burden timepoints and 
-							optimize study protocols to improve patient experience and retention rates.
+						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+							Journey Mapper pairs protocol details to PIQ's database of patient and caregiver sentiment data. This video shows how the platform automatically scores burden for each assessment and the quotes that support the score.
 						</p>
 						<div class="key-features">
 							<span class="feature-tag">Interactive Heatmaps</span>
@@ -53,10 +55,9 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Journey Schedule Optimization</h2>
-						<p class="text-sm max-w-prose">
-							See how Journey Mapper visualizes the complete patient journey through interactive timeline views. 
-							This demo highlights visit scheduling optimization, assessment distribution analysis, and tools for 
-							reducing protocol complexity while maintaining scientific rigor.
+						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+							Journey Mapper visualizes the complete patient journey through interactive timeline views. 
+							This demo highlights visit scheduling optimization, assessment distribution analysis, and tools for reducing protocol complexity while maintaining scientific rigor.
 						</p>
 						<div class="key-features">
 							<span class="feature-tag">Timeline Visualization</span>
@@ -81,7 +82,7 @@
 				<div class="tab-content-wrapper">
 					<div class="tab-description">
 						<h2>Journey Analysis & Insights</h2>
-						<p class="text-sm max-w-prose">
+						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
 							Explore comprehensive journey analytics that provide actionable insights for protocol optimization. 
 							This demo shows how our platform generates detailed reports, identifies improvement opportunities, 
 							and provides data-driven recommendations for enhancing patient experience.
@@ -108,41 +109,24 @@
 		</Tabs.Root>
 	</div>
 
-	<!-- Call to Action -->
-	<div class="cta-section">
-		<h3>Ready to Transform Your Clinical Trials?</h3>
-		<p>Contact our team to learn how PIQ Journey Mapper can optimize your study design and improve patient outcomes.</p>
-		<div class="cta-buttons">
-			<a href="/contact" class="cta-button primary">Get Started</a>
-		</div>
-	</div>
 </main>
 
 <style>
 	.container {
-		max-width: 1500px;
+		max-width: 1250px;
 		margin: 0 auto;
 		padding: 2rem;
 	}
 
 	.header-section {
-		text-align: left;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
 		margin-bottom: 3rem;
 		padding-bottom: 2rem;
-		border-bottom: 1px solid #e2e8f0;
-	}
 
-	.main-title {
-		font-size: 2.125rem;
-		font-weight: 700;
-		color: #f8fafc;
-		margin-bottom: 1rem;
-	}
-
-	.main-description {
-		color: #f8fafc;
-		max-width: 800px;
-		line-height: 1.6;
 	}
 
 	.features-grid {
@@ -171,11 +155,6 @@
 		margin: 0;
 	}
 
-	.demo-tabs {
-		width: 100%;
-		margin-bottom: 3rem;
-	}
-
 	.tab-content-wrapper {
 		display: flex;
 		flex-direction: column;
@@ -183,28 +162,26 @@
 	}
 
 	.tab-description {
-		background: #f8fafc;
 		padding: 1.5rem;
-		border-left: 4px solid #3b82f6;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		justify-content: center;
+		align-items: center;
+
 	}
 
 	.tab-description h2 {
-		font-size: 1.25rem;
+		font-size: 1.725rem;
 		font-weight: 600;
 		color: #1e293b;
-		margin-bottom: 1rem;
 	}
 
 	.tab-description p {
 		color: #64748b;
 		line-height: 1.525;
 		margin-bottom: 1rem;
-	}
-
-	.key-features {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
+		text-align: center;
 	}
 
 	.feature-tag {
@@ -219,13 +196,9 @@
 	.video-container {
 		width: 100%;
 		display: flex;
-		justify-content: left;
-		align-items: left;
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		justify-content: center;
 		border-radius: 12px;
 		padding: .525rem;
-		background-color: #f8fafc;
-		border: 1px solid #dbeafe;
 	}
 
 	.demo-video {
