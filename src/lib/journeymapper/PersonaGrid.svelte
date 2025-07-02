@@ -718,37 +718,41 @@
 		// This reactive block ensures sentiment calculations update when both data sources are available
 	}
 
-	// Get sentiment line points for a persona (reactive) - updates when personas or grid positions change
-	$: sentimentLinePoints = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
-		if (!persona.expanded) return [];
-		
-		return processedVisits.map(visit => {
+	// Reactive calculation of all sentiment circle positions to ensure they update when personas expand/collapse
+	$: sentimentCirclePositions = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
+		return processedVisits.map((visit, visitIndex) => {
 			const sentiment = getSentimentScore(persona, visit.visit_number);
-			const yPosition = getSentimentCircleY(sentiment, personaIndex);
+			const relativeY = getSentimentCircleY(sentiment, personaIndex);
 			return {
-				x: visit.timelinePosition * timelineWidth,
-				y: gridPositions.personaTops[personaIndex] + yPosition
+				personaIndex,
+				visitIndex,
+				sentiment,
+				y: relativeY,
+				absoluteY: gridPositions.personaTops[personaIndex] + relativeY
 			};
 		});
 	}) : [];
+
+	// Get sentiment line points for a persona (reactive) - synchronized with circle positions
+	$: sentimentLinePoints = sentimentCirclePositions.map((personaCircles, personaIndex) => {
+		const persona = personas[personaIndex];
+		if (!persona?.expanded || personaCircles.length === 0) return [];
+		
+		return personaCircles.map((circleData, visitIndex) => {
+			const visit = processedVisits[visitIndex];
+			if (!visit) return { x: 0, y: 0 }; // Safety fallback
+			
+			return {
+				x: visit.timelinePosition * timelineWidth,
+				y: circleData.absoluteY
+			};
+		}).filter(point => point.x !== 0 || point.y !== 0); // Remove invalid points
+	});
 
 	// Get sentiment line points for a persona (function for backward compatibility)
 	function getSentimentLinePoints(personaIndex: number): Array<{x: number, y: number}> {
 		return sentimentLinePoints[personaIndex] || [];
 	}
-
-	// Reactive calculation of all sentiment circle positions to ensure they update when personas expand/collapse
-	$: sentimentCirclePositions = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
-		return processedVisits.map((visit, visitIndex) => {
-			const sentiment = getSentimentScore(persona, visit.visit_number);
-			return {
-				personaIndex,
-				visitIndex,
-				sentiment,
-				y: getSentimentCircleY(sentiment, personaIndex)
-			};
-		});
-	}) : [];
 
 	// Determine study phase based on visit number
 	function getStudyPhase(visitNumber: number): string {
@@ -1167,8 +1171,8 @@
 			{#each personas as persona, personaIndex}
 				{#each processedVisits as visit, visitIndex}
 					{@const circleData = sentimentCirclePositions[personaIndex]?.[visitIndex]}
-					{@const sentiment = circleData?.sentiment || getSentimentScore(persona, visit.visit_number)}
-					{@const sentimentY = circleData?.y || getSentimentCircleY(sentiment, personaIndex)}
+					{@const sentiment = circleData?.sentiment ?? getSentimentScore(persona, visit.visit_number)}
+					{@const sentimentY = circleData?.y ?? getSentimentCircleY(sentiment, personaIndex)}
 					
 					<div 
 						class="grid-cell"
@@ -1493,9 +1497,7 @@
 		line-height: 1.2;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
+		white-space: nowrap;
 	}
 
 	/* === MAIN CONTENT AREA === */

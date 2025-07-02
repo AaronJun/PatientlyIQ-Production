@@ -10,7 +10,7 @@
 	import * as Tabs from "$lib/ui/tabs";
 	import DemoPDFUpload from "$lib/components/PDFUploadDemo.svelte";
 	// Icon imports
-	import { Calendar, ClipboardText, IdentificationCard, ChartLine, List, X, FolderOpen } from 'phosphor-svelte';
+	import { Calendar, ClipboardText, IdentificationCard, ChartLine, List, X, FolderOpen, ArrowRight, Path, ArrowLeft } from 'phosphor-svelte';
 	
 	// Load data from page load function
 	import type { PageData } from './$types';
@@ -131,20 +131,18 @@
 	) : 0;
 </script>
 
-<main class="patient-burden-mapper min-h-screen">
+<main class="patient-burden-mapper min-h-screen {isSidebarCollapsed ? 'sidebar-collapsed' : ''}">
 	<!-- Sidebar -->
 	<aside class="sidebar {isSidebarCollapsed ? 'collapsed' : ''}">
 		<div class="sidebar-header">
 			<div class="sidebar-title">
-				
 				{#if !isSidebarCollapsed}
-					<h1>Patiently | Journey Mapper</h1>
 				{/if}
-				<button class="sidebar-toggle" on:click={toggleSidebar} aria-label="Toggle sidebar">
+				<button class="sidebar-toggle h-12 w-12	" on:click={toggleSidebar} aria-label="Toggle sidebar">
 					{#if isSidebarCollapsed}
-						<List size={20} />
+						<ArrowRight size={20} />
 					{:else}
-						<X size={20} />
+						<ArrowLeft size={20} />
 					{/if}
 				</button>
 			</div>
@@ -158,9 +156,9 @@
 				</div>
 
 				<!-- Analyzed Studies Section -->
-				<div class="sidebar-section">
+				<div class="sidebar-section px-2">
 					<h3 class="sidebar-section-title">
-						<FolderOpen size={12} class="inline mr-2" />
+						<ClipboardText size={16} class="inline mr-2" />
 						Analyzed Studies
 					</h3>
 					<div class="studies-list">
@@ -186,14 +184,18 @@
 
 	<!-- Main Content -->
 	<div class="main-content">
-		<!-- Study Header -->
+		<div class="study-header-container flex flex-row align-middle items-center px-8 py-1 h-12 justify-between bg-indigo-900">
+			<h3 class="text-indigo-100 text-xs font-semibold">PIQ Journey Mapper</h3>
+			<img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8 m-1 mix-blend-luminosity" />
+		</div>
 		<header class="study-header">
-			<div class="study-info-container">
-				<div class="study-info">
-					<div class="info-item">
-						<span class="info-label">Study</span>
-					<span class="info-value">{currentStudyMetadata?.study_name || 'Loading...'}</span>
-					</div>
+		<!-- Study Header -->
+			<div class="study-info-container flex flex-row justify-between w-full">
+				<div class="flex flex-col gap-1 w-1/2 justify-start items-start">
+					<span class="text-pink-50 font-mono italic">Study</span>
+					<span class="font-semibold text-lg text-pink-100">{currentStudyMetadata?.study_name || 'Loading...'}</span>
+				</div>
+				<div class="study-info flex flex-row justify-between w-1/2">
 					<div class="info-item">
 						<span class="info-label">Indication</span>
 						<span class="info-value">{currentStudyMetadata?.indication || 'Loading...'}</span>
@@ -212,35 +214,38 @@
 						<span class="info-label">Study length</span>
 						<span class="info-value">{currentStudyMetadata?.total_visits || 0} visits</span>
 					</div>
-					<button class="more-info-btn" on:click={toggleDrawer} aria-label="View study details">
-						i
-					</button>
 				</div>
 			</div>
-			
-
 		</header>
 
 		<!-- Navigation Tabs -->
 		<div class="tabs-container">
 			<Tabs.Root value="summary" class="w-full">
-				<Tabs.List class="tabs-list">
-					<Tabs.Trigger value="summary" class="tab-trigger">
-						<ChartLine size={18} class="mr-2" />
-						Summary
+				<Tabs.List class="tabs-list flex flex-row align-middle w-full justify-between">
+					<div class="flex flex-row align-middle justify-start w-full gap-4">
+					<Tabs.Trigger value="summary" class="tab-trigger flex flex-row align-middle gap-2">
+						<ChartLine size={16} class="mr-2" />
+						<p class="text-xs">Summary</p>
 					</Tabs.Trigger>
-					<Tabs.Trigger value="schedule" class="tab-trigger">
-						<Calendar size={18} class="mr-2" />
-						Schedule
+					<Tabs.Trigger value="schedule" class="tab-trigger flex flex-row align-middle gap-2">
+						<Calendar size={16} class="mr-2" />
+						<p class="text-xs">Schedule</p>
 					</Tabs.Trigger>	
-					<Tabs.Trigger value="assessments" class="tab-trigger">
-						<ClipboardText size={18} class="mr-2" />
-						Assessments
+					<Tabs.Trigger value="assessments" class="tab-trigger flex flex-row align-middle gap-2">
+						<ClipboardText size={16} class="mr-2" />
+						<p class="text-xs">Assessments</p>
 					</Tabs.Trigger>
-					<Tabs.Trigger value="cards" class="tab-trigger">
-						<IdentificationCard size={18} class="mr-2" />
-						Patient Cards
+					<Tabs.Trigger value="cards" class="tab-trigger flex flex-row align-middle gap-2">
+						<IdentificationCard size={16} class="mr-2" />
+						<p class="text-xs">Patient Cards</p>
 					</Tabs.Trigger>
+					</div>
+					<div class="more-info-btn-container w-fit justify-end">
+						<button on:click={toggleDrawer} aria-label="View study details" class="flex flex-row gap-2 w-full min-w-36 bg-indigo-950 text-[#F1D5D3] rounded-full items-center justify-evenly px-1 py-2 hover:bg-indigo-800">
+							<p class="text-xs">Study Details</p><ArrowRight size={18} class="bg-indigo-50 text-indigo-950 rounded-full p-1" /> 
+						</button>
+					</div>
+		
 				</Tabs.List>
 				
 				<!-- Tab Content -->
@@ -318,13 +323,14 @@
 		left: 0;
 		top: 0;
 		height: 100vh;
+		width: 320px;
 		background-color: #ffffff;
-		border-right: 1px solid #d1d5db;
+		border-right: .5px solid #161616;
 		color: white;
 		display: flex;
 		flex-direction: column;
 		z-index: 1000;
-		transition: width 0.3s ease;
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		overflow: hidden;
 	}
 
@@ -333,9 +339,8 @@
 	}
 
 	.sidebar-header {
-		padding: 1rem;
-		border-bottom: 1px solid #374151;
-		background-color: #ffffff;
+		background-color: #001f60;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.sidebar-title {
@@ -355,29 +360,73 @@
 	.sidebar-toggle {
 		background: none;
 		border: none;
-		color: #161616;
+		color: #F1D5D3;
 		cursor: pointer;
-		padding: 0.25rem;
-		border-radius: 4px;
-		background-color: #e2e2e2;
+		padding: 0.5rem;
+		border-radius: 6px;
 		display: flex;
-		align-items: center;
+		align-items: center;;
 		justify-content: center;
-		transition: background-color 0.2s ease;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transform: translateX(0);
 	}
 
 	.sidebar-toggle:hover {
-		background-color: #374151;
+		color: #374151;
+		background-color: rgba(55, 65, 81, 0.1);
+		transform: translateX(3px);
+	}
+
+	.logo-title-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.sidebar-logo {
+		height: 24px;
+		width: auto;
+		object-fit: contain;
+	}
+
+	.sidebar-logo-collapsed {
+		height: 20px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	.sidebar-content {
 		flex: 1;
-		padding: 1rem;
 		overflow-y: auto;
+		opacity: 1;
+		transform: translateX(0);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.sidebar.collapsed .sidebar-content {
+		opacity: 0;
+		transform: translateX(-20px);
+		pointer-events: none;
 	}
 
 	.sidebar-section {
 		margin-bottom: 2rem;
+		opacity: 1;
+		transform: translateY(0);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.sidebar.collapsed .sidebar-section {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	.sidebar-section:nth-child(2) {
+		transition-delay: 0.1s;
+	}
+
+	.sidebar-section:nth-child(3) {
+		transition-delay: 0.2s;
 	}
 
 	.sidebar-section-title {
@@ -402,22 +451,28 @@
 		gap: 0.5rem;
 		border-bottom: 1px solid #001f60;
 		cursor: pointer;
-		padding: 0 0 1.25rem 0;
-		transition: background-color 0.2s ease;
+		padding: 1rem;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transform: translateY(0);
 	}
 
 	.study-item:hover {
 		border-bottom: 1px solid #ff1515;
+		background-color: rgba(0, 31, 96, 0.05);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 31, 96, 0.1);
 	}
 
 	.study-item.selected {
-		background-color: #f0f7ff;
-		border-bottom: 1px solid #2563eb;
+		border-bottom: 2px solid #2563eb;
+		background-color: rgba(37, 99, 235, 0.05);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 	}
 
 	.study-item.selected .study-name {
 		color: #2563eb;
-		font-weight: 700;
+		font-weight: 800;
 	}
 
 	.study-name {
@@ -425,6 +480,7 @@
 		font-size: 0.875rem;
 		margin-bottom: 0.25rem;
 		color: #001f60;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.study-details {
@@ -467,12 +523,18 @@
 	/* ===== MAIN CONTENT STYLES ===== */
 	.main-content {
 		flex: 1;
-		margin-left: 60px;
+		margin-left: 320px;
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
-		width: 100%;
+		width: calc(100% - 320px);
 		overflow: hidden;
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.patient-burden-mapper.sidebar-collapsed .main-content {
+		margin-left: 60px;
+		width: calc(100% - 60px);
 	}
 
 	/* ===== STUDY HEADER STYLES ===== */
@@ -480,28 +542,25 @@
 		display: flex;
 		flex-direction: column;
 		padding: 1rem;
-		align-items: flex-start;
-		align-content: top;
-		flex-shrink: 0;
-		background-color: #EEEAE3;
+		background-color: #29293C;
+		color: #161616;
+		border-bottom: .5px solid #161616;
 		z-index: 10;
 	}
 
 	.study-info-container {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		align-content: top;
-		gap: 1rem;
 		width: 100%;
-		padding: 0.5rem;
+		padding: 1rem;
+		flex-direction: row;
+		justify-content: left;
+		gap: 1rem;
+		align-items: center;
+		gap: 1rem;
 	}
 
 	.study-info {
 		display: flex;
 		flex-direction: row;
-		width: 100%;
-		gap: 1rem;
 		justify-content: space-between;
 	}
 
@@ -509,48 +568,45 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		justify-content: space-around;
-		gap: 0.5rem;
+		justify-content: top;
+		gap: 0.525rem;
 		min-width: 0;
 	}
 
 	.info-label {
-		font-weight: 600;
-		color: #64748b;
-		font-size: 0.725rem;
+		font-weight: 400;
+		font-family: 'IBM Plex Mono', monospace;
+		font-style: italic;
+		font-size: 0.5725rem;
+		color: #F1D5D3;
 		white-space: nowrap;
 	}
 
 	.info-value {
-		color: #1f2937;
-		font-weight: 800;
-		font-size: 0.925rem;
+		color: #F1D5D3;
+		font-weight: 600;
+		font-size: 0.725rem;
 	}
 
 	.info-subvalue {
-		color: #6b7280;
-		font-weight: 500;
-		font-size: 0.75rem;
-		margin-top: 0.125rem;
+		color: #F1D5DD;
+		font-weight: 400;
+		font-family: 'IBM Plex Mono', monospace;
+		font-style: italic;
+		font-size: 0.6725rem;
 	}
 
 	.more-info-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 1.5rem;
-		height: 1.5rem;
-		border: 1px solid #2563eb;
-		border-radius: 50%;
-		color: #2563eb;
-		font-size: 0.625rem;
-		font-weight: 800;
+		flex-direction: row;
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.more-info-btn:hover {
-		color: #2563eb;
+		color: #F1D5D3;
 		transform: translateY(-1px);
 	}
 
@@ -563,7 +619,6 @@
 		overflow-y: hidden;
 		display: flex;
 		flex-direction: column;
-		background-color: #ffffff;
 		margin-top: 1rem;
 		min-height: 0;
 	}
@@ -575,10 +630,8 @@
 	}
 
 	:global(.tabs-list) {
-		background-color: #EEEAE3;
 		margin-bottom: 1rem;
 		padding: 0.5rem;
-		border-radius: 100px;
 		justify-content: left;
 		align-items: left;
 		display: flex;
@@ -676,6 +729,8 @@
 
 		.study-header {
 			width: 100%;
+			padding: 0.5rem;
+			gap: 1rem;
 		}
 
 		.study-info-container {

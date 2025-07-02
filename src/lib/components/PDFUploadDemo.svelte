@@ -145,10 +145,10 @@
 </script>
 
 <div class="pdf-upload-demo">
-	<Card.Root class="max-w-4xl mx-auto">
+	<Card.Root class="w-full">
 		<Card.Header>
-			<Card.Title class="text-2xl font-bold text-center">Protocol Upload</Card.Title>
-			<Card.Description class="text-center">
+			<Card.Title class="text-xl font-bold text-left">Protocol Upload</Card.Title>
+			<Card.Description class="text-sm text-left">
 Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments as CSV or XLSX, to get started.			</Card.Description>
 		</Card.Header>
 		
@@ -302,12 +302,10 @@ Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments
 <style>
 	.pdf-upload-demo {
 		width: 100%;
-		max-width: 500px;
-		margin: 0 auto;
 	}
 
 	.upload-area {
-		border: 2px dashed #cbd5e1;
+		border: 1px dashed #001f60;
 		border-radius: 12px;
 		padding: 3rem;
 		text-align: center;

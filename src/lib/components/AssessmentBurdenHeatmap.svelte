@@ -1,7 +1,6 @@
 <script lang="ts">
 	import personaBurdenData from '../../data/journeymap/persona_burden_heatmap.json';
 	import assessmentQuotes from '../../data/journeymap/assessment_burden_quotes.json';
-	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/ui/tabs';
 	import HurdleQuotesDrawer from '$lib/journeymapper/HurdleQuotesDrawer.svelte';
 
 	// Type definitions
@@ -15,12 +14,10 @@
 	export let maxSquares: number = 10; // Maximum number of squares to show
 	export let squareSize: string = '12px';
 
-	// Set the first persona as default
-	let activePersona: string = personaBurdenData.length > 0 ? personaBurdenData[0].persona : 'Caregiver (Parent)';
-
 	// Drawer state
 	let drawerOpen: boolean = false;
 	let selectedAssessment: string = '';
+	let selectedPersona: string = '';
 	let formattedQuotes: Array<{quote: string, persona_descriptor: string}> = [];
 
 	// Get color based on burden level (1-10 scale)
@@ -62,13 +59,7 @@
 		}
 	}
 
-	// Create reactive data for each persona
-	$: personaDisplayData = personaBurdenData.map((persona: PersonaBurden) => ({
-		...persona,
-		displayData: getDisplayData(persona)
-	}));
-
-	// Get persona short name for tab display
+	// Get persona short name for display
 	function getPersonaShortName(persona: string): string {
 		switch (persona) {
 			case 'Caregiver (Parent)': return 'Caregiver (Parent)';
@@ -78,10 +69,25 @@
 		}
 	}
 
-	// Handle assessment item click
-	function handleAssessmentClick(assessment: string, persona: string) {
+	// Get all unique assessments across all personas
+	$: allAssessments = (() => {
+		const assessmentSet = new Set<string>();
+		personaBurdenData.forEach(persona => {
+			const displayData = getDisplayData(persona);
+			Object.keys(displayData).forEach(assessment => {
+				if (displayData[assessment] !== undefined) {
+					assessmentSet.add(assessment);
+				}
+			});
+		});
+		return Array.from(assessmentSet).sort();
+	})();
+
+	// Handle grid cell click
+	function handleCellClick(assessment: string, persona: string) {
 		if (!showBurdenScores) { // Only show quotes for assessment burden, not general burden
 			selectedAssessment = assessment;
+			selectedPersona = persona;
 			formattedQuotes = getFormattedQuotes(assessment, persona);
 			drawerOpen = true;
 		}
@@ -91,6 +97,7 @@
 	function closeDrawer() {
 		drawerOpen = false;
 		selectedAssessment = '';
+		selectedPersona = '';
 		formattedQuotes = [];
 	}
 
@@ -107,6 +114,15 @@
 			}
 		}
 		return [];
+	}
+
+	// Get burden score for a specific assessment and persona
+	function getBurdenScore(assessment: string, persona: string): number | undefined {
+		const personaData = personaBurdenData.find(p => p.persona === persona);
+		if (!personaData) return undefined;
+		
+		const displayData = getDisplayData(personaData);
+		return displayData[assessment];
 	}
 </script>
 
@@ -131,59 +147,78 @@
 		</div>
 	</div>
 
-	<Tabs value={activePersona} onValueChange={(value) => { if (value) activePersona = value; }}>
-		<TabsList class="persona-tabs">
+	<div class="grid-container">
+		<!-- Grid Header -->
+		<div class="grid-header">
+			<div class="corner-cell"></div>
 			{#each personaBurdenData as personaData}
-				<TabsTrigger 
-					value={personaData.persona}
-					class="persona-tab"
-				>
-					<span>
+				<div class="persona-header-cell" style="border-color: {getPersonaColor(personaData.persona)};">
+					<span class="persona-name" style="color: {getPersonaColor(personaData.persona)};">
 						{getPersonaShortName(personaData.persona)}
 					</span>
-				</TabsTrigger>
+				</div>
 			{/each}
-		</TabsList>
+		</div>
 
-		{#each personaDisplayData as personaData}
-			<TabsContent value={personaData.persona} class="persona-content">
-				<div class="persona-section">
-					<div class="persona-header" style="border-color: {getPersonaColor(personaData.persona)};">
-						<h4 style="color: {getPersonaColor(personaData.persona)};">
-							{personaData.persona}
-						</h4>
+		<!-- Grid Body -->
+		<div class="grid-body">
+			{#each allAssessments as assessment}
+				<div class="grid-row">
+					<div class="assessment-header-cell">
+						<span class="assessment-name">{assessment}</span>
 					</div>
-					
-					<div class="assessments-grid">
-						{#each Object.entries(personaData.displayData).filter(([_, score]) => score !== undefined) as [assessment, score]}
-							<div class="assessment-item" class:clickable={!showBurdenScores} on:click={() => handleAssessmentClick(assessment, personaData.persona)}>
-								<div class="assessment-label">
-									<span class="label-text">{assessment}</span>
-									<span class="score-badge" style="background-color: {getBurdenColor(score ?? 0)};">
-										{getBurdenCategory(score ?? 0)}
+					{#each personaBurdenData as personaData}
+						{@const score = getBurdenScore(assessment, personaData.persona)}
+						<div 
+							class="burden-cell" 
+							class:clickable={!showBurdenScores && score !== undefined}
+							class:has-data={score !== undefined}
+							style="background-color: {score !== undefined ? `${getBurdenColor(score)}15` : 'transparent'}; border-color: {score !== undefined ? getBurdenColor(score) : '#e5e7eb'};"
+							on:click={() => score !== undefined && handleCellClick(assessment, personaData.persona)}
+							on:keydown={(e) => e.key === 'Enter' && score !== undefined && handleCellClick(assessment, personaData.persona)}
+							tabindex={!showBurdenScores && score !== undefined ? 0 : -1}
+							role={!showBurdenScores && score !== undefined ? 'button' : 'cell'}
+						>
+							{#if score !== undefined}
+								<div class="cell-content">
+									<span class="score-value">{score}</span>
+									<span class="score-category" style="background-color: {getBurdenColor(score)};">
+										{getBurdenCategory(score)}
 									</span>
 								</div>
-								<div class="squares-container">
-									{#each Array(maxSquares) as _, i}
-										<div 
-											class="burden-square" 
-											class:filled={i < (score ?? 0)}
-											style="
-												width: {squareSize}; 
-												height: {squareSize};
-												background-color: {i < (score ?? 0) ? getBurdenColor(score ?? 0) : 'transparent'};
-												border-color: {getBurdenColor(score ?? 0)};
-											"
-										></div>
-									{/each}
-								</div>
-							</div>
-						{/each}
-					</div>
+							{:else}
+								<span class="no-data">—</span>
+							{/if}
+						</div>
+					{/each}
 				</div>
-			</TabsContent>
-		{/each}
-	</Tabs>
+			{/each}
+		</div>
+	</div>
+
+	<!-- Legend -->
+	<div class="legend">
+		<div class="legend-item">
+			<div class="legend-square" style="background-color: #10b981;"></div>
+			<span>Very Low (1-2)</span>
+		</div>
+		<div class="legend-item">
+			<div class="legend-square" style="background-color: #22c55e;"></div>
+			<span>Low (3-4)</span>
+		</div>
+		<div class="legend-item">
+			<div class="legend-square" style="background-color: #f59e0b;"></div>
+			<span>Moderate (5-6)</span>
+		</div>
+		<div class="legend-item">
+			<div class="legend-square" style="background-color: #f97316;"></div>
+			<span>High (7-8)</span>
+		</div>
+		<div class="legend-item">
+			<div class="legend-square" style="background-color: #ef4444;"></div>
+			<span>Very High (9-10)</span>
+		</div>
+	</div>
 
 	<!-- Quotes Drawer -->
 	<HurdleQuotesDrawer 
@@ -198,9 +233,9 @@
 	.heatmap-container {
 		display: flex;
 		flex-direction: column;
-		width: 90%;
-		justify-content: space-evenly;
-		align-items: left;
+		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
 	}
 
 	.heatmap-header {
@@ -245,84 +280,102 @@
 		border-color: #3b82f6;
 	}
 
-	:global(.persona-tabs) {
-		margin-bottom: 2rem;
-		justify-content: center;
-		background: #f9fafb;
-		border-radius: 12px;		padding: 0.5rem;
-	}
-
-	:global(.persona-tab) {
-		font-weight: 600;
-		padding: 0.75rem 1.5rem;
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	:global(.persona-tab:hover) {
-		background: rgba(255, 255, 255, 0.8);
-	}
-
-	:global(.persona-tab[data-state="active"]) {
-		background: white;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	:global(.persona-content) {
-		margin-top: 0;
-	}
-
-	.persona-section {
+	.grid-container {
 		border: 1px solid #e5e7eb;
 		border-radius: 8px;
 		overflow: hidden;
-		min-width: 100%;
-		margin: 0 auto;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	}
 
-	.persona-header {
-		padding: 1rem;
+	.grid-header {
+		display: grid;
+		grid-template-columns: 300px repeat(auto-fit, 200px);
+		border-bottom: 2px solid #d1d5db;
 		background: #f9fafb;
-		border-bottom: 2px solid;
 	}
 
-	.persona-header h4 {
-		margin: 0;
-		font-size: 1rem;
+	.corner-cell {
+		border-right: 1px solid #d1d5db;
+		background: #f3f4f6;
+	}
+
+	.persona-header-cell {
+		padding: 1rem;
+		text-align: center;
+		border-right: 1px solid #d1d5db;
+		border-bottom: 1px solid;
+		font-weight: 600;
+		background: white;
+	}
+
+	.persona-header-cell:last-child {
+		border-right: none;
+	}
+
+	.persona-name {
+		font-size: 0.875rem;
 		font-weight: 600;
 	}
 
-	.assessments-grid {
-		padding: 1rem;
+	.grid-body {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
 	}
 
-	.assessment-item {
+	.grid-row {
+		display: grid;
+		grid-template-columns: 300px repeat(auto-fit, 200px);
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.grid-row:last-child {
+		border-bottom: none;
+	}
+
+	.assessment-header-cell {
+		padding: 1rem;
+		border-right: 1px solid #d1d5db;
+		background: #f9fafb;
 		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
+		align-items: center;
+		font-weight: 500;
+		color: #374151;
+	}
+
+	.assessment-name {
+		font-size: 0.875rem;
+		line-height: 1.4;
+	}
+
+	.burden-cell {
+		padding: 0.75rem;
+		border-right: 1px solid #e5e7eb;
+		border-bottom: 1px solid;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 80px;
+		position: relative;
 		transition: all 0.2s ease;
 	}
 
-	.assessment-item.clickable {
+	.burden-cell:last-child {
+		border-right: none;
+	}
+
+	.burden-cell.clickable {
 		cursor: pointer;
-		border-radius: 8px;
-		padding: 0.75rem;
-		margin: -0.75rem;
-		border: 2px solid transparent;
-		position: relative;
 	}
 
-	.assessment-item.clickable:hover {
-		background: #f0f9ff;
-		border-color: #3b82f6;
-		transform: translateY(-2px);
+	.burden-cell.clickable:hover {
+		background-color: rgba(59, 130, 246, 0.1) !important;
+		border-color: #3b82f6 !important;
+		transform: scale(1.02);
 		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+		z-index: 10;
 	}
 
-	.assessment-item.clickable::after {
+	.burden-cell.clickable::after {
 		content: "Click for quotes";
 		position: absolute;
 		top: -0.5rem;
@@ -337,68 +390,53 @@
 		transform: scale(0.8);
 		transition: all 0.2s ease;
 		pointer-events: none;
+		white-space: nowrap;
 	}
 
-	.assessment-item.clickable:hover::after {
+	.burden-cell.clickable:hover::after {
 		opacity: 1;
 		transform: scale(1);
 	}
 
-	.assessment-label {
+	.cell-content {
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
 		align-items: center;
+		gap: 0.5rem;
 	}
 
-	.label-text {
-		font-weight: 500;
-		color: #374151;
-		font-size: 0.875rem;
+	.score-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #1f2937;
 	}
 
-	.score-badge {
+	.score-category {
 		color: white;
 		padding: 0.25rem 0.5rem;
 		border-radius: 12px;
-		font-size: 0.75rem;
+		font-size: 0.7rem;
 		font-weight: 600;
-		min-width: 1.5rem;
 		text-align: center;
+		white-space: nowrap;
 	}
 
-	.squares-container {
-		display: flex;
-		gap: 3px;
-		flex-wrap: wrap;
-	}
-
-	.burden-square {
-		border: 1px solid;
-		border-radius: 2px;
-		transition: all 0.2s ease;
-	}
-
-	.burden-square.filled {
-		opacity: 1;
-	}
-
-	.burden-square:not(.filled) {
-		opacity: 0.3;
-	}
-
-	.burden-square:hover {
-		transform: scale(1.1);
+	.no-data {
+		color: #9ca3af;
+		font-size: 1.25rem;
+		font-weight: 300;
 	}
 
 	.legend {
 		display: flex;
 		justify-content: center;
 		gap: 2rem;
-		padding: 1rem;
+		padding: 1.5rem;
 		background: #f9fafb;
 		border-radius: 8px;
 		border: 1px solid #e5e7eb;
 		margin-top: 2rem;
+		flex-wrap: wrap;
 	}
 
 	.legend-item {
@@ -412,10 +450,46 @@
 	.legend-square {
 		width: 16px;
 		height: 16px;
-		border-radius: 2px;
+		border-radius: 3px;
+		border: 1px solid rgba(0, 0, 0, 0.1);
 	}
 
+	@media (max-width: 1024px) {
+		.grid-header,
+		.grid-row {
+			grid-template-columns: 200px repeat(auto-fit, 150px);
+		}
 
+		.assessment-header-cell {
+			padding: 0.75rem;
+		}
+
+		.burden-cell {
+			padding: 0.5rem;
+			min-height: 60px;
+		}
+
+		.persona-header-cell {
+			padding: 0.75rem;
+		}
+
+		.persona-name {
+			font-size: 0.75rem;
+		}
+
+		.assessment-name {
+			font-size: 0.75rem;
+		}
+
+		.score-value {
+			font-size: 1.25rem;
+		}
+
+		.score-category {
+			font-size: 0.6rem;
+			padding: 0.2rem 0.4rem;
+		}
+	}
 
 	@media (max-width: 768px) {
 		.heatmap-header {
@@ -424,8 +498,17 @@
 			align-items: stretch;
 		}
 
-		:global(.persona-tabs) {
-			flex-direction: column;
+		.legend {
+			gap: 1rem;
+		}
+
+		.grid-container {
+			overflow-x: auto;
+		}
+
+		.grid-header,
+		.grid-row {
+			min-width: 800px;
 		}
 	}
 </style> 
