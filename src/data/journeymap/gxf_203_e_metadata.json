@@ -1,0 +1,30 @@
+{
+  "study_id": "GXF-203-E",
+  "study_name": "GXF-203-E",
+  "sponsor": "GeneXpression Therapeutics",
+  "title": "A Phase 2, Randomized, Double-blind, Placebo-controlled Study to Evaluate the Safety and Efficacy of GXF-203 in Patients with Amyotrophic Lateral Sclerosis",
+  "phase": "2",
+  "indication": "Amyotrophic Lateral Sclerosis",
+  "therapeutic_area": "Neurology",
+  "indication_level_quotes": "892",
+  "therapeutic_area_quotes": "12295",
+  "population": {
+    "age_range": "18 to 75 years",
+    "condition": "Amyotrophic Lateral Sclerosis",
+    "inclusion_highlights": [
+      "Clinically diagnosed ALS",
+      "ALSFRS-R score ≥ 25",
+      "Forced vital capacity ≥ 60%",
+      "Able to swallow study medication"
+    ]
+  },
+  "design": {
+    "randomization": "Yes",
+    "control": "Placebo-controlled",
+    "blinding": "Double-blind",
+    "arms": 2,
+    "multicenter": true
+  },
+  "total_visits": 12,
+  "visit_schedule_json": "gxf_203_e_visit_schedule.json"
+} 

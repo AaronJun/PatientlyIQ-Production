@@ -1,0 +1,30 @@
+{
+  "study_id": "PFZ-738-D",
+  "study_name": "PFZ-738-D",
+  "sponsor": "PharmaFlex Industries",
+  "title": "A Phase 3, Randomized, Double-blind, Placebo-controlled, Multicenter Study to Evaluate the Long-term Efficacy and Safety of PFZ-738 in Patients with Early-Stage Parkinson's Disease",
+  "phase": "3",
+  "indication": "Parkinson's Disease",
+  "therapeutic_area": "Neurology",
+  "indication_level_quotes": "1687",
+  "therapeutic_area_quotes": "12295",
+  "population": {
+    "age_range": "30 to 80 years",
+    "condition": "Early-stage Parkinson's Disease",
+    "inclusion_highlights": [
+      "Clinical diagnosis of idiopathic Parkinson's disease",
+      "Hoehn and Yahr stage 1-2.5",
+      "Stable dopaminergic therapy for ≥ 4 weeks",
+      "Motor fluctuations present"
+    ]
+  },
+  "design": {
+    "randomization": "Yes",
+    "control": "Placebo-controlled",
+    "blinding": "Double-blind",
+    "arms": 2,
+    "multicenter": true
+  },
+  "total_visits": 15,
+  "visit_schedule_json": "pfz_738_d_visit_schedule.json"
+} 

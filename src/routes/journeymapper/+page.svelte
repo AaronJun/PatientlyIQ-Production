@@ -2,6 +2,7 @@
 	// Component imports
 	import JourneyContainer from '$lib/journeymapper/JourneyContainer.svelte';
 	import StudyMetadataDrawer from '$lib/components/StudyMetadataDrawer.svelte';
+	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 	import FileUpload from '$lib/components/ui/file-upload/FileUpload.svelte';
 	import AssessmentBurdenHeatmap from '$lib/components/AssessmentBurdenHeatmap.svelte';
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
@@ -22,23 +23,71 @@
 	// State variables
 	let isDrawerOpen = false;
 	let isSidebarCollapsed = true;
+	let selectedStudyId = 'STUDY-302'; // Default to current study
+	let currentVisitScheduleData = data.visitScheduleData;
+	let currentStudyMetadata = data.studyMetadata;
+	
+	// Initialize current data when the original data changes
+	$: if (visitScheduleData && studyMetadata && selectedStudyId === 'STUDY-302') {
+		currentVisitScheduleData = visitScheduleData;
+		currentStudyMetadata = studyMetadata;
+	}
 	
 	// Constants
 	const timelineWidth = 1200;
 
-	// Placeholder analyzed studies data
+	// Analyzed studies data with study IDs
 	let analyzedStudies = [
-		{ name: 'GXF-203-E', indication: 'Amyotrophic Lateral Sclerosis', phase: 'Phase II', status: 'active' },
-		{ name: 'BNX-451-A', indication: 'Major Depressive Disorder', phase: 'Phase III', status: 'completed' },
-		{ name: 'PFZ-738-D', indication: 'Parkinson\'s Disease', phase: 'Phase III', status: 'active' }
+		{ id: 'STUDY-302', name: 'STUDY-302', indication: 'Focal Onset Seizures (Epilepsy)', phase: 'Phase 3', status: 'active' },
+		{ id: 'GXF-203-E', name: 'GXF-203-E', indication: 'Amyotrophic Lateral Sclerosis', phase: 'Phase 2', status: 'active' },
+		{ id: 'BNX-451-A', name: 'BNX-451-A', indication: 'Major Depressive Disorder', phase: 'Phase 3', status: 'completed' },
+		{ id: 'PFZ-738-D', name: 'PFZ-738-D', indication: 'Parkinson\'s Disease', phase: 'Phase 3', status: 'active' }
 	];
+
+	// Function to load study data
+	async function loadStudyData(studyId: string) {
+		try {
+			if (studyId === 'STUDY-302') {
+				// Default to original study data
+				currentVisitScheduleData = visitScheduleData;
+				currentStudyMetadata = studyMetadata;
+				return;
+			}
+			
+			const [visitScheduleResponse, metadataResponse] = await Promise.all([
+				fetch(`/api/journeymapper/visit-schedule/${studyId}`),
+				fetch(`/api/journeymapper/study-metadata/${studyId}`)
+			]);
+			
+			if (!visitScheduleResponse.ok || !metadataResponse.ok) {
+				throw new Error(`Failed to fetch data for study ${studyId}`);
+			}
+			
+			const newVisitScheduleData = await visitScheduleResponse.json();
+			const newMetadata = await metadataResponse.json();
+			
+			currentVisitScheduleData = newVisitScheduleData;
+			currentStudyMetadata = newMetadata;
+		} catch (error) {
+			console.error('Error loading study data:', error);
+			// Fallback to original data
+			currentVisitScheduleData = visitScheduleData;
+			currentStudyMetadata = studyMetadata;
+		}
+	}
+
+	// Function to handle study selection
+	async function selectStudy(studyId: string) {
+		selectedStudyId = studyId;
+		await loadStudyData(studyId);
+	}
 
 	// Function to add a new study to the analyzed studies list
 	function addStudy(study: { name: string; indication: string; phase: string; status: string }) {
 		// Check if study already exists to avoid duplicates
 		const exists = analyzedStudies.find(s => s.name === study.name);
 		if (!exists) {
-			analyzedStudies = [...analyzedStudies, study];
+			analyzedStudies = [...analyzedStudies, { ...study, id: study.name }];
 		}
 	}
 
@@ -56,30 +105,30 @@
 	}
 
 	// Reactive calculations for visit statistics
-	$: totalVisits = visitScheduleData.visits.length;
-	$: travelVisits = visitScheduleData.visits.filter(visit => visit.travel_required).length;
-	$: invasiveVisits = visitScheduleData.visits.filter(visit => 
-		visit.assessments.some(assessment => 
+	$: totalVisits = currentVisitScheduleData?.visits?.length || 0;
+	$: travelVisits = currentVisitScheduleData?.visits?.filter(visit => visit.travel_required).length || 0;
+	$: invasiveVisits = currentVisitScheduleData?.visits?.filter(visit => 
+		visit.assessments?.some(assessment => 
 			assessment.includes('Blood') || 
 			assessment.includes('Laboratory') || 
 			assessment.includes('ECG') ||
 			assessment.includes('Pregnancy Test')
 		)
-	).length;
-	$: surgicalVisits = visitScheduleData.visits.filter(visit => 
-		visit.assessments.some(assessment => 
+	).length || 0;
+	$: surgicalVisits = currentVisitScheduleData?.visits?.filter(visit => 
+		visit.assessments?.some(assessment => 
 			assessment.toLowerCase().includes('surgical') || 
 			assessment.toLowerCase().includes('biopsy') ||
 			assessment.toLowerCase().includes('procedure')
 		)
-	).length;
+	).length || 0;
 	
 	// Calculate overall burden score based on total assessments and travel requirements
-	$: overallScore = Math.round(
-		(visitScheduleData.visits.reduce((total, visit) => 
-			total + visit.assessments.length + (visit.travel_required ? 5 : 0), 0
-		) / visitScheduleData.visits.length)
-	);
+	$: overallScore = currentVisitScheduleData?.visits?.length > 0 ? Math.round(
+		(currentVisitScheduleData.visits.reduce((total, visit) => 
+			total + (visit.assessments?.length || 0) + (visit.travel_required ? 5 : 0), 0
+		) / currentVisitScheduleData.visits.length)
+	) : 0;
 </script>
 
 <main class="patient-burden-mapper min-h-screen">
@@ -116,7 +165,11 @@
 					</h3>
 					<div class="studies-list">
 						{#each analyzedStudies as study}
-							<div class="study-item">
+							<div class="study-item {selectedStudyId === study.id ? 'selected' : ''}" 
+								 on:click={() => selectStudy(study.id)}
+								 on:keydown={(e) => e.key === 'Enter' && selectStudy(study.id)}
+								 tabindex="0"
+								 role="button">
 								<div class="study-name">{study.name}</div>
 								<div class="study-details">
 									<span class="study-indication">{study.indication}</span>
@@ -139,25 +192,25 @@
 				<div class="study-info">
 					<div class="info-item">
 						<span class="info-label">Study</span>
-					<span class="info-value">{studyMetadata.study_name}</span>
+					<span class="info-value">{currentStudyMetadata?.study_name || 'Loading...'}</span>
 					</div>
 					<div class="info-item">
 						<span class="info-label">Indication</span>
-						<span class="info-value">{studyMetadata.indication}</span>
-						<span class="info-subvalue">{studyMetadata.indication_level_quotes} posts</span>
+						<span class="info-value">{currentStudyMetadata?.indication || 'Loading...'}</span>
+						<span class="info-subvalue">{currentStudyMetadata?.indication_level_quotes || 0} posts</span>
 					</div>
 					<div class="info-item">
 						<span class="info-label">Therapeutic Area</span>
-						<span class="info-value">{studyMetadata.therapeutic_area}</span>
-						<span class="info-subvalue">{studyMetadata.therapeutic_area_quotes} posts</span>
+						<span class="info-value">{currentStudyMetadata?.therapeutic_area || 'Loading...'}</span>
+						<span class="info-subvalue">{currentStudyMetadata?.therapeutic_area_quotes || 0} posts</span>
 					</div>
 					<div class="info-item">
 						<span class="info-label">Phase</span>
-						<span class="info-value">{studyMetadata.phase}</span>
+						<span class="info-value">{currentStudyMetadata?.phase || 'Loading...'}</span>
 					</div>
 					<div class="info-item">
 						<span class="info-label">Study length</span>
-						<span class="info-value">{studyMetadata.total_visits} visits</span>
+						<span class="info-value">{currentStudyMetadata?.total_visits || 0} visits</span>
 					</div>
 					<button class="more-info-btn" on:click={toggleDrawer} aria-label="View study details">
 						i
@@ -202,7 +255,11 @@
 
 				<Tabs.Content value="schedule" class="tab-content">
 					<div class="content-wrapper">
-						<JourneyContainer visits={visitScheduleData.visits} {timelineWidth} />
+						{#if currentVisitScheduleData?.visits?.length > 0}
+							<JourneyContainer visits={currentVisitScheduleData.visits} {timelineWidth} />
+						{:else}
+							<div class="loading-state">Loading study data...</div>
+						{/if}
 					</div>
 				</Tabs.Content>
 				
@@ -236,11 +293,13 @@
 	</div>
 </main>
 
-<StudyMetadataDrawer 
-	bind:isOpen={isDrawerOpen}
-	studyData={studyMetadata}
-	on:toggle={handleDrawerToggle}
-/>
+{#if currentStudyMetadata}
+	<StudyMetadataDrawer 
+		bind:isOpen={isDrawerOpen}
+		studyData={currentStudyMetadata}
+		on:toggle={handleDrawerToggle}
+	/>
+{/if}
 
 <style>
 	/* ===== BASE STYLES ===== */
@@ -341,13 +400,24 @@
 		flex-direction: column;
 		justify-content: space-between;
 		gap: 0.5rem;
+		border-bottom: 1px solid #001f60;
 		cursor: pointer;
 		padding: 0 0 1.25rem 0;
 		transition: background-color 0.2s ease;
 	}
 
 	.study-item:hover {
-		border-bottom: 1px solid #001f60;
+		border-bottom: 1px solid #ff1515;
+	}
+
+	.study-item.selected {
+		background-color: #f0f7ff;
+		border-bottom: 1px solid #2563eb;
+	}
+
+	.study-item.selected .study-name {
+		color: #2563eb;
+		font-weight: 700;
 	}
 
 	.study-name {
@@ -380,7 +450,8 @@
 	}
 
 	.status-active {
-		color: #065f46;
+		color: #f;
+		background-color: #065f46;
 	}
 
 	.status-completed {
@@ -564,6 +635,15 @@
 		font-size: 1.5rem;
 		font-weight: 600;
 		text-align: center;
+	}
+
+	.loading-state {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 200px;
+		color: #64748b;
+		font-size: 1.1rem;
 	}
 
 	/* ===== RESPONSIVE DESIGN ===== */

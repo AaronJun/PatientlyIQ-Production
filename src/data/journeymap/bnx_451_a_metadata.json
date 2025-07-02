@@ -1,0 +1,30 @@
+{
+  "study_id": "BNX-451-A",
+  "study_name": "BNX-451-A",
+  "sponsor": "BioneXus Pharmaceuticals",
+  "title": "A Phase 3, Randomized, Double-blind, Placebo-controlled, Multicenter Study to Evaluate the Efficacy and Safety of BNX-451 in Adult Patients with Major Depressive Disorder",
+  "phase": "3",
+  "indication": "Major Depressive Disorder",
+  "therapeutic_area": "Psychiatry",
+  "indication_level_quotes": "2456",
+  "therapeutic_area_quotes": "8734",
+  "population": {
+    "age_range": "18 to 65 years",
+    "condition": "Major Depressive Disorder",
+    "inclusion_highlights": [
+      "DSM-5 diagnosis of Major Depressive Disorder",
+      "MADRS score ≥ 22",
+      "Current major depressive episode ≥ 4 weeks",
+      "Inadequate response to prior antidepressant therapy"
+    ]
+  },
+  "design": {
+    "randomization": "Yes",
+    "control": "Placebo-controlled",
+    "blinding": "Double-blind",
+    "arms": 3,
+    "multicenter": true
+  },
+  "total_visits": 10,
+  "visit_schedule_json": "bnx_451_a_visit_schedule.json"
+} 

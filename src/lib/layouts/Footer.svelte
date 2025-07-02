@@ -9,7 +9,7 @@
 		{
 			href: '/',
 			name: 'PIQ',
-			icon: PIQLogo
+			logo: PIQLogo
 		},
 	];
 
@@ -23,38 +23,30 @@
 </script>
 
 <footer>
-	<div class="flex flex-col border-neutral-700/20 px-8 pt-24 place-items-center flex-grow">
+	<div class="flex flex-col md:flex-row align-middle items-center md:justify-around bg-slate-900 min-h-[45vh]">
 
-			{#each footerSocials as social}
-				<a
-					href={social.href}
-					class="fill-gray-500 text-gray-500 hover:fill-gray-900 hover:text-gray-900 dark:hover:fill-gray-600 dark:hover:text-gray-600"
-				>
-					<img src={social.icon} class="size-11" alt={social.name} />
-					<span class="sr-only">{social.name}</span>
-				</a>
-			{/each}
+		<div class="flex items-left mix-blend-color-dodge">	
+			<img src={PIQLogo} class="size-24" alt="PIQ Logo" />
+		</div>
 
-		<div class="flex items-center space-x-4">
+
+		<div class="flex flex-col md:col-span-5">	
 			<!-- <Button variant="outline" on:click={openContactForm}>Contact Us</Button> -->
-			<span class="text-xs text-gray-500 dark:text-gray-400 sm:text-left">
-				© {new Date().getFullYear()}
-				<br class="hidden md:block" />
-				<br class="hidden md:block" />
-				<a href="/" class="cursor-pointer">
-					Patiently Studio
-				</a>
-				<br class="hidden md:block" />
-				All rights reserved
-			</span>
+			
+
+				<div class="flex flex-col md:flex-row font-mono">
+					<p class="text-xs text-slate-300 dark:text-slate-400 sm:text-left italic">PIQ by</p>
+					<a link="https://patiently.studio" class="cursor-pointer text-slate-300 underline text-xs pl-1">Patiently Studio
+				</a>		
+			</div>
+			<div class="flex flex-col mt-8">
+				<span class="text-xs text-slate-500 dark:text-slate-400 sm:text-left">
+					© {new Date().getFullYear()}		</span>
+				<span class="text-xs text-slate-500 dark:text-slate-400 sm:text-left">All rights reserved</span>
+			</div>
 		</div>
 	</div>
 </footer>
 
 <style>
-	.flex {
-		display: flex;
-		min-height: 65vh;
-		background-color: #13131b;
-	}
 </style>

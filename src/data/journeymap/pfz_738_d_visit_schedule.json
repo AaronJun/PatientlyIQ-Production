@@ -1,0 +1,272 @@
+{
+  "visits": [
+    {
+      "visit_number": 1,
+      "name": "Screening",
+      "study_day_range": "-42 to -1",
+      "study_week": "-6 to 0",
+      "travel_required": true,
+      "assessments": [
+        "Informed Consent",
+        "Medical History",
+        "Neurological History",
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "ECG",
+        "DaTscan Imaging",
+        "Pregnancy Test",
+        "Concomitant Medications",
+        "PDQ-39 Scale",
+        "Montreal Cognitive Assessment"
+      ]
+    },
+    {
+      "visit_number": 2,
+      "name": "Baseline",
+      "study_day": "0",
+      "study_week": "0",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Randomization",
+        "Study Drug Dispensing",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Training"
+      ]
+    },
+    {
+      "visit_number": 3,
+      "name": "Week 2",
+      "study_day": "14 ±2",
+      "study_week": "2",
+      "travel_required": false,
+      "assessments": [
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review"
+      ]
+    },
+    {
+      "visit_number": 4,
+      "name": "Week 4",
+      "study_day": "28 ±3",
+      "study_week": "4",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review",
+        "Timed Up and Go Test"
+      ]
+    },
+    {
+      "visit_number": 5,
+      "name": "Week 8",
+      "study_day": "56 ±5",
+      "study_week": "8",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PDQ-39 Scale",
+        "Deep Brain Stimulation Assessment"
+      ]
+    },
+    {
+      "visit_number": 6,
+      "name": "Week 12",
+      "study_day": "84 ±5",
+      "study_week": "12",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review",
+        "Surgical Assessment Procedure"
+      ]
+    },
+    {
+      "visit_number": 7,
+      "name": "Week 16",
+      "study_day": "112 ±7",
+      "study_week": "16",
+      "travel_required": false,
+      "assessments": [
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review"
+      ]
+    },
+    {
+      "visit_number": 8,
+      "name": "Week 20",
+      "study_day": "140 ±7",
+      "study_week": "20",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PDQ-39 Scale",
+        "Freezing of Gait Assessment"
+      ]
+    },
+    {
+      "visit_number": 9,
+      "name": "Week 24",
+      "study_day": "168 ±7",
+      "study_week": "24",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review",
+        "Timed Up and Go Test"
+      ]
+    },
+    {
+      "visit_number": 10,
+      "name": "Week 28",
+      "study_day": "196 ±7",
+      "study_week": "28",
+      "travel_required": false,
+      "assessments": [
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review"
+      ]
+    },
+    {
+      "visit_number": 11,
+      "name": "Week 32",
+      "study_day": "224 ±7",
+      "study_week": "32",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PDQ-39 Scale",
+        "Montreal Cognitive Assessment"
+      ]
+    },
+    {
+      "visit_number": 12,
+      "name": "Week 40",
+      "study_day": "280 ±7",
+      "study_week": "40",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review"
+      ]
+    },
+    {
+      "visit_number": 13,
+      "name": "Week 48",
+      "study_day": "336 ±7",
+      "study_week": "48",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PDQ-39 Scale",
+        "Freezing of Gait Assessment"
+      ]
+    },
+    {
+      "visit_number": 14,
+      "name": "Week 52",
+      "study_day": "364 ±7",
+      "study_week": "52",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Hoehn & Yahr Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Return",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Motor Diary Review",
+        "End of Study Assessment"
+      ]
+    },
+    {
+      "visit_number": 15,
+      "name": "Follow-up",
+      "study_day": "392 ±14",
+      "study_week": "56",
+      "travel_required": true,
+      "assessments": [
+        "UPDRS Part I-IV",
+        "MDS-UPDRS",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Safety Follow-up"
+      ]
+    }
+  ]
+} 

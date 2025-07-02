@@ -1,0 +1,195 @@
+{
+  "visits": [
+    {
+      "visit_number": 1,
+      "name": "Screening",
+      "study_day_range": "-14 to -1",
+      "study_week": "-2 to 0",
+      "travel_required": true,
+      "assessments": [
+        "Informed Consent",
+        "Medical History",
+        "Psychiatric History",
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "Blood Laboratory Tests",
+        "ECG",
+        "Pregnancy Test",
+        "Drug Screen",
+        "Concomitant Medications",
+        "PHQ-9 Questionnaire",
+        "GAD-7 Scale"
+      ]
+    },
+    {
+      "visit_number": 2,
+      "name": "Baseline",
+      "study_day": "0",
+      "study_week": "0",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "Blood Laboratory Tests",
+        "Randomization",
+        "Study Drug Dispensing",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Pregnancy Test"
+      ]
+    },
+    {
+      "visit_number": 3,
+      "name": "Week 1",
+      "study_day": "7 ±1",
+      "study_week": "1",
+      "travel_required": false,
+      "assessments": [
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Columbia Suicide Rating Scale"
+      ]
+    },
+    {
+      "visit_number": 4,
+      "name": "Week 2",
+      "study_day": "14 ±2",
+      "study_week": "2",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Columbia Suicide Rating Scale"
+      ]
+    },
+    {
+      "visit_number": 5,
+      "name": "Week 4",
+      "study_day": "28 ±3",
+      "study_week": "4",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PHQ-9 Questionnaire",
+        "Quality of Life Scale"
+      ]
+    },
+    {
+      "visit_number": 6,
+      "name": "Week 8",
+      "study_day": "56 ±5",
+      "study_week": "8",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Columbia Suicide Rating Scale",
+        "Surgical Assessment"
+      ]
+    },
+    {
+      "visit_number": 7,
+      "name": "Week 12",
+      "study_day": "84 ±5",
+      "study_week": "12",
+      "travel_required": false,
+      "assessments": [
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PHQ-9 Questionnaire"
+      ]
+    },
+    {
+      "visit_number": 8,
+      "name": "Week 16",
+      "study_day": "112 ±7",
+      "study_week": "16",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Compliance",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Quality of Life Scale",
+        "Functional Assessment"
+      ]
+    },
+    {
+      "visit_number": 9,
+      "name": "Week 24",
+      "study_day": "168 ±7",
+      "study_week": "24",
+      "travel_required": true,
+      "assessments": [
+        "Physical Exam",
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "CGI-I Scale",
+        "Blood Laboratory Tests",
+        "Study Drug Return",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "PHQ-9 Questionnaire",
+        "GAD-7 Scale",
+        "End of Study Assessment"
+      ]
+    },
+    {
+      "visit_number": 10,
+      "name": "Follow-up",
+      "study_day": "196 ±14",
+      "study_week": "28",
+      "travel_required": true,
+      "assessments": [
+        "MADRS Scale",
+        "HAM-D Scale",
+        "CGI-S Scale",
+        "Adverse Events Assessment",
+        "Concomitant Medications",
+        "Columbia Suicide Rating Scale",
+        "Safety Follow-up"
+      ]
+    }
+  ]
+} 
