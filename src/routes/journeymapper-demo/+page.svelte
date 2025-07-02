@@ -17,22 +17,22 @@
 	</div>
 
 	<!-- Demo Videos -->
-	<div class="demo-tabs p-4 flex flex-col w-full justify-center align-middle items-center">
+	<div class="demo-tabs rounded-xl flex flex-col w-full justify-center align-middle items-center pt-4 pb-32">
 		<Tabs.Root value="burden-assessment" class="w-full justify-center align-middle items-center">
-			<Tabs.List class="w-3/5 mx-auto flex flex-row justify-evenly align-middle items-center">
+			<Tabs.List class="w-full mx-auto px-4">
 				<Tabs.Trigger value="burden-assessment">Burden Assessment</Tabs.Trigger>
 				<Tabs.Trigger value="journey-schedule">Journey Schedule</Tabs.Trigger>
 				<Tabs.Trigger value="journey-summary">Journey Summary</Tabs.Trigger>
 			</Tabs.List>
 			
-			<Tabs.Content value="burden-assessment" class="mt-6">
+			<Tabs.Content value="burden-assessment" class="mt-4 ring-1 ring-slate-200 bg-slate-50/60 rounded-xl">
 				<div class="tab-content-wrapper">
-					<div class="tab-description">
-						<h2>Patient Burden Assessment</h2>
-						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+					<div class="flex flex-col gap-8 align-middle items-center w-full border-2 border-slate-500 px-4 py-6">
+						<h2 class="text-slate-500 text-center text-sm md:text-base font-mono uppercase mt-2">Patient Burden Assessment</h2>
+						<p class="text-slate-800 text-center text-sm md:text-base max-w-prose text-pretty">	
 							Journey Mapper pairs protocol details to PIQ's database of patient and caregiver sentiment data. This video shows how the platform automatically scores burden for each assessment and the quotes that support the score.
 						</p>
-						<div class="key-features">
+						<div class="key-features my-2 text-2xs md:text-xs overflow-x-auto">							
 							<span class="feature-tag">Interactive Heatmaps</span>
 							<span class="feature-tag">Burden Scoring</span>
 							<span class="feature-tag">Visit Analysis</span>
@@ -48,18 +48,19 @@
 							<p>Your browser doesn't support HTML video. Here is a <a href="/PIQBurdenAssessmentDemo.mp4">link to the video</a> instead.</p>
 						</video>
 					</div>
+				
 				</div>
 			</Tabs.Content>
 			
-			<Tabs.Content value="journey-schedule" class="mt-6">
+			<Tabs.Content value="journey-schedule" class="mt-4 ring-1 ring-slate-200 bg-slate-50/60">
 				<div class="tab-content-wrapper">
-					<div class="tab-description">
-						<h2>Journey Schedule Optimization</h2>
-						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+					<div class="flex flex-col gap-8 align-middle items-center w-full border-2 border-slate-500 px-4 py-6">
+						<h2 class="text-slate-500 text-center text-sm md:text-base font-mono uppercase mt-2">Journey Schedule Optimization</h2>
+						<p class="text-slate-800 text-center text-sm md:text-base max-w-prose text-pretty">
 							Journey Mapper visualizes the complete patient journey through interactive timeline views. 
 							This demo highlights visit scheduling optimization, assessment distribution analysis, and tools for reducing protocol complexity while maintaining scientific rigor.
 						</p>
-						<div class="key-features">
+						<div class="key-features my-2 text-2xs md:text-xs overflow-x-auto">
 							<span class="feature-tag">Timeline Visualization</span>
 							<span class="feature-tag">Visit Optimization</span>
 							<span class="feature-tag">Assessment Mapping</span>
@@ -78,16 +79,16 @@
 				</div>
 			</Tabs.Content>
 			
-			<Tabs.Content value="journey-summary" class="mt-6">
+			<Tabs.Content value="journey-summary" class="mt-4 ring-1 ring-slate-200 bg-slate-50/60">
 				<div class="tab-content-wrapper">
-					<div class="tab-description">
-						<h2>Journey Analysis & Insights</h2>
-						<p class="text-slate-800 text-center text-base max-w-prose text-pretty">
+					<div class="flex flex-col gap-8 align-middle items-center w-full border-2 border-slate-500 px-4 py-6">
+						<h2 class="text-slate-500 text-center text-sm md:text-base font-mono uppercase mt-2">Journey Analysis & Insights</h2>
+						<p class="text-slate-800 text-center text-sm md:text-base max-w-prose text-pretty">
 							Explore comprehensive journey analytics that provide actionable insights for protocol optimization. 
 							This demo shows how our platform generates detailed reports, identifies improvement opportunities, 
 							and provides data-driven recommendations for enhancing patient experience.
 						</p>
-						<div class="key-features">
+						<div class="key-features my-2 text-2xs md:text-xs overflow-x-auto">				
 							<span class="feature-tag">Analytics Dashboard</span>
 							<span class="feature-tag">Insight Generation</span>
 							<span class="feature-tag">Protocol Recommendations</span>
@@ -112,11 +113,6 @@
 </main>
 
 <style>
-	.container {
-		max-width: 1250px;
-		margin: 0 auto;
-		padding: 2rem;
-	}
 
 	.header-section {
 		display: flex;
@@ -161,22 +157,6 @@
 		gap: 1.5rem;
 	}
 
-	.tab-description {
-		padding: 1.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		justify-content: center;
-		align-items: center;
-
-	}
-
-	.tab-description h2 {
-		font-size: 1.725rem;
-		font-weight: 600;
-		color: #1e293b;
-	}
-
 	.tab-description p {
 		color: #64748b;
 		line-height: 1.525;
@@ -187,18 +167,19 @@
 	.feature-tag {
 		background: #dbeafe;
 		color: #1d4ed8;
-		padding: 0.25rem 0.75rem;
+		padding: 0.25rem 0.5rem;
 		border-radius: 12px;
-		font-size: 0.8rem;
-		font-weight: 500;
+		font-size: 0.625rem;
+		font-weight: 400;
 	}
 
 	.video-container {
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		border-radius: 12px;
-		padding: .525rem;
+		padding-top: 2.25rem;
+		padding-bottom: 5rem;
+		border-top: .525px solid #161616;
 	}
 
 	.demo-video {
@@ -207,6 +188,23 @@
 		height: auto;
 		border-radius: 15px;
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	}
+
+	.key-features {
+		display: flex;
+		gap: 0.25rem;
+		justify-content: center;
+		align-items: center;
+		overflow-x: auto;
+		white-space: nowrap;
+		padding: 0.5rem 0;
+		width: 100%;
+		scroll-snap-type: x mandatory;
+		scroll-snap-align: start;
+		scroll-behavior: smooth;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
 	}
 
 	.cta-section {
