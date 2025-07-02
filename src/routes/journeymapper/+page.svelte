@@ -3,7 +3,6 @@
 	import JourneyContainer from '$lib/journeymapper/JourneyContainer.svelte';
 	import StudyMetadataDrawer from '$lib/components/StudyMetadataDrawer.svelte';
 	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
-	import FileUpload from '$lib/components/ui/file-upload/FileUpload.svelte';
 	import AssessmentBurdenHeatmap from '$lib/components/AssessmentBurdenHeatmap.svelte';
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
 	import JourneyAnalysisSummary from '$lib/journeymapper/JourneyAnalysisSummary.svelte';
@@ -140,9 +139,9 @@
 				{/if}
 				<button class="sidebar-toggle h-12 w-12	" on:click={toggleSidebar} aria-label="Toggle sidebar">
 					{#if isSidebarCollapsed}
-						<ArrowRight size={20} />
+						<ArrowRight size={16} />
 					{:else}
-						<ArrowLeft size={20} />
+						<ArrowLeft size={16} />
 					{/if}
 				</button>
 			</div>
@@ -185,14 +184,17 @@
 	<!-- Main Content -->
 	<div class="main-content">
 		<div class="study-header-container flex flex-row align-middle items-center px-8 py-1 h-12 justify-between bg-indigo-900">
-			<h3 class="text-indigo-100 text-xs font-semibold">PIQ Journey Mapper</h3>
-			<img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8 m-1 mix-blend-luminosity" />
+			<div class="flex flex-row align-middle items-center gap-2">
+				<Path size={16} class="text-[#F1D5D3]" />
+				<h3 class="text-pink-100 text-xs font-semibold">PIQ Journey Mapper</h3>
+			</div>
+			<img src={PIQLogo} alt="PIQ Logo" class="w-8 h-8 m-1 mix-blend-screen" />
 		</div>
 		<header class="study-header">
 		<!-- Study Header -->
-			<div class="study-info-container flex flex-row justify-between w-full">
-				<div class="flex flex-col gap-1 w-1/2 justify-start items-start">
-					<span class="text-pink-50 font-mono italic">Study</span>
+			<div class="study-info-container flex flex-row justify-between w-full align-top">
+				<div class="flex flex-col gap-1 w-1/3 justify-start items-start">
+					<span class="text-pink-50 font-mono italic">Study Name</span>
 					<span class="font-semibold text-lg text-pink-100">{currentStudyMetadata?.study_name || 'Loading...'}</span>
 				</div>
 				<div class="study-info flex flex-row justify-between w-1/2">
@@ -274,7 +276,7 @@
 							<div class="assessment-section">
 								<AssessmentBurdenHeatmap 
 									showBurdenScores={false}
-									maxSquares={10}
+									maxSquares={8}
 									squareSize="12px"
 								/>
 							</div>
@@ -345,16 +347,7 @@
 
 	.sidebar-title {
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
-	}
-
-	.sidebar-title h1 {
-		font-size: 1rem;
-		font-weight: 600;
-		margin: 0;
-		color: #161616;
-		white-space: nowrap;
 	}
 
 	.sidebar-toggle {
@@ -362,10 +355,8 @@
 		border: none;
 		color: #F1D5D3;
 		cursor: pointer;
-		padding: 0.5rem;
-		border-radius: 6px;
 		display: flex;
-		align-items: center;;
+		align-items: center;
 		justify-content: center;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		transform: translateX(0);
@@ -374,7 +365,7 @@
 	.sidebar-toggle:hover {
 		color: #374151;
 		background-color: rgba(55, 65, 81, 0.1);
-		transform: translateX(3px);
+		transform: translateX(3.25px);
 	}
 
 	.logo-title-container {
@@ -570,7 +561,7 @@
 		align-items: flex-start;
 		justify-content: top;
 		gap: 0.525rem;
-		min-width: 0;
+		max-width: 10vw;
 	}
 
 	.info-label {
@@ -586,6 +577,7 @@
 		color: #F1D5D3;
 		font-weight: 600;
 		font-size: 0.725rem;
+		line-height: 1.2;
 	}
 
 	.info-subvalue {
@@ -611,32 +603,14 @@
 	}
 
 	/* ===== TABS CONTAINER STYLES ===== */
-	.tabs-container {
-		flex: 1;
-		padding-left: 1rem;
-		padding-right: 1rem;
-		overflow-x: auto;
-		overflow-y: hidden;
-		display: flex;
-		flex-direction: column;
-		margin-top: 1rem;
-		min-height: 0;
-	}
-
+	
 	:global(.tabs-container [data-tabs-root]) {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 	}
 
-	:global(.tabs-list) {
-		margin-bottom: 1rem;
-		padding: 0.5rem;
-		justify-content: left;
-		align-items: left;
-		display: flex;
-		flex-direction: row;
-	}
+
 
 	:global(.tab-content) {
 		flex: 1;
@@ -676,10 +650,12 @@
 	}
 
 	.assessment-section {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
 		gap: 1rem;
-		align-items: center;
+		align-items: top;
+		justify-content: center;
+		width: 100%;
 	}
 
 	.section-subtitle {

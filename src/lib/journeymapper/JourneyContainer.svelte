@@ -22,11 +22,11 @@
 
 	// Props
 	export let visits: Visit[] = [];
-	export let timelineWidth: number = 1500;
+	export let timelineWidth: number = 2200;
 
 	// Constants
 	const LEFT_PANEL_WIDTH = 250;
-	const TIMELINE_HEADER_HEIGHT = 150; // Increased to accommodate multiple rows
+	const TIMELINE_HEADER_HEIGHT = 120; // Increased to accommodate multiple rows
 
 	let mounted = false;
 
@@ -102,7 +102,7 @@
 						<div 
 							class="header-cell visit-number-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
 								width: {calculatedCellWidth}px;
 							"
 						>
@@ -117,8 +117,8 @@
 						<div 
 							class="header-cell study-week-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
-								width: {calculatedCellWidth}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
+								width: {calculatedCellWidth * 2}px;
 							"
 						>
 							<span class="study-week">
@@ -134,7 +134,7 @@
 						<div 
 							class="header-cell visit-name-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
 								width: {calculatedCellWidth}px;
 							"
 							title="{visit.name}"

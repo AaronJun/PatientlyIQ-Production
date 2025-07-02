@@ -250,38 +250,16 @@
 </script>
 
 <div class="heatmap-container">
-	<div class="heatmap-header">
-	
-		<div class="toggle-controls">
-			<button 
-				class="toggle-btn" 
-				class:active={!showBurdenScores}
-				on:click={() => showBurdenScores = false}
-			>
-				Assessment Burden
-			</button>
-			<button 
-				class="toggle-btn" 
-				class:active={showBurdenScores}
-				on:click={() => showBurdenScores = true}
-			>
-				General Burden
-			</button>
-		</div>
-	</div>
-
 	<div class="grid-container">
 		<!-- Grid Header -->
 		<div class="grid-header">
 			<div class="corner-cell"></div>
 			{#each allPersonaData as personaData}
-				<div class="persona-header-cell" class:consolidated={personaData.persona.includes('_overall') || personaData.persona === 'all_personas'} style="border-color: {getPersonaColor(personaData.persona)};">
+				<div class="persona-header-cell">
 					<span class="persona-name" style="color: {getPersonaColor(personaData.persona)};">
 						{getPersonaShortName(personaData.persona)}
 					</span>
-					{#if personaData.persona.includes('_overall') || personaData.persona === 'all_personas'}
-						<span class="consolidated-badge">Consolidated</span>
-					{/if}
+					
 				</div>
 			{/each}
 		</div>
@@ -368,7 +346,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		margin: 0 auto;
+		margin: 0;
 	}
 
 	.heatmap-header {
@@ -414,6 +392,7 @@
 	}
 
 	.grid-container {
+		width: 100%;
 		border: 1px solid #e5e7eb;
 		border-radius: 8px;
 		overflow: hidden;
@@ -421,7 +400,7 @@
 
 	.grid-header {
 		display: grid;
-		grid-template-columns: 115px repeat(auto-fit, 115px);
+		grid-template-columns: 200px repeat(6, 1fr);
 		border-bottom: 1px solid #d1d5db;
 		background: #f9fafb;
 	}
@@ -454,21 +433,10 @@
 	}
 
 	.persona-name {
-		font-size: 0.725rem;
+		font-size: 0.6725rem;
 		font-weight: 600;
 		text-align: center;
 		line-height: 1.2;
-	}
-
-	.consolidated-badge {
-		background: #fbbf24;
-		color: #92400e;
-		padding: 0.115rem 0.375rem;
-		border-radius: 8px;
-		font-size: 0.6rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 
 	.grid-body {
@@ -478,7 +446,7 @@
 
 	.grid-row {
 		display: grid;
-		grid-template-columns: 115px repeat(auto-fit, 115px);
+		grid-template-columns: 200px repeat(6, 1fr);
 		border-bottom: 1px solid #e5e7eb;
 	}
 
@@ -527,7 +495,7 @@
 
 	.burden-cell {
 		padding: 0.75rem;
-		border-right: 1px solid #e5e7eb;
+		border-right: 1px solid #FBBF24;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -546,14 +514,16 @@
 
 	.burden-cell.clickable {
 		cursor: pointer;
+		background-color: #f9fafb;
+		border: .525px solid #99F0FA;
 	}
 
 	.burden-cell.clickable:hover {
 		z-index: 10;
+		background-color: #144D91;
 	}
 
 	.burden-cell.clickable::after {
-		content: "Click for quotes";
 		position: absolute;
 		top: -0.5rem;
 		right: -0.5rem;
@@ -626,7 +596,7 @@
 	@media (max-width: 1200px) {
 		.grid-header,
 		.grid-row {
-			grid-template-columns: 115px repeat(auto-fit, 115px);
+			grid-template-columns: 150px repeat(6, 1fr);
 		}
 
 		.assessment-header-cell {
@@ -672,12 +642,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.heatmap-header {
-			flex-direction: column;
-			gap: 1rem;
-			align-items: stretch;
-		}
-
 		.legend {
 			gap: 1rem;
 		}
@@ -688,7 +652,8 @@
 
 		.grid-header,
 		.grid-row {
-			min-width: 1200px;
+			grid-template-columns: 120px repeat(6, minmax(100px, 1fr));
+			min-width: 800px;
 		}
 	}
 </style> 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowDown, ArrowRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
+	import { ArrowDown, ArrowRight, ArrowUpRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
 	import VisitSquares from './VisitSquares.svelte';
 	import FileUpload from '$lib/components/ui/file-upload/FileUpload.svelte';
@@ -84,12 +84,12 @@
 </script>
 
 <div class="analysis-summary">
-	<div class="flex flex-col w-full gap-2 mb-4">
+	<div class="section-header-lined flex flex-col gap-4 w-full">
 		<h2 class="text-lg font-bold">Participant Journey Summary</h2>
 	</div>
-
+<div class="flex flex-col md:flex-row gap-16">
 	<!-- Visit Statistics -->
-	<div class="visit-statistics mb-6">
+	<div class="visit-statistics flex flex-col">
 		<VisitSquares 
 			label="Total Visits" 
 			count={totalVisits} 
@@ -99,24 +99,111 @@
 		<VisitSquares 
 			label="Travel Required" 
 			count={travelVisits} 
+			totalCount={totalVisits}
 			color="#dc2626" 
 			size="18px"
 		/>
 		<VisitSquares 
 			label="Invasive Procedures" 
 			count={invasiveVisits} 
+			totalCount={totalVisits}
 			color="#ea580c" 
 			size="18px"
 		/>
 		<VisitSquares 
 			label="Surgical Procedures" 
 			count={surgicalVisits} 
+			totalCount={totalVisits}
 			color="#7c2d12" 
 			size="18px"
 		/>
 	</div>
 
-	<div class="summary-sections">
+	<div class="flex flex-col w-full">
+		<!-- Priority Areas Section -->
+		<div class="summary-section">
+			<button 
+				class="section-header"
+				on:click={() => toggleSection('priorities')}
+				aria-expanded={expandedSections.priorities}
+			>
+				<div class="section-header-content">
+					<TrendUp size={20} class="section-icon text-purple-600" />
+					<h3 class="section-title">Priority Intervention Areas</h3>
+				</div>
+				<div class="section-count-container flex flex-row justify-end gap-16 w-1/5">
+					<span class="section-count">{analysis.priority_intervention_areas.length} priorities</span>
+				{#if expandedSections.priorities}
+					<ArrowDown size={16} class="chevron" />
+				{:else}
+					<ArrowRight size={16} class="chevron" />
+				{/if}
+				</div>
+			</button>
+
+			{#if expandedSections.priorities}
+				<div class="section-content">
+					{#each analysis.priority_intervention_areas as priority}
+							<div class="card-container flex flex-col w-full justify-between">
+							<div class="flex flex-col gap-1 w-2/5">
+							<h4 class="priority-name">{priority.intervention_area}</h4>
+							<p class="priority-rationale">{priority.rationale}</p>
+							</div>
+							<div class="flex flex-col gap-1 w-3/5">
+								<span class="actions-label text-semibold">Recommended Action</span>
+								<ul class="actions-list flex flex-col gap-1">
+									{#each priority.immediate_actions.slice(0, 2) as action}
+										<li class="action-item flex flex-row gap-1 align-center"><ArrowRight size={16} class="text-green-600" />{action}</li>
+									{/each}
+								</ul>
+							</div>	
+						</div>
+					{/each}
+				</div>
+			{/if}
+		</div>
+		<!-- Key Interventions Section -->
+		<div class="summary-section">
+			<button 
+				class="section-header"
+				on:click={() => toggleSection('interventions')}
+				aria-expanded={expandedSections.interventions}
+			>
+				<div class="section-header-content">
+					<Target size={20} class="section-icon text-green-600" />
+					<h3 class="section-title">Key Interventions</h3>
+				</div>
+				<div class="section-count-container flex flex-row justify-end gap-16 w-1/5">
+					<span class="section-count">{Object.keys(analysis.key_interventions_by_category).length} categories</span>
+				{#if expandedSections.interventions}
+					<ArrowDown size={16} class="chevron" />
+				{:else}
+					<ArrowRight size={16} class="chevron" />
+				{/if}
+				</div>
+			</button>
+
+			{#if expandedSections.interventions}
+				<div class="section-content">
+					{#each Object.entries(analysis.key_interventions_by_category) as [categoryKey, category]}
+						<div class="intervention-category">
+							<h4 class="category-name">{category.category_name}</h4>
+							<div class="interventions-grid">
+								{#each category.interventions.slice(0, 2) as intervention}
+									<div class="card-container flex flex-col">
+										<span class="intervention-name">{intervention.intervention}</span>
+										<span class="intervention-impact">{intervention.impact_level}</span>
+										<p class="intervention-description">{intervention.description}</p>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/each}
+				</div>
+			{/if}
+		</div>
+
+
 		<!-- Key Hurdles Section -->
 		<div class="summary-section">
 			<button 
@@ -127,13 +214,15 @@
 				<div class="section-header-content">
 					<Users size={20} class="section-icon text-blue-600" />
 					<h3 class="section-title">Key Hurdles by Persona</h3>
-					<span class="section-count">{Object.keys(analysis.key_hurdles_by_persona).length} personas</span>
 				</div>
+				<div class="section-count-container flex flex-row justify-end gap-16 w-1/5">
+				<span class="section-count">{Object.keys(analysis.key_hurdles_by_persona).length} personas</span>
 				{#if expandedSections.hurdles}
 					<ArrowDown size={16} class="chevron" />
 				{:else}
 					<ArrowRight size={16} class="chevron" />
 				{/if}
+				</div>
 			</button>
 
 			{#if expandedSections.hurdles}
@@ -149,9 +238,9 @@
 											<div class="burden-score {getBurdenStyling(hurdle.burden_score)}">
 												{hurdle.burden_score}
 											</div>
+											<ArrowUpRight size={16} class="chevron" />
 										</div>
 										<p class="burden-description">{hurdle.description}</p>
-										<div class="click-hint">Click to see participant quotes</div>
 									</div>
 								{/each}
 							</div>
@@ -171,19 +260,21 @@
 				<div class="section-header-content">
 					<WaveTriangle size={20} class="section-icon text-red-600" />
 					<h3 class="section-title">Highest Dropout Risk Visits</h3>
-					<span class="section-count">{analysis.highest_dropout_risk_visits.length} critical visits</span>
 				</div>
-				{#if expandedSections.dropoutRisks}
+				<div class="section-count-container flex flex-row justify-end gap-16 w-1/5">
+					<span class="section-count">{analysis.highest_dropout_risk_visits.length} critical visits</span>
+					{#if expandedSections.dropoutRisks}
 					<ArrowDown size={16} class="chevron" />
 				{:else}
 					<ArrowRight size={16} class="chevron" />
 				{/if}
+				</div>
 			</button>
 
 			{#if expandedSections.dropoutRisks}
 				<div class="section-content">
 					{#each analysis.highest_dropout_risk_visits as visit}
-						<div class="risk-card">
+						<div class="card-container flex flex-col md:flex-row">
 							<div class="risk-header">
 								<div class="risk-info">
 									<span class="visit-number">Visit {visit.visit_number}</span>
@@ -205,91 +296,6 @@
 			{/if}
 		</div>
 
-		<!-- Key Interventions Section -->
-		<div class="summary-section">
-			<button 
-				class="section-header"
-				on:click={() => toggleSection('interventions')}
-				aria-expanded={expandedSections.interventions}
-			>
-				<div class="section-header-content">
-					<Target size={20} class="section-icon text-green-600" />
-					<h3 class="section-title">Key Interventions</h3>
-					<span class="section-count">{Object.keys(analysis.key_interventions_by_category).length} categories</span>
-				</div>
-				{#if expandedSections.interventions}
-					<ArrowDown size={16} class="chevron" />
-				{:else}
-					<ArrowRight size={16} class="chevron" />
-				{/if}
-			</button>
-
-			{#if expandedSections.interventions}
-				<div class="section-content">
-					{#each Object.entries(analysis.key_interventions_by_category) as [categoryKey, category]}
-						<div class="intervention-category">
-							<h4 class="category-name">{category.category_name}</h4>
-							<div class="interventions-grid">
-								{#each category.interventions.slice(0, 2) as intervention}
-									<div class="intervention-card">
-										<div class="intervention-header">
-											<span class="intervention-name">{intervention.intervention}</span>
-											<span class="impact-badge {getImpactStyling(intervention.impact_level)}">
-												{intervention.impact_level}
-											</span>
-										</div>
-										<p class="intervention-description">{intervention.description}</p>
-									</div>
-								{/each}
-							</div>
-						</div>
-					{/each}
-				</div>
-			{/if}
-		</div>
-
-		<!-- Priority Areas Section -->
-		<div class="summary-section">
-			<button 
-				class="section-header"
-				on:click={() => toggleSection('priorities')}
-				aria-expanded={expandedSections.priorities}
-			>
-				<div class="section-header-content">
-					<TrendUp size={20} class="section-icon text-purple-600" />
-					<h3 class="section-title">Priority Intervention Areas</h3>
-					<span class="section-count">Top {analysis.priority_intervention_areas.length} priorities</span>
-				</div>
-				{#if expandedSections.priorities}
-					<ArrowDown size={16} class="chevron" />
-				{:else}
-					<ArrowRight size={16} class="chevron" />
-				{/if}
-			</button>
-
-			{#if expandedSections.priorities}
-				<div class="section-content">
-					{#each analysis.priority_intervention_areas as priority}
-						<div class="priority-card">
-							<div class="priority-header">
-								<div class="priority-rank">#{priority.priority_rank}</div>
-								<div class="priority-info">
-									<h4 class="priority-name">{priority.intervention_area}</h4>
-									<p class="priority-rationale">{priority.rationale}</p>
-								</div>
-							</div>
-							<div class="immediate-actions">
-								<span class="actions-label">Immediate actions:</span>
-								<ul class="actions-list">
-									{#each priority.immediate_actions.slice(0, 2) as action}
-										<li class="action-item">{action}</li>
-									{/each}
-								</ul>
-							</div>
-						</div>
-					{/each}
-				</div>
-			{/if}
 		</div>
 	</div>
 </div>
@@ -305,7 +311,7 @@
 <style>
 	.analysis-summary {
 		width: 100%;
-		padding-top: 1rem;
+		padding: 1rem 2.25rem 1rem 1.725rem;
 	}
 
 	/* Visit Statistics */
@@ -313,10 +319,6 @@
 		display: flex;
 		gap: 1.5rem;
 		flex-wrap: wrap;
-		padding: 1rem;
-		background: white;
-		border-radius: 8px;
-		border: 1px solid #e2e8f0;
 	}
 
 	.summary-header {
@@ -333,19 +335,17 @@
 	.summary-description {
 		font-size: 0.875rem;
 		color: #64748b;
-		margin: 0;
 	}
 
 	.summary-sections {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 1rem;
 	}
 
 	.summary-section {
-		background: white;
-		border: 1px solid #e2e8f0;
-		border-radius: 6px;
+		border-top: 0.725px solid #29293C;
+		border-bottom: 0.725px solid #29293C;
 		overflow: hidden;
 	}
 
@@ -362,13 +362,17 @@
 	}
 
 	.section-header:hover {
-		background: #f8fafc;
+		border-bottom: 1px solid #29293C;
+		border-top: 1px solid #29293C;
+		font-weight: 600;
 	}
 
 	.section-header-content {
 		display: flex;
+		flex-direction: row;
+		justify-content: start;
 		align-items: center;
-		gap: 0.75rem;
+		gap: 2rem;
 	}
 
 	.section-icon {
@@ -376,18 +380,15 @@
 	}
 
 	.section-title {
-		font-size: 0.95rem;
+		font-size: 0.925rem;
 		font-weight: 600;
 		color: #1e293b;
-		margin: 0;
 	}
 
 	.section-count {
-		font-size: 0.75rem;
-		color: #64748b;
-		background: #f1f5f9;
-		padding: 0.25rem 0.5rem;
-		border-radius: 12px;
+		font-size: 0.8725rem;
+		color: #1e293b;
+		font-weight: 400;
 	}
 
 	.chevron {
@@ -396,16 +397,19 @@
 	}
 
 	.section-content {
-		padding: 0 1rem 1rem 1rem;
-		border-top: 1px solid #f1f5f9;
+		padding: 2rem 1rem 1rem 1rem;
+		display: flex;
+		flex-direction: column;
+		align-items: top;
+		gap: 1rem;
 	}
 
 	/* Persona Cards */
-	.persona-card {
+	.card-container {
+		display: flex;
+		flex-direction: row;
+		gap: 0.5rem;
 		margin-bottom: 1.5rem;
-		padding: 1rem;
-		background: #f8fafc;
-		border-radius: 6px;
 	}
 
 	.persona-name {
@@ -423,9 +427,6 @@
 
 	.burden-item {
 		padding: 0.75rem;
-		background: white;
-		border-radius: 4px;
-		border: 1px solid #e2e8f0;
 	}
 
 	.burden-header {
@@ -525,13 +526,8 @@
 		border: 1px solid #fecaca;
 	}
 
-	/* Intervention Cards */
-	.intervention-category {
-		margin-bottom: 1.5rem;
-	}
-
 	.category-name {
-		font-size: 0.9rem;
+		font-size: .925rem;
 		font-weight: 600;
 		color: #1e293b;
 		margin: 0 0 0.75rem 0;
@@ -560,33 +556,17 @@
 	}
 
 	.intervention-name {
-		font-size: 0.8rem;
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: #1e293b;
 	}
 
-	.impact-badge {
-		font-size: 0.7rem;
-		font-weight: 600;
-		padding: 0.25rem 0.5rem;
-		border-radius: 12px;
-		border: 1px solid;
-	}
 
 	.intervention-description {
-		font-size: 0.75rem;
-		color: #64748b;
+		font-size: 0.7925rem;
+		color: #29293C;
 		margin: 0;
 		line-height: 1.4;
-	}
-
-	/* Priority Cards */
-	.priority-card {
-		margin-bottom: 1rem;
-		padding: 1rem;
-		background: #faf5ff;
-		border: 1px solid #e9d5ff;
-		border-radius: 6px;
 	}
 
 	.priority-header {
@@ -614,41 +594,34 @@
 	}
 
 	.priority-name {
-		font-size: 0.875rem;
+		font-size: 0.925rem;
 		font-weight: 600;
 		color: #1e293b;
 		margin: 0 0 0.25rem 0;
 	}
 
 	.priority-rationale {
-		font-size: 0.75rem;
-		color: #64748b;
+		font-size: 0.875rem;
+		color: #29293C;
 		margin: 0;
 		line-height: 1.4;
 	}
 
-	.immediate-actions {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
 
 	.actions-label {
-		font-size: 0.75rem;
-		color: #64748b;
+		font-size: 0.875rem;
+		color: #29293C;
 		font-weight: 500;
 	}
 
 	.actions-list {
 		margin: 0;
-		padding-left: 1rem;
 	}
 
 	.action-item {
-		font-size: 0.75rem;
+		font-size: 0.875rem;
 		color: #1e293b;
-		line-height: 1.4;
-		margin-bottom: 0.25rem;
+		font-weight: 400;
 	}
 
 	@media (max-width: 768px) {

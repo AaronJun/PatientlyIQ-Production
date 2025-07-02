@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let label: string;
 	export let count: number;
+	export let totalCount: number = count; // Total number of squares to show
 	export let color: string = '#3b82f6'; // Default blue color
 	export let size: string = '6px';
 </script>
@@ -11,10 +12,12 @@
 		<span class="font-semibold text-sm text-slate-800">{count}</span>
 	</div>
 	<div class="squares-container">
-		{#each Array(count) as _, i}
+		{#each Array(totalCount) as _, i}
 			<div 	
 				class="square w-3 h-3" 
-				style="background-color: {color}"
+				class:filled={i < count}
+				class:empty={i >= count}
+				style="background-color: {i < count ? color : 'transparent'}; border-color: {color}"
 			></div>
 		{/each}
 	</div>
@@ -33,7 +36,6 @@
 		color: #374151;
 	}
 
-
 	.squares-container {
 		display: flex;
 		align-items: center;
@@ -45,6 +47,16 @@
 	.square {
 		border-radius: 2px;
 		transition: opacity 0.2s ease;
+		border: 1px solid;
+	}
+
+	.square.filled {
+		/* Filled squares have background color and border */
+	}
+
+	.square.empty {
+		/* Empty squares are transparent with just border */
+		background-color: transparent !important;
 	}
 
 	.square:hover {
