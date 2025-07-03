@@ -51,6 +51,7 @@
   let allData: WordCloudItem[] = [];
   let drugSentimentData: WordCloudItem[] = [];
   let infusionExperienceData: WordCloudItem[] = [];
+  let cnsSentimentData: WordCloudItem[] = [];
   let loading: boolean = true;
   let error: string | null = null;
   
@@ -58,6 +59,7 @@
   let sentimentDriversData: WordCloudItem[] = [];
   let drugSentimentDrivers: WordCloudItem[] = [];
   let infusionExperienceDrivers: WordCloudItem[] = [];
+  let cnsSentimentDrivers: WordCloudItem[] = [];
   let driversLoading: boolean = true;
   let driversError: string | null = null;
   
@@ -70,13 +72,14 @@
   let patientQuotes: PatientQuote[] = [];
   let drugSentimentQuotes: PatientQuote[] = [];
   let infusionExperienceQuotes: PatientQuote[] = [];
+  let cnsSentimentQuotes: PatientQuote[] = [];
   let quotesLoading: boolean = true;
   let quotesError: string | null = null;
 
   // Section expansion state
-  let expandedSection: 'drug' | 'infusion' | null = 'infusion';
+  let expandedSection: 'drug' | 'infusion' | 'cns' | null = 'cns';
 
-  function toggleSection(section: 'drug' | 'infusion') {
+  function toggleSection(section: 'drug' | 'infusion' | 'cns') {
     if (expandedSection === section) {
       expandedSection = null;
     } else {
@@ -84,9 +87,10 @@
     }
   }
 
-  function categorizeQuote(quote: PatientQuote): 'drug' | 'infusion' | 'neither' {
+  function categorizeQuote(quote: PatientQuote): 'drug' | 'infusion' | 'cns' | 'neither' {
     if (quote.group === 'Drug Sentiment') return 'drug';
     if (quote.group === 'Infusion Experience') return 'infusion';
+    if (quote.group === 'CNS Symptoms') return 'cns';
     return 'neither';
   }
 
@@ -149,8 +153,14 @@
         return category === 'infusion';
       });
       
+      cnsSentimentQuotes = patientQuotes.filter(quote => {
+        const category = categorizeQuote(quote);
+        return category === 'cns';
+      });
+      
       console.log('Drug sentiment quotes:', drugSentimentQuotes.length);
       console.log('Infusion experience quotes:', infusionExperienceQuotes.length);
+      console.log('CNS sentiment quotes:', cnsSentimentQuotes.length);
       
       quotesLoading = false;
     } catch (err: unknown) {
@@ -196,21 +206,31 @@
       // Filter data by group
       drugSentimentDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Drug Sentiment');
       infusionExperienceDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Infusion Experience');
+      cnsSentimentDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'CNS Sentiment');
+      
+      // Use CNS sentiment drivers data for the word cloud since there's no CNS data in the main word cloud file
+      cnsSentimentData = cnsSentimentDrivers;
       
       console.log('Sentiment drivers data loaded successfully:', sentimentDriversData.length, 'items');
       console.log('Drug Sentiment drivers:', drugSentimentDrivers.length, 'items');
       console.log('Infusion Experience drivers:', infusionExperienceDrivers.length, 'items');
+      console.log('CNS Sentiment drivers:', cnsSentimentDrivers.length, 'items');
+      console.log('CNS Sentiment data for word cloud:', cnsSentimentData.length, 'items');
       
       // Debug sentiment filtering
       const drugPositive = drugSentimentDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');
       const drugNegative = drugSentimentDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative');
       const infusionPositive = infusionExperienceDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');
       const infusionNegative = infusionExperienceDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative');
+      const cnsPositive = cnsSentimentDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');
+      const cnsNegative = cnsSentimentDrivers.filter(d => d.sentiment === 'entirely negative' || d.sentiment === 'somewhat negative');
       
       console.log('Drug Positive drivers:', drugPositive);
       console.log('Drug Negative drivers:', drugNegative);
       console.log('Infusion Positive drivers:', infusionPositive);
       console.log('Infusion Negative drivers:', infusionNegative);
+      console.log('CNS Positive drivers:', cnsPositive);
+      console.log('CNS Negative drivers:', cnsNegative);
       
       // Check all unique sentiment values
       const allSentiments = [...new Set(sentimentDriversData.map(d => d.sentiment))];
@@ -246,7 +266,7 @@
   </header>
 
   <!-- Main Content -->
-  <main class="container mx-auto md:max-w-6xl px-4 md:px-8">
+  <main class="container mx-auto md:max-w-6xl h-full lg:max-w-8xl px-4 md:px-8">
     {#if !pompeLoading && !pompeError && pompeData}
     <div class="flex flex-col md:flex-row md:justify-between gap-4 py-8">
       <h3 class="text-lg font-semibold mb-2 text-slate-800 md:w-1/3">Patient Sentiment Summary</h3>
@@ -265,7 +285,7 @@
     {:else if pompeData}
       <!-- Sticky Tab Navigation -->
       <div class="sticky top-0 z-10">
-        <div class="tab-navigation bg-slate-200">
+        <div class="tab-navigation">
           <button 
             class="tab-button" 
             class:active={expandedSection === 'infusion'}
@@ -279,6 +299,13 @@
             on:click={() => toggleSection('drug')}
           >
             Drug Sentiment
+          </button>
+          <button 
+            class="tab-button" 
+            class:active={expandedSection === 'cns'}
+            on:click={() => toggleSection('cns')}    
+          >
+            CNS Sentiment
           </button>
         </div>
       </div>
@@ -473,6 +500,81 @@
             </div>
           </div>
         {/if}
+
+        <!-- CNS Sentiment Content -->
+        {#if expandedSection === 'cns'}
+          <div class="tab-panel ">
+            <!-- Patient Quotes for CNS Sentiment -->
+            <div class="quotes-section">
+              <h4 class="text-left text-lg font-semibold mb-4">Quotes from Patients & Caregivers</h4>
+              {#if quotesLoading}
+                <div class="loading-mini">Loading patient quotes...</div>
+              {:else if quotesError}
+                <div class="error-mini">Error loading quotes: {quotesError}</div>
+              {:else if cnsSentimentQuotes.length > 0}
+                <div class="quotes-carousel">
+                  {#each cnsSentimentQuotes as quote}
+                    <div class="quote-card w-full md:min-w-[400px] lg:min-w-[475px] mb-4"
+                     class:positive={quote.sentiment.includes('positive')} class:negative={quote.sentiment.includes('negative')} class:mixed={quote.sentiment === 'mixed'}>
+                      <div class="quote-text">"{quote.quote}"</div>
+                      <div class="quote-sentiment">{quote.sentiment}</div>
+                      <div class="quote-topics">
+                        {#each getTopicTags(quote) as topic}
+                          <span class="topic-tag">{topic}</span>
+                        {/each}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <div class="no-quotes">No CNS sentiment quotes available</div>
+              {/if}
+            </div>
+            
+            <div class="section-content flex flex-col lg:flex-row gap-6">
+              <div class="h-full">
+                <h4 class="text-left text-lg font-semibold mb-4">Discussions of CNS Symptoms</h4>
+                <div class="sentiment-drivers flex flex-col gap-6">
+                  <div class="flex flex-col h-full w-full">
+                    {#if driversLoading}
+                      <div class="loading-mini">Loading drivers data...</div>
+                    {:else if driversError}
+                      <div class="error-mini">Error loading drivers: {driversError}</div>
+                    {:else if cnsSentimentDrivers.length > 0}
+                                              <div class="flex flex-col h-full">
+                          <SentimentBarChart 
+                            data={cnsSentimentDrivers} 
+                            title="CNS Topics, by Mention Rate"
+                            height={1000}
+                            neutralColor="#6b7280"
+                          />
+                        </div>
+                    {:else}
+                      <div class="no-data">No CNS sentiment data available</div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="wordcloud-container flex-1">
+                {#if driversLoading}
+                  <div class="loading-mini">Loading word cloud...</div>
+                {:else if cnsSentimentData.length > 0}
+                  <div class="chart-container h-full">
+                    <h4 class="text-left text-lg font-semibold mb-4">CNS-Related Terms</h4>
+                    <CarbonWordCloud 
+                      dataSource={cnsSentimentData} 
+                      title=""
+                      height="500px"
+                    />
+                  </div>
+                {:else}
+                  <div class="no-data">No CNS data available</div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        {/if}
       </div>
     {/if}
     
@@ -488,7 +590,7 @@
         <p>Unable to load patient data: {error}</p>
         <p>Please check that the data file is accessible and try refreshing the page.</p>
       </div>
-    {:else if drugSentimentData.length === 0 && infusionExperienceData.length === 0}
+    {:else if drugSentimentData.length === 0 && infusionExperienceData.length === 0 && cnsSentimentData.length === 0}
       <div class="error-container">
         <h3>No Data Available</h3>
         <p>No patient data was found in the expected format.</p>
@@ -509,31 +611,28 @@
   /* Header Styles */
 
   /* Tab Navigation Styles */
-  .tab-navigation bg-slate-200 {
+  .tab-navigation {
     display: flex;
-    border: 1px solid #e0e0e0;
+    border-bottom: 1px solid #c1c1c1;
+    background: #f1f5f9;
   }
   
   .tab-button {
-    padding: 1rem 2rem;
+    padding: .5rem 1rem;
     background: transparent;
-    border: .5px solid #e0e0e0;
     color: #6b7280;
-    border-bottom: 1px solid #161616;
     cursor: pointer;
-    border-bottom: 2.25px solid transparent;
     transition: all 0.3s ease;
   }
   
   .tab-button:hover {
-    border-color: #ff1616;
-    background: #f9fafb;
+    border-bottom: 2px solid #ffd69c;
   }
   
   .tab-button.active {
     color: #161616;
-    border-bottom-color: #3b82f6;
-    background: #e8f1ff;
+    border-bottom: 2px solid #3b82f6;
+    font-weight: 600;
   }
   
   .tab-content {
@@ -702,6 +801,11 @@
   .negative-drivers {
     background: #fef2f2;
     border-left: 4px solid #da1e28;
+  }
+  
+  .full-height-chart {
+    background: #f8f9fa;
+    border-left: 4px solid #6b7280;
   }
   
   .positive-drivers h4 {

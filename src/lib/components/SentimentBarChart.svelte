@@ -13,6 +13,7 @@
   export let data: SentimentDriver[] = [];
   export let title: string = "Sentiment Drivers";
   export let height: number = 400;
+  export let neutralColor: string | null = null;
 
   // Color mapping for sentiments
   const sentimentColors = {
@@ -27,6 +28,9 @@
   $: sortedData = [...data].sort((a, b) => b.frequency - a.frequency);
 
   function getColor(sentiment: string): string {
+    if (neutralColor) {
+      return neutralColor;
+    }
     return sentimentColors[sentiment as keyof typeof sentimentColors] || '#6b7280';
   }
 </script>
@@ -36,7 +40,7 @@
   {#if sortedData.length === 0}
     <div class="no-data">No data available</div>
   {:else}
-  <div class="chart-wrapper" style="height: {height}px;">
+  <div class="chart-wrapper">
     <div class="simple-bars">
       {#each sortedData as item, i}
         <div class="bar-row">
@@ -44,7 +48,7 @@
             <div 
               class="bar" 
               style="width: {(item.frequency / Math.max(...sortedData.map(d => d.frequency))) * 85}%; background-color: {getColor(item.sentiment)};"
-              title="{item.word}: {item.frequency} mentions ({item.sentiment})"
+              title="{item.word}: {item.frequency} mentions{neutralColor ? '' : ' (' + item.sentiment + ')'}"
             ></div>
             <div class="bar-value">{item.frequency}</div>
           </div>

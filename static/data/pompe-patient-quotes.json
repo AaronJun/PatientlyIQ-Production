@@ -21,7 +21,6 @@
     "topic_1": "travel logistics",
     "topic_2": "physical experience",
     "topic_3": "emotional impact",
-  
     "group": "Infusion Experience"
   },
   {
@@ -45,7 +44,7 @@
     "sentiment": "entirely negative",
     "topic_1": "treatment response",
     "topic_2": "drug impact",
-    "topic_3": "treatment plateau",    
+    "topic_3": "treatment plateau",
     "group": "Drug Sentiment"
   },
   {
@@ -63,5 +62,89 @@
     "topic_2": "drug impact",
     "topic_3": "side effects",
     "group": "Drug Sentiment"
+  },
+  {
+    "quote": "I feel like this is something many doctors treating Pompe don\u2019t talk about, monitor, or try to prevent. The neurological impact gets overlooked and that\u2019s really frightening for caregivers.",
+    "sentiment": "entirely negative",
+  "topic_1": "clinical gap",
+  "topic_2": "neurological impact",
+  "topic_3": "caregiver concern",
+  "topic_4": "communication gap",
+  "topic_5": "medical oversight",
+  "group": "CNS Symptoms"
+},
+  {
+    "quote": "There\u2019s promising news about a new treatment that can cross the blood-brain barrier to reduce glycogen production, rather than just clearing it from muscle. And if it works, patients may only need treatment every 12 weeks instead of every two!",
+    "sentiment": "entirely positive",
+    "topics": [
+      "future treatments",
+      "CNS impact",
+      "glycogen reduction",
+      "blood-brain barrier",
+      "treatment frequency"
+    ]
+  },
+  {
+    "quote": "These warriors are living longer than before, and now we\u2019re seeing new symptoms. ERT can\u2019t break the blood-brain barrier, which means the build-up in the brain can worsen over time.",
+    "sentiment": "somewhat negative",
+    "topic_1": "longer survival",
+    "topic_2": "cognitive symptoms",
+    "topic_3": "ERT limitations",
+    "topic_4": "parent perspective",
+    "topic_5": "disease progression",
+    "group": "CNS Symptoms"
+  },
+  {
+    "quote": "Some days, the brain fog is so heavy I just want to check myself into a care facility. It\u2019s hard on my family, and I don\u2019t think they truly understand what I\u2019m going through.",
+    "sentiment": "entirely negative",
+    "topic_1": "brain fog",
+    "topic_2": "cognitive burden",
+    "topic_3": "family dynamics",
+    "group": "CNS Symptoms"
+  },
+  {
+    "quote": "I\u2019ve dealt with brain fog before, but after missing just one infusion, the difference was huge\u2014more fatigue, more imbalance, and definitely more mental cloudiness.",
+    "sentiment": "somewhat negative",
+    "topic_1": "brain fog",
+    "topic_2": "treatment gap",
+    "topic_3": "cognitive burden",
+    "group": "CNS Symptoms"
+  },
+  {
+    "quote": "We think the disease is damaging her brain now. Does anyone know if there are medications we can ask for to help treat this?",
+    "sentiment": "entirely negative",
+    "topic_1": "seizures",
+    "topic_2": "brainstem damage",
+    "topic_3": "clinical explanation",
+    "group": "CNS Symptoms"
+  },
+  {
+    "quote": "His doctors now believe Pompe is starting to impact his brain, including the brainstem. They suspect this neurological damage is behind his seizures and the fluctuations in his heart rate and body temperature.",
+    "sentiment": "entirely negative",
+    "topics": [
+      "CNS impact",
+      "seizures",
+      "autonomic symptoms",
+      "disease progression"
+    ]
+  },
+  {
+    "quote": "I've read that reducing sugar and carbs might support brain health. Maybe diet really can act like medicine. Just some things this #pompestrong mom keeps thinking about...",
+    "sentiment": "somewhat negative",
+    "topics": [
+      "diet and management",
+      "CNS impact",
+      "caregiver reflection"
+    ]
+  },
+  {
+    "quote": "His seizures have improved significantly. There haven\u2019t been any major episodes in quite some time. His last heart check was great\u2014no issues at all. Even his neurologist was impressed by his strength, with only slight weakness in his quads and hips.",
+    "sentiment": "entirely positive",
+    "topics": [
+      "seizure management",
+      "cardiac health",
+      "neurological health",
+      "functional strength"
+    ]
   }
 ]

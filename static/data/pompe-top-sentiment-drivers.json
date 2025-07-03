@@ -94,7 +94,7 @@
     "parent topic": "mental health",
     "group": "Infusion Experience",
     "sentiment": "entirely positive"
-  },  
+  },
   {
     "word": "Worsening",
     "frequency": 22,
@@ -103,7 +103,6 @@
     "group": "Drug Sentiment",
     "sentiment": "entirely negative"
   },
-
   {
     "word": "Thankful",
     "frequency": 15,
@@ -143,5 +142,101 @@
     "parent topic": "mental health",
     "group": "Drug Sentiment",
     "sentiment": "entirely positive"
+  },
+  {
+    "word": "Brain fog",
+    "frequency": 9,
+    "topic": "Brain fog",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Seizures",
+    "frequency": 4,
+    "topic": "Seizures",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Cognitive decline",
+    "frequency": 4,
+    "topic": "Memory issues",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Processing difficulty",
+    "frequency": 2,
+    "topic": "Cognitive Function",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Blood-brain barrier",
+    "frequency": 3,
+    "topic": "Treatment Limitation",
+    "parent topic": "Drug Mechanism",
+    "group": "CNS Sentiment",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "Scared",
+    "frequency": 4,
+    "topic": "Caregiver Anxiety",
+    "parent topic": "Mental Health",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Unacknowledged",
+    "frequency": 6,
+    "topic": "Lack of Awareness",
+    "parent topic": "Systemic Issues",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Slower",
+    "frequency": 3,
+    "topic": "Cognitive Speed",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Reading difficulty",
+    "frequency": 2,
+    "topic": "Challenges at School",
+    "parent topic": "Functional Impact",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Lack of awareness",
+    "frequency": 4,
+    "topic": "Physician Awareness",
+    "parent topic": "Systemic Issues",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Coordination issues",
+    "frequency": 5,
+    "topic": "Coordination issues",
+    "parent topic": "CNS Involvement",
+    "group": "CNS Sentiment",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "Diet",
+    "frequency": 6,
+    "topic": "Lifestyle Management",
+    "parent topic": "Supportive Care",
+    "group": "CNS Sentiment",
+    "sentiment": "somewhat positive"
   }
 ]
