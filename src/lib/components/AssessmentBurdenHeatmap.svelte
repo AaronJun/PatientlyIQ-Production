@@ -78,6 +78,10 @@
 
 	// Combine original persona data with consolidated data
 	$: allPersonaData = [...personaBurdenData, ...transformConsolidatedData()];
+	
+	// Separate individual and consolidated personas
+	$: individualPersonas = personaBurdenData;
+	$: consolidatedPersonas = transformConsolidatedData();
 
 	// Get color based on burden level (1-10 scale)
 	function getBurdenColor(score: number): string {
@@ -254,12 +258,19 @@
 		<!-- Grid Header -->
 		<div class="grid-header">
 			<div class="corner-cell"></div>
-			{#each allPersonaData as personaData}
+			{#each individualPersonas as personaData}
 				<div class="persona-header-cell">
 					<span class="persona-name" style="color: {getPersonaColor(personaData.persona)};">
 						{getPersonaShortName(personaData.persona)}
 					</span>
-					
+				</div>
+			{/each}
+			<div class="divider-cell"></div>
+			{#each consolidatedPersonas as personaData}
+				<div class="persona-header-cell consolidated">
+					<span class="persona-name" style="color: {getPersonaColor(personaData.persona)};">
+						{getPersonaShortName(personaData.persona)}
+					</span>
 				</div>
 			{/each}
 		</div>
@@ -278,13 +289,12 @@
 						<div class="assessment-header-cell">
 							<span class="assessment-name">{item.name}</span>
 						</div>
-						{#each allPersonaData as personaData}
+						{#each individualPersonas as personaData}
 							{@const score = getBurdenScore(item.name, personaData.persona)}
 							<div 
 								class="burden-cell" 
 								class:clickable={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona)}
 								class:has-data={score !== undefined}
-								class:consolidated={personaData.persona.includes('_overall') || personaData.persona === 'all_personas'}
 								on:click={() => score !== undefined && handleCellClick(item.name, personaData.persona)}
 								on:keydown={(e) => e.key === 'Enter' && score !== undefined && handleCellClick(item.name, personaData.persona)}
 								tabindex={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona) ? 0 : -1}
@@ -292,7 +302,29 @@
 							>
 								{#if score !== undefined}
 									<div class="cell-content">
-									
+										<span class="score-category" style="background-color: {getBurdenColor(score)};">
+											{getBurdenCategory(score)}
+										</span>
+									</div>
+								{:else}
+									<span class="no-data">—</span>
+								{/if}
+							</div>
+						{/each}
+						<div class="divider-cell"></div>
+						{#each consolidatedPersonas as personaData}
+							{@const score = getBurdenScore(item.name, personaData.persona)}
+							<div 
+								class="burden-cell consolidated" 
+								class:clickable={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona)}
+								class:has-data={score !== undefined}
+								on:click={() => score !== undefined && handleCellClick(item.name, personaData.persona)}
+								on:keydown={(e) => e.key === 'Enter' && score !== undefined && handleCellClick(item.name, personaData.persona)}
+								tabindex={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona) ? 0 : -1}
+								role={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona) ? 'button' : 'cell'}
+							>
+								{#if score !== undefined}
+									<div class="cell-content">
 										<span class="score-category" style="background-color: {getBurdenColor(score)};">
 											{getBurdenCategory(score)}
 										</span>
@@ -346,7 +378,9 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		min-width: 0;
 		margin: 0;
+		flex: 2;
 	}
 
 	.heatmap-header {
@@ -393,14 +427,15 @@
 
 	.grid-container {
 		width: 100%;
-		border: 1px solid #e5e7eb;
+		max-width: none;
+		border: 1px solid #d1d5db;
 		border-radius: 8px;
 		overflow: hidden;
 	}
 
 	.grid-header {
 		display: grid;
-		grid-template-columns: 200px repeat(6, 1fr);
+		grid-template-columns: 5rem repeat(3, 1fr) 10px repeat(3, 1fr);
 		border-bottom: 1px solid #d1d5db;
 		background: #f9fafb;
 	}
@@ -421,6 +456,8 @@
 		gap: 0.25rem;
 		align-items: center;
 		justify-content: center;
+		min-height: 80px;
+		min-width: 0;
 	}
 
 	.persona-header-cell.consolidated {
@@ -430,6 +467,29 @@
 
 	.persona-header-cell:last-child {
 		border-right: none;
+	}
+
+	.divider-cell {
+		background: linear-gradient(to bottom, #e5e7eb 0%, #e5e7eb 100%);
+		border-left: 1px solid #9ca3af;
+		border-right: 1px solid #9ca3af;
+		position: relative;
+		min-height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.divider-cell::before {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 1px;
+		height: 60%;
+		background: #9ca3af;
 	}
 
 	.persona-name {
@@ -446,8 +506,8 @@
 
 	.grid-row {
 		display: grid;
-		grid-template-columns: 200px repeat(6, 1fr);
-		border-bottom: 1px solid #e5e7eb;
+		grid-template-columns: 5rem repeat(3, 5fr) 10px repeat(3, 5fr);
+		border-bottom: 1px solid #d1d5db;
 	}
 
 	.grid-row:last-child {
@@ -495,17 +555,19 @@
 
 	.burden-cell {
 		padding: 0.75rem;
-		border-right: 1px solid #FBBF24;
+		border-right: 1px solid #d1d5db;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		min-height: 80px;
+		min-width: 0;
 		position: relative;
 		transition: all 0.2s ease;
 	}
 
 	.burden-cell.consolidated {
-		border-left: 3px solid #fbbf24;
+		background-color: #fefce8;
+		font-weight: 600;
 	}
 
 	.burden-cell:last-child {
@@ -515,7 +577,6 @@
 	.burden-cell.clickable {
 		cursor: pointer;
 		background-color: #f9fafb;
-		border: .525px solid #99F0FA;
 	}
 
 	.burden-cell.clickable:hover {
@@ -590,13 +651,13 @@
 		width: 12px;
 		height: 12px;
 		border-radius: 3px;
-		border: 1px solid rgba(0, 0, 0, 0.1);
+		border: 1px solid #d1d5db;
 	}
 
 	@media (max-width: 1200px) {
 		.grid-header,
 		.grid-row {
-			grid-template-columns: 150px repeat(6, 1fr);
+			grid-template-columns: 4rem repeat(3, 1fr) 10px repeat(3, 1fr);
 		}
 
 		.assessment-header-cell {
@@ -652,8 +713,8 @@
 
 		.grid-header,
 		.grid-row {
-			grid-template-columns: 120px repeat(6, minmax(100px, 1fr));
-			min-width: 800px;
+			grid-template-columns: 3rem repeat(3, minmax(80px, 1fr)) 8px repeat(3, minmax(80px, 1fr));
+			min-width: 600px;
 		}
 	}
 </style> 

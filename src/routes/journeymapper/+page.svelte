@@ -221,9 +221,9 @@
 		</header>
 
 		<!-- Navigation Tabs -->
-		<div class="tabs-container">
+		<div class="tabs-container w-full">
 			<Tabs.Root value="summary" class="w-full">
-				<Tabs.List class="tabs-list flex flex-row align-middle w-full justify-between">
+				<Tabs.List class="flex flex-row align-middle w-full justify-between">
 					<div class="flex flex-row align-middle justify-start w-full gap-4">
 					<Tabs.Trigger value="summary" class="tab-trigger flex flex-row align-middle gap-2">
 						<ChartLine size={16} class="mr-2" />
@@ -231,7 +231,7 @@
 					</Tabs.Trigger>
 					<Tabs.Trigger value="schedule" class="tab-trigger flex flex-row align-middle gap-2">
 						<Calendar size={16} class="mr-2" />
-						<p class="text-xs">Schedule</p>
+					<p class="text-xs">Schedule</p>
 					</Tabs.Trigger>	
 					<Tabs.Trigger value="assessments" class="tab-trigger flex flex-row align-middle gap-2">
 						<ClipboardText size={16} class="mr-2" />
@@ -263,7 +263,7 @@
 				<Tabs.Content value="schedule" class="tab-content">
 					<div class="content-wrapper">
 						{#if currentVisitScheduleData?.visits?.length > 0}
-							<JourneyContainer visits={currentVisitScheduleData.visits} {timelineWidth} />
+							<JourneyContainer visits={currentVisitScheduleData.visits} />
 						{:else}
 							<div class="loading-state">Loading study data...</div>
 						{/if}
@@ -277,7 +277,7 @@
 								<AssessmentBurdenHeatmap 
 									showBurdenScores={false}
 									maxSquares={8}
-									squareSize="12px"
+									squareSize="10px"
 								/>
 							</div>
 							
@@ -288,7 +288,7 @@
 									Hover or click on assessment names to see related sentiment terms.
 								</p>
 								<SentimentNetworkGraph 
-									width={1200}
+									width={1200}	
 									height={1200}
 								/>
 							</div>
@@ -604,11 +604,6 @@
 
 	/* ===== TABS CONTAINER STYLES ===== */
 	
-	:global(.tabs-container [data-tabs-root]) {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
 
 
 

@@ -30,25 +30,73 @@
 
 	let mounted = false;
 
-	// Calculate dynamic cell width based on actual visit spacing (same logic as PersonaGrid)
-	$: calculatedCellWidth = (() => {
-		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
+	// Dynamic cell sizing configuration
+	$: cellSizingConfig = {
+		minCellWidth: 80,
+		maxCellWidth: 200,
+		preferredCellWidth: 120,
+		adaptToContent: true,
+		responsiveBreakpoints: {
+			mobile: 480,
+		tablet: 768
+		}
+	};
+
+	// Calculate dynamic cell dimensions based on visits and available space
+	$: dynamicCellDimensions = (() => {
+		if (processedVisits.length <= 1) {
+			return {
+				cellWidth: cellSizingConfig.preferredCellWidth,
+				totalWidth: timelineWidth,
+				cellPositions: [0.5] // Single cell centered
+			};
+		}
+
+		// Calculate available space for cells
+		const availableWidth = timelineWidth;
+		const totalCells = processedVisits.length;
 		
-		// Calculate the minimum spacing between consecutive visits
-		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
-		let minSpacing = Infinity;
+		// Calculate ideal cell width based on available space
+		const idealCellWidth = Math.floor(availableWidth / totalCells);
 		
-		for (let i = 1; i < visitPositions.length; i++) {
-			const spacing = visitPositions[i] - visitPositions[i - 1];
-			minSpacing = Math.min(minSpacing, spacing);
+		// Apply constraints
+		const constrainedCellWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, idealCellWidth)
+		);
+
+		// Calculate positions for each cell
+		const cellPositions = processedVisits.map(visit => visit.timelinePosition);
+		
+		// Calculate spacing between cells
+		const cellSpacings = [];
+		for (let i = 1; i < cellPositions.length; i++) {
+			cellSpacings.push(cellPositions[i] - cellPositions[i - 1]);
 		}
 		
-		// Cell width should be slightly smaller than minimum spacing to avoid overlap
-		// but wide enough for visit names (minimum 80px, maximum 200px)
-		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
-		
-		return cellWidth;
+		// Use minimum spacing as basis for dynamic width
+		const minSpacing = cellSpacings.length > 0 ? Math.min(...cellSpacings) : 1;
+		const spacingBasedWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, minSpacing * timelineWidth * 0.8)
+		);
+
+		// Choose between ideal and spacing-based width
+		const finalCellWidth = cellSizingConfig.adaptToContent 
+			? Math.min(constrainedCellWidth, spacingBasedWidth)
+			: constrainedCellWidth;
+
+		return {
+			cellWidth: finalCellWidth,
+			totalWidth: timelineWidth,
+			cellPositions: cellPositions,
+			spacingBasedWidth: spacingBasedWidth,
+			idealCellWidth: idealCellWidth
+		};
 	})();
+
+	// Legacy support - maintaining backward compatibility
+	$: calculatedCellWidth = dynamicCellDimensions.cellWidth;
 
 	// Timeline positioning logic (shared between components)
 	function parseStudyDay(visit: Visit): number {
@@ -95,15 +143,24 @@
 			<div class="header-left-spacer" style="width: {LEFT_PANEL_WIDTH}px;"></div>
 			
 			<!-- Timeline content area -->
-			<div class="timeline-content-area" style="width: {timelineWidth}px;">
+			<div class="timeline-content-area" style="
+				width: {timelineWidth}px;
+				--timeline-width: {timelineWidth}px;
+				--cell-min-width: {cellSizingConfig.minCellWidth}px;
+				--cell-max-width: {cellSizingConfig.maxCellWidth}px;
+				--cell-count: {processedVisits.length};
+				--dynamic-cell-width: {dynamicCellDimensions.cellWidth}px;
+			">
 				<!-- Visit numbers row -->
 				<div class="header-row visit-numbers-row">
-					{#each processedVisits as visit}
+					{#each processedVisits as visit, index}
 						<div 
-							class="header-cell visit-number-cell"
+							class="header-cell visit-number-cell dynamic-cell"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
-								width: {calculatedCellWidth}px;
+								--visit-position: {visit.timelinePosition};
+								--cell-index: {index};
+								left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 1.25)}px;
+								width: {dynamicCellDimensions.cellWidth}px;
 							"
 						>
 							<span class="visit-number">V{visit.visit_number}</span>
@@ -113,12 +170,14 @@
 
 				<!-- Study weeks row -->
 				<div class="header-row study-weeks-row">
-					{#each processedVisits as visit}
+					{#each processedVisits as visit, index}
 						<div 
-							class="header-cell study-week-cell"
+							class="header-cell study-week-cell dynamic-cell w-full"
 							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
-								width: {calculatedCellWidth * 2}px;
+								--visit-position: {visit.timelinePosition};
+								--cell-index: {index};
+								left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 1.25)}px;
+								width: {dynamicCellDimensions.cellWidth * 2}px;
 							"
 						>
 							<span class="study-week">
@@ -128,21 +187,6 @@
 					{/each}
 				</div>
 
-				<!-- Visit names row -->
-				<div class="header-row visit-names-row">
-					{#each processedVisits as visit}
-						<div 
-							class="header-cell visit-name-cell"
-							style="
-								left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 1.25)}px;
-								width: {calculatedCellWidth}px;
-							"
-							title="{visit.name}"
-						>
-							<span class="visit-name">{visit.name}</span>
-						</div>
-					{/each}
-				</div>
 			</div>
 		</div>
 
@@ -167,7 +211,6 @@
 		flex-direction: column;
 		background: #f9fafb;
 		border-radius: 8px;
-		overflow: hidden;
 	}
 
 	/* === UNIFIED TIMELINE HEADER === */
@@ -177,6 +220,7 @@
 		border-bottom: 2px solid #e5e7eb;
 		z-index: 20;
 		display: flex;
+		overflow: hidden;
 	}
 
 	.header-left-spacer {
@@ -188,6 +232,10 @@
 		font-weight: 600;
 		color: #374151;
 		font-size: 0.9rem;
+		position: sticky;
+		left: 0;
+		z-index: 25;
+		flex-shrink: 0;
 	}
 
 	.header-left-spacer::after {
@@ -197,6 +245,15 @@
 	.timeline-content-area {
 		position: relative;
 		flex: 1;
+		overflow-x: auto;
+		overflow-y: hidden;
+		/* Support for dynamic cell sizing */
+		--cell-spacing: calc(var(--timeline-width) / var(--cell-count));
+		--adaptive-cell-width: clamp(
+			var(--cell-min-width),
+			var(--cell-spacing),
+			var(--cell-max-width)
+		);
 	}
 
 	.header-row {
@@ -247,6 +304,23 @@
 		box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 	}
 
+	/* Dynamic cell sizing support */
+	.dynamic-cell {
+		/* Use CSS custom properties for responsive sizing */
+		min-width: var(--cell-min-width, 80px);
+		max-width: var(--cell-max-width, 200px);
+		width: var(--dynamic-cell-width, var(--adaptive-cell-width, 120px));
+		
+		/* Enable smooth transitions when cell dimensions change */
+		transition: all 0.2s ease, width 0.3s ease;
+		
+		/* Ensure content remains centered */
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	.visit-number {
 		font-weight: 700;
 		font-size: 0.9rem;
@@ -274,12 +348,14 @@
 		position: relative;
 		background: white;
 		border-bottom: 1px solid #e5e7eb;
+		overflow: hidden;
 	}
 
 	.persona-section {
 		position: relative;
 		background: #f9fafb;
 		min-height: 300px; /* Ensure minimum height */
+		overflow: hidden;
 	}
 
 	/* === RESPONSIVE DESIGN === */

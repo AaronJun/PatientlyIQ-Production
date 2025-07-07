@@ -53,6 +53,74 @@
 	let mounted = false;
 	let drawerOpen = false;
 
+	// Dynamic cell sizing configuration
+	$: cellSizingConfig = {
+		minCellWidth: 80,
+		maxCellWidth: 200,
+		preferredCellWidth: 120,
+		adaptToContent: true,
+		responsiveBreakpoints: {
+			mobile: 480,
+			tablet: 768
+		}
+	};
+
+	// Calculate dynamic cell dimensions based on visits and available space
+	$: dynamicCellDimensions = (() => {
+		if (processedVisits.length <= 1) {
+			return {
+				cellWidth: cellSizingConfig.preferredCellWidth,
+				totalWidth: timelineWidth,
+				cellPositions: [0.5] // Single cell centered
+			};
+		}
+
+		// Calculate available space for cells
+		const availableWidth = timelineWidth;
+		const totalCells = processedVisits.length;
+		
+		// Calculate ideal cell width based on available space
+		const idealCellWidth = Math.floor(availableWidth / totalCells);
+		
+		// Apply constraints
+		const constrainedCellWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, idealCellWidth)
+		);
+
+		// Calculate positions for each cell
+		const cellPositions = processedVisits.map(visit => visit.timelinePosition);
+		
+		// Calculate spacing between cells
+		const cellSpacings = [];
+		for (let i = 1; i < cellPositions.length; i++) {
+			cellSpacings.push(cellPositions[i] - cellPositions[i - 1]);
+		}
+		
+		// Use minimum spacing as basis for dynamic width
+		const minSpacing = cellSpacings.length > 0 ? Math.min(...cellSpacings) : 1;
+		const spacingBasedWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, minSpacing * timelineWidth * 0.8)
+		);
+
+		// Choose between ideal and spacing-based width
+		const finalCellWidth = cellSizingConfig.adaptToContent 
+			? Math.min(constrainedCellWidth, spacingBasedWidth)
+			: constrainedCellWidth;
+
+		return {
+			cellWidth: finalCellWidth,
+			totalWidth: timelineWidth,
+			cellPositions: cellPositions,
+			spacingBasedWidth: spacingBasedWidth,
+			idealCellWidth: idealCellWidth
+		};
+	})();
+
+	// Legacy support - maintaining backward compatibility
+	$: calculatedCellWidth = dynamicCellDimensions.cellWidth;
+
 	// Get burden color based on score (needed for tooltip)
 	function getBurdenColor(score: number): string {
 		return timelineStyles.getBurdenColor(score);
@@ -208,26 +276,6 @@
 		studyDay: parseStudyDay(visit)
 	})).sort((a, b) => a.studyDay - b.studyDay);
 
-	// Calculate dynamic cell width based on actual visit spacing (same logic as JourneyContainer)
-	$: calculatedCellWidth = (() => {
-		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
-		
-		// Calculate the minimum spacing between consecutive visits
-		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
-		let minSpacing = Infinity;
-		
-		for (let i = 1; i < visitPositions.length; i++) {
-			const spacing = visitPositions[i] - visitPositions[i - 1];
-			minSpacing = Math.min(minSpacing, spacing);
-		}
-		
-		// Cell width should be slightly smaller than minimum spacing to avoid overlap
-		// but wide enough for visit names (minimum 80px, maximum 200px)
-		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
-		
-		return cellWidth;
-	})();
-
 	onMount(() => {
 		mounted = true;
 	});
@@ -251,7 +299,7 @@
 	}
 </script>
 
-{#if mounted}
+	{#if mounted}
 	<div class="timeline-grid-container" class:no-header={hideHeader}>
 		{#if !hideHeader}
 			<!-- Visit headers and phases -->
@@ -259,13 +307,21 @@
 				<!-- Visit numbers row -->
 				<div class="visit-numbers-row">
 					<div class="left-spacer"></div>
-					<div class="visit-numbers-container" style="width: {timelineWidth}px;">
-						{#each processedVisits as visit}
+					<div class="visit-numbers-container" style="
+						--timeline-width: {timelineWidth}px;
+						--cell-min-width: {cellSizingConfig.minCellWidth}px;
+						--cell-max-width: {cellSizingConfig.maxCellWidth}px;
+						--cell-count: {processedVisits.length};
+						--dynamic-cell-width: {dynamicCellDimensions.cellWidth}px;
+					">
+						{#each processedVisits as visit, index}
 							<div 
-								class="visit-number-cell"
+								class="visit-number-cell dynamic-cell"
 								style="
-									left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
-									width: {calculatedCellWidth}px;
+									--visit-position: {visit.timelinePosition};
+									--cell-index: {index};
+									left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
+									width: {dynamicCellDimensions.cellWidth}px;
 								"
 								on:mouseenter={() => handleVisitHover(visit)}
 								on:mouseleave={handleVisitLeave}
@@ -451,6 +507,7 @@
 	.timeline-header-section {
 		background: var(--timeline-color-secondary);
 		border-bottom: var(--timeline-dim-borderThin) solid var(--timeline-color-borderLight);
+		overflow: hidden;
 	}
 
 	.visit-numbers-row,
@@ -469,6 +526,15 @@
 		position: relative;
 		height: 100%;
 		flex: 1;
+		overflow-x: auto;
+		overflow-y: hidden;
+		/* Support for dynamic cell sizing */
+		--cell-spacing: calc(var(--timeline-width) / var(--cell-count));
+		--adaptive-cell-width: clamp(
+			var(--cell-min-width),
+			var(--cell-spacing),
+			var(--cell-max-width)
+		);
 	}
 
 	.left-spacer {
@@ -482,6 +548,9 @@
 		color: var(--timeline-color-textSecondary);
 		font-size: var(--timeline-font-sm);
 		flex-shrink: 0;
+		position: sticky;
+		left: 0;
+		z-index: 10;
 	}
 
 	.visit-number-cell {
@@ -495,6 +564,40 @@
 		cursor: pointer;
 		transition: var(--timeline-transition-normal);
 		border-radius: var(--timeline-dim-radiusSmall);
+	}
+
+	/* Dynamic cell sizing support */
+	.dynamic-cell {
+		/* Use CSS custom properties for responsive sizing */
+		min-width: var(--cell-min-width, 80px);
+		max-width: var(--cell-max-width, 200px);
+		width: var(--dynamic-cell-width, var(--adaptive-cell-width, 120px));
+		
+		/* Enable smooth transitions when cell dimensions change */
+		transition: var(--timeline-transition-normal), width 0.3s ease;
+		
+		/* Ensure content remains centered */
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Responsive behavior for dynamic cells */
+	@container (max-width: 768px) {
+		.dynamic-cell {
+			min-width: 60px;
+			max-width: 120px;
+			font-size: 0.8rem;
+		}
+	}
+
+	@container (max-width: 480px) {
+		.dynamic-cell {
+			min-width: 50px;
+			max-width: 100px;
+			font-size: 0.75rem;
+		}
 	}
 
 	.phase-cell {
@@ -844,6 +947,9 @@
 		.phase-info-container,
 		.visit-details-container {
 			overflow-x: auto;
+			/* Adjust cell spacing for mobile */
+			--cell-min-width: 60px;
+			--cell-max-width: 120px;
 		}
 		
 		.tooltip {
@@ -878,6 +984,11 @@
 		.visit-number-cell,
 		.phase-cell,
 		.visit-detail-cell {
+			padding: var(--timeline-spacing-sm) var(--timeline-spacing-xs);
+		}
+
+		/* Dynamic cell responsive adjustments */
+		.dynamic-cell {
 			padding: var(--timeline-spacing-sm) var(--timeline-spacing-xs);
 		}
 

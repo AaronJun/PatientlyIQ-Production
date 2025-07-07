@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { fade, draw } from 'svelte/transition';
 	import SentimentCircle from './SentimentCircle.svelte';
 	import SentimentLine from './SentimentLine.svelte';
 	import Drawer from './Drawer.svelte';
@@ -70,9 +71,8 @@
 
 	// Constants
 	const PERSONA_HEIGHT = 100;
-	const EXPANDED_HEIGHT = 250;
+	const EXPANDED_HEIGHT = 150; // Reduced since we removed sentiment scale
 	const LEFT_PANEL_WIDTH = 250;
-	const SENTIMENT_SCALE_HEIGHT = 100; // Height for sentiment scale when expanded
 	const TIMELINE_HEADER_HEIGHT = 120; // Height for the timeline header (increased for multi-row header)
 
 	let mounted = false;
@@ -391,25 +391,73 @@
 		studyDay: parseStudyDay(visit)
 	})).sort((a, b) => a.studyDay - b.studyDay);
 
-	// Calculate dynamic cell width based on actual visit spacing (same logic as JourneyContainer)
-	$: calculatedCellWidth = (() => {
-		if (processedVisits.length <= 1) return 120; // Increased default minimum width for visit names
+	// Dynamic cell sizing configuration
+	$: cellSizingConfig = {
+		minCellWidth: 80,
+		maxCellWidth: 200,
+		preferredCellWidth: 120,
+		adaptToContent: true,
+		responsiveBreakpoints: {
+			mobile: 480,
+			tablet: 768
+		}
+	};
+
+	// Calculate dynamic cell dimensions based on visits and available space
+	$: dynamicCellDimensions = (() => {
+		if (processedVisits.length <= 1) {
+			return {
+				cellWidth: cellSizingConfig.preferredCellWidth,
+				totalWidth: timelineWidth,
+				cellPositions: [0.5] // Single cell centered
+			};
+		}
+
+		// Calculate available space for cells
+		const availableWidth = timelineWidth;
+		const totalCells = processedVisits.length;
 		
-		// Calculate the minimum spacing between consecutive visits
-		const visitPositions = processedVisits.map(visit => visit.timelinePosition * timelineWidth);
-		let minSpacing = Infinity;
+		// Calculate ideal cell width based on available space
+		const idealCellWidth = Math.floor(availableWidth / totalCells);
 		
-		for (let i = 1; i < visitPositions.length; i++) {
-			const spacing = visitPositions[i] - visitPositions[i - 1];
-			minSpacing = Math.min(minSpacing, spacing);
+		// Apply constraints
+		const constrainedCellWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, idealCellWidth)
+		);
+
+		// Calculate positions for each cell
+		const cellPositions = processedVisits.map(visit => visit.timelinePosition);
+		
+		// Calculate spacing between cells
+		const cellSpacings = [];
+		for (let i = 1; i < cellPositions.length; i++) {
+			cellSpacings.push(cellPositions[i] - cellPositions[i - 1]);
 		}
 		
-		// Cell width should be slightly smaller than minimum spacing to avoid overlap
-		// but wide enough for visit names (minimum 80px, maximum 200px)
-		const cellWidth = Math.max(80, Math.min(200, minSpacing * 0.8));
-		
-		return cellWidth;
+		// Use minimum spacing as basis for dynamic width
+		const minSpacing = cellSpacings.length > 0 ? Math.min(...cellSpacings) : 1;
+		const spacingBasedWidth = Math.max(
+			cellSizingConfig.minCellWidth,
+			Math.min(cellSizingConfig.maxCellWidth, minSpacing * timelineWidth * 0.8)
+		);
+
+		// Choose between ideal and spacing-based width
+		const finalCellWidth = cellSizingConfig.adaptToContent 
+			? Math.min(constrainedCellWidth, spacingBasedWidth)
+			: constrainedCellWidth;
+
+		return {
+			cellWidth: finalCellWidth,
+			totalWidth: timelineWidth,
+			cellPositions: cellPositions,
+			spacingBasedWidth: spacingBasedWidth,
+			idealCellWidth: idealCellWidth
+		};
 	})();
+
+	// Legacy support - maintaining backward compatibility
+	$: calculatedCellWidth = dynamicCellDimensions.cellWidth;
 
 	// Get burden color based on score
 	function getBurdenColor(score: number): string {
@@ -672,26 +720,7 @@
 		return finalSentiment;
 	}
 
-	// Calculate sentiment circle position relative to its grid cell (reactive function)
-	function getSentimentCircleY(sentiment: number, personaIndex: number): number {
-		const persona = personas[personaIndex];
-		if (!persona || !persona.expanded) {
-			// When collapsed, center the circle in the persona row
-			return PERSONA_HEIGHT / 2;
-		}
-		
-		// When expanded, position based on sentiment scale
-		// The sentiment area starts after the persona content (PERSONA_HEIGHT)
-		// and has SENTIMENT_SCALE_HEIGHT for the scale
-		const sentimentAreaStart = PERSONA_HEIGHT;
-		const sentimentAreaHeight = SENTIMENT_SCALE_HEIGHT;
-		
-		// Map sentiment (1-10) to position within sentiment area (higher sentiment = higher on scale)
-		// 10 = top of scale (lowest Y), 1 = bottom of scale (highest Y)
-		const sentimentPosition = ((10 - sentiment) / 9) * sentimentAreaHeight;
-		
-		return sentimentAreaStart + sentimentPosition;
-	}
+
 
 	// Calculate persona top positions reactively - triggers on any expansion change
 	$: personaTopPositions = personas.map((_, index) => {
@@ -718,41 +747,9 @@
 		// This reactive block ensures sentiment calculations update when both data sources are available
 	}
 
-	// Reactive calculation of all sentiment circle positions to ensure they update when personas expand/collapse
-	$: sentimentCirclePositions = personas.length > 0 && processedVisits.length > 0 ? personas.map((persona, personaIndex) => {
-		return processedVisits.map((visit, visitIndex) => {
-			const sentiment = getSentimentScore(persona, visit.visit_number);
-			const relativeY = getSentimentCircleY(sentiment, personaIndex);
-			return {
-				personaIndex,
-				visitIndex,
-				sentiment,
-				y: relativeY,
-				absoluteY: gridPositions.personaTops[personaIndex] + relativeY
-			};
-		});
-	}) : [];
 
-	// Get sentiment line points for a persona (reactive) - synchronized with circle positions
-	$: sentimentLinePoints = sentimentCirclePositions.map((personaCircles, personaIndex) => {
-		const persona = personas[personaIndex];
-		if (!persona?.expanded || personaCircles.length === 0) return [];
-		
-		return personaCircles.map((circleData, visitIndex) => {
-			const visit = processedVisits[visitIndex];
-			if (!visit) return { x: 0, y: 0 }; // Safety fallback
-			
-			return {
-				x: visit.timelinePosition * timelineWidth,
-				y: circleData.absoluteY
-			};
-		}).filter(point => point.x !== 0 || point.y !== 0); // Remove invalid points
-	});
 
-	// Get sentiment line points for a persona (function for backward compatibility)
-	function getSentimentLinePoints(personaIndex: number): Array<{x: number, y: number}> {
-		return sentimentLinePoints[personaIndex] || [];
-	}
+
 
 	// Determine study phase based on visit number
 	function getStudyPhase(visitNumber: number): string {
@@ -978,7 +975,7 @@
 							role="button"
 							tabindex="0"
 						>
-							<div class="persona-content">
+							<div class="persona-content" style="height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px;">
 								<div class="persona-avatar" style="background-color: {persona.color}20;">
 									{#if persona.avatar.startsWith('/') || persona.avatar.includes('.svg')}
 										<img src={persona.avatar} alt="{persona.name} avatar" class="avatar-svg" />
@@ -1003,37 +1000,7 @@
 								</button>
 							</div>
 							
-							{#if persona.expanded}
-								<div class="sentiment-scale">
-									<div class="sentiment-scale-labels">
-										<div class="sentiment-scale-item high">
-											<span class="scale-number">10</span>
-											<span class="scale-label">Very Positive</span>
-											<div class="scale-color-bar" style="background: #22c55e;"></div>
-										</div>
-										<div class="sentiment-scale-item medium-high">
-											<span class="scale-number">7</span>
-											<span class="scale-label">Positive</span>
-											<div class="scale-color-bar" style="background: #84cc16;"></div>
-										</div>
-										<div class="sentiment-scale-item neutral">
-											<span class="scale-number">5</span>
-											<span class="scale-label">Neutral</span>
-											<div class="scale-color-bar" style="background: #eab308;"></div>
-										</div>
-										<div class="sentiment-scale-item medium-low">
-											<span class="scale-number">3</span>
-											<span class="scale-label">Strained</span>
-											<div class="scale-color-bar" style="background: #f97316;"></div>
-										</div>
-										<div class="sentiment-scale-item low">
-											<span class="scale-number">1</span>
-											<span class="scale-label">Very Negative</span>
-											<div class="scale-color-bar" style="background: #ef4444;"></div>
-										</div>
-									</div>
-								</div>
-							{/if}
+
 						</div>
 						
 						<!-- Add separator line between persona rows -->
@@ -1060,15 +1027,25 @@
 				<div class="timeline-and-grid-container" style="width: {timelineWidth}px; height: {(hideHeader ? 0 : headerHeight) + gridHeight}px;">
 					<!-- Unified Timeline Header -->
 					{#if !hideHeader}
-						<div class="unified-timeline-header-fixed" style="height: {headerHeight}px; width: {timelineWidth}px;">
+						<div class="unified-timeline-header-fixed" style="
+							height: {headerHeight}px; 
+							width: {timelineWidth}px;
+							--timeline-width: {timelineWidth}px;
+							--cell-min-width: {cellSizingConfig.minCellWidth}px;
+							--cell-max-width: {cellSizingConfig.maxCellWidth}px;
+							--cell-count: {processedVisits.length};
+							--dynamic-cell-width: {dynamicCellDimensions.cellWidth}px;
+						">
 							<!-- Visit numbers row -->
 							<div class="header-row visit-numbers-row">
-								{#each processedVisits as visit}
+								{#each processedVisits as visit, index}
 									<div 
-										class="header-cell visit-number-cell"
+										class="header-cell visit-number-cell dynamic-cell"
 										style="
-											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
-											width: {calculatedCellWidth}px;
+											--visit-position: {visit.timelinePosition};
+											--cell-index: {index};
+											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
+											width: {dynamicCellDimensions.cellWidth}px;
 										"
 									>
 										<span class="visit-number">V{visit.visit_number}</span>
@@ -1078,12 +1055,14 @@
 
 							<!-- Study weeks row -->
 							<div class="header-row study-weeks-row">
-								{#each processedVisits as visit}
+								{#each processedVisits as visit, index}
 									<div 
-										class="header-cell study-week-cell"
+										class="header-cell study-week-cell dynamic-cell"
 										style="
-											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
-											width: {calculatedCellWidth}px;
+											--visit-position: {visit.timelinePosition};
+											--cell-index: {index};
+											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
+											width: {dynamicCellDimensions.cellWidth}px;
 										"
 									>
 										<span class="study-week">
@@ -1095,12 +1074,14 @@
 
 							<!-- Visit names row -->
 							<div class="header-row visit-names-row">
-								{#each processedVisits as visit}
+								{#each processedVisits as visit, index}
 									<div 
-										class="header-cell visit-name-cell"
+										class="header-cell visit-name-cell dynamic-cell"
 										style="
-											left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
-											width: {calculatedCellWidth}px;
+											--visit-position: {visit.timelinePosition};
+											--cell-index: {index};
+											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
+											width: {dynamicCellDimensions.cellWidth}px;
 										"
 										title="{visit.name}"
 									>
@@ -1135,52 +1116,63 @@
 				></div>
 			{/each}
 
-			<!-- Sentiment grid lines (when expanded) -->
-			{#each personas as persona, personaIndex}
-				{#if persona.expanded}
-					<!-- Horizontal grid lines for sentiment scale (1-10) -->
-					{#each Array(10) as _, scaleIndex}
-						{@const sentimentLevel = scaleIndex + 1}
-						{@const lineY = gridPositions.personaTops[personaIndex] + getSentimentCircleY(sentimentLevel, personaIndex)}
-						<div 
-							class="sentiment-grid-line"
-							style="
-								top: {lineY}px;
-								left: {LEFT_PANEL_WIDTH}px;
-								width: {timelineWidth}px;
-							"
-							title="Sentiment Level {sentimentLevel}"
-						></div>
-					{/each}
-				{/if}
-			{/each}
 
-			<!-- Sentiment lines (when expanded) -->
-			{#each personas as persona, personaIndex}
-				{#if persona.expanded}
-					<SentimentLine 
-						points={getSentimentLinePoints(personaIndex)}
-						color={persona.color}
-						strokeWidth={2}
-						opacity={0.6}
-					/>
-				{/if}
-			{/each}
+
+			<!-- Sentiment connecting lines -->
+			{#if mounted}
+				{#each personas as persona, personaIndex}
+					{@const points = processedVisits.map((visit, visitIndex) => {
+						const sentiment = getSentimentScore(persona, visit.visit_number);
+						const cellHeight = persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT;
+						const padding = 16;
+						const availableHeight = cellHeight - (padding * 2);
+						const sentimentY = padding + (availableHeight * (1 - (sentiment / 10)));
+						
+						return {
+							x: visit.timelinePosition * timelineWidth,
+							y: gridPositions.personaTops[personaIndex] + sentimentY
+						};
+					})}
+					
+					<svg 
+						class="sentiment-line-container"
+						width={timelineWidth} 
+						height={gridHeight}
+						style="position: absolute; top: 0; left: 0; pointer-events: none;"
+					>
+						<path
+							in:draw={{ duration: 1000, delay: 300 }}
+							d={`M ${points.map((p, i) => `${i === 0 ? '' : 'L '}${p.x} ${p.y}`).join(' ')}`}
+							fill="none"
+							stroke={persona.expanded ? persona.color : '#94a3b8'}
+							stroke-width={persona.expanded ? 2 : 1.5}
+							stroke-opacity={persona.expanded ? 0.6 : 0.3}
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-dasharray={persona.expanded ? 'none' : '4,4'}
+						/>
+					</svg>
+				{/each}
+			{/if}
 
 			<!-- Grid cells and sentiment circles -->
 			{#each personas as persona, personaIndex}
 				{#each processedVisits as visit, visitIndex}
-					{@const circleData = sentimentCirclePositions[personaIndex]?.[visitIndex]}
-					{@const sentiment = circleData?.sentiment ?? getSentimentScore(persona, visit.visit_number)}
-					{@const sentimentY = circleData?.y ?? getSentimentCircleY(sentiment, personaIndex)}
+					{@const sentiment = getSentimentScore(persona, visit.visit_number)}
+					{@const cellHeight = persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}
+					{@const padding = 16} <!-- Consistent padding from top/bottom -->
+					{@const availableHeight = cellHeight - (padding * 2)}
+					{@const sentimentY = padding + (availableHeight * (1 - (sentiment / 10)))} <!-- Invert scale: 10 at top, 1 at bottom -->
 					
 					<div 
-						class="grid-cell"
+						class="grid-cell dynamic-cell"
 						style="
-							left: {visit.timelinePosition * timelineWidth - (calculatedCellWidth / 2)}px;
+							--visit-position: {visit.timelinePosition};
+							--cell-index: {visitIndex};
+							left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
 							top: {gridPositions.personaTops[personaIndex]}px;
-							width: {calculatedCellWidth}px;
-							height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px;
+							width: {dynamicCellDimensions.cellWidth}px;
+							height: {cellHeight}px;
 						"
 						on:click={() => openVisitDetails(visit, persona)}
 						on:keydown={(e) => e.key === 'Enter' && openVisitDetails(visit, persona)}
@@ -1193,9 +1185,9 @@
 						<SentimentCircle 
 							sentiment={sentiment}
 							size={persona.expanded ? 16 : 12}
-							x={calculatedCellWidth / 2}
+							x={dynamicCellDimensions.cellWidth / 2}
 							y={sentimentY}
-							personaColor={getBurdenColor(visit.burdenScore)}
+							personaColor={getSentimentColor(sentiment)}
 							isExpanded={persona.expanded}
 							tooltipText="{persona.name} - {visit.name}: Sentiment {sentiment}/10, Burden {visit.burdenScore}/100 (Click for details)"
 						/>
@@ -1472,6 +1464,34 @@
 		border-radius: 4px;
 	}
 
+	/* Dynamic cell sizing support */
+	.dynamic-cell {
+		/* Use CSS custom properties for responsive sizing */
+		min-width: var(--cell-min-width, 80px);
+		max-width: var(--cell-max-width, 200px);
+		width: var(--dynamic-cell-width, 120px);
+		
+		/* Enable smooth transitions when cell dimensions change */
+		transition: all 0.2s ease, width 0.3s ease;
+		
+		/* Ensure content remains centered */
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Container support for dynamic cells */
+	.unified-timeline-header-fixed {
+		/* Support for dynamic cell sizing */
+		--cell-spacing: calc(var(--timeline-width) / var(--cell-count));
+		--adaptive-cell-width: clamp(
+			var(--cell-min-width),
+			var(--cell-spacing),
+			var(--cell-max-width)
+		);
+	}
+
 	.header-cell:hover {
 		background: rgba(59, 130, 246, 0.1);
 		transform: translateY(-1px);
@@ -1505,6 +1525,7 @@
 		position: relative;
 		display: flex;
 		width: 100%;
+		overflow: hidden;
 	}
 
 	/* === LEFT PANEL === */
@@ -1546,11 +1567,10 @@
 		gap: 0.75rem;
 		width: 100%;
 		padding: 0.75rem;
-		height: 100px;
 		margin: 0;
 		border: none;
 		border-radius: 0;
-		transition: all 0.2s ease;
+		transition: all 0.3s ease;
 		box-sizing: border-box;
 		flex-shrink: 0;
 	}
@@ -1623,67 +1643,7 @@
 		transform: scale(1.05);
 	}
 
-	/* === SENTIMENT SCALE === */
-	.sentiment-scale {
-		padding: 1rem;
-		background: rgba(0, 0, 0, 0.02);
-		border-top: 1px solid #e5e7eb;
-		transition: all 0.3s ease-in-out;
-		height: 150px;
-		box-sizing: border-box;
-		display: flex;
-		align-items: center;
-	}
 
-	.sentiment-scale-labels {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		width: 100%;
-		height: 100%;
-		justify-content: space-between;
-		padding: 0.5rem 0;
-	}
-
-	.sentiment-scale-item {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.7rem;
-	}
-
-	.scale-number {
-		font-weight: 700;
-		color: #374151;
-		min-width: 20px;
-		text-align: center;
-	}
-
-	.scale-label {
-		font-weight: 500;
-		color: #6b7280;
-		flex: 1;
-		min-width: 0;
-	}
-
-	.scale-color-bar {
-		width: 12px;
-		height: 4px;
-		border-radius: 2px;
-		flex-shrink: 0;
-	}
-
-	.scale-labels {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		font-size: 0.7rem;
-	}
-
-	.scale-label {
-		font-weight: 500;
-		padding: 0.25rem 0;
-	}
 
 	/* === GRID AREA === */
 	.grid-area {
@@ -1743,21 +1703,7 @@
 		width: 3px;
 	}
 
-	/* === SENTIMENT GRID LINES === */
-	.sentiment-grid-line {
-		position: absolute;
-		height: 1px;
-		background: #e5e7eb;
-		opacity: 0.4;
-		z-index: 2;
-		transition: all 0.3s ease-in-out;
-		pointer-events: none;
-	}
 
-	.sentiment-grid-line:hover {
-		opacity: 0.8;
-		background: #9ca3af;
-	}
 
 	/* === GRID CELLS === */
 	.grid-cell {
@@ -1991,9 +1937,17 @@
 
 		.unified-timeline-header-fixed {
 			padding: 0 1rem;
+			/* Adjust cell spacing for tablet */
+			--cell-min-width: 60px;
+			--cell-max-width: 150px;
 		}
 
 		.header-cell {
+			padding: 0.375rem 0.25rem;
+		}
+
+		/* Dynamic cell responsive adjustments */
+		.dynamic-cell {
 			padding: 0.375rem 0.25rem;
 		}
 
@@ -2052,7 +2006,6 @@
 		.persona-content {
 			padding: 0.5rem;
 			gap: 0.5rem;
-			height: 80px;
 		}
 
 		.persona-avatar {
@@ -2079,10 +2032,7 @@
 			font-size: 0.9rem;
 		}
 
-		.sentiment-scale {
-			height: 120px;
-			padding: 0.75rem;
-		}
+
 
 		.persona-drawer-header {
 			padding: 1.5rem;
@@ -2115,9 +2065,17 @@
 	@media (max-width: 480px) {
 		.unified-timeline-header-fixed {
 			padding: 0 0.5rem;
+			/* Adjust cell spacing for mobile */
+			--cell-min-width: 50px;
+			--cell-max-width: 100px;
 		}
 
 		.header-cell {
+			padding: 0.25rem 0.125rem;
+		}
+
+		/* Dynamic cell responsive adjustments */
+		.dynamic-cell {
 			padding: 0.25rem 0.125rem;
 		}
 
@@ -2141,24 +2099,12 @@
 		.persona-content {
 			padding: 0.375rem;
 			gap: 0.375rem;
-			height: 70px;
 		}
 
 		.persona-name {
 			font-size: 0.75rem;
 		}
 
-		.sentiment-scale {
-			padding: 0.5rem;
-			height: 100px;
-		}
 
-		.scale-labels {
-			gap: 0.375rem;
-		}
-
-		.scale-label {
-			font-size: 0.65rem;
-		}
 	}
 </style> 

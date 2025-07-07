@@ -2,7 +2,6 @@
 	import { ArrowDown, ArrowRight, ArrowUpRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
 	import VisitSquares from './VisitSquares.svelte';
-	import FileUpload from '$lib/components/ui/file-upload/FileUpload.svelte';
 	import hurdleQuotesData from '../../data/journeymap/hurdle_quotes.json';
 	import HurdleQuotesDrawer from './HurdleQuotesDrawer.svelte';
 
@@ -226,9 +225,9 @@
 			</button>
 
 			{#if expandedSections.hurdles}
-				<div class="section-content">
+				<div class="flex flex-row gap-4 w-full p-4">
 					{#each Object.entries(analysis.key_hurdles_by_persona) as [personaKey, persona]}
-						<div class="persona-card">
+						<div class="persona-card ring-1 ring-indigo-500 rounded-sm p-4">
 							<h4 class="persona-name">{persona.persona_name}</h4>
 							<div class="burden-grid">
 								{#each persona.top_burden_areas.slice(0, 3) as hurdle}
@@ -653,8 +652,7 @@
 		cursor: pointer;
 		transition: all 0.2s ease;
 		position: relative;
-		border: 2px solid #e2e8f0;
-		background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+		border: .5px solid #1e293b;
 	}
 
 	.clickable-hurdle:hover {
