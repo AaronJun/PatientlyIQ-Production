@@ -12,7 +12,7 @@
 
 <TabsPrimitive.Trigger
   class={cn(
-    "inline-flex items-center rounded-full justify-center whitespace-nowrap px-1.5 md:px-3 py-1.5 mb-0 font-medium outline-none hover:cursor-pointer hover:border-indigo-300 transition-all border-slate-300 text-slate-500 hover:text-gray-700 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[state=active]:border-1 data-[state=active]:border-slate-600 data-[state=active]:font-semibold border-1 flex-shrink-0 min-w-fit text-2xs md:text-base", 
+    "inline-flex items-center justify-center px-1.5 md:px-4 py-2 font-medium border-b-2 border-slate-400 hover:cursor-pointer text-slate-500 hover:text-gray-700 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[state=active]:border-b-2 data-[state=active]:border-slate-600 data-[state=active]:font-semibold flex-shrink-0 min-w-fit text-2xs md:text-base transition-all", 
     className
   )}
   {value}

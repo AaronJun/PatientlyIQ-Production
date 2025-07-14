@@ -40,7 +40,7 @@
 			'Travel Time',
 			'Lost Wages',
 			'Childcare Arrangements',
-			'Transport Costs',
+		'Transport Costs',
 			'Scheduling Flexibility',
 			'Appointment Rescheduling',
 			'Visit Frequency'
@@ -378,9 +378,10 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		min-width: 0;
+		min-width: 60vw;
 		margin: 0;
 		flex: 2;
+		max-width: 1600px; /* Added max-width */
 	}
 
 	.heatmap-header {
@@ -446,7 +447,7 @@
 	}
 
 	.persona-header-cell {
-		padding: 0.5rem;
+		padding: 1rem;
 		border-right: 1px solid #d1d5db;
 		text-align: center;
 		font-weight: 600;
@@ -554,7 +555,7 @@
 	}
 
 	.burden-cell {
-		padding: 0.75rem;
+		padding: 1rem;
 		border-right: 1px solid #d1d5db;
 		display: flex;
 		align-items: center;
@@ -661,16 +662,16 @@
 		}
 
 		.assessment-header-cell {
-			padding: 0.75rem;
+			padding: 1rem;
 		}
 
 		.burden-cell {
-			padding: 0.5rem;
+			padding: 1rem;
 			min-height: 70px;
 		}
 
 		.persona-header-cell {
-			padding: 0.75rem;
+			padding: 1rem;
 		}
 
 		.persona-name {

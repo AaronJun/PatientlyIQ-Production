@@ -6,6 +6,10 @@
 	import Drawer from './Drawer.svelte';
 	import VisitDetails from './VisitDetails.svelte';
 	import PersonaTooltip from './PersonaTooltip.svelte';
+	import TimelineHeader from './TimelineHeader.svelte';
+	import PersonaSidebar from './PersonaSidebar.svelte';
+	import JourneyContentArea from './JourneyContentArea.svelte';
+	import study_schedule from '../../data/journeymap/study_schedule.json';
 
 	// Type definitions
 	interface Visit {
@@ -22,6 +26,14 @@
 		burdenScore: number;
 		timelinePosition: number;
 		studyDay: number;
+		stage: string;
+	}
+
+	interface ScheduleVisit {
+		stage: string;
+		visit: string;
+		week: string;
+		assessments: string[];
 	}
 
 	interface Persona {
@@ -64,16 +76,16 @@
 	export let visits: Visit[] = [];
 	export let timelineWidth: number = 2400;
 	export let hideHeader: boolean = false;
-	export let headerHeight: number = 80;
+	export let headerHeight: number = 120; // Increased for 3 rows
 
 	// Personas data with expanded state - will be loaded from JSON
 	let personas: Persona[] = [];
 
 	// Constants
 	const PERSONA_HEIGHT = 100;
-	const EXPANDED_HEIGHT = 150; // Reduced since we removed sentiment scale
+	const EXPANDED_HEIGHT = 150;
 	const LEFT_PANEL_WIDTH = 250;
-	const TIMELINE_HEADER_HEIGHT = 120; // Height for the timeline header (increased for multi-row header)
+	const HEADER_ROW_HEIGHT = 40; // Height for each header row
 
 	let mounted = false;
 	let sentimentData: VisitSentiment[] = [];
@@ -84,7 +96,7 @@
 	
 	// Visit Details Drawer state
 	let drawerOpen = false;
-	let selectedVisit: Visit | null = null;
+	let selectedVisit: ProcessedVisit | null = null;
 	let selectedPersona: Persona | null = null;
 	let selectedSentimentData: VisitSentiment | null = null;
 	let selectedDropoutData: any = null;
@@ -121,6 +133,15 @@
 
 	// Ensure minimum height for container
 	$: containerHeight = Math.max(totalHeight, hideHeader ? gridHeight : 300);
+
+	// Function to determine visit stage based on visit number
+	function getVisitStage(visitNumber: number): string {
+		if (visitNumber <= 2) return 'Screening';
+		if (visitNumber <= 6) return 'Early';
+		if (visitNumber <= 12) return 'Mid';
+		if (visitNumber <= 18) return 'Late';
+		return 'Follow-up';
+	}
 
 	onMount(async () => {
 		mounted = true;
@@ -323,9 +344,6 @@
 	// Handle persona row click
 	function handlePersonaClick(persona: Persona, event: MouseEvent | KeyboardEvent) {
 		// Prevent opening drawer if clicking on expand button
-		if ((event.target as HTMLElement).closest('.expand-button')) {
-			return;
-		}
 		openPersonaDrawer(persona);
 	}
 
@@ -384,12 +402,26 @@
 	}
 
 	// Process visits with calculated data
-	$: processedVisits = visits.map((visit): ProcessedVisit => ({
-		...visit,
-		burdenScore: calculateBurdenScore(visit.assessments),
-		timelinePosition: getTimelinePosition(visit),
-		studyDay: parseStudyDay(visit)
-	})).sort((a, b) => a.studyDay - b.studyDay);
+	$: processedVisits = visits.map((visit): ProcessedVisit => {
+		// Extract visit number from name if it's in format "Visit X"
+		const visitMatch = visit.name.match(/Visit (\d+)/);
+		const visitNumber = visitMatch ? parseInt(visitMatch[1]) : visit.visit_number;
+
+		// Find corresponding visit in study_schedule.json
+		const scheduleVisit = study_schedule.study_schedule.find((sv: ScheduleVisit) => {
+			const svMatch = sv.visit.match(/Visit (\d+)/);
+			const svNumber = svMatch ? parseInt(svMatch[1]) : null;
+			return svNumber === visitNumber;
+		});
+
+		return {
+			...visit,
+			burdenScore: calculateBurdenScore(visit.assessments),
+			timelinePosition: getTimelinePosition(visit),
+			studyDay: parseStudyDay(visit),
+			stage: scheduleVisit?.stage || 'Unknown'
+		};
+	}).sort((a, b) => a.studyDay - b.studyDay);
 
 	// Dynamic cell sizing configuration
 	$: cellSizingConfig = {
@@ -715,12 +747,8 @@
 		// Ensure result is within 1-10 range but allow for more extreme values
 		const finalSentiment = Math.max(1, Math.min(10, Math.round(baseSentiment * 10) / 10));
 		
-
-		
 		return finalSentiment;
 	}
-
-
 
 	// Calculate persona top positions reactively - triggers on any expansion change
 	$: personaTopPositions = personas.map((_, index) => {
@@ -746,10 +774,6 @@
 	$: if (personas.length > 0 && processedVisits.length > 0 && mounted) {
 		// This reactive block ensures sentiment calculations update when both data sources are available
 	}
-
-
-
-
 
 	// Determine study phase based on visit number
 	function getStudyPhase(visitNumber: number): string {
@@ -945,277 +969,41 @@
 	}
 </script>
 
-	{#if mounted}
-	<div class="persona-grid-container" style="height: {containerHeight}px;">
-		<!-- Main content area with fixed left panel and scrollable content -->
-		<div class="main-content-area" style="height: {hideHeader ? gridHeight : containerHeight}px;">
-			<!-- Fixed left panel with personas -->
-			<div class="personas-panel" style="width: {LEFT_PANEL_WIDTH}px; height: {hideHeader ? gridHeight : containerHeight}px;">
-				<!-- Persona header spacer (if timeline header is shown) -->
-				{#if !hideHeader}
-					<div class="persona-header-spacer" style="height: {headerHeight}px; background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
-						<div class="persona-header-title">Personas</div>
-					</div>
-				{/if}
-				
-				<!-- Personas content -->
-				<div class="personas-content" style="height: {gridHeight}px; position: relative;">
-					{#each personas as persona, index}
-						<div 
-							class="persona-row" 
-							class:expanded={persona.expanded}
-							style="
-								position: absolute;
-								top: {gridPositions.personaTops[index]}px;
-								width: 100%;
-								height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px; 
-							"
-							on:click={(e) => handlePersonaClick(persona, e)}
-							on:keydown={(e) => e.key === 'Enter' && handlePersonaClick(persona, e)}
-							role="button"
-							tabindex="0"
-						>
-							<div class="persona-content" style="height: {persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}px;">
-								<div class="persona-avatar" style="background-color: {persona.color}20;">
-									{#if persona.avatar.startsWith('/') || persona.avatar.includes('.svg')}
-										<img src={persona.avatar} alt="{persona.name} avatar" class="avatar-svg" />
-									{:else}
-										<span class="avatar-emoji">{persona.avatar}</span>
-									{/if}
-								</div>
-								<div class="persona-info">
-									<div class="persona-name" style="color: {persona.color};">
-										{persona.name}
-									</div>
-									<div class="persona-type" style="color: {persona.color}80;">
-										{persona.type}
-									</div>
-								</div>
-								<button 
-									class="expand-button"
-									on:click={() => togglePersonaExpansion(persona.id)}
-									style="color: {persona.color};"
-								>
-									{persona.expanded ? '−' : '+'}
-								</button>
-							</div>
-							
+{#if mounted}
+	<div class="persona-grid-container">
+		<!-- Timeline header at the top -->
+		<TimelineHeader 
+			visits={processedVisits}
+			{timelineWidth}
+			{hideHeader}
+			{dynamicCellDimensions}
+			leftPanelWidth={LEFT_PANEL_WIDTH}
+		/>
 
-						</div>
-						
-						<!-- Add separator line between persona rows -->
-						{#if index < personas.length - 1}
-							<div 
-								class="persona-separator" 
-								style="
-									position: absolute;
-									top: {gridPositions.personaTops[index + 1]}px;
-									width: 100%;
-									height: 1px;
-									background: #e5e7eb;
-									z-index: 5;
-								"
-							></div>
-						{/if}
-					{/each}
-				</div>
-			</div>
+		<!-- Main content area with sidebar and journey content -->
+		<div class="main-content-area">
+			<!-- Sidebar -->
+			<PersonaSidebar
+				{personas}
+				{gridHeight}
+				{containerHeight}
+				{hideHeader}
+				leftPanelWidth={LEFT_PANEL_WIDTH}
+				on:personaClick={({ detail }) => handlePersonaClick(detail.persona, detail.event)}
+			/>
 
-			<!-- Scrollable content area (timeline + grid) -->
-			<div class="scrollable-content-area">
-				<!-- Combined timeline header and grid in one scrollable container -->
-				<div class="timeline-and-grid-container" style="width: {timelineWidth}px; height: {(hideHeader ? 0 : headerHeight) + gridHeight}px;">
-					<!-- Unified Timeline Header -->
-					{#if !hideHeader}
-						<div class="unified-timeline-header-fixed" style="
-							height: {headerHeight}px; 
-							width: {timelineWidth}px;
-							--timeline-width: {timelineWidth}px;
-							--cell-min-width: {cellSizingConfig.minCellWidth}px;
-							--cell-max-width: {cellSizingConfig.maxCellWidth}px;
-							--cell-count: {processedVisits.length};
-							--dynamic-cell-width: {dynamicCellDimensions.cellWidth}px;
-						">
-							<!-- Visit numbers row -->
-							<div class="header-row visit-numbers-row">
-								{#each processedVisits as visit, index}
-									<div 
-										class="header-cell visit-number-cell dynamic-cell"
-										style="
-											--visit-position: {visit.timelinePosition};
-											--cell-index: {index};
-											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
-											width: {dynamicCellDimensions.cellWidth}px;
-										"
-									>
-										<span class="visit-number">V{visit.visit_number}</span>
-									</div>
-								{/each}
-							</div>
-
-							<!-- Study weeks row -->
-							<div class="header-row study-weeks-row">
-								{#each processedVisits as visit, index}
-									<div 
-										class="header-cell study-week-cell dynamic-cell"
-										style="
-											--visit-position: {visit.timelinePosition};
-											--cell-index: {index};
-											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
-											width: {dynamicCellDimensions.cellWidth}px;
-										"
-									>
-										<span class="study-week">
-											{visit.study_week || 'Week ' + Math.abs(Math.floor(visit.studyDay / 7))}
-										</span>
-									</div>
-								{/each}
-							</div>
-
-							<!-- Visit names row -->
-							<div class="header-row visit-names-row">
-								{#each processedVisits as visit, index}
-									<div 
-										class="header-cell visit-name-cell dynamic-cell"
-										style="
-											--visit-position: {visit.timelinePosition};
-											--cell-index: {index};
-											left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
-											width: {dynamicCellDimensions.cellWidth}px;
-										"
-										title="{visit.name}"
-									>
-										<span class="visit-name">{visit.name}</span>
-									</div>
-								{/each}
-							</div>
-						</div>
-					{/if}
-
-					<!-- Grid area with visit lines and sentiment visualization -->
-					<div 
-						class="grid-area" 
-						style="width: {timelineWidth}px; height: {gridHeight}px; top: {hideHeader ? 0 : headerHeight}px;"
-					>
-			<!-- Horizontal grid lines between personas -->
-			{#each personas as persona, index}
-				{#if index < personas.length - 1}
-					<div 
-						class="horizontal-grid-line" 
-						style="top: {gridPositions.personaTops[index + 1]}px; width: {timelineWidth}px;"
-					></div>
-				{/if}
-			{/each}
-
-			<!-- Vertical grid lines for each visit -->
-			{#each processedVisits as visit, index}
-				<div 
-					class="vertical-grid-line visit-line" 
-					style="left: {visit.timelinePosition * timelineWidth}px; height: {gridPositions.totalHeight}px;"
-					title="Visit {visit.visit_number}: {visit.name}"
-				></div>
-			{/each}
-
-
-
-			<!-- Sentiment connecting lines -->
-			{#if mounted}
-				{#each personas as persona, personaIndex}
-					{@const points = processedVisits.map((visit, visitIndex) => {
-						const sentiment = getSentimentScore(persona, visit.visit_number);
-						const cellHeight = persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT;
-						const padding = 16;
-						const availableHeight = cellHeight - (padding * 2);
-						const sentimentY = padding + (availableHeight * (1 - (sentiment / 10)));
-						
-						return {
-							x: visit.timelinePosition * timelineWidth,
-							y: gridPositions.personaTops[personaIndex] + sentimentY
-						};
-					})}
-					
-					<svg 
-						class="sentiment-line-container"
-						width={timelineWidth} 
-						height={gridHeight}
-						style="position: absolute; top: 0; left: 0; pointer-events: none;"
-					>
-						<path
-							in:draw={{ duration: 1000, delay: 300 }}
-							d={`M ${points.map((p, i) => `${i === 0 ? '' : 'L '}${p.x} ${p.y}`).join(' ')}`}
-							fill="none"
-							stroke={persona.expanded ? persona.color : '#94a3b8'}
-							stroke-width={persona.expanded ? 2 : 1.5}
-							stroke-opacity={persona.expanded ? 0.6 : 0.3}
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-dasharray={persona.expanded ? 'none' : '4,4'}
-						/>
-					</svg>
-				{/each}
-			{/if}
-
-			<!-- Grid cells and sentiment circles -->
-			{#each personas as persona, personaIndex}
-				{#each processedVisits as visit, visitIndex}
-					{@const sentiment = getSentimentScore(persona, visit.visit_number)}
-					{@const cellHeight = persona.expanded ? EXPANDED_HEIGHT : PERSONA_HEIGHT}
-					{@const padding = 16} <!-- Consistent padding from top/bottom -->
-					{@const availableHeight = cellHeight - (padding * 2)}
-					{@const sentimentY = padding + (availableHeight * (1 - (sentiment / 10)))} <!-- Invert scale: 10 at top, 1 at bottom -->
-					
-					<div 
-						class="grid-cell dynamic-cell"
-						style="
-							--visit-position: {visit.timelinePosition};
-							--cell-index: {visitIndex};
-							left: {visit.timelinePosition * timelineWidth - (dynamicCellDimensions.cellWidth / 2)}px;
-							top: {gridPositions.personaTops[personaIndex]}px;
-							width: {dynamicCellDimensions.cellWidth}px;
-							height: {cellHeight}px;
-						"
-						on:click={() => openVisitDetails(visit, persona)}
-						on:keydown={(e) => e.key === 'Enter' && openVisitDetails(visit, persona)}
-						on:mouseenter={(e) => showTooltip(e, persona, visit)}
-						on:mouseleave={hideTooltip}
-						role="button"
-						tabindex="0"
-					>
-						<!-- Sentiment Circle -->
-						<SentimentCircle 
-							sentiment={sentiment}
-							size={persona.expanded ? 16 : 12}
-							x={dynamicCellDimensions.cellWidth / 2}
-							y={sentimentY}
-							personaColor={getSentimentColor(sentiment)}
-							isExpanded={persona.expanded}
-							tooltipText="{persona.name} - {visit.name}: Sentiment {sentiment}/10, Burden {visit.burdenScore}/100 (Click for details)"
-						/>
-					</div>
-				{/each}
-			{/each}
-					</div>
-				</div>
-			</div>
+			<!-- Journey content area -->
+			<JourneyContentArea
+				{personas}
+				{processedVisits}
+				{timelineWidth}
+				{gridHeight}
+				{gridPositions}
+				{dynamicCellDimensions}
+				{mounted}
+			/>
 		</div>
 	</div>
-
-	<!-- Visit Details Drawer -->
-	<Drawer 
-		bind:isOpen={drawerOpen}
-		title={selectedVisit && selectedPersona ? `${selectedPersona.name} - ${selectedVisit.name}` : 'Visit Details'}
-		width="500px"
-		on:close={closeDrawer}
-	>
-		<VisitDetails 
-			visit={selectedVisit}
-			sentimentData={selectedSentimentData}
-			dropoutData={selectedDropoutData}
-			personaName={selectedPersona?.name || ''}
-			personaType={selectedPersona?.type || 'Patient'}
-			personaColor={selectedPersona?.color || '#059669'}
-		/>
-	</Drawer>
 
 	<!-- Persona Details Drawer -->
 	<Drawer 
@@ -1248,7 +1036,7 @@
 				<!-- Assessment Burden Analysis -->
 				<div class="burden-analysis-section">
 					<h4 class="section-title">Assessment Burden Analysis</h4>
-										{#if selectedPersonaForDrawer}
+					{#if selectedPersonaForDrawer}
 						{@const personaBurden = getPersonaBurdenData(selectedPersonaForDrawer)}
 						{#if personaBurden}
 							<div class="persona-burden-content">
@@ -1345,24 +1133,6 @@
 			</div>
 		{/if}
 	</Drawer>
-
-	<!-- Persona Tooltip -->
-	<PersonaTooltip 
-		visible={tooltipVisible}
-		x={tooltipX}
-		y={tooltipY}
-		personaName={tooltipPersona?.name || ''}
-		personaColor={tooltipPersona?.color || '#059669'}
-		visitName={tooltipVisit?.name || ''}
-		visitNumber={tooltipVisit?.visit_number || 1}
-		quotes={tooltipQuotes}
-		dropoutRisk={tooltipDropoutRisk}
-		primaryDrivers={tooltipPrimaryDrivers}
-		procedureDiscomfort={tooltipProcedureDiscomfort}
-		burdenScore={tooltipBurdenScore}
-		studyPhase={tooltipStudyPhase}
-	/>
-
 {/if}
 
 <style>
@@ -1371,694 +1141,28 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		justify-content: flex-start;
-		margin: 0;
-		height: 100%;
 		width: 100%;
+		height: 100%;
 		border-radius: 8px;
-		overflow: hidden; /* No scrolling at main container level */
+		overflow: auto;
 		background: #f9fafb;
-		min-height: 200px; /* Ensure minimum height */
-	}
-
-	/* === PERSONA HEADER === */
-	.persona-header-spacer {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: 600;
-		color: #374151;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		font-size: 0.875rem;
-	}
-
-	.persona-header-title {
-		opacity: 0.8;
-	}
-
-	.personas-content {
-		overflow: hidden;
-	}
-
-	/* === SCROLLABLE CONTENT AREA === */
-	.scrollable-content-area {
-		flex: 1;
-		overflow-x: auto;
-		overflow-y: hidden;
-		display: flex;
-		flex-direction: column;
-	}
-
-	/* === TIMELINE AND GRID CONTAINER === */
-	.timeline-and-grid-container {
-		position: relative;
-		min-width: fit-content;
-	}
-
-	/* === UNIFIED TIMELINE HEADER (FIXED) === */
-	.unified-timeline-header-fixed {
-		position: absolute;
-		top: 0;
-		left: 0;
-		background: white;
-		border-bottom: 2px solid #e5e7eb;
-		z-index: 10;
-	}
-
-	.header-row {
-		position: absolute;
-		width: 100%;
-		height: 40px;
-		display: flex;
-		align-items: center;
-	}
-
-	.visit-numbers-row {
-		top: 0;
-		background: rgba(59, 130, 246, 0.05);
-	}
-
-	.study-weeks-row {
-		top: 40px;
-		background: rgba(245, 158, 11, 0.05);
-	}
-
-	.visit-names-row {
-		top: 80px;
-		background: rgba(139, 92, 246, 0.05);
-	}
-
-	.header-cell {
-		position: absolute;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		text-align: center;
-		padding: 0.25rem;
-		box-sizing: border-box;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		border-radius: 4px;
-	}
-
-	/* Dynamic cell sizing support */
-	.dynamic-cell {
-		/* Use CSS custom properties for responsive sizing */
-		min-width: var(--cell-min-width, 80px);
-		max-width: var(--cell-max-width, 200px);
-		width: var(--dynamic-cell-width, 120px);
-		
-		/* Enable smooth transitions when cell dimensions change */
-		transition: all 0.2s ease, width 0.3s ease;
-		
-		/* Ensure content remains centered */
-		text-align: center;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	/* Container support for dynamic cells */
-	.unified-timeline-header-fixed {
-		/* Support for dynamic cell sizing */
-		--cell-spacing: calc(var(--timeline-width) / var(--cell-count));
-		--adaptive-cell-width: clamp(
-			var(--cell-min-width),
-			var(--cell-spacing),
-			var(--cell-max-width)
-		);
-	}
-
-	.header-cell:hover {
-		background: rgba(59, 130, 246, 0.1);
-		transform: translateY(-1px);
-		box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
-	}
-
-	.visit-number {
-		font-weight: 700;
-		font-size: 0.9rem;
-		color: #1f2937;
-	}
-
-	.study-week {
-		font-size: 0.75rem;
-		color: #d97706;
-		font-weight: 500;
-	}
-
-	.visit-name {
-		font-size: 0.65rem;
-		color: #7c3aed;
-		font-weight: 500;
-		line-height: 1.2;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		min-height: 75vh;
 	}
 
 	/* === MAIN CONTENT AREA === */
 	.main-content-area {
 		position: relative;
 		display: flex;
+		flex-direction: row;
 		width: 100%;
-		overflow: hidden;
-	}
-
-	/* === LEFT PANEL === */
-	.personas-panel {
-		position: sticky;
-		left: 0;
-		top: 0;
-		display: flex;
-		flex-direction: column;
-		background: #f9fafb;
-		border-right: 2px solid #e5e7eb;
-		z-index: 10;
-		min-height: 200px; /* Ensure minimum height for visibility */
-		flex-shrink: 0; /* Prevent the panel from shrinking */
-	}
-
-	/* === PERSONA ROWS === */
-	.persona-row {
-		display: flex;
-		flex-direction: column;
-		padding: 0;
-		margin: 0;
-		transition: all 0.3s ease-in-out;
-		cursor: pointer;
-		background: #f9fafb;
-	}
-
-	.persona-row:hover {
-		background: #f1f5f9;
-	}
-
-	.persona-row.expanded {
-		background: #f8fafc;
-	}
-
-	.persona-content {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		width: 100%;
-		padding: 0.75rem;
-		margin: 0;
-		border: none;
-		border-radius: 0;
-		transition: all 0.3s ease;
-		box-sizing: border-box;
-		flex-shrink: 0;
-	}
-
-	.persona-content:hover {
-		background: #f1f5f9;
-	}
-
-	/* === PERSONA ELEMENTS === */
-	.persona-avatar {
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 2px solid currentColor;
-		flex-shrink: 0;
-	}
-
-	.avatar-emoji {
-		font-size: 1rem;
-	}
-
-	.avatar-svg {
-		width: 28px;
-		height: 28px;
-		object-fit: contain;
-	}
-
-	.persona-info {
-		flex: 1;
-		min-width: 0;
-	}
-
-	.persona-name {
-		font-weight: 600;
-		font-size: 0.9rem;
-		line-height: 1.3;
-		margin-bottom: 0.25rem;
-	}
-
-	.persona-type {
-		font-size: 0.75rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		font-weight: 500;
-		opacity: 0.8;
-	}
-
-	.expand-button {
-		background: none;
-		border: 1px solid currentColor;
-		border-radius: 50%;
-		width: 24px;
-		height: 24px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: bold;
-		transition: all 0.2s ease;
-		flex-shrink: 0;
-	}
-
-	.expand-button:hover {
-		background: currentColor;
-		color: white;
-		transform: scale(1.05);
-	}
-
-
-
-	/* === GRID AREA === */
-	.grid-area {
-		position: absolute;
-		left: 0;
-		background: white;
-		border-radius: 0 8px 8px 0;
-		min-width: fit-content; /* Ensure grid area doesn't shrink */
-	}
-
-	/* === SCROLLBAR STYLING === */
-	.scrollable-content-area::-webkit-scrollbar {
-		height: 8px;
-	}
-
-	.scrollable-content-area::-webkit-scrollbar-track {
-		background: #f1f5f9;
-		border-radius: 4px;
-	}
-
-	.scrollable-content-area::-webkit-scrollbar-thumb {
-		background: #cbd5e1;
-		border-radius: 4px;
-	}
-
-	.scrollable-content-area::-webkit-scrollbar-thumb:hover {
-		background: #94a3b8;
-	}
-
-	/* === GRID LINES === */
-	.horizontal-grid-line {
-		position: absolute;
-		height: 1px;
-		background: #e5e7eb;
-		z-index: 1;
-		transition: top 0.3s ease-in-out;
-	}
-
-	.vertical-grid-line {
-		position: absolute;
-		width: 1px;
-		background: #d1d5db;
-		z-index: 1;
-		transition: height 0.3s ease-in-out;
-	}
-
-	.vertical-grid-line.visit-line {
-		background: #9ca3af;
-		width: 2px;
-		opacity: 0.6;
-		transition: all 0.2s ease;
-	}
-
-	.vertical-grid-line.visit-line:hover {
-		opacity: 1;
-		background: #6b7280;
-		width: 3px;
-	}
-
-
-
-	/* === GRID CELLS === */
-	.grid-cell {
-		position: absolute;
-		border: 1px solid transparent;
-		width: 100%;
-		display: flex;
-		align-items: flex-start;
-		justify-content: center;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		border-radius: 4px;
-	}
-
-	.grid-cell:hover {
-		background: rgba(59, 130, 246, 0.1);
-		border-color: rgba(59, 130, 246, 0.4);
-		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-		transform: translateY(-1px);
-	}
-
-	.grid-cell:focus-visible {
-		outline: 2px solid #3b82f6;
-		outline-offset: 2px;
-	}
-
-	/* === PERSONA DRAWER === */
-	.persona-drawer-content {
-		padding: 0;
-	}
-
-	.persona-drawer-header {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		padding: 2rem;
-		border-bottom: 2px solid;
-		margin-bottom: 2rem;
-		background: rgba(0, 0, 0, 0.02);
-	}
-
-	.persona-drawer-avatar {
-		width: 64px;
-		height: 64px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 3px solid currentColor;
-		flex-shrink: 0;
-	}
-
-	.avatar-emoji-large {
-		font-size: 2.25rem;
-	}
-
-	.avatar-svg-large {
-		width: 56px;
-		height: 56px;
-		object-fit: contain;
-	}
-
-	.persona-drawer-info {
-		flex: 1;
-	}
-
-	.persona-drawer-name {
-		margin: 0 0 0.5rem 0;
-		font-size: 1.75rem;
-		font-weight: 700;
-		line-height: 1.2;
-	}
-
-	.persona-drawer-type {
-		margin: 0;
-		font-size: 1rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		font-weight: 600;
-		opacity: 0.8;
-	}
-
-	.burden-analysis-section {
-		padding: 0 2rem 2rem 2rem;
-	}
-
-	.section-title {
-		margin: 0 0 1.5rem 0;
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: #374151;
-	}
-
-	.persona-burden-content {
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
-	}
-
-	.debug-info {
-		background: #f0f9ff;
-		border: 1px solid #0ea5e9;
-		border-radius: 6px;
-		padding: 1rem;
-		font-size: 0.875rem;
-		color: #0c4a6e;
-	}
-
-	.debug-info p {
-		margin: 0.25rem 0;
-	}
-
-	.burden-category {
-		background: #f9fafb;
-		border: 1px solid #e5e7eb;
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	.category-title {
-		margin: 0;
-		padding: 1rem;
-		background: #374151;
-		color: white;
-		font-size: 1rem;
-		font-weight: 600;
-		border-bottom: 2px solid #6b7280;
-	}
-
-	.assessments-grid {
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.assessment-item {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		background: white;
-		border-radius: 6px;
-		border: 1px solid #e5e7eb;
-		transition: all 0.2s ease;
-	}
-
-	.assessment-item:hover {
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		border-color: #d1d5db;
-	}
-
-	.assessment-label {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.label-text {
-		font-weight: 500;
-		color: #374151;
-		font-size: 0.875rem;
-	}
-
-	.score-badge {
-		color: white;
-		padding: 0.25rem 0.5rem;
-		border-radius: 12px;
-		font-size: 0.75rem;
-		font-weight: 600;
-		min-width: 1.5rem;
-		text-align: center;
-	}
-
-	.squares-container {
-		display: flex;
-		gap: 3px;
-		flex-wrap: wrap;
-	}
-
-	.burden-square {
-		border: 1px solid;
-		border-radius: 2px;
-		transition: all 0.2s ease;
-	}
-
-	.burden-square.filled {
-		opacity: 1;
-	}
-
-	.burden-square:not(.filled) {
-		opacity: 0.3;
-	}
-
-	.burden-square:hover {
-		transform: scale(1.1);
-	}
-
-	.no-data {
-		text-align: left;
-		color: #6b7280;
-		font-style: italic;
-		padding: 2rem;
-		background: #fef3c7;
-		border: 1px solid #f59e0b;
-		border-radius: 6px;
-	}
-
-	.no-data p {
-		margin: 0.5rem 0;
-	}
-
-	.no-data ul {
-		margin: 0.5rem 0;
-		padding-left: 1.5rem;
-	}
-
-	.no-data li {
-		margin: 0.25rem 0;
+		height: calc(100% - var(--header-height, 120px));
+		overflow: auto;
 	}
 
 	/* === RESPONSIVE DESIGN === */
 	@media (max-width: 768px) {
 		.main-content-area {
 			flex-direction: column;
-		}
-
-		.scrollable-content-area {
-			width: 100%;
-		}
-
-		.unified-timeline-header-fixed {
-			padding: 0 1rem;
-			/* Adjust cell spacing for tablet */
-			--cell-min-width: 60px;
-			--cell-max-width: 150px;
-		}
-
-		.header-cell {
-			padding: 0.375rem 0.25rem;
-		}
-
-		/* Dynamic cell responsive adjustments */
-		.dynamic-cell {
-			padding: 0.375rem 0.25rem;
-		}
-
-		.visit-number {
-			font-size: 0.8rem;
-		}
-
-		.study-week {
-			font-size: 0.65rem;
-		}
-
-		.visit-name {
-			font-size: 0.6rem;
-		}
-
-		.unified-timeline-header-fixed {
-			height: auto !important;
-			position: static;
-		}
-
-		.timeline-and-grid-container {
-			height: auto !important;
-		}
-
-		.grid-area {
-			position: static;
-		}
-
-		.header-row {
-			position: static;
-			height: 35px;
-			border-bottom: 1px solid #e5e7eb;
-		}
-
-		.header-cell {
-			position: relative;
-			min-width: 60px;
-			padding: 0.5rem 0.25rem;
-		}
-
-		.personas-panel {
-			position: static;
-			width: 100%;
-			border-right: none;
-			border-bottom: 2px solid #e5e7eb;
-		}
-
-		.grid-area-container {
-			width: 100%;
-		}
-
-		.grid-area {
-			border-radius: 0 0 8px 8px;
-		}
-
-		.persona-content {
-			padding: 0.5rem;
-			gap: 0.5rem;
-		}
-
-		.persona-avatar {
-			width: 28px;
-			height: 28px;
-		}
-
-		.avatar-svg {
-			width: 24px;
-			height: 24px;
-		}
-
-		.persona-name {
-			font-size: 0.8rem;
-		}
-
-		.persona-type {
-			font-size: 0.65rem;
-		}
-
-		.expand-button {
-			width: 20px;
-			height: 20px;
-			font-size: 0.9rem;
-		}
-
-
-
-		.persona-drawer-header {
-			padding: 1.5rem;
-			gap: 1rem;
-		}
-
-		.persona-drawer-avatar {
-			width: 48px;
-			height: 48px;
-		}
-
-		.avatar-emoji-large {
-			font-size: 1.75rem;
-		}
-
-		.avatar-svg-large {
-			width: 44px;
-			height: 44px;
-		}
-
-		.persona-drawer-name {
-			font-size: 1.5rem;
-		}
-
-		.burden-analysis-section {
-			padding: 0 1.5rem 1.5rem 1.5rem;
 		}
 	}
 
@@ -2069,42 +1173,5 @@
 			--cell-min-width: 50px;
 			--cell-max-width: 100px;
 		}
-
-		.header-cell {
-			padding: 0.25rem 0.125rem;
-		}
-
-		/* Dynamic cell responsive adjustments */
-		.dynamic-cell {
-			padding: 0.25rem 0.125rem;
-		}
-
-		.visit-number {
-			font-size: 0.75rem;
-		}
-
-		.study-week {
-			font-size: 0.6rem;
-		}
-
-		.visit-name {
-			font-size: 0.55rem;
-		}
-
-		.header-cell {
-			min-width: 100px;
-			padding: 0.25rem 0.125rem;
-		}
-
-		.persona-content {
-			padding: 0.375rem;
-			gap: 0.375rem;
-		}
-
-		.persona-name {
-			font-size: 0.75rem;
-		}
-
-
 	}
 </style> 

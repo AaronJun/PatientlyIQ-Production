@@ -1,8 +1,9 @@
 {
   "study_schedule": [
     {
-      "visit": "Screening",
-      "week": "Up to 8 weeks before W1",
+      "stage": "Screening",
+      "visit": "S",
+      "week": "0",
       "assessments": [
         "Informed consent/child assent",
         "Inclusion/exclusion criteria",
@@ -21,8 +22,9 @@
       ]
     },
     {
+      "stage": "Screening",
       "visit": "Visit 1",
-      "week": "W1",
+      "week": "1",
       "assessments": [
         "IgG administration",
         "SCIG20% administration",
@@ -33,8 +35,9 @@
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 2",
-      "week": "W2",
+      "week": "2",
       "assessments": [
         "SCIG20% administration",
         "CBC and biochemistry",
@@ -43,8 +46,20 @@
       ]
     },
     {
+      "stage": "Early",
+      "visit": "Visit 3",
+      "week": "3",
+      "assessments": [
+        "SCIG20% administration",
+        "CBC and biochemistry",
+        "Vital signs",
+        "Urine dipstick"
+      ]
+    },
+    {
+      "stage": "Early",
       "visit": "Visit 4",
-      "week": "W4",
+      "week": "4",
       "assessments": [
         "SCIG20% administration",
         "IgG trough level",
@@ -54,16 +69,18 @@
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 5",
-      "week": "W5",
+      "week": "5",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 6",
-      "week": "W6",
+      "week": "6",
       "assessments": [
         "Homecare or clinic visit",
         "SCIG20% administration",
@@ -71,48 +88,54 @@
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 7",
-      "week": "W7",
+      "week": "7",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 8",
-      "week": "W8",
+      "week": "8",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Early",
       "visit": "Visit 9",
-      "week": "W9",
+      "week": "9",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 10",
-      "week": "W10",
+      "week": "10",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 11",
-      "week": "W11",
+      "week": "11",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 12",
-      "week": "W12",
+      "week": "12",
       "assessments": [
         "IgG administration",
         "SCIG20% administration",
@@ -121,32 +144,36 @@
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 13",
-      "week": "W13",
+      "week": "13",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 14",
-      "week": "W14",
+      "week": "14",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
-      "visit": "Visit 15",
-      "week": "W15",
+      "stage": "Early",
+        "visit": "Visit 15",
+      "week": "15",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Mid",
       "visit": "Visit 16",
-      "week": "W16",
+      "week": "16",
       "assessments": [
         "Follow-up after dose adjustment",
         "CBC and biochemistry",
@@ -154,96 +181,108 @@
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 17",
-      "week": "W17",
+      "week": "17",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 18",
-      "week": "W18",
+      "week": "18",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 19",
-      "week": "W19",
+      "week": "19",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 20",
-      "week": "W20",
+      "week": "20",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 21",
-      "week": "W21",
+      "week": "21",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 22",
-      "week": "W22",
+      "week": "22",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 23",
-      "week": "W23",
+      "week": "23",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 24",
-      "week": "W24",
+      "week": "24",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 25",
-      "week": "W25",
+      "week": "25",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 26",
-      "week": "W26",
+      "week": "26",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
-      "visit": "Visit 27",
-      "week": "W27",
+      "stage": "Late",
+          "visit": "Visit 27",
+      "week": "27",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 28",
-      "week": "W28",
+      "week": "28",
       "assessments": [
         "Follow-up visit",
         "CBC and biochemistry",
@@ -251,158 +290,178 @@
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 29",
-      "week": "W29",
+      "week": "29",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 30",
-      "week": "W30",
+      "week": "30",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 31",
-      "week": "W31",
+      "week": "31",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 32",
-      "week": "W32",
+      "week": "32",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 33",
-      "week": "W33",
+      "week": "33",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 34",
-      "week": "W34",
+      "week": "34",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 35",
-      "week": "W35",
+      "week": "35",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 36",
-      "week": "W36",
+      "week": "36",
       "assessments": [
         "Follow-up visit",
         "CBC and biochemistry"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 37",
-      "week": "W37",
+      "week": "37",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 38",
-      "week": "W38",
+      "week": "38",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 39",
-      "week": "W39",
+      "week": "39",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 40",
-      "week": "W40",
+      "week": "40",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 41",
-      "week": "W41",
+      "week": "41",
       "assessments": [
         "Follow-up visit",
         "IgG concentrations and titers"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 42",
-      "week": "W42",
+      "week": "42",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 43",
-      "week": "W43",
+      "week": "43",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 45",
-      "week": "W45",
+      "week": "45",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
+      "stage": "Late",
       "visit": "Visit 46",
-      "week": "W46",
+      "week": "46",
       "assessments": [
         "SCIG20% administration",
         "Vital signs"
       ]
     },
     {
-      "visit": "Visit 44",
-      "week": "W47",
+      "stage": "Follow-up",
+      "visit": "Visit 47",
+      "week": "47",
       "assessments": [
         "Follow-up visit"
       ]
     },
     {
+      "stage": "Follow-up",
       "visit": "Visit 48",
-      "week": "W48",
+      "week": "48",
       "assessments": [
         "Follow-up visit"
       ]
     },
     {
+      "stage": "Follow-up",
       "visit": "Visit 52 / EOS",
-      "week": "W52 \u00b12 days",
+      "week": "52",
       "assessments": [
         "End of study assessments",
         "PK sampling for IgG",

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Component imports
-	import JourneyContainer from '$lib/journeymapper/JourneyContainer.svelte';
+	import JourneyMapWrapper from '$lib/journeymapper/JourneyMapWrapper.svelte';
 	import StudyMetadataDrawer from '$lib/components/StudyMetadataDrawer.svelte';
 	import PIQLogo from '$lib/assets/imgs/PIQLogo_Orange.svg';
 	import AssessmentBurdenHeatmap from '$lib/components/AssessmentBurdenHeatmap.svelte';
@@ -13,6 +13,16 @@
 	
 	// Load data from page load function
 	import type { PageData } from './$types';
+
+	interface Visit {
+		visit_number: number;
+		name: string;
+		study_day?: string;
+		study_day_range?: string;
+		study_week?: string;
+		assessments: string[];
+		travel_required?: boolean;
+	}
 	
 	export let data: PageData;
 	
@@ -105,17 +115,17 @@
 
 	// Reactive calculations for visit statistics
 	$: totalVisits = currentVisitScheduleData?.visits?.length || 0;
-	$: travelVisits = currentVisitScheduleData?.visits?.filter(visit => visit.travel_required).length || 0;
-	$: invasiveVisits = currentVisitScheduleData?.visits?.filter(visit => 
-		visit.assessments?.some(assessment => 
+	$: travelVisits = currentVisitScheduleData?.visits?.filter((visit: Visit) => visit.travel_required).length || 0;
+	$: invasiveVisits = currentVisitScheduleData?.visits?.filter((visit: Visit) => 
+		visit.assessments?.some((assessment: string) => 
 			assessment.includes('Blood') || 
 			assessment.includes('Laboratory') || 
 			assessment.includes('ECG') ||
 			assessment.includes('Pregnancy Test')
 		)
 	).length || 0;
-	$: surgicalVisits = currentVisitScheduleData?.visits?.filter(visit => 
-		visit.assessments?.some(assessment => 
+	$: surgicalVisits = currentVisitScheduleData?.visits?.filter((visit: Visit) => 
+		visit.assessments?.some((assessment: string) => 
 			assessment.toLowerCase().includes('surgical') || 
 			assessment.toLowerCase().includes('biopsy') ||
 			assessment.toLowerCase().includes('procedure')
@@ -123,11 +133,19 @@
 	).length || 0;
 	
 	// Calculate overall burden score based on total assessments and travel requirements
-	$: overallScore = currentVisitScheduleData?.visits?.length > 0 ? Math.round(
-		(currentVisitScheduleData.visits.reduce((total, visit) => 
-			total + (visit.assessments?.length || 0) + (visit.travel_required ? 5 : 0), 0
-		) / currentVisitScheduleData.visits.length)
-	) : 0;
+	$: overallScore = currentVisitScheduleData?.visits?.length > 0
+		? Math.round(
+			(
+				currentVisitScheduleData.visits.reduce(
+					(total: number, visit: Visit) =>
+						total +
+						(visit.assessments?.length || 0) +
+						(visit.travel_required ? 5 : 0),
+					0
+				) / currentVisitScheduleData.visits.length
+			)
+		)
+		: 0;
 </script>
 
 <main class="patient-burden-mapper min-h-screen {isSidebarCollapsed ? 'sidebar-collapsed' : ''}">
@@ -223,7 +241,7 @@
 		<!-- Navigation Tabs -->
 		<div class="tabs-container w-full">
 			<Tabs.Root value="summary" class="w-full">
-				<Tabs.List class="flex flex-row align-middle w-full justify-between">
+				<div class="flex flex-row align-middle w-full h-full">
 					<div class="flex flex-row align-middle justify-start w-full gap-4">
 					<Tabs.Trigger value="summary" class="tab-trigger flex flex-row align-middle gap-2">
 						<ChartLine size={16} class="mr-2" />
@@ -243,12 +261,11 @@
 					</Tabs.Trigger>
 					</div>
 					<div class="more-info-btn-container w-fit justify-end">
-						<button on:click={toggleDrawer} aria-label="View study details" class="flex flex-row gap-2 w-full min-w-36 bg-indigo-950 text-[#F1D5D3] rounded-full items-center justify-evenly px-1 py-2 hover:bg-indigo-800">
+						<button on:click={toggleDrawer} aria-label="View study details" class="flex flex-row gap-2 w-full min-w-36 bg-indigo-950 text-[#F1D5D3] rounded-full items-center justify-evenly px-1 py-2 hover:bg-idigo-800">
 							<p class="text-xs">Study Details</p><ArrowRight size={18} class="bg-indigo-50 text-indigo-950 rounded-full p-1" /> 
 						</button>
 					</div>
-		
-				</Tabs.List>
+				</div>
 				
 				<!-- Tab Content -->
 				<Tabs.Content value="summary" class="tab-content">
@@ -263,7 +280,7 @@
 				<Tabs.Content value="schedule" class="tab-content">
 					<div class="content-wrapper">
 						{#if currentVisitScheduleData?.visits?.length > 0}
-							<JourneyContainer visits={currentVisitScheduleData.visits} />
+							<JourneyMapWrapper />
 						{:else}
 							<div class="loading-state">Loading study data...</div>
 						{/if}
@@ -309,31 +326,17 @@
 {/if}
 
 <style>
-	/* ===== BASE STYLES ===== */
-	.patient-burden-mapper {
-		display: flex;
-		min-height: 100vh;
-		max-width: 100%;
-		overflow-x: auto;
-		margin: 0 auto;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	}
-
 	/* ===== SIDEBAR STYLES ===== */
 	.sidebar {
 		position: fixed;
-		left: 0;
 		top: 0;
-		height: 100vh;
+		left: 0;
 		width: 320px;
-		background-color: #ffffff;
-		border-right: .5px solid #161616;
-		color: white;
-		display: flex;
-		flex-direction: column;
-		z-index: 1000;
+		height: 100vh;
+		border-right: .5px solid #29293C;
 		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-		overflow: hidden;
+		z-index: 20;
+		overflow-y: auto;
 	}
 
 	.sidebar.collapsed {
@@ -341,149 +344,97 @@
 	}
 
 	.sidebar-header {
-		background-color: #001f60;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem;
+		border-bottom: .5px solid #161616;
 	}
 
 	.sidebar-title {
 		display: flex;
 		align-items: center;
+		gap: 0.5rem;
+		color: #F1D5D3;
+		font-size: 0.875rem;
+		font-weight: 600;
 	}
 
 	.sidebar-toggle {
-		background: none;
-		border: none;
-		color: #F1D5D3;
-		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		transform: translateX(0);
+		color: #F1D5D3;
+		background-color: #29293C;
+		cursor: pointer;
+		transition: all 0.2s ease;
 	}
 
 	.sidebar-toggle:hover {
-		color: #374151;
-		background-color: rgba(55, 65, 81, 0.1);
-		transform: translateX(3.25px);
-	}
-
-	.logo-title-container {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.sidebar-logo {
-		height: 24px;
-		width: auto;
-		object-fit: contain;
-	}
-
-	.sidebar-logo-collapsed {
-		height: 20px;
-		width: auto;
-		object-fit: contain;
+		color: #F1D5D3;
+		transform: translateX(2px);
 	}
 
 	.sidebar-content {
-		flex: 1;
-		overflow-y: auto;
-		opacity: 1;
-		transform: translateX(0);
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.sidebar.collapsed .sidebar-content {
-		opacity: 0;
-		transform: translateX(-20px);
-		pointer-events: none;
+		padding: 1rem 0;
 	}
 
 	.sidebar-section {
-		margin-bottom: 2rem;
-		opacity: 1;
-		transform: translateY(0);
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.sidebar.collapsed .sidebar-section {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-
-	.sidebar-section:nth-child(2) {
-		transition-delay: 0.1s;
-	}
-
-	.sidebar-section:nth-child(3) {
-		transition-delay: 0.2s;
+		margin-bottom: 1.5rem;
 	}
 
 	.sidebar-section-title {
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #161616;
-		margin-bottom: 1rem;
 		display: flex;
 		align-items: center;
+		gap: 0.5rem;
+		color: #F1D5D3;
+		font-size: 0.875rem;
+		font-weight: 600;
+		margin-bottom: 0.75rem;
 	}
 
+	/* ===== STUDIES LIST STYLES ===== */
 	.studies-list {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 0.5rem;
 	}
 
 	.study-item {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		gap: 0.5rem;
-		border-bottom: 1px solid #001f60;
+		padding: 0.75rem;
+		background-color: #161616;
+		border-radius: 0.375rem;
 		cursor: pointer;
-		padding: 1rem;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		transform: translateY(0);
+		transition: all 0.2s ease;
 	}
 
 	.study-item:hover {
-		border-bottom: 1px solid #ff1515;
-		background-color: rgba(0, 31, 96, 0.05);
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 31, 96, 0.1);
+		background-color: #1f1f1f;
 	}
 
 	.study-item.selected {
-		border-bottom: 2px solid #2563eb;
-		background-color: rgba(37, 99, 235, 0.05);
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-	}
-
-	.study-item.selected .study-name {
-		color: #2563eb;
-		font-weight: 800;
+		background-color: #1f1f1f;
+		border: 1px solid #F1D5D3;
 	}
 
 	.study-name {
-		font-weight: 600;
+		color: #F1D5D3;
 		font-size: 0.875rem;
+		font-weight: 600;
 		margin-bottom: 0.25rem;
-		color: #001f60;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.study-details {
 		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
+		flex-wrap: wrap;
+		gap: 0.5rem;
 	}
 
 	.study-indication,
 	.study-phase {
 		font-size: 0.75rem;
-		color: #161616;
+		color: #F1D5D3;
+		opacity: 0.8;
 	}
 
 	.study-status {
@@ -497,7 +448,7 @@
 	}
 
 	.status-active {
-		color: #f;
+		color: #fff;
 		background-color: #065f46;
 	}
 
@@ -546,7 +497,6 @@
 		justify-content: left;
 		gap: 1rem;
 		align-items: center;
-		gap: 1rem;
 	}
 
 	.study-info {
@@ -603,15 +553,26 @@
 	}
 
 	/* ===== TABS CONTAINER STYLES ===== */
-	
+	.tabs-container {
+		padding: 1rem;
+		background-color: white;
+		border-bottom: 1px solid #e5e7eb;
+	}
 
+	:global(.tab-trigger) {
+		padding: 0.5rem 1rem;
+		color: #6b7280;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		border-bottom: 2px solid transparent;
+	}
 
+	:global(.tab-trigger[data-state="active"]) {
+		color: #2563eb;	
+	}
 
-	:global(.tab-content) {
-		flex: 1;
-		overflow-x: auto;
-		overflow-y: auto;
-		min-height: 0;
+	:global(.tab-trigger:hover) {
+		color: #1d4ed8;
 	}
 
 	/* ===== CONTENT AREA STYLES ===== */
@@ -673,79 +634,18 @@
 	/* ===== RESPONSIVE DESIGN ===== */
 	@media (max-width: 768px) {
 		.patient-burden-mapper {
-			padding: 0;
+			flex-direction: column;
 		}
 
 		.sidebar {
 			width: 100%;
-			transform: translateX(-100%);
-		}
-
-		.sidebar:not(.collapsed) {
-			transform: translateX(0);
-		}
-
-		.sidebar.collapsed {
-			width: 60px;
-			transform: translateX(0);
+			height: auto;
+			position: relative;
 		}
 
 		.main-content {
 			margin-left: 0;
-		}
-
-		.main-content.sidebar-collapsed {
-			margin-left: 60px;
-		}
-
-		.study-header {
 			width: 100%;
-			padding: 0.5rem;
-			gap: 1rem;
-		}
-
-		.study-info-container {
-			display: flex;
-			flex-direction: row;
-		}
-
-		.study-info {
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
-		}
-
-
-
-		:global(.tab-trigger) {
-			padding: 0.5rem 1rem;
-			font-size: 0.875rem;
-		}
-
-		:global(.tab-trigger svg) {
-			width: 16px;
-			height: 16px;
-		}
-
-		.assessments-header {
-			padding: 1.5rem;
-		}
-
-		.section-title {
-			font-size: 1.25rem;
-		}
-
-		.section-description {
-			font-size: 0.875rem;
-		}
-
-		.assessment-content {
-			padding: 1rem;
-			gap: 2rem;
-		}
-
-		.section-subtitle {
-			font-size: 1.25rem;
 		}
 	}
 </style>
