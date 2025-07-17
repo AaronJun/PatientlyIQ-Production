@@ -26,6 +26,6 @@
     "multicenter": true
   },
   "total_visits": 52,
-  "total_weeks": 52,
+  "total_weeks": 102,
   "visit_schedule_json": "patient_burden_mapper_visit_schedule_FULL.json"
 }
