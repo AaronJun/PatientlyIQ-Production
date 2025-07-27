@@ -15,7 +15,7 @@ const buttonVariants = tv({
         "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
       secondary:
         "bg-secondary/80 text-secondary-foreground hover:bg-secondary/70",
-      ghost: "hover:bg-accent hover:text-accent-foreground",
+      ghost: "text-xs rounded-full bg-transparent border-1 border-[#ff1616] hover:bg-accent hover:text-accent-foreground",
       link: "text-primary underline-offset-4 hover:underline",
       shine:
         "inline-flex animate-shine items-center justify-center rounded-xl text-sm border border-neutral-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-4 py-2 font-medium text-neutral-400 transition-colors",

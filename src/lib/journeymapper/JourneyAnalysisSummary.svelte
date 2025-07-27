@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowDown, ArrowRight, ArrowUpRight, WaveTriangle, Users, Target, TrendUp } from 'phosphor-svelte';
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
+	import pvAnalysisData from '../../data/journeymap/journey_mapper_analysis_summary_pv.json';
 	import VisitSquares from './VisitSquares.svelte';
 	import hurdleQuotesData from '../../data/journeymap/hurdle_quotes.json';
 	import HurdleQuotesDrawer from './HurdleQuotesDrawer.svelte';
@@ -10,8 +11,12 @@
 	export let travelVisits: number = 0;
 	export let invasiveVisits: number = 0;
 	export let surgicalVisits: number = 0;
+	export let selectedStudyId: string = 'STU-D-302';
 
-	const analysis = analysisData.journey_mapper_analysis;
+	// Use the appropriate analysis data based on selected study
+	$: analysis = selectedStudyId === '2' 
+		? pvAnalysisData.journey_mapper_analysis 
+		: analysisData.journey_mapper_analysis;
 	const hurdleQuotes = hurdleQuotesData.hurdle_quotes;
 
 	// State for expandable sections
@@ -83,7 +88,7 @@
 </script>
 
 <div class="analysis-summary">
-	<div class="section-header-lined flex flex-col gap-4 w-full">
+	<div class="section-header-lined flex flex-col gap-4 w-full mb-4">
 		<h2 class="text-lg font-bold">Participant Journey Summary</h2>
 	</div>
 
@@ -93,7 +98,7 @@
 			label="Total Visits" 
 			count={totalVisits} 
 			color="#1f2937" 
-			size="20px"
+			size="18px"
 		/>
 		<VisitSquares 
 			label="Travel Required" 
@@ -348,7 +353,8 @@
 
 	.visit-statistics {
 		display: flex;
-		gap: 1.5rem;
+		flex-direction: column;
+		gap: 0.5rem;
 		flex-wrap: wrap;
 	}
 

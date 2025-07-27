@@ -1,107 +1,396 @@
 {
-  "PK Blood Samples": {
-    "patients_overall": 8.2,
-    "caregivers_overall": 7.5,
-    "all_personas": 7.9
+  "STUDY-302": {
+    "PK Blood Samples": {
+      "patients_overall": 8.2,
+      "caregivers_overall": 7.5,
+      "all_personas": 7.9
+    },
+    "Pregnancy Test": {
+      "patients_overall": 6.7,
+      "caregivers_overall": 6.0,
+      "all_personas": 6.4
+    },
+    "C-SSRS": {
+      "patients_overall": 6.1,
+      "caregivers_overall": 6.5,
+      "all_personas": 6.3
+    },
+    "QOLIE-31": {
+      "patients_overall": 7.3,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.1
+    },
+    "QOLIE-AD-48": {
+      "patients_overall": 7.0,
+      "caregivers_overall": 6.2,
+      "all_personas": 6.6
+    },
+    "Diary Training": {
+      "patients_overall": 6.9,
+      "caregivers_overall": 7.3,
+      "all_personas": 7.0
+    },
+    "ECG": {
+      "patients_overall": 6.5,
+      "caregivers_overall": 5.7,
+      "all_personas": 6.2
+    },
+    "Physical and Neurologic Exam": {
+      "patients_overall": 5.9,
+      "caregivers_overall": 5.3,
+      "all_personas": 5.6
+    },
+    "Clinical Laboratory Tests": {
+      "patients_overall": 6.4,
+      "caregivers_overall": 6.8,
+      "all_personas": 6.6
+    },
+    "Travel Time": {
+      "patients_overall": 10,
+      "caregivers_overall": 9,
+      "all_personas": 9.5
+    },
+    "Lost Wages": {
+      "patients_overall": 9,
+      "caregivers_overall": 8,
+      "all_personas": 8.5
+    },
+    "Childcare Arrangements": {
+      "patients_overall": 10,
+      "caregivers_overall": 9,
+      "all_personas": 9.5
+    },
+    "Transport Costs": {
+      "patients_overall": 7,
+      "caregivers_overall": 6,
+      "all_personas": 6.5
+    },
+    "Scheduling Flexibility": {
+      "patients_overall": 7,
+      "caregivers_overall": 6,
+      "all_personas": 6.5
+    },
+    "Appointment Rescheduling": {
+      "patients_overall": 6,
+      "caregivers_overall": 5,
+      "all_personas": 5.5
+    },
+    "Procedure Discomfort": {
+      "patients_overall": 6,
+      "caregivers_overall": 5,
+      "all_personas": 5.5
+    },
+    "Follow-up Complexity": {
+      "patients_overall": 8,
+      "caregivers_overall": 7,
+      "all_personas": 7.5
+    },
+    "Visit Frequency": {
+      "patients_overall": 9,
+      "caregivers_overall": 8,
+      "all_personas": 8.5
+    },
+    "Time Away from Family": {
+      "patients_overall": 8,
+      "caregivers_overall": 7,
+      "all_personas": 7.5
+    },
+    "Anxiety Level": {
+      "patients_overall": 7,
+      "caregivers_overall": 6,
+      "all_personas": 6.5
+    },
+    "Emotional Burden": {
+      "patients_overall": 7,
+      "caregivers_overall": 6,
+      "all_personas": 6.5
+    }
   },
-  "Pregnancy Test": {
-    "patients_overall": 6.7,
-    "caregivers_overall": 6.0,
-    "all_personas": 6.4
-  },
-  "C-SSRS": {
-    "patients_overall": 6.1,
-    "caregivers_overall": 6.5,
-    "all_personas": 6.3
-  },
-  "QOLIE-31": {
-    "patients_overall": 7.3,
-    "caregivers_overall": 6.8,
-    "all_personas": 7.1
-  },
-  "QOLIE-AD-48": {
-    "patients_overall": 7.0,
-    "caregivers_overall": 6.2,
-    "all_personas": 6.6
-  },
-  "Diary Training": {
-    "patients_overall": 6.9,
-    "caregivers_overall": 7.3,
-    "all_personas": 7.0
-  },
-  "ECG": {
-    "patients_overall": 6.5,
-    "caregivers_overall": 5.7,
-    "all_personas": 6.2
-  },
-  "Physical and Neurologic Exam": {
-    "patients_overall": 5.9,
-    "caregivers_overall": 5.3,
-    "all_personas": 5.6
-  },
-  "Clinical Laboratory Tests": {
-    "patients_overall": 6.4,
-    "caregivers_overall": 6.8,
-    "all_personas": 6.6
-  },
-  "Travel Time": {
-    "patients_overall": 10,
-    "caregivers_overall": 9,
-    "all_personas": 9.5
-  },
-  "Lost Wages": {
-    "patients_overall": 9,
-    "caregivers_overall": 8,
-    "all_personas": 8.5
-  },
-  "Childcare Arrangements": {
-    "patients_overall": 10,
-    "caregivers_overall": 9,
-    "all_personas": 9.5
-  },
-  "Transport Costs": {
-    "patients_overall": 7,
-    "caregivers_overall": 6,
-    "all_personas": 6.5
-  },
-  "Scheduling Flexibility": {
-    "patients_overall": 7,
-    "caregivers_overall": 6,
-    "all_personas": 6.5
-  },
-  "Appointment Rescheduling": {
-    "patients_overall": 6,
-    "caregivers_overall": 5,
-    "all_personas": 5.5
-  },
-  "Procedure Discomfort": {
-    "patients_overall": 6,
-    "caregivers_overall": 5,
-    "all_personas": 5.5
-  },
-  "Follow-up Complexity": {
-    "patients_overall": 8,
-    "caregivers_overall": 7,
-    "all_personas": 7.5
-  },
-  "Visit Frequency": {
-    "patients_overall": 9,
-    "caregivers_overall": 8,
-    "all_personas": 8.5
-  },
-  "Time Away from Family": {
-    "patients_overall": 8,
-    "caregivers_overall": 7,
-    "all_personas": 7.5
-  },
-  "Anxiety Level": {
-    "patients_overall": 7,
-    "caregivers_overall": 6,
-    "all_personas": 6.5
-  },
-  "Emotional Burden": {
-    "patients_overall": 7,
-    "caregivers_overall": 6,
-    "all_personas": 6.5
+  "DECIPHERA-PV-3": {
+    "Pregnancy Test": {
+      "patients_overall": 6.5,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.2
+    },
+    "Physical Examination": {
+      "patients_overall": 5.8,
+      "caregivers_overall": 5.2,
+      "all_personas": 5.5
+    },
+    "ECG (12-Lead)": {
+      "patients_overall": 6.3,
+      "caregivers_overall": 5.5,
+      "all_personas": 5.9
+    },
+    "Chemistry Panel (Fasting)": {
+      "patients_overall": 7.2,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.0
+    },
+    "Hematology": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.4,
+      "all_personas": 6.6
+    },
+    "Urinalysis": {
+      "patients_overall": 5.5,
+      "caregivers_overall": 5.0,
+      "all_personas": 5.3
+    },
+    "Iron Metabolism Panel": {
+      "patients_overall": 6.9,
+      "caregivers_overall": 6.6,
+      "all_personas": 6.8
+    },
+    "TSAT": {
+      "patients_overall": 6.4,
+      "caregivers_overall": 6.0,
+      "all_personas": 6.2
+    },
+    "Ferritin": {
+      "patients_overall": 6.2,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.0
+    },
+    "Coagulation Panel": {
+      "patients_overall": 6.7,
+      "caregivers_overall": 6.3,
+      "all_personas": 6.5
+    },
+    "Endocrine Panel": {
+      "patients_overall": 6.6,
+      "caregivers_overall": 6.2,
+      "all_personas": 6.4
+    },
+    "Vital Signs": {
+      "patients_overall": 4.8,
+      "caregivers_overall": 4.2,
+      "all_personas": 4.5
+    },
+    "Body Weight": {
+      "patients_overall": 4.5,
+      "caregivers_overall": 4.0,
+      "all_personas": 4.3
+    },
+    "Height": {
+      "patients_overall": 4.2,
+      "caregivers_overall": 3.8,
+      "all_personas": 4.0
+    },
+    "Medical History": {
+      "patients_overall": 5.5,
+      "caregivers_overall": 5.8,
+      "all_personas": 5.7
+    },
+    "Informed Consent": {
+      "patients_overall": 6.0,
+      "caregivers_overall": 6.5,
+      "all_personas": 6.3
+    },
+    "Inclusion/Exclusion": {
+      "patients_overall": 5.8,
+      "caregivers_overall": 6.2,
+      "all_personas": 6.0
+    },
+    "HIV, Hepatitis B & C": {
+      "patients_overall": 7.5,
+      "caregivers_overall": 7.0,
+      "all_personas": 7.3
+    },
+    "Alcohol Screen": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.4,
+      "all_personas": 6.6
+    },
+    "FSH": {
+      "patients_overall": 6.0,
+      "caregivers_overall": 5.5,
+      "all_personas": 5.8
+    },
+    "PK Blood Sampling": {
+      "patients_overall": 8.0,
+      "caregivers_overall": 7.3,
+      "all_personas": 7.7
+    },
+    "Adverse Events": {
+      "patients_overall": 6.5,
+      "caregivers_overall": 7.2,
+      "all_personas": 6.9
+    },
+    "Concomitant Medications": {
+      "patients_overall": 5.2,
+      "caregivers_overall": 5.8,
+      "all_personas": 5.5
+    },
+    "ADA": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.4,
+      "all_personas": 6.6
+    },
+    "Antiplatelet Antibodies": {
+      "patients_overall": 7.0,
+      "caregivers_overall": 6.6,
+      "all_personas": 6.8
+    },
+    "Platelet Function Testing": {
+      "patients_overall": 7.3,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.1
+    },
+    "Genotypic analysis of globin genes": {
+      "patients_overall": 7.8,
+      "caregivers_overall": 7.4,
+      "all_personas": 7.6
+    },
+    "MRI; liver, spleen, and bone marrow": {
+      "patients_overall": 8.5,
+      "caregivers_overall": 8.0,
+      "all_personas": 8.3
+    },
+    "Ultrasound; liver and spleen": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.2,
+      "all_personas": 6.5
+    },
+    "EPO": {
+      "patients_overall": 6.5,
+      "caregivers_overall": 6.0,
+      "all_personas": 6.3
+    },
+    "sTfR": {
+      "patients_overall": 6.3,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.1
+    },
+    "GDF15": {
+      "patients_overall": 6.4,
+      "caregivers_overall": 5.9,
+      "all_personas": 6.2
+    },
+    "Erythroferrone": {
+      "patients_overall": 6.6,
+      "caregivers_overall": 6.1,
+      "all_personas": 6.4
+    },
+    "Haptoglobin": {
+      "patients_overall": 6.2,
+      "caregivers_overall": 5.7,
+      "all_personas": 6.0
+    },
+    "Protoporphyrin-IX": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.3,
+      "all_personas": 6.6
+    },
+    "Bone markers": {
+      "patients_overall": 6.5,
+      "caregivers_overall": 6.0,
+      "all_personas": 6.3
+    },
+    "NTDT-PRO": {
+      "patients_overall": 7.2,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.0
+    },
+    "SF-36": {
+      "patients_overall": 6.9,
+      "caregivers_overall": 6.5,
+      "all_personas": 6.7
+    },
+    "PGIC": {
+      "patients_overall": 6.0,
+      "caregivers_overall": 5.5,
+      "all_personas": 5.8
+    },
+    "ISGA": {
+      "patients_overall": 6.3,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.1
+    },
+    "FACIT-Fatigue": {
+      "patients_overall": 6.7,
+      "caregivers_overall": 6.2,
+      "all_personas": 6.5
+    },
+    "6MWT with pulse oximetry": {
+      "patients_overall": 7.5,
+      "caregivers_overall": 7.0,
+      "all_personas": 7.3
+    },
+    "Echocardiogram": {
+      "patients_overall": 7.0,
+      "caregivers_overall": 6.5,
+      "all_personas": 6.8
+    },
+    "DEXA scan": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 6.3,
+      "all_personas": 6.6
+    },
+    "Archived Serum Sample": {
+      "patients_overall": 6.0,
+      "caregivers_overall": 5.5,
+      "all_personas": 5.8
+    },
+    "Travel Time": {
+      "patients_overall": 9.8,
+      "caregivers_overall": 8.8,
+      "all_personas": 9.3
+    },
+    "Lost Wages": {
+      "patients_overall": 8.8,
+      "caregivers_overall": 7.8,
+      "all_personas": 8.3
+    },
+    "Childcare Arrangements": {
+      "patients_overall": 9.8,
+      "caregivers_overall": 8.8,
+      "all_personas": 9.3
+    },
+    "Transport Costs": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.3
+    },
+    "Scheduling Flexibility": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.3
+    },
+    "Appointment Rescheduling": {
+      "patients_overall": 5.8,
+      "caregivers_overall": 4.8,
+      "all_personas": 5.3
+    },
+    "Procedure Discomfort": {
+      "patients_overall": 5.8,
+      "caregivers_overall": 4.8,
+      "all_personas": 5.3
+    },
+    "Follow-up Complexity": {
+      "patients_overall": 7.8,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.3
+    },
+    "Visit Frequency": {
+      "patients_overall": 8.8,
+      "caregivers_overall": 7.8,
+      "all_personas": 8.3
+    },
+    "Time Away from Family": {
+      "patients_overall": 7.8,
+      "caregivers_overall": 6.8,
+      "all_personas": 7.3
+    },
+    "Anxiety Level": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.3
+    },
+    "Emotional Burden": {
+      "patients_overall": 6.8,
+      "caregivers_overall": 5.8,
+      "all_personas": 6.3
+    }
   }
 }

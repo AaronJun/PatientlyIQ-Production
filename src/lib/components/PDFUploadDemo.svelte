@@ -146,10 +146,9 @@
 
 <div class="pdf-upload-demo">
 	<Card.Root class="w-full">
-		<Card.Header>
-			<Card.Title class="text-xl font-bold text-left">Protocol Upload</Card.Title>
-			<Card.Description class="text-sm text-left">
-Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments as CSV or XLSX, to get started.			</Card.Description>
+		<Card.Header class="flex flex-row align-baseline justify-start items-center gap-2">
+			<Upload size={20} class="text-[#EB4E27]"/>
+			<Card.Title class="text-sm font-medium text-left text-slate-800">Upload Protocol</Card.Title>
 		</Card.Header>
 		
 		<Card.Content>
@@ -161,9 +160,7 @@ Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments
 					 role="button"
 					 tabindex="0">
 					<div class="upload-content">
-						<Upload size={24} />
-						<h3>Upload Your Clinical Protocol</h3>
-						<p>Drag and drop your PDF or DOCX protocol draft, or a schedule of assessments in CSV or XLSX.</p>
+						<p class="text-xs font-normal leading-tight text-left text-slate-800">Upload a clinical protocol in PDF or DOCX, or upload a schedule of assessments as CSV or XLSX, to get started.</p>
 						<input
 							type="file"
 							accept=".pdf"
@@ -172,8 +169,8 @@ Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments
 							id="pdf-upload"
 						/>
 						<Button 
-							variant="default" 
-							size="lg"
+							variant="ghost" 
+							size="sm"
 							onclick={() => document.getElementById('pdf-upload')?.click()}
 						>
 							Choose File
@@ -305,18 +302,21 @@ Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments
 	}
 
 	.upload-area {
-		border: 1px dashed #001f60;
-		border-radius: 12px;
-		padding: 3rem;
-		text-align: center;
-		background: #f8fafc;
+		border: .525px dashed #ff1616;
+		border-radius: 8px;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		justify-content: left;
+		background: #fff;
 		transition: all 0.3s ease;
 		cursor: pointer;
 	}
 
 	.upload-area:hover {
-		border-color: #3b82f6;
-		background: #eff6ff;
+		border-color: #ff1616;
+		background: #fff;
 	}
 
 	.upload-content {
@@ -324,19 +324,6 @@ Upload your clinical protocol in PDF or DOCX, or uploa a schedule of assessments
 		flex-direction: column;
 		align-items: center;
 		gap: 1rem;
-	}
-
-	.upload-content h3 {
-		font-size: 1rem;
-		font-weight: 600;
-		color: #1e293b;
-		margin: 0;
-	}
-
-	.upload-content p {
-		color: #64748b;
-		font-size: 0.8rem;
-		margin: 0;
 	}
 
 	.file-input {

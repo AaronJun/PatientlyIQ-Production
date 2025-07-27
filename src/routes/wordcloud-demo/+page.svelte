@@ -111,12 +111,11 @@
       }));
       console.log('Word cloud data loaded successfully:', allData.length, 'items');
       
-      // Filter data by group
-      drugSentimentData = allData.filter((item: WordCloudItem) => item.group === 'Drug Sentiment');
-      infusionExperienceData = allData.filter((item: WordCloudItem) => item.group === 'Infusion Experience');
+      // Use all data without filtering
+      drugSentimentData = allData;
+      infusionExperienceData = allData;
       
-      console.log('Drug Sentiment data:', drugSentimentData.length, 'items');
-      console.log('Infusion Experience data:', infusionExperienceData.length, 'items');
+      console.log('All word cloud data:', allData.length, 'items');
       
       loading = false;
     } catch (err: unknown) {
@@ -192,13 +191,11 @@
         frequency: parseInt(item.frequency, 10) || item.frequency
       }));
       
-      // Filter data by group
-      drugSentimentDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Drug Sentiment');
-      infusionExperienceDrivers = sentimentDriversData.filter((item: WordCloudItem) => item.group === 'Infusion Experience');
+      // Use all sentiment drivers data without filtering
+      drugSentimentDrivers = sentimentDriversData;
+      infusionExperienceDrivers = sentimentDriversData;
       
-      console.log('Sentiment drivers data loaded successfully:', sentimentDriversData.length, 'items');
-      console.log('Drug Sentiment drivers:', drugSentimentDrivers.length, 'items');
-      console.log('Infusion Experience drivers:', infusionExperienceDrivers.length, 'items');
+      console.log('All sentiment drivers data loaded successfully:', sentimentDriversData.length, 'items');
       
       // Debug sentiment filtering
       const drugPositive = drugSentimentDrivers.filter(d => d.sentiment === 'entirely positive' || d.sentiment === 'somewhat positive');

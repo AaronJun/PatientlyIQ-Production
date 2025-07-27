@@ -1,0 +1,1055 @@
+[
+  {
+    "Visit": "1",
+    "Week": "1",
+    "Stage": "Screening",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 2,
+        "Somewhat Negative": 1,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "2",
+    "Week": "4",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "3",
+    "Week": "8",
+    "Stage": "Double Blind",
+    "Travel Required": "N",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "4",
+    "Week": "12",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "5",
+    "Week": "16",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "6",
+    "Week": "20",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "7",
+    "Week": "24",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "8",
+    "Week": "28",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "9",
+    "Week": "32",
+    "Stage": "Double Blind",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "10",
+    "Week": "36",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "11",
+    "Week": "40",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "12",
+    "Week": "44",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "13",
+    "Week": "48",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "14",
+    "Week": "52",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "15",
+    "Week": "56",
+    "Stage": "Open Label",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "16",
+    "Week": "60",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "17",
+    "Week": "64",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "18",
+    "Week": "68",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "19",
+    "Week": "72",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "20",
+    "Week": "76",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "21",
+    "Week": "80",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "22",
+    "Week": "84",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "23",
+    "Week": "88",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "24",
+    "Week": "92",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "25",
+    "Week": "96",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "26",
+    "Week": "100",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "27",
+    "Week": "104",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "28",
+    "Week": "108",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "29",
+    "Week": "112",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "30",
+    "Week": "116",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "31",
+    "Week": "120",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "32",
+    "Week": "124",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "33",
+    "Week": "128",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "34",
+    "Week": "132",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "35",
+    "Week": "136",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "36",
+    "Week": "140",
+    "Stage": "Extension",
+    "Travel Required": "N",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  },
+  {
+    "Visit": "37",
+    "Week": "144",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "38",
+    "Week": "148",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "Y",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 2,
+        "Mostly Negative": 5,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 3,
+        "Mostly Positive": 2,
+        "Entirely Positive": 1
+      },
+      "Caregiver": {
+        "Entirely Negative": 3,
+        "Mostly Negative": 6,
+        "Somewhat Negative": 6,
+        "Neutral": 5,
+        "Somewhat Positive": 2,
+        "Mostly Positive": 1,
+        "Entirely Positive": 1
+      }
+    }
+  },
+  {
+    "Visit": "39",
+    "Week": "152",
+    "Stage": "Extension",
+    "Travel Required": "Y",
+    "Invasive Procedures": "N",
+    "Sentiment": {
+      "Patient": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 2,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 7,
+        "Entirely Positive": 8
+      },
+      "Caregiver": {
+        "Entirely Negative": 0,
+        "Mostly Negative": 1,
+        "Somewhat Negative": 3,
+        "Neutral": 5,
+        "Somewhat Positive": 6,
+        "Mostly Positive": 6,
+        "Entirely Positive": 7
+      }
+    }
+  }
+]

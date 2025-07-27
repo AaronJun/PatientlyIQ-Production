@@ -8,7 +8,10 @@ export const load: PageLoad = async ({ fetch }) => {
 		]);
 		
 		const visitScheduleData = await visitScheduleResponse.json();
-		const studyMetadata = await studyMetadataResponse.json();
+		const studyMetadataArray = await studyMetadataResponse.json();
+		
+		// Get the first study from the array as the default
+		const studyMetadata = studyMetadataArray[0];
 		
 		return {
 			visitScheduleData,

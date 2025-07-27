@@ -1,6 +1,8 @@
 {
   "journey_mapper_analysis": {
     "summary": {
+      "disease_name": "Focal Onset Seizures (Epilepsy)",
+      "study_name": "STUDY-302",
       "title": "Journey Mapper Analysis Summary",
       "description": "Comprehensive analysis of key hurdles, dropout risks, and interventions based on journey mapper data",
       "summary_text": "Patient and caregiver personas express strong motivation to join clinical trials when there’s potential access to novel treatments, personalized monitoring, and logistical support—but this is tempered by significant concerns around procedural discomfort, disruption to daily routines, and uncertainty about outcomes. Heatmap modeling highlights “burden hotspots” around Week 2 and Week 6, where multiple invasive or high-effort procedures cluster. Sentiment analysis from social listening aligns with these patterns, frequently surfacing terms such as “draining,” “hopeful,” and “nervous” in relation to these visits. Overall, the friction index underscores that trial success is not just a function of clinical efficacy but also the invisible load placed on participants—making it critical to simulate and optimize burden during protocol design.",

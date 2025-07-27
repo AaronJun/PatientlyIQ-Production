@@ -1,0 +1,81 @@
+{
+  "categories": [
+    {
+      "name": "Awareness & Knowledge",
+      "tags": [
+        "trial_literacy_low",
+        "trial_literacy_high",
+        "confused_by_process",
+        "trust_in_trials",
+        "distrust_in_trials"
+      ]
+    },
+    {
+      "name": "Motivations for Joining",
+      "tags": [
+        "hope_for_better_treatment",
+        "access_to_new_drugs",
+        "altruism",
+        "physician_referral"
+      ]
+    },
+    {
+      "name": "Barriers & Concerns",
+      "tags": [
+        "placebo_fear",
+        "fear_of_side_effects",
+        "trial_logistics_difficult",
+        "trial_ineligibility"
+      ]
+    },
+    {
+      "name": "Trial Burden & Design",
+      "tags": [
+        "too_many_visits",
+        "blood_draws_burdensome",
+        "noninvasive_preferred",
+        "fatigue_management_important",
+        "burden_high",
+        "burden_low"
+      ]
+    },
+    {
+      "name": "Outcome Expectations",
+      "tags": [
+        "expect_symptom_relief",
+        "realistic_expectations",
+        "expect_qol_improvement",
+        "hopeful_for_reduction_in_phlebotomy"
+      ]
+    },
+    {
+      "name": "Communication & Support",
+      "tags": [
+        "clear_consent_process",
+        "good_site_communication",
+        "poor_site_followup",
+        "emotional_support_needed",
+        "family_involvement"
+      ]
+    },
+    {
+      "name": "Caregiver-Specific Sentiment",
+      "tags": [
+        "caregiver_logistical_burden",
+        "caregiver_decision_making",
+        "caregiver_emotional_stress"
+      ]
+    },
+    {
+      "name": "Emotional Signal Tags",
+      "tags": [
+        "sentiment_hopeful",
+        "sentiment_frustrated",
+        "sentiment_skeptical",
+        "sentiment_empowered",
+        "sentiment_overwhelmed",
+        "sentiment_neutral"
+      ]
+    }
+  ]
+}

@@ -1,150 +1,318 @@
 [
   {
-    "assessment": "Blood Draw",
-    "category": "Invasive"
+    "Assessment": "6MWT with pulse oximetry",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "PK Blood Samples",
-    "category": "Invasive"
+    "Assessment": "ADA",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Pregnancy Test",
-    "category": "Invasive"
+    "Assessment": "Adverse Events",
+    "Type": "Observational"
   },
   {
-    "assessment": "FSH",
-    "category": "Invasive"
+    "Assessment": "Alcohol Screen",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "ECG",
-    "category": "Invasive"
+    "Assessment": "Antiplatelet Antibodies",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Clinical Laboratory Tests",
-    "category": "Invasive"
+    "Assessment": "Archived Serum Sample",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Surgical Biopsy Procedure",
-    "category": "Surgical"
+    "Assessment": "AUA-SI",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "Surgical Assessment",
-    "category": "Surgical"
+    "Assessment": "BDI-II",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "Physical and Neurologic Exam",
-    "category": "Observational"
+    "Assessment": "Blood Draw",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Vital Signs",
-    "category": "Observational"
+    "Assessment": "Body Weight",
+    "Type": "Observational"
   },
   {
-    "assessment": "Height, Weight, BMI",
-    "category": "Observational"
+    "Assessment": "Bone markers",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Tanner Staging",
-    "category": "Observational"
+    "Assessment": "BRIEF-SR",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "Ophthalmologic Exam",
-    "category": "Observational"
+    "Assessment": "C-SSRS",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "Eligibility Assessment",
-    "category": "Observational"
+    "Assessment": "CGI-S",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "Adverse Events",
-    "category": "Observational"
+    "Assessment": "Chemistry Panel (Fasting)",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Concomitant Medications",
-    "category": "Observational"
+    "Assessment": "Clinic Visit",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "Medical and Psychiatric History",
-    "category": "Observational"
+    "Assessment": "Clinical Laboratory Tests",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Informed Consent/Assent",
-    "category": "Observational"
+    "Assessment": "Coagulation Panel",
+    "Type": "Invasive"
   },
   {
-    "assessment": "Randomization",
-    "category": "Observational"
+    "Assessment": "Concomitant Medications",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "Dispense Study Drug",
-    "category": "Observational"
+    "Assessment": "DEXA scan",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "Study Drug Compliance Check",
-    "category": "Observational"
+    "Assessment": "Diary Training",
+    "Type": "Observational"
   },
   {
-    "assessment": "Study Drug Return",
-    "category": "Observational"
+    "Assessment": "Dispense Study Drug",
+    "Type": "Observational"
   },
   {
-    "assessment": "Diary Training",
-    "category": "Observational"
+    "Assessment": "ECG (12-Lead)",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "C-SSRS",
-    "category": "Patient-Reported"
+    "Assessment": "Echocardiogram",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "HRUA",
-    "category": "Patient-Reported"
+    "Assessment": "Eligibility Assessment",
+    "Type": "Observational"
   },
   {
-    "assessment": "QOLIE-31",
-    "category": "Patient-Reported"
+    "Assessment": "Endocrine Panel",
+    "Type": "Invasive"
   },
   {
-    "assessment": "QOLIE-AD-48",
-    "category": "Patient-Reported"
+    "Assessment": "EPO",
+    "Type": "Invasive"
   },
   {
-    "assessment": "BRIEF-SR",
-    "category": "Patient-Reported"
+    "Assessment": "Erythroferrone",
+    "Type": "Invasive"
   },
   {
-    "assessment": "LGPT",
-    "category": "Patient-Reported"
+    "Assessment": "FACIT-Fatigue",
+    "Type": "Non-Invasive"
   },
   {
-    "assessment": "NDDI-E",
-    "category": "Patient-Reported"
+    "Assessment": "Ferritin",
+    "Type": "Invasive"
   },
   {
-    "assessment": "BDI-II",
-    "category": "Patient-Reported"
+    "Assessment": "FSH",
+    "Type": "Invasive"
   },
   {
-    "assessment": "GAD-7",
-    "category": "Patient-Reported"
+    "Assessment": "GAD-7",
+    "Type": "Patient-Reported"
   },
   {
-    "assessment": "AUA-SI",
-    "category": "Patient-Reported"
+    "Assessment": "GDF15",
+    "Type": "Invasive"
   },
   {
-    "assessment": "MIDAS",
-    "category": "Patient-Reported"
+    "Assessment": "Genotypic analysis of globin genes",
+    "Type": "Invasive"
   },
   {
-    "assessment": "PGI-S",
-    "category": "Patient-Reported"
+    "Assessment": "Haptoglobin",
+    "Type": "Invasive"
   },
   {
-    "assessment": "CGI-S",
-    "category": "Patient-Reported"
+    "Assessment": "Height",
+    "Type": "Observational"
   },
   {
-    "assessment": "TSQM-9",
-    "category": "Patient-Reported"
+    "Assessment": "Height, Weight, BMI",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Hematology",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "HIV, Hepatitis B & C",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "HRUA",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "Inclusion/Exclusion",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "Informed Consent",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "Informed Consent/Assent",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Iron Metabolism Panel",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "ISGA",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "ISIS 702843 Administration",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "LGPT",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "Medical and Psychiatric History",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Medical History",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "MIDAS",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "MRI; liver, spleen, and bone marrow",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "NDDI-E",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "NTDT-PRO¬¨¬©",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "Ophthalmologic Exam",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "PGI-S",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "PGIC",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "Physical and Neurologic Exam",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Physical Examination",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "PK Blood Samples",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "PK Blood Sampling",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "Platelet Function Testing",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "Pregnancy Test",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "Protoporphyrin-IX",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "QOLIE-31",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "QOLIE-AD-48",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "Randomization",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "SF-36",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "sTfR",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "Study Drug Compliance Check",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Study Drug Return",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Surgical Assessment",
+    "Type": "Surgical"
+  },
+  {
+    "Assessment": "Surgical Biopsy Procedure",
+    "Type": "Surgical"
+  },
+  {
+    "Assessment": "Tanner Staging",
+    "Type": "Observational"
+  },
+  {
+    "Assessment": "Telephone Assessment",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "TSAT",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "TSQM-9",
+    "Type": "Patient-Reported"
+  },
+  {
+    "Assessment": "Ultrasound; liver and spleen",
+    "Type": "Non-Invasive"
+  },
+  {
+    "Assessment": "Urinalysis",
+    "Type": "Invasive"
+  },
+  {
+    "Assessment": "Vital Signs",
+    "Type": "Non-Invasive"
   }
 ]

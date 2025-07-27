@@ -6,15 +6,15 @@
 	export let size: string = '6px';
 </script>
 
-<div class="visit-squares md:max-w-44">
-	<div class="squares-label flex flex-row justify-between align-baseline">
-		<span class="label-text text-xs font-bold text-slate-500">{label}</span>
-		<span class="font-semibold text-sm text-slate-800">{count}</span>
+<div class="visit-squares flex flex-row w-full justify-between items-center">
+	<div class="flex flex-row justify-start align-center gap-2 w-1/3">
+		<span class="font-semibold text-xs text-slate-100 bg-[#EB4E27] rounded-full w-8 h-4 flex items-center align-center justify-center">{count}</span>
+		<span class="text-xs font-medium text-slate-700 ml-2 align-center">{label}</span>
 	</div>
-	<div class="squares-container">
+	<div class="squares-container w-2/3">
 		{#each Array(totalCount) as _, i}
 			<div 	
-				class="square w-3 h-3" 
+				class="square w-4 h-4" 
 				class:filled={i < count}
 				class:empty={i >= count}
 				style="background-color: {i < count ? color : 'transparent'}; border-color: {color}"
@@ -24,17 +24,6 @@
 </div>
 
 <style>
-	.squares-label {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.label-text {
-		font-weight: 600;
-		color: #374151;
-	}
 
 	.squares-container {
 		display: flex;
@@ -47,11 +36,7 @@
 	.square {
 		border-radius: 2px;
 		transition: opacity 0.2s ease;
-		border: 1px solid;
-	}
-
-	.square.filled {
-		/* Filled squares have background color and border */
+		border: .525px solid;
 	}
 
 	.square.empty {

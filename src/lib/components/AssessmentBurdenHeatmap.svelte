@@ -14,6 +14,7 @@
 	export let showBurdenScores: boolean = false; // Toggle between burden_scores and assessment_burden
 	export let maxSquares: number = 10; // Maximum number of squares to show
 	export let squareSize: string = '12px';
+	export let selectedStudyId: string = 'STUDY-302'; // Default to STUDY-302
 
 	// Drawer state
 	let drawerOpen: boolean = false;
@@ -25,22 +26,72 @@
 	const assessmentCategories = {
 		'Clinical Assessments (Invasive)': [
 			'PK Blood Samples',
+			'PK Blood Sampling',
 			'Pregnancy Test', 
 			'Clinical Laboratory Tests',
+			'Chemistry Panel (Fasting)',
+			'Hematology',
+			'Urinalysis',
+			'Iron Metabolism Panel',
 			'ECG',
-			'Physical and Neurologic Exam'
+			'ECG (12-Lead)',
+			'Physical and Neurologic Exam',
+			'Physical Examination',
+			'HIV, Hepatitis B & C',
+			'Alcohol Screen',
+			'FSH',
+			'TSAT',
+			'Ferritin',
+			'Coagulation Panel',
+			'Endocrine Panel'
 		],
 		'Patient-Reported Outcomes': [
 			'C-SSRS',
 			'QOLIE-31',
-			'QOLIE-AD-48'
+			'QOLIE-AD-48',
+			'NTDT-PRO',
+			'SF-36',
+			'PGIC',
+			'ISGA',
+			'FACIT-Fatigue'
+		],
+		'Specialized Biomarkers & Testing': [
+			'ADA',
+			'Antiplatelet Antibodies',
+			'Platelet Function Testing',
+			'Genotypic analysis of globin genes',
+			'EPO',
+			'sTfR',
+			'GDF15',
+			'Erythroferrone',
+			'Haptoglobin',
+			'Protoporphyrin-IX',
+			'Bone markers',
+			'6MWT with pulse oximetry'
+		],
+		'Imaging & Diagnostic Studies': [
+			'MRI; liver, spleen, and bone marrow',
+			'Ultrasound; liver and spleen',
+			'Echocardiogram',
+			'DEXA scan',
+			'Archived Serum Sample'
+		],
+		'Administrative & Baseline': [
+			'Diary Training',
+			'Vital Signs',
+			'Body Weight',
+			'Height',
+			'Medical History',
+			'Informed Consent',
+			'Inclusion/Exclusion',
+			'Adverse Events',
+			'Concomitant Medications'
 		],
 		'Logistical & Administrative': [
-			'Diary Training',
 			'Travel Time',
 			'Lost Wages',
 			'Childcare Arrangements',
-		'Transport Costs',
+			'Transport Costs',
 			'Scheduling Flexibility',
 			'Appointment Rescheduling',
 			'Visit Frequency'
@@ -54,17 +105,32 @@
 		]
 	};
 
+	// Map study IDs to the correct keys in the consolidated data
+	function getStudyDataKey(studyId: string): string {
+		if (studyId === 'DECIPHERA-PV-3' || studyId === '2') {
+			return 'DECIPHERA-PV-3';
+		}
+		return 'STUDY-302';
+	}
+
 	// Transform consolidated data to match persona format
 	function transformConsolidatedData(): PersonaBurden[] {
 		const consolidatedPersonas = ['all_personas', 'patients_overall', 'caregivers_overall'];
+		const studyDataKey = getStudyDataKey(selectedStudyId);
+		const studyData = consolidatedBurdenData[studyDataKey as keyof typeof consolidatedBurdenData];
+		
+		if (!studyData) {
+			return [];
+		}
 		
 		return consolidatedPersonas.map(personaKey => {
 			const assessmentBurden: Record<string, number> = {};
 			
 			// Transform the data structure
-			Object.entries(consolidatedBurdenData).forEach(([assessment, scores]) => {
-				if (scores[personaKey as keyof typeof scores] !== undefined) {
-					assessmentBurden[assessment] = scores[personaKey as keyof typeof scores] as number;
+			Object.entries(studyData).forEach(([assessment, scores]) => {
+				const score = scores[personaKey as keyof typeof scores];
+				if (score !== undefined) {
+					assessmentBurden[assessment] = score as number;
 				}
 			});
 			
@@ -153,6 +219,9 @@
 		switch (category) {
 			case 'Clinical Assessments (Invasive)': return '#dc2626'; // red
 			case 'Patient-Reported Outcomes': return '#7c3aed'; // purple  
+			case 'Specialized Biomarkers & Testing': return '#0369a1'; // blue
+			case 'Imaging & Diagnostic Studies': return '#7c2d12'; // brown
+			case 'Administrative & Baseline': return '#059669'; // emerald
 			case 'Logistical & Administrative': return '#059669'; // emerald
 			case 'Patient Experience & Burden': return '#d97706'; // amber
 			default: return '#6b7280'; // gray
@@ -260,7 +329,7 @@
 			<div class="corner-cell"></div>
 			{#each individualPersonas as personaData}
 				<div class="persona-header-cell">
-					<span class="persona-name" style="color: {getPersonaColor(personaData.persona)};">
+					<span class="text-2xs font-medium text-slate-800">
 						{getPersonaShortName(personaData.persona)}
 					</span>
 				</div>
@@ -280,8 +349,9 @@
 			{#each organizedAssessments as item}
 				{#if item.type === 'category'}
 					<div class="category-header-row">
-						<div class="category-header-cell" style="background-color: {getCategoryColor(item.name)}15">
-							<span class="category-name" style="color: {getCategoryColor(item.name)};">{item.name}</span>
+						<div class="category-header-cell" style="background-color: {getCategoryColor(item.name)}10">
+							<span class="text-2xs font-medium text-slate-800">
+								{item.name}</span>
 						</div>
 					</div>
 				{:else}
@@ -291,6 +361,7 @@
 						</div>
 						{#each individualPersonas as personaData}
 							{@const score = getBurdenScore(item.name, personaData.persona)}
+							<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 							<div 
 								class="burden-cell" 
 								class:clickable={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona)}
@@ -314,6 +385,7 @@
 						<div class="divider-cell"></div>
 						{#each consolidatedPersonas as personaData}
 							{@const score = getBurdenScore(item.name, personaData.persona)}
+							<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 							<div 
 								class="burden-cell consolidated" 
 								class:clickable={!showBurdenScores && score !== undefined && hasQuotes(personaData.persona)}
@@ -378,10 +450,11 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		min-width: 60vw;
+		min-width: 80vw;
+		align-items: center;
 		margin: 0;
 		flex: 2;
-		max-width: 1600px; /* Added max-width */
+		max-width: 100%; /* Added max-width */
 	}
 
 	.heatmap-header {
@@ -410,7 +483,6 @@
 		border: 1px solid #d1d5db;
 		background: white;
 		color: #6b7280;
-		border-radius: 6px;
 		font-size: 0.725rem;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -430,8 +502,7 @@
 		width: 100%;
 		max-width: none;
 		border: 1px solid #d1d5db;
-		border-radius: 8px;
-		overflow: hidden;
+		overflow: visible;
 	}
 
 	.grid-header {
@@ -439,6 +510,9 @@
 		grid-template-columns: 5rem repeat(3, 1fr) 10px repeat(3, 1fr);
 		border-bottom: 1px solid #d1d5db;
 		background: #f9fafb;
+		position: sticky;
+		top: 0;
+		z-index: 10;
 	}
 
 	.corner-cell {
@@ -447,17 +521,15 @@
 	}
 
 	.persona-header-cell {
-		padding: 1rem;
 		border-right: 1px solid #d1d5db;
 		text-align: center;
 		font-weight: 600;
 		background: white;
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
 		align-items: center;
 		justify-content: center;
-		min-height: 80px;
+		min-height: 40px;
 		min-width: 0;
 	}
 
@@ -475,7 +547,7 @@
 		border-left: 1px solid #9ca3af;
 		border-right: 1px solid #9ca3af;
 		position: relative;
-		min-height: 80px;
+		min-height: 40px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -522,7 +594,6 @@
 		display: flex;
 		align-items: center;
 		font-weight: 600;
-		color: #374151;
 		position: relative;
 	}
 
@@ -560,7 +631,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 80px;
+		min-height: 40px;
 		min-width: 0;
 		position: relative;
 		transition: all 0.2s ease;

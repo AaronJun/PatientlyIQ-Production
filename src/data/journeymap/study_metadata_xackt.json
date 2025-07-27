@@ -1,3 +1,4 @@
+[
 {
   "study_id": "STU-D-302",
   "study_name": "STUDY-302",
@@ -28,4 +29,37 @@
   "total_visits": 52,
   "total_weeks": 102,
   "visit_schedule_json": "patient_burden_mapper_visit_schedule_FULL.json"
+},
+{
+  "study_id": "2",
+  "study_name": "DECIPHERA-PV-3",
+  "sponsor": "Deciphera Pharmaceuticals",
+  "title": "A Phase 3, Randomized, Double-blind, Placebo-controlled, Multicenter Study to Evaluate the Efficacy and Safety of Sapablursen in Adults with Phlebotomy-Dependent Polycythemia Vera",
+  "phase": "3",
+  "indication": "Polycythemia Vera",
+  "therapeutic_area": "Hematology",
+  "indication_level_quotes": "1540",
+  "therapeutic_area_quotes": "11970",
+  "population": {
+    "age_range": "Adults 18+",
+    "condition": "Phlebotomy-dependent Polycythemia Vera",
+    "inclusion_highlights": [
+      "Diagnosis of PV per WHO 2016 criteria",
+      "Phlebotomy dependent (\u22653 in 28 weeks or \u22655 in 1 year)",
+      "Hematocrit <45% prior to randomization",
+      "ECOG performance status 0-2",
+      "Stable CRT regimen or none"
+    ]
+  },
+  "design": {
+    "randomization": "Yes",
+    "control": "Placebo-controlled",
+    "blinding": "Double-blind",
+    "arms": 2,
+    "multicenter": true
+  },
+  "total_visits": 16,
+  "total_weeks": 160,
+  "visit_schedule_json": "sapablursen_pv_visit_schedule.json"
 }
+]

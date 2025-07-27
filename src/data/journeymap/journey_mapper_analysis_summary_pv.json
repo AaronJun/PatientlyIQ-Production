@@ -1,0 +1,499 @@
+{
+  "journey_mapper_analysis": {
+    "summary": {
+      "disease_name": "Polycythemia Vera (PV)",
+      "study_name": "DECIPHERA-PV-3",
+      "title": "Journey Mapper Analysis Summary",
+      "description": "Simulated burden analysis for Polycythemia Vera patients enrolled in the Phase 3 Sapablursen study. Includes expected dropout risk, visit friction, and burden-reduction strategies based on protocol design and qualitative inputs.",
+      "summary_text": "Patients with PV often struggle with fatigue, travel logistics, and anxiety around blood draws, especially given the phlebotomy-dependent criteria and regular hematocrit monitoring. Study design shows friction hotspots at transitions between double-blind and open-label phases. Sentiment terms such as 'exhausting', 'repetitive', and 'hopeful' appear frequently. Protocol burden is highest during the first 32 weeks, with fewer mitigations in place for participants during the long-term extension period. Participant burden reduction efforts must focus on improving PRO collection UX, minimizing redundant labs, and supporting self-administration in Part 2.",
+      "analysis_date": "2025"
+    },
+    "key_hurdles_by_persona": {
+      "retired_patient": {
+        "persona_name": "Retired Patient",
+        "top_burden_areas": [
+          {
+            "hurdle": "Fatigue",
+            "burden_score": 9,
+            "description": "Persistent tiredness impacting daily activities"
+          },
+          {
+            "hurdle": "Frequent Clinic Visits",
+            "burden_score": 8,
+            "description": "Regular visits for labs and assessments are tiring"
+          },
+          {
+            "hurdle": "Travel Coordination",
+            "burden_score": 7,
+            "description": "Requires arranging transportation for visits"
+          },
+          {
+            "hurdle": "Injection Anxiety",
+            "burden_score": 7,
+            "description": "Concerns about regular subcutaneous injections"
+          }
+        ],
+        "top_assessment_burdens": [
+          {
+            "assessment": "PROMIS Fatigue",
+            "burden_score": 8,
+            "category": "Patient-Reported"
+          },
+          {
+            "assessment": "MFSAF",
+            "burden_score": 7,
+            "category": "Patient-Reported"
+          },
+          {
+            "assessment": "Phlebotomy Eligibility Labs",
+            "burden_score": 7,
+            "category": "Invasive"
+          }
+        ]
+      },
+      "working_adult": {
+        "persona_name": "Working Adult",
+        "top_burden_areas": [
+          {
+            "hurdle": "Time Off Work",
+            "burden_score": 9,
+            "description": "Missing work for frequent visits"
+          },
+          {
+            "hurdle": "Injection Fatigue",
+            "burden_score": 8,
+            "description": "Tired of repeated injections"
+          },
+          {
+            "hurdle": "Visit Scheduling Conflicts",
+            "burden_score": 7,
+            "description": "Difficulty aligning appointments with personal obligations"
+          },
+          {
+            "hurdle": "Symptom Tracking Burden",
+            "burden_score": 6,
+            "description": "Repeated patient-reported outcomes are time-consuming"
+          }
+        ],
+        "top_assessment_burdens": [
+          {
+            "assessment": "MPN-SAF",
+            "burden_score": 7,
+            "category": "Patient-Reported"
+          },
+          {
+            "assessment": "Phlebotomy Eligibility Labs",
+            "burden_score": 7,
+            "category": "Invasive"
+          },
+          {
+            "assessment": "MFSAF",
+            "burden_score": 6,
+            "category": "Patient-Reported"
+          }
+        ]
+      }
+    },
+    "highest_dropout_risk_visits": [
+      {
+        "visit_rank": 1,
+        "visit_number": 6,
+        "persona": "Working Adult",
+        "dropout_likelihood": 0.45,
+        "primary_drivers": [
+          "Time Off Work",
+          "Injection Fatigue"
+        ],
+        "visit_characteristics": {
+          "study_week": "20",
+          "travel_required": true,
+          "intervention_priority": "Critical"
+        }
+      },
+      {
+        "visit_rank": 2,
+        "visit_number": 8,
+        "persona": "Retired Patient",
+        "dropout_likelihood": 0.42,
+        "primary_drivers": [
+          "Fatigue",
+          "Frequent Clinic Visits"
+        ],
+        "visit_characteristics": {
+          "study_week": "32",
+          "travel_required": true,
+          "intervention_priority": "High"
+        }
+      },
+      {
+        "visit_rank": 3,
+        "visit_number": 12,
+        "persona": "Working Adult",
+        "dropout_likelihood": 0.4,
+        "primary_drivers": [
+          "Symptom Tracking Burden",
+          "Visit Scheduling Conflicts"
+        ],
+        "visit_characteristics": {
+          "study_week": "52",
+          "travel_required": true,
+          "intervention_priority": "High"
+        }
+      }
+    ],
+    "key_interventions_by_category": {
+      "travel_and_logistics": {
+        "category_name": "Travel & Logistics Hurdles",
+        "interventions": [
+          {
+            "intervention": "Virtual visit options",
+            "target_visits": [
+              "Visit 6 (Treatment Week 8)"
+            ],
+            "description": "Leverage visits already identified as non-travel required",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Mobile/home visits",
+            "target_visits": [
+              "Follow-up visits"
+            ],
+            "description": "For assessments that don't require specialized equipment",
+            "target_personas": [
+              "Rural Working Mother"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Travel stipends",
+            "target_visits": [
+              "All travel-required visits"
+            ],
+            "description": "Mileage reimbursement for rural participants",
+            "target_personas": [
+              "Rural Working Mother"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "Flexible scheduling",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "Extended appointment windows and rescheduling options",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "High"
+          }
+        ]
+      },
+      "assessment_burden_reduction": {
+        "category_name": "Assessment Burden Interventions",
+        "interventions": [
+          {
+            "intervention": "Reduce PK blood sample frequency",
+            "target_assessments": [
+              "PK Blood Samples"
+            ],
+            "description": "Highest burden assessment (7.9/10 across all personas)",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Critical"
+          },
+          {
+            "intervention": "Combine similar assessments",
+            "target_assessments": [
+              "Multiple PROs"
+            ],
+            "description": "Reduce redundancy by combining similar assessments in single visits",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "Digital PRO platforms with better UX",
+            "target_assessments": [
+              "QOLIE-31",
+              "QOLIE-AD-48"
+            ],
+            "description": "Improve user experience for surveys (current burden: 7.1/10)",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "Pre-visit preparation materials",
+            "target_assessments": [
+              "Diary Training"
+            ],
+            "description": "Address 'confusing' and 'overwhelming' feedback",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Medium"
+          }
+        ]
+      },
+      "emotional_and_social_support": {
+        "category_name": "Emotional & Social Support",
+        "interventions": [
+          {
+            "intervention": "Child life specialists",
+            "target_visits": [
+              "Visits with invasive procedures"
+            ],
+            "description": "Support for teen patients during invasive procedures",
+            "target_personas": [
+              "Teen Patient"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Support groups",
+            "target_visits": [
+              "Ongoing"
+            ],
+            "description": "For caregivers managing multiple children",
+            "target_personas": [
+              "Caregiver (Parent)"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "School liaison programs",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "Minimize educational disruption",
+            "target_personas": [
+              "Teen Patient",
+              "Caregiver (Parent)"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "Mental health resources",
+            "target_visits": [
+              "Ongoing"
+            ],
+            "description": "Address emotional fatigue (high across all personas)",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "High"
+          }
+        ]
+      },
+      "financial_and_work_impact": {
+        "category_name": "Financial & Work Impact",
+        "interventions": [
+          {
+            "intervention": "Flexible visit scheduling",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "Schedule around work/school schedules",
+            "target_personas": [
+              "Rural Working Mother",
+              "Teen Patient"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Compensation for lost wages",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "Particularly critical for rural working mothers",
+            "target_personas": [
+              "Rural Working Mother"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Employer letters",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "Explain study participation importance to employers",
+            "target_personas": [
+              "Rural Working Mother"
+            ],
+            "impact_level": "Low"
+          },
+          {
+            "intervention": "Childcare assistance",
+            "target_visits": [
+              "All visits"
+            ],
+            "description": "On-site childcare or childcare stipends during visits",
+            "target_personas": [
+              "Caregiver (Parent)",
+              "Rural Working Mother"
+            ],
+            "impact_level": "High"
+          }
+        ]
+      },
+      "high_risk_visit_interventions": {
+        "category_name": "High-Risk Visit Interventions",
+        "interventions": [
+          {
+            "intervention": "Enhanced support calls",
+            "target_visits": [
+              "Visit 6",
+              "Visit 10",
+              "Visit 13"
+            ],
+            "description": "Proactive outreach before highest dropout risk visits",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Critical"
+          },
+          {
+            "intervention": "Burden check-ins",
+            "target_visits": [
+              "Visit 6",
+              "Visit 10",
+              "Visit 13"
+            ],
+            "description": "Assess participant burden at critical timepoints",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "High"
+          },
+          {
+            "intervention": "Flexible rescheduling",
+            "target_visits": [
+              "Visit 6",
+              "Visit 10",
+              "Visit 13"
+            ],
+            "description": "No-penalty rescheduling options for high-risk visits",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "Medium"
+          },
+          {
+            "intervention": "Telehealth alternatives",
+            "target_visits": [
+              "Visit 6",
+              "Visit 10",
+              "Visit 13"
+            ],
+            "description": "Where clinically appropriate and feasible",
+            "target_personas": [
+              "All personas"
+            ],
+            "impact_level": "High"
+          }
+        ]
+      }
+    },
+    "priority_intervention_areas": [
+      {
+        "priority_rank": 1,
+        "intervention_area": "Injection burden mitigation",
+        "rationale": "High burden from repeated monthly SC injections",
+        "immediate_actions": [
+          "Support for self-administration in long-term extension",
+          "Injection site comfort strategies",
+          "Optional in-home administration"
+        ]
+      },
+      {
+        "priority_rank": 2,
+        "intervention_area": "Visit flexibility and remote options",
+        "rationale": "Visit timing conflicts with work and energy limitations",
+        "immediate_actions": [
+          "Offer weekend/evening options",
+          "Telemedicine PRO collection when feasible",
+          "Flexible scheduling during open-label and extension phases"
+        ]
+      },
+      {
+        "priority_rank": 3,
+        "intervention_area": "Streamlined PRO collection",
+        "rationale": "High burden from PROMIS and MPN tools",
+        "immediate_actions": [
+          "Digitize and simplify questionnaires",
+          "Enable pre-visit completion at home",
+          "Provide visual aids for symptom scale clarity"
+        ]
+      },
+      {
+        "priority_rank": 4,
+        "intervention_area": "Fatigue management support",
+        "rationale": "Fatigue is both a disease and trial participation burden",
+        "immediate_actions": [
+          "Energy conservation education",
+          "Scheduled rest breaks during visits",
+          "Optional breaks in questionnaire administration"
+        ]
+      },
+      {
+        "priority_rank": 5,
+        "intervention_area": "Enhanced support at key dropout windows",
+        "rationale": "Dropout risk highest at end of Part 1a and open-label start",
+        "immediate_actions": [
+          "Retention counseling pre-Week 20 and 32",
+          "Offer concierge logistics for Week 32 transition",
+          "Targeted burden review during Weeks 20 and 32"
+        ]
+      }
+    ],
+    "assessment_burden_rankings": {
+      "highest_burden_assessments": [
+        {
+          "assessment": "PROMIS Fatigue",
+          "overall_burden_score": 8.0,
+          "category": "Patient-Reported",
+          "sentiment_keywords": [
+            "exhausting",
+            "hard to quantify",
+            "repetitive"
+          ]
+        },
+        {
+          "assessment": "Phlebotomy Eligibility Labs",
+          "overall_burden_score": 7.5,
+          "category": "Invasive",
+          "sentiment_keywords": [
+            "frequent",
+            "uncomfortable",
+            "draining"
+          ]
+        },
+        {
+          "assessment": "MPN-SAF",
+          "overall_burden_score": 7.2,
+          "category": "Patient-Reported",
+          "sentiment_keywords": [
+            "repetitive",
+            "unclear",
+            "time-consuming"
+          ]
+        },
+        {
+          "assessment": "MFSAF",
+          "overall_burden_score": 6.8,
+          "category": "Patient-Reported",
+          "sentiment_keywords": [
+            "difficult to complete",
+            "uncertain relevance"
+          ]
+        }
+      ]
+    }
+  }
+}
