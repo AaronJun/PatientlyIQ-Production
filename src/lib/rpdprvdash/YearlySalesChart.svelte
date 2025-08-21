@@ -122,8 +122,8 @@
       .filter(d => d.Purchased === "Y")
       .map(d => {
         let price = null;
-        if (d["Sale  Price (USD, Millions)"]) {
-          const parsedPrice = parseFloat(d["Sale  Price (USD, Millions)"]);
+        if (d["Sale Price (USD"]) {
+          const parsedPrice = parseFloat(d["Sale Price (USD"]);
           if (!isNaN(parsedPrice)) {
             price = parsedPrice;
           }

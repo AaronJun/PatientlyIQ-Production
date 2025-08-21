@@ -9,8 +9,8 @@
     $: awardedVouchers = sponsorData.length;
     $: purchasedVouchers = sponsorData.filter(d => d.Purchased === "Y").length;
     $: totalSpent = sponsorData
-      .filter(d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"])
-      .reduce((total, d) => total + parseFloat(d["Sale  Price (USD, Millions)"]), 0);
+          .filter(d => d.Purchased === "Y" && d["Sale Price (USD"])
+    .reduce((total, d) => total + parseFloat(d["Sale Price (USD"]), 0);
   
     function formatCurrency(value: number): string {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);

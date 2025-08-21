@@ -3,13 +3,40 @@
     import * as d3 from 'd3';
     import { ArrowUpRight } from 'carbon-icons-svelte';
   
-    export let constellationData: any[];
+    interface ConstellationData {
+      Sponsor: string;
+      Purchaser: string;
+      "Drug Name": string;
+      name: string;
+      id: string;
+      "Sale Price (USD": string;
+      "Millions)": string;
+      Purchased: string;
+    }
+
+    interface CompanySummary {
+      salesCount: number;
+      purchaseCount: number;
+      totalSalesValue: number;
+      totalPurchaseValue: number;
+      buyers: string[];
+      sellers: string[];
+    }
+
+    interface TooltipContent {
+      sponsor: string;
+      drugName: string;
+      therapeuticArea: string;
+      id: string;
+    }
+
+    export let constellationData: ConstellationData[];
     export let onCompanyClick: ((data: any) => void) | undefined = undefined;
     export let onChordClick: ((data: any) => void) | undefined = undefined;
     
     const dispatch = createEventDispatcher();
     
-  let svg;
+    let svg: SVGSVGElement;
     let width = 800;
     let height = width;
     let innerRadius = Math.min(width, height) * 0.45 * 0.7;
@@ -18,7 +45,7 @@
     let tooltipVisible = false;
     let tooltipX = 0;
     let tooltipY = 0;
-    let tooltipContent = {
+    let tooltipContent: TooltipContent = {
       sponsor: '',
       drugName: '',
       therapeuticArea: '',
@@ -30,14 +57,14 @@
     const UNDISCLOSED_GROUP = "Undisclosed Buyer";
     const UNDISCLOSED_COLOR = "#e5e5e5";
 
-    function getCompanySummary(transactions, company) {
+    function getCompanySummary(transactions: ConstellationData[], company: string): CompanySummary {
       const sales = transactions.filter(t => t.Sponsor === company);
       const purchases = transactions.filter(t => t.Purchaser === company);
       
-      const totalSalesValue = sales.reduce((sum, t) => 
-        sum + (parseFloat(t["Sale  Price (USD, Millions)"]) || 0), 0);
-      const totalPurchaseValue = purchases.reduce((sum, t) => 
-        sum + (parseFloat(t["Sale  Price (USD, Millions)"]) || 0), 0);
+      const totalSalesValue = sales.reduce((sum: number, t: ConstellationData) => 
+        sum + (parseFloat(t["Sale Price (USD"]) || 0), 0);
+      const totalPurchaseValue = purchases.reduce((sum: number, t: ConstellationData) => 
+        sum + (parseFloat(t["Sale Price (USD"]) || 0), 0);
         
       const uniqueBuyers = Array.from(new Set(sales.map(t => t.Purchaser)));
       const uniqueSellers = Array.from(new Set(purchases.map(t => t.Sponsor)));
@@ -52,7 +79,7 @@
       };
     }
 
-    function handleMouseOver(event, data, color, content) {
+    function handleMouseOver(event: MouseEvent, data: any, color: string, content: TooltipContent) {
       tooltipContent = content;
       tooltipBorderColor = color;
       tooltipX = event.pageX - 320;
@@ -68,7 +95,7 @@
 
     onMount(() => {
       const transactions = constellationData.filter(
-        d => d.Purchased === "Y" && d["Sale  Price (USD, Millions)"] &&
+        d => d.Purchased === "Y" && d["Sale Price (USD"] &&
              d.Purchaser !== "NA" && d.Sponsor !== "NA"
       );
 
@@ -83,8 +110,8 @@
         Array(companies.length).fill(0)
       );
 
-      const transactionDetails = new Map();
-      const transactionValues = new Map();
+      const transactionDetails = new Map<string, any[]>();
+      const transactionValues = new Map<string, number>();
       
       transactions.forEach(t => {
         const sourceCompany = t.Sponsor === "Undisclosed" ? UNDISCLOSED_GROUP : t.Sponsor;
@@ -100,16 +127,16 @@
           transactionDetails.set(key, []);
           transactionValues.set(key, 0);
         }
-        transactionDetails.get(key).push({
+        transactionDetails.get(key)!.push({
           drugName: t["Drug Name"],
           therapeuticArea: t.name,
           indication: t.id,
-          price: parseFloat(t["Sale  Price (USD, Millions)"]) || 0
+          price: parseFloat(t["Sale Price (USD"]) || 0
         });
         
         transactionValues.set(
           key, 
-          transactionValues.get(key) + (parseFloat(t["Sale  Price (USD, Millions)"]) || 0)
+          transactionValues.get(key)! + (parseFloat(t["Sale Price (USD"]) || 0)
         );
       });
 
@@ -127,7 +154,7 @@
         ));
 
       const values = Array.from(transactionValues.values());
-      const maxValue = d3.max(values);
+      const maxValue = d3.max(values) || 0;
       const valueColor = d3.scaleSequential()
         .domain([0, maxValue])
         .interpolator(d3.interpolateBlues);
@@ -236,12 +263,16 @@
 
       group.append("path")
         .attr("class", "group-arc")
-        .attr("fill", d => companyColor(companies[d.index]))
-        .attr("d", d3.arc()
-          .innerRadius(innerRadius)
-          .outerRadius(outerRadius))
+        .attr("fill", (d: any) => companyColor(companies[d.index]))
+        .attr("d", (d: any) => {
+          const arc = d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+          const result = arc(d as any);
+          return result || "";
+        })
         .style("cursor", "pointer")
-        .on("mouseover", (event, d) => {
+        .on("mouseover", function(event: MouseEvent, d: any) {
           highlightCompany(d.index);
           
           const company = companies[d.index];
@@ -256,11 +287,11 @@
               .join(", ")}`
           });
         })
-        .on("mouseout", () => {
+        .on("mouseout", function() {
           resetHighlight();
           handleMouseOut();
         })
-        .on("click", (event, d) => {
+        .on("click", function(event: MouseEvent, d: any) {
           if (onCompanyClick) {
             const company = companies[d.index];
             onCompanyClick({
@@ -271,26 +302,26 @@
         });
 
       const labels = group.append("text")
-        .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
+        .each((d: any) => { d.angle = (d.startAngle + d.endAngle) / 2; })
         .attr("dy", "0.35em")
         .attr("class", "group-label")
-        .attr("transform", d => `
+        .attr("transform", (d: any) => `
           rotate(${(d.angle * 180 / Math.PI - 90)})
           translate(${outerRadius + 5})
           ${d.angle > Math.PI ? "rotate(180)" : ""}
         `)
-        .attr("text-anchor", d => d.angle > Math.PI ? "end" : null)
-        .text(d => companies[d.index])
+        .attr("text-anchor", (d: any) => d.angle > Math.PI ? "end" : null)
+        .text((d: any) => companies[d.index])
         .style("font-size", "8px")
         .style("cursor", "pointer")
-        .on("mouseover", (event, d) => {
+        .on("mouseover", (event: MouseEvent, d: any) => {
           highlightCompany(d.index);
           
           const company = companies[d.index];
           const summary = getCompanySummary(transactions, company);
           
-          let tooltipContent;
-          if (summary.isUndisclosedBuyer) {
+          let tooltipContent: TooltipContent;
+          if (company === UNDISCLOSED_GROUP) {
             tooltipContent = {
               sponsor: "Undisclosed Buyers",
               drugName: `Total Transactions: ${summary.purchaseCount}`,
@@ -314,7 +345,7 @@
           resetHighlight();
           handleMouseOut();
         })
-        .on("click", (event, d) => {
+        .on("click", (event: MouseEvent, d: any) => {
           if (onCompanyClick) {
             const company = companies[d.index];
             onCompanyClick({
@@ -330,30 +361,30 @@
         .data(chords)
         .join("path")
         .attr("class", "chord")
-        .attr("d", d3.ribbon().radius(innerRadius))
-        .attr("fill", d => {
+        .attr("d", (d: any) => d3.ribbon().radius(innerRadius)(d))
+        .attr("fill", (d: any) => {
           const key = `${d.source.index}-${d.target.index}`;
           const value = transactionValues.get(key);
           return value ? valueColor(value) : UNDISCLOSED_COLOR;
         })
-        .attr("stroke", d => {
+        .attr("stroke", (d: any) => {
           const key = `${d.source.index}-${d.target.index}`;
           const value = transactionValues.get(key);
-          return value ? d3.rgb(valueColor(value)).darker() : d3.rgb(UNDISCLOSED_COLOR).darker();
+          return value ? d3.rgb(valueColor(value)).darker().toString() : d3.rgb(UNDISCLOSED_COLOR).darker().toString();
         })
         .attr("stroke-width", .25)
         .style("cursor", "pointer")
-        .on("mouseover", (event, d) => {
+        .on("mouseover", (event: MouseEvent, d: any) => {
           highlightChord(d);
           
           const key = `${d.source.index}-${d.target.index}`;
           const details = transactionDetails.get(key);
-          const totalValue = transactionValues.get(key);
+          const totalValue = transactionValues.get(key) || 0;
           
           handleMouseOver(event, d, valueColor(totalValue), {
             sponsor: `${companies[d.source.index]} → ${companies[d.target.index]}`,
-            drugName: details.map(t => t.drugName).join(", "),
-            therapeuticArea: `${details.length} transaction${details.length > 1 ? 's' : ''}`,
+            drugName: details?.map((t: any) => t.drugName).join(", ") || "",
+            therapeuticArea: `${details?.length || 0} transaction${(details?.length || 0) > 1 ? 's' : ''}`,
             id: `$${totalValue.toFixed(1)}M`
           });
         })
@@ -361,65 +392,64 @@
           resetHighlight();
           handleMouseOut();
         })
-        paths
-    .on("click", (event, d) => {
-      if (onChordClick) {
-        const key = `${d.source.index}-${d.target.index}`;
-        const details = transactionDetails.get(key);
-        if (details && details.length > 0) {
-          // Find the matching transaction in the original data
-          const sourceCompany = companies[d.source.index];
-          const targetCompany = companies[d.target.index];
-          const matchingTransaction = transactions.find(t => 
-            (t.Sponsor === sourceCompany || t.Sponsor === "Undisclosed") && 
-            (t.Purchaser === targetCompany || t.Purchaser === "Undisclosed") &&
-            t["Drug Name"] === details[0].drugName
-          );
-          
-          if (matchingTransaction) {
-            onChordClick({
-              ...matchingTransaction,
-              name: details[0].therapeuticArea
-            });
+        .on("click", (event: MouseEvent, d: any) => {
+          if (onChordClick) {
+            const key = `${d.source.index}-${d.target.index}`;
+            const details = transactionDetails.get(key);
+            if (details && details.length > 0) {
+              // Find the matching transaction in the original data
+              const sourceCompany = companies[d.source.index];
+              const targetCompany = companies[d.target.index];
+              const matchingTransaction = transactions.find(t => 
+                (t.Sponsor === sourceCompany || t.Sponsor === "Undisclosed") && 
+                (t.Purchaser === targetCompany || t.Purchaser === "Undisclosed") &&
+                t["Drug Name"] === details[0].drugName
+              );
+              
+              if (matchingTransaction) {
+                onChordClick({
+                  ...matchingTransaction,
+                  name: details[0].therapeuticArea
+                });
+              }
+            }
           }
-        }
-      }
-    });
+        });
 
-      function highlightCompany(index) {
-        paths.style("opacity", d => 
+      function highlightCompany(index: number) {
+        paths.style("opacity", (d: any) => 
           d.source.index === index || d.target.index === index ? 1 : 0.1
         );
         
         group.selectAll(".group-arc")
-          .style("opacity", d => 
+          .style("opacity", (d: any) => 
             d.index === index ? 1 : 0.1
           );
           
         labels
-          .style("font-weight", d => 
+          .style("font-weight", (d: any) => 
             d.index === index ? "bold" : "normal"
           )
-          .style("font-size", d => 
+          .style("font-size", (d: any) => 
             d.index === index ? "10px" : "8px"
           );
       }
 
-      function highlightChord(chord) {
-        paths.style("opacity", d => 
+      function highlightChord(chord: any) {
+        paths.style("opacity", (d: any) => 
           d === chord ? 1 : 0.1
         );
         
         group.selectAll(".group-arc")
-          .style("opacity", d => 
+          .style("opacity", (d: any) => 
             d.index === chord.source.index || d.index === chord.target.index ? 1 : 0.1
           );
           
         labels
-          .style("font-weight", d => 
+          .style("font-weight", (d: any) => 
             d.index === chord.source.index || d.index === chord.target.index ? "bold" : "normal"
           )
-          .style("font-size", d => 
+          .style("font-size", (d: any) => 
             d.index === chord.source.index || d.index === chord.target.index ? "10px" : "8px"
           );
       }

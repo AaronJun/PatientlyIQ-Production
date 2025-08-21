@@ -10,7 +10,8 @@
 
   interface ConstellationData extends SimulationNodeDatum {
   Purchased: string;
-  "Sale  Price (USD, Millions)": string;
+  "Sale Price (USD": string;
+  "Millions)": string;
   Purchaser: string;
   Sponsor: string;
   "Drug Name": string;
@@ -39,7 +40,7 @@
     ...entry,
     // Ensure all required fields exist with defaults if needed
     Purchased: entry.Purchased || 'N',
-    "Sale  Price (USD, Millions)": entry["Sale  Price (USD, Millions)"] || 'NA',
+    "Sale Price (USD": entry["Sale Price (USD"] || 'NA',
     Purchaser: entry.Purchaser || 'NA',
     Sponsor: entry.Sponsor || '',
     "Drug Name": entry["Drug Name"] || '',  
@@ -110,11 +111,11 @@
 
   function calculateBenchmarks(): void {
     const sales = constellationData.filter(d => 
-      d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]
+      d.Purchased === "Y" && d["Sale Price (USD"]
     );
     
     const prices = sales
-      .map(s => parseFloat(s["Sale  Price (USD, Millions)"]))
+      .map(s => parseFloat(s["Sale Price (USD"]))
       .filter((price): price is number => !isNaN(price));
 
     if (prices.length === 0) return;
@@ -123,7 +124,7 @@
     const sum = prices.reduce((a, b) => a + b, 0);
     averageSale.price = sum / prices.length;
     const avgSale = sales.find(s => 
-      parseFloat(s["Sale  Price (USD, Millions)"]) === averageSale.price
+      parseFloat(s["Sale Price (USD"]) === averageSale.price
     );
     if (avgSale) {
       averageSale.buyer = avgSale.Purchaser;
@@ -248,11 +249,11 @@
     if (!svg || !g) return;
 
     const purchasedVouchers = constellationData.filter(d => 
-      d.Purchased === "Y" && d["Sale  Price (USD, Millions)"]
+      d.Purchased === "Y" && d["Sale Price (USD"]
     );
 
     const prices = purchasedVouchers
-      .map(d => parseFloat(d["Sale  Price (USD, Millions)"]))
+      .map(d => parseFloat(d["Sale Price (USD"]))
       .filter((price): price is number => !isNaN(price));
 
     const x = d3.scaleLinear()
@@ -261,7 +262,7 @@
 
     simulation = d3.forceSimulation(purchasedVouchers as ConstellationData[])
       .force("x", d3.forceX((d: ConstellationData) => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+        const price = parseFloat(d["Sale Price (USD"]);
         return x(isNaN(price) ? 0 : price);
       }).strength(1))
       .force("y", d3.forceY(height / 2))
@@ -293,7 +294,7 @@
       .attr("cy", d => (d as any).y)
       .attr("r", 6.25)
       .attr("fill", d => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+        const price = parseFloat(d["Sale Price (USD"]);
         if (isNaN(price)) return "none";
         if (d.Purchaser.toLowerCase() === 'undisclosed' || 
             d.Sponsor.toLowerCase() === 'undisclosed') {
@@ -322,8 +323,8 @@
         selectedPoint = {
           buyer: d.Purchaser || 'N/A',
           seller: d.Sponsor || 'N/A',
-          price: d["Sale  Price (USD, Millions)"] ? 
-            `$${d["Sale  Price (USD, Millions)"]} million` : 'N/A',
+          price: d["Sale Price (USD"] ? 
+            `$${d["Sale Price (USD"]} million` : 'N/A',
           drugName: d["Drug Name"] || 'N/A'
         };
       })

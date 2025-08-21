@@ -10,7 +10,7 @@
   export let constellationData: Array<{
     Year: string;
     Purchased: string;
-    "Sale  Price (USD, Millions)"?: string;
+    "Sale Price (USD"?: string;
   }>;
   
   export let currentYear: string;
@@ -30,9 +30,9 @@ $: {
         voucherCount: constellationData.length, // Count all vouchers
         soldCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
         totalValue: constellationData
-          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale Price (USD"])
           .reduce((sum, d) => {
-            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+            const price = parseFloat(d["Sale Price (USD"]);
             return !isNaN(price) ? sum + price : sum;
           }, 0)
       };
@@ -45,9 +45,9 @@ $: {
         voucherCount: yearConstellationData.length,
         soldCount: yearConstellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
         totalValue: yearConstellationData
-          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale Price (USD"])
           .reduce((sum, d) => {
-            const price = parseFloat(d["Sale  Price (USD, Millions)"]);
+            const price = parseFloat(d["Sale Price (USD"]);
             return !isNaN(price) ? sum + price : sum;
           }, 0)
       };
@@ -59,9 +59,9 @@ $: overviewStats = {
       totalVouchers: constellationData.length,
       uniqueAreas: new Set(constellationData.map(d => d.name)).size,
       totalValue: constellationData
-        .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+        .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale Price (USD"])
         .reduce((sum, d) => {
-          const price = parseFloat(d["Sale  Price (USD, Millions)"]) || 0;
+          const price = parseFloat(d["Sale Price (USD"]) || 0;
           return sum + price;
         }, 0),
       purchasedCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,

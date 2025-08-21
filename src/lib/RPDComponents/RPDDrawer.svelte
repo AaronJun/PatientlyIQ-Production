@@ -336,7 +336,7 @@
                       {:else if field === 'Purchaser'}
                         {displayData.Purchaser || 'N/A'}
                       {:else if field === 'Sale Price'}
-                        {formatSalePrice(displayData["Sale  Price (USD, Millions)"])}
+                        {formatSalePrice(displayData["Sale Price (USD"])}
                       {:else if field === 'Purchase Date'}
                         {displayData["Purchase Month"] && displayData["Purchase Date"] && displayData["Purchase Year"] 
                           ? formatDate(displayData["Purchase Month"], displayData["Purchase Date"], displayData["Purchase Year"]) 
@@ -569,7 +569,7 @@
                   drugName: entry["Drug Name"],
                   role: entry.Sponsor === displayData.Sponsor ? 'Seller' : 'Buyer',
                   counterparty: entry.Sponsor === displayData.Sponsor ? entry.Purchaser : entry.Sponsor,
-                  salePrice: formatSalePrice(entry["Sale  Price (USD, Millions)"])
+                  salePrice: formatSalePrice(entry["Sale Price (USD"])
                 })), searchTerm)}
                 sortable
                 zebra
@@ -658,7 +658,7 @@
                 drugName: entry["Drug Name"],
                 indication: entry.id || 'N/A',
                 treatmentType: entry["Treatment Type"] || 'N/A',
-                salePrice: formatSalePrice(entry["Sale  Price (USD, Millions)"])
+                                  salePrice: formatSalePrice(entry["Sale Price (USD"])
             })), searchTerm)}
             sortable
             zebra

@@ -35,7 +35,7 @@
     "Drug Name": string;
     "Treatment Type"?: string;
     Purchased: string;
-    Month: string;x
+    Month: string;
     Date: string;
     Purchaser?: string;
   }

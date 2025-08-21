@@ -10,7 +10,7 @@
     "Drug Name": string;
     "Treatment Type": string;
     Purchased: string;
-    "Sale  Price (USD, Millions)"?: string;
+    "Sale Price (USD"?: string;
     "Approved Drug": string;
   }
 
@@ -20,9 +20,9 @@
     totalVouchers: constellationData.length,
     uniqueAreas: new Set(constellationData.map(d => d.name)).size,
     totalValue: constellationData
-      .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale  Price (USD, Millions)"])
+      .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale Price (USD"])
       .reduce((sum, d) => {
-        const price = parseFloat(d["Sale  Price (USD, Millions)"]) || 0;
+        const price = parseFloat(d["Sale Price (USD"]) || 0;
         return sum + price;
       }, 0),
     purchasedCount: constellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
