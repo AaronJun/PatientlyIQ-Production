@@ -59,8 +59,8 @@
   }
   
   onMount(() => {
-    const purchasedVouchers = data.filter(d => d.Purchased === "Y" && d["Sale Price (USD"]);
-    const prices = purchasedVouchers.map(d => parseFloat(d["Sale Price (USD"]));
+        const purchasedVouchers = data.filter(d => d.Purchased === "Y" && d["Sale Price"]);
+    const prices = purchasedVouchers.map(d => parseFloat(d["Sale Price"]));
     
     svg = d3.select("#beeswarm-plot")
       .append("svg");
@@ -73,9 +73,9 @@
     const x = d3.scaleLinear()
       .domain([0, d3.max(prices)])
       .range([0, width]);
-  
+
     simulation = d3.forceSimulation(purchasedVouchers)
-      .force("x", d3.forceX(d => x(parseFloat(d["Sale Price (USD"]))).strength(1))
+      .force("x", d3.forceX(d => x(parseFloat(d["Sale Price"]))).strength(1))
       .force("y", d3.forceY(height / 2))
       .force("collide", d3.forceCollide(5))
       .stop();

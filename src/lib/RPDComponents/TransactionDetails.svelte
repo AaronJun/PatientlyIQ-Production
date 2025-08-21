@@ -41,7 +41,7 @@
               {:else if field === 'Purchaser'}
                 {displayData.Purchaser || 'N/A'}
               {:else if field === 'Sale Price'}
-                {formatSalePrice(displayData["Sale Price (USD"])}
+                {formatSalePrice(displayData["Sale Price"])}
               {:else if field === 'Purchase Date'}
                 {displayData["Purchase Month"] && displayData["Purchase Date"] && displayData["Purchase Year"] 
                   ? formatDate(displayData["Purchase Month"], displayData["Purchase Date"], displayData["Purchase Year"]) 

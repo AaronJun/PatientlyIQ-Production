@@ -125,7 +125,7 @@
                   drugName: entry["Drug Name"],
                   role: entry.Sponsor === sponsorData.sponsor ? 'Seller' : 'Buyer',
                   counterparty: entry.Sponsor === sponsorData.sponsor ? entry.Purchaser : entry.Sponsor,
-                  salePrice: formatSalePrice(entry["Sale Price (USD"])
+                  salePrice: formatSalePrice(entry["Sale Price"])
                 })), searchTerm)}
                 sortable
                 zebra

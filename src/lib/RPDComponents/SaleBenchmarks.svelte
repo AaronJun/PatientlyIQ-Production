@@ -10,8 +10,7 @@
 
   interface ConstellationData extends SimulationNodeDatum {
   Purchased: string;
-  "Sale Price (USD": string;
-  "Millions)": string;
+  "Sale Price": string;
   Purchaser: string;
   Sponsor: string;
   "Drug Name": string;
@@ -40,7 +39,7 @@
     ...entry,
     // Ensure all required fields exist with defaults if needed
     Purchased: entry.Purchased || 'N',
-    "Sale Price (USD": entry["Sale Price (USD"] || 'NA',
+    "Sale Price": entry["Sale Price"] || 'NA',
     Purchaser: entry.Purchaser || 'NA',
     Sponsor: entry.Sponsor || '',
     "Drug Name": entry["Drug Name"] || '',  
@@ -111,11 +110,11 @@
 
   function calculateBenchmarks(): void {
     const sales = constellationData.filter(d => 
-      d.Purchased === "Y" && d["Sale Price (USD"]
+      d.Purchased === "Y" && d["Sale Price"]
     );
     
     const prices = sales
-      .map(s => parseFloat(s["Sale Price (USD"]))
+      .map(s => parseFloat(s["Sale Price"]))
       .filter((price): price is number => !isNaN(price));
 
     if (prices.length === 0) return;
@@ -124,7 +123,7 @@
     const sum = prices.reduce((a, b) => a + b, 0);
     averageSale.price = sum / prices.length;
     const avgSale = sales.find(s => 
-      parseFloat(s["Sale Price (USD"]) === averageSale.price
+      parseFloat(s["Sale Price"]) === averageSale.price
     );
     if (avgSale) {
       averageSale.buyer = avgSale.Purchaser;
@@ -139,7 +138,7 @@
       ? prices[midIndex] 
       : (prices[midIndex - 1] + prices[midIndex]) / 2;
     const medSale = sales.find(s => 
-      parseFloat(s["Sale  Price (USD, Millions)"]) === medianSale.price
+      parseFloat(s["Sale Price"]) === medianSale.price
     );
     if (medSale) {
       medianSale.buyer = medSale.Purchaser;
@@ -149,7 +148,7 @@
 
     // Find min and max sales
     sales.forEach(s => {
-      const price = parseFloat(s["Sale  Price (USD, Millions)"]);
+      const price = parseFloat(s["Sale Price"]);
       if (isNaN(price)) return;
 
       if (price < minSale.price) {
@@ -175,7 +174,7 @@
     const sellerMap = new Map<string, { count: number; totalPrice: number }>();
 
     sales.forEach(s => {
-      const price = parseFloat(s["Sale  Price (USD, Millions)"]);
+      const price = parseFloat(s["Sale Price"]);
       if (isNaN(price)) return;
 
       if (s.Purchaser.toLowerCase() !== 'undisclosed') {
@@ -249,11 +248,11 @@
     if (!svg || !g) return;
 
     const purchasedVouchers = constellationData.filter(d => 
-      d.Purchased === "Y" && d["Sale Price (USD"]
+      d.Purchased === "Y" && d["Sale Price"]
     );
 
     const prices = purchasedVouchers
-      .map(d => parseFloat(d["Sale Price (USD"]))
+      .map(d => parseFloat(d["Sale Price"]))
       .filter((price): price is number => !isNaN(price));
 
     const x = d3.scaleLinear()
@@ -262,7 +261,7 @@
 
     simulation = d3.forceSimulation(purchasedVouchers as ConstellationData[])
       .force("x", d3.forceX((d: ConstellationData) => {
-        const price = parseFloat(d["Sale Price (USD"]);
+        const price = parseFloat(d["Sale Price"]);
         return x(isNaN(price) ? 0 : price);
       }).strength(1))
       .force("y", d3.forceY(height / 2))
@@ -294,7 +293,7 @@
       .attr("cy", d => (d as any).y)
       .attr("r", 6.25)
       .attr("fill", d => {
-        const price = parseFloat(d["Sale Price (USD"]);
+        const price = parseFloat(d["Sale Price"]);
         if (isNaN(price)) return "none";
         if (d.Purchaser.toLowerCase() === 'undisclosed' || 
             d.Sponsor.toLowerCase() === 'undisclosed') {
@@ -323,8 +322,8 @@
         selectedPoint = {
           buyer: d.Purchaser || 'N/A',
           seller: d.Sponsor || 'N/A',
-          price: d["Sale Price (USD"] ? 
-            `$${d["Sale Price (USD"]} million` : 'N/A',
+          price: d["Sale Price"] ? 
+            `$${d["Sale Price"]} million` : 'N/A',
           drugName: d["Drug Name"] || 'N/A'
         };
       })

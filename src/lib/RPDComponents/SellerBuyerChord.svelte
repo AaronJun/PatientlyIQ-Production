@@ -9,8 +9,7 @@
       "Drug Name": string;
       name: string;
       id: string;
-      "Sale Price (USD": string;
-      "Millions)": string;
+      "Sale Price": string;
       Purchased: string;
     }
 
@@ -62,9 +61,9 @@
       const purchases = transactions.filter(t => t.Purchaser === company);
       
       const totalSalesValue = sales.reduce((sum: number, t: ConstellationData) => 
-        sum + (parseFloat(t["Sale Price (USD"]) || 0), 0);
+        sum + (parseFloat(t["Sale Price"]) || 0), 0);
       const totalPurchaseValue = purchases.reduce((sum: number, t: ConstellationData) => 
-        sum + (parseFloat(t["Sale Price (USD"]) || 0), 0);
+        sum + (parseFloat(t["Sale Price"]) || 0), 0);
         
       const uniqueBuyers = Array.from(new Set(sales.map(t => t.Purchaser)));
       const uniqueSellers = Array.from(new Set(purchases.map(t => t.Sponsor)));
@@ -95,7 +94,7 @@
 
     onMount(() => {
       const transactions = constellationData.filter(
-        d => d.Purchased === "Y" && d["Sale Price (USD"] &&
+        d => d.Purchased === "Y" && d["Sale Price"] &&
              d.Purchaser !== "NA" && d.Sponsor !== "NA"
       );
 
@@ -131,12 +130,12 @@
           drugName: t["Drug Name"],
           therapeuticArea: t.name,
           indication: t.id,
-          price: parseFloat(t["Sale Price (USD"]) || 0
+          price: parseFloat(t["Sale Price"]) || 0
         });
         
         transactionValues.set(
           key, 
-          transactionValues.get(key)! + (parseFloat(t["Sale Price (USD"]) || 0)
+          transactionValues.get(key)! + (parseFloat(t["Sale Price"]) || 0)
         );
       });
 
