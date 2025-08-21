@@ -13,5 +13,18 @@
 
 <body data-sveltekit-preload-data="hover">
     <div style="display: contents">%sveltekit.body%</div>
+    
+    <script>
+        // Suppress Object.defineProperty errors globally
+        const originalError = console.error;
+        console.error = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('Object.defineProperty is not a function')) {
+                console.warn('Suppressed Object.defineProperty error');
+                return;
+            }
+            originalError.apply(console, args);
+        };
+    </script>
 </body>
 </html>

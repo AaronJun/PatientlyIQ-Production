@@ -1,98 +1,98 @@
 [
   {
-    "word": "insurance",
+    "word": "misdiagnosis",
+    "frequency": 7,
+    "group": "Diagnostic Barrier",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "trial and error",
+    "frequency": 6,
+    "group": "Treatment Frustration",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "biopsy",
     "frequency": 5,
-    "group": "Cost Concerns",
+    "group": "Diagnostic Tool",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "waitlist",
+    "frequency": 4,
+    "group": "Access to Care",
     "sentiment": "entirely negative"
   },
   {
-    "word": "covered",
+    "word": "chronic",
+    "frequency": 6,
+    "group": "Symptom Experience",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "invisible",
+    "frequency": 4,
+    "group": "Emotional Impact",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "dismissed",
     "frequency": 3,
-    "group": "Treatment Access",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "copay",
-    "frequency": 2,
-    "group": "Financial Burden",
+    "group": "Care Experience",
     "sentiment": "entirely negative"
   },
   {
-    "word": "no response",
-    "frequency": 2,
-    "group": "Care Team",
+    "word": "shock",
+    "frequency": 4,
+    "group": "Alternative Path",
     "sentiment": "entirely negative"
   },
   {
-    "word": "desperate",
-    "frequency": 2,
-    "group": "Clinical Trials",
-    "sentiment": "somewhat positive"
+    "word": "reflux",
+    "frequency": 5,
+    "group": "Misleading Symptoms",
+    "sentiment": "entirely negative"
   },
   {
-    "word": "access",
-    "frequency": 2,
-    "group": "Treatment Access",
-    "sentiment": "somewhat negative"
+    "word": "biopsy",
+    "frequency": 7,
+    "group": "Clinical Disconnect",
+    "sentiment": "entirely negative"
   },
   {
-    "word": "expense",
-    "frequency": 2,
+    "word": "referral",
+    "frequency": 4,
+    "group": "Access to Care",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "advocate",
+    "frequency": 4,
     "group": "Patient Empowerment",
     "sentiment": "somewhat negative"
   },
   {
-    "word": "specialist",
-    "frequency": 3,
-    "group": "Care Experience",
-    "sentiment": "neutral"
-  },
-  {
-    "word": "prior authorization",
-    "frequency": 2,
-    "group": "Insurance Navigation",
-    "sentiment": "entirely negative"
-  },
-  {
-    "word": "denied",
-    "frequency": 2,
-    "group": "Insurance Navigation",
-    "sentiment": "entirely negative"
-  },
-  {
-    "word": "travel",
-    "frequency": 3,
-    "group": "Trial Logistics",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "research hospital",
-    "frequency": 2,
-    "group": "Medical Progress",
-    "sentiment": "entirely positive"
-  },
-  {
-    "word": "self-pay",
-    "frequency": 1,
-    "group": "Cost Workaround",
-    "sentiment": "neutral"
-  },
-  {
-    "word": "network",
-    "frequency": 2,
-    "group": "Provider Access",
-    "sentiment": "somewhat negative"
-  },
-  {
-    "word": "dismissive",
+    "word": "uncertainty",
     "frequency": 4,
-    "group": "Hope for New Treatments",
+    "group": "Emotional Burden",
     "sentiment": "entirely negative"
   },
   {
-    "word": "rushed",
-    "frequency": 2,
-    "group": "Care Experience",
+    "word": "crazy",
+    "frequency": 4,
+    "group": "Diagnostic Journey",
+    "sentiment": "entirely negative"
+  },
+  {
+    "word": "endless",
+    "frequency": 3,
+    "group": "Long-term Experience",
+    "sentiment": "somewhat negative"
+  },
+  {
+    "word": "gastritis",
+    "frequency": 3,
+    "group": "Misleading Diagnosis",
     "sentiment": "entirely negative"
   }
 ]

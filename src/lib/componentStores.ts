@@ -6,9 +6,9 @@ interface TimelineComponent extends SvelteComponent {
   resetZoom(): void;
 }
 
-export const RadialTimeline = writable<typeof TimelineComponent>(null);
+export const RadialTimeline = writable<any>(null);
 export const SimpleDrawer = writable<ComponentType>(null);
 export const SummaryDisplay = writable<ComponentType>(null);
-export const YearlySummary = writable<ComponentType>(null);
+export const YearlySummary = writable<any>(null);
 export const NavigationGuide = writable<ComponentType>(null);
 export const TherapeuticAreaLegend = writable<ComponentType>(null); 

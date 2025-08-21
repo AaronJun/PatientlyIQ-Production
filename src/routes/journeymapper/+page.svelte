@@ -6,6 +6,7 @@
 	import AssessmentBurdenHeatmap from '$lib/components/AssessmentBurdenHeatmap.svelte';
 	import SentimentNetworkGraph from '$lib/components/SentimentNetworkGraph.svelte';
 	import JourneyAnalysisSummary from '$lib/journeymapper/JourneyAnalysisSummary.svelte';
+	import SentimentStackedChart from '$lib/journeymapper/SentimentStackedChart.svelte';
 	import * as Tabs from "$lib/ui/tabs";
 	import DemoPDFUpload from "$lib/components/PDFUploadDemo.svelte";
 	// Icon imports
@@ -40,6 +41,35 @@
 	let selectedStudyId = '2'; // Default to DECIPHERA-PV-3 study (study_id: "2")
 	let currentVisitScheduleData = data.visitScheduleData;
 	let currentStudyMetadata = data.studyMetadata;
+
+	// Sample sentiment data for the chart
+	const sampleSentimentData = [
+		{
+			"Sentiment": "EN",
+			"N": "10.00",
+			"Per": "9.35%"
+		},
+		{
+			"Sentiment": "SN",
+			"N": "17.00",
+			"Per": "15.89%"
+		},
+		{
+			"Sentiment": "NEU",
+			"N": "20.00",
+			"Per": "18.69%"
+		},
+		{
+			"Sentiment": "SP",
+			"N": "24.00",
+			"Per": "22.43%"
+		},
+		{
+			"Sentiment": "EP",
+			"N": "15.00",
+			"Per": "14.02%"
+		}
+	];
 	
 	// Initialize current data when the original data changes
 	$: if (visitScheduleData && studyMetadata) {
@@ -343,6 +373,13 @@
 				
 				<!-- Tab Content -->
 				<Tabs.Content value="summary" class="tab-content">
+					
+					<SentimentStackedChart 
+					data={sampleSentimentData}
+					title="CLINICAL TRIAL SENTIMENT"
+					height={200}
+
+				/>
 					<JourneyAnalysisSummary 
 						{totalVisits}
 						{travelVisits}
@@ -372,6 +409,10 @@
 									squareSize="10px"
 									selectedStudyId={selectedStudyId}
 								/>
+							</div>
+							
+							<div class="assessment-section">
+						
 							</div>
 							
 							<div class="assessment-section">

@@ -1,0 +1,28 @@
+
+[
+  {
+    "sentimentMap": "EN",
+    "N": "10.00",
+    "Per": "9.35%"
+  },
+  {
+    "sentimentMap": "SN",
+    "N": "17.00",
+    "Per": "15.89%"
+  },
+  {
+    "sentimentMap": "NEU",
+    "N": "20.00",
+    "Per": "18.69%"
+  },
+  {
+    "sentimentMap": "SP",
+    "N": "24.00",
+    "Per": "22.43%"
+  },
+  {
+    "sentimentMap": "EP",
+    "N": "15.00",
+    "Per": "14.02%"
+  }
+]

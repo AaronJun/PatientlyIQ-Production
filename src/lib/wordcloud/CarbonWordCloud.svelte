@@ -64,7 +64,12 @@
     },
     wordCloud: {
       fontSizeMapsTo: 'value',
-      wordMapsTo: 'word'
+      wordMapsTo: 'word',
+      padding: 2, // Increase padding between words
+      spiral: 'archimedean', // Use archimedean spiral for better spacing
+      layout: {
+        padding: 2 // Additional layout padding
+      }
     },
     legend: {
       enabled: true,

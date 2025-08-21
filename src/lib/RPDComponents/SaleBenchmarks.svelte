@@ -6,8 +6,8 @@
   import YearlySalesChart from './YearlySalesChart.svelte';
   import SellerBuyerChord from './SellerBuyerChord.svelte';
   import VoucherBeeswarmPlot from './VoucherBeeswarmPlot.svelte';
-  import { Money, PortInput, PortOutput, Medication } from 'carbon-icons-svelte';
   import { DataTable, Toolbar, ToolbarContent, ToolbarSearch } from "carbon-components-svelte";
+
   interface ConstellationData extends SimulationNodeDatum {
   Purchased: string;
   "Sale  Price (USD, Millions)": string;
@@ -42,7 +42,7 @@
     "Sale  Price (USD, Millions)": entry["Sale  Price (USD, Millions)"] || 'NA',
     Purchaser: entry.Purchaser || 'NA',
     Sponsor: entry.Sponsor || '',
-    "Drug Name": entry["Drug Name"] || '',
+    "Drug Name": entry["Drug Name"] || '',  
     Year: entry.Year || '',
     id: entry.id || '',
     name: entry.name || ''
@@ -75,8 +75,8 @@
   let searchTermSellers = "";
 
   // D3 related variables
-  let svg: Selection<SVGSVGElement, unknown, null, undefined>;
-  let g: Selection<SVGGElement, unknown, null, undefined>;
+  let svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>;
+  let g: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
   let simulation: d3.Simulation<ConstellationData, undefined>;
   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
   let width = 0;
@@ -259,8 +259,8 @@
       .domain([0, d3.max(prices) || 0])
       .range([0, width]);
 
-    simulation = d3.forceSimulation(purchasedVouchers)
-      .force("x", d3.forceX(d => {
+    simulation = d3.forceSimulation(purchasedVouchers as ConstellationData[])
+      .force("x", d3.forceX((d: ConstellationData) => {
         const price = parseFloat(d["Sale  Price (USD, Millions)"]);
         return x(isNaN(price) ? 0 : price);
       }).strength(1))
@@ -475,12 +475,12 @@
       <div class="viz-container">
         <SellerBuyerChord 
         {constellationData}
-        onCompanyClick={(companyData) => {
+        onCompanyClick={(companyData: ConstellationData) => {
           onCompanySelect(companyData, getColorForTherapeuticArea(companyData.name));
         }}
-          onChordClick={(transactionData) => {
-            onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
-          }}
+        onChordClick={(transactionData: ConstellationData) => {
+          onCompanySelect(transactionData, getColorForTherapeuticArea(transactionData.name));
+        }}
         />
         
       </div>
@@ -578,13 +578,17 @@
               { key: 'totalPrice', value: 'Total Purchase Amount' },
               { key: 'avgPrice', value: 'Average Price of Purchase' }
             ]}
-            rows={filterData((expandedBuyers ? allBuyers : topBuyers).map(buyer => ({
+            rows={(expandedBuyers ? allBuyers : topBuyers).map(buyer => ({
               id: buyer.name,
               name: buyer.name,
               count: buyer.count,
               totalPrice: formatPrice(buyer.totalPrice),
               avgPrice: formatPrice(buyer.avgPrice)
-            })), searchTermBuyers)}
+            })).filter(item => 
+              !searchTermBuyers || Object.values(item).some(val => 
+                String(val).toLowerCase().includes(searchTermBuyers.toLowerCase())
+              )
+            )}
             sortable
             zebra
           />
@@ -613,13 +617,17 @@
               { key: 'totalPrice', value: 'Total Sale Amount' },
               { key: 'avgPrice', value: 'Average Price of Sale' }
             ]}
-            rows={filterData((expandedSellers ? allSellers : topSellers).map(seller => ({
+            rows={(expandedSellers ? allSellers : topSellers).map(seller => ({
               id: seller.name,
               name: seller.name,
               count: seller.count,
               totalPrice: formatPrice(seller.totalPrice),
               avgPrice: formatPrice(seller.avgPrice)
-            })), searchTermSellers)}
+            })).filter(item => 
+              !searchTermSellers || Object.values(item).some(val => 
+                String(val).toLowerCase().includes(searchTermSellers.toLowerCase())
+              )
+            )}
             sortable
             zebra
           />
@@ -719,7 +727,7 @@
     min-height: 1rem;
   }
 
-  #beeswarm-container {
+.beeswarm-container {
     width: 100%;
     height: 100%;
     min-height: 300px;

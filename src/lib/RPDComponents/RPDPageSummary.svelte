@@ -88,7 +88,7 @@ $: overviewStats = {
 
   <p class="text-base md:text-sm sm:text-xs w-full pr-2 max-w-4xl col-span-2 text-gray-900 mt-4">      
     The FDA's rare pediatric disease priority review voucher program produced an estimated 
-      <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2022. These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
+      <span class="highlight">{formatNumber(569)}</span> RPD designations from 2012 to 2025. These vouchers are like seeds with the potential to grow rapidly into new treatment options.  
       <br><br>
 
       New treatments have been developed for <span class="highlight">{formatNumber(overviewStats.uniqueIndications)}</span> indications, 

@@ -121,7 +121,7 @@
   
   .bar {
     height: 25px;
-    min-width: 4px;
+    min-width: 20px;
     transition: opacity 0.2s ease;
   }
   

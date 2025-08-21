@@ -4,8 +4,8 @@
     import { ArrowUpRight } from 'carbon-icons-svelte';
   
     export let constellationData: any[];
-    export let onCompanyClick = undefined;
-    export let onChordClick = undefined;
+    export let onCompanyClick: ((data: any) => void) | undefined = undefined;
+    export let onChordClick: ((data: any) => void) | undefined = undefined;
     
     const dispatch = createEventDispatcher();
     

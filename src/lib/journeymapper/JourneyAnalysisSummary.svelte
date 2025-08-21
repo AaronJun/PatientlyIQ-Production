@@ -3,6 +3,7 @@
 	import analysisData from '../../data/journeymap/journey_mapper_analysis_summary.json';
 	import pvAnalysisData from '../../data/journeymap/journey_mapper_analysis_summary_pv.json';
 	import VisitSquares from './VisitSquares.svelte';
+	import VisitBurdenStackedChart from './VisitBurdenStackedChart.svelte';
 	import hurdleQuotesData from '../../data/journeymap/hurdle_quotes.json';
 	import HurdleQuotesDrawer from './HurdleQuotesDrawer.svelte';
 
@@ -120,6 +121,19 @@
 			totalCount={totalVisits}
 			color="#7c2d12" 
 			size="18px"
+		/>
+	</div>
+
+	<!-- Visit Burden Chart -->
+	<div class="visit-burden-chart-section mb-8">
+		<VisitBurdenStackedChart 
+			{totalVisits}
+			{travelVisits}
+			{invasiveVisits}
+			{surgicalVisits}
+			{selectedStudyId}
+			height={300}
+			width={800}
 		/>
 	</div>
 
@@ -356,6 +370,10 @@
 		flex-direction: column;
 		gap: 0.5rem;
 		flex-wrap: wrap;
+	}
+
+	.visit-burden-chart-section {
+		width: 100%;
 	}
 
 	/* Analysis Sections */
