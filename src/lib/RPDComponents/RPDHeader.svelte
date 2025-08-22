@@ -30,7 +30,7 @@
     <h1 class="capitalize font-light max-w-prose text-4xl mb-4 text-slate-600">Planting the seeds of rare disease research</h1>
     
     <p class="font-base max-w-prose">
-      The FDA's Priority Review Voucher Program has planted the seeds for <span class="font-base text-orange-600 font-medium">56 new rare disease treatments</span>, with 42 first-ever therapies blooming where none existed before. 2024 has been the most fruitful year yet -- learn more and join us in asking that this garden is kept flourishing.
+      The FDA's Priority Review Voucher Program has planted the seeds for <span class="font-base text-orange-600 font-medium">59 new rare disease treatments</span>, with 55 first-ever therapies blooming where none existed before. Despite 2024 being the most fruitful year for the program yet, it expired at the end of 2024. It is imperative that we join our voices together to demand that elected officials allow this garden of hope to continue to flourish.
     
     <div class="flex gap-4 mt-12">
       <!-- Get Details Button -->

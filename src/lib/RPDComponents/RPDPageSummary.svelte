@@ -9,8 +9,13 @@
   
   export let constellationData: Array<{
     Year: string;
+    "Purchase Year": string;
     Purchased: string;
     "Sale Price"?: string;
+    name: string;
+    id: string;
+    "Treatment Type": string;
+    "Approved Drug": string;
   }>;
   
   export let currentYear: string;
@@ -39,13 +44,18 @@ $: {
     } else {
       const yearRpdData = rpdPrvData.find(d => d.Year === currentYear);
       const yearConstellationData = constellationData.filter(d => d.Year === currentYear);
+      // Use Purchase Year for sold vouchers and total value calculations
+      const soldInYearData = constellationData.filter(d => 
+        d.Purchased?.toLowerCase() === 'y' && 
+        d["Purchase Year"] === currentYear
+      );
       
       summaryStats = {
         rpdCount: parseInt(yearRpdData?.RPD || "0"),
         voucherCount: yearConstellationData.length,
-        soldCount: yearConstellationData.filter(d => d.Purchased?.toLowerCase() === 'y').length,
-        totalValue: yearConstellationData
-          .filter(d => d.Purchased?.toLowerCase() === 'y' && d["Sale Price"])
+        soldCount: soldInYearData.length,
+        totalValue: soldInYearData
+          .filter(d => d["Sale Price"])
           .reduce((sum, d) => {
             const price = parseFloat(d["Sale Price"]);
             return !isNaN(price) ? sum + price : sum;

@@ -41,7 +41,7 @@
   }
 
   let activeTab = 'By Year';
-  let currentYear = "2012";   
+  let currentYear = "2025";   
   let hoveredPetalData: ConstellationEntry | null = null;
   
   
